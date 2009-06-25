@@ -14,6 +14,7 @@
  * adapted from the FSEvents api PDF
 */
 
+extern char **environ;
 char *to_watch;
 char *to_run;
 
@@ -35,13 +36,13 @@ void callback(
     fprintf(stderr, "error: couldn't fork \n");
     exit(1);
   } else if (pid == 0) {
-    char *envp[1] = { 0 };
+    /*char *envp[1] = { 0 };*/
     char *args[8] = {
       to_run,
       to_watch,
       0
     };
-    if(execve(args[0], args, envp) < 0) {
+    if(execve(args[0], args, environ) < 0) {
       fprintf(stderr, "error: error executing\n");
       exit(1);
     }
