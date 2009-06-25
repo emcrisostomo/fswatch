@@ -1,0 +1,20 @@
+fswatch.c
+
+This is a small program using the Mac OS X FSEvents API to monitor a directory.
+When an event about any change to that directory is received, the specified
+command is executed with the monitored directory as an argument.
+
+usage:
+
+  ./fswatch /some/dir /bin/ls
+
+This would monitor /some/dir for any change, and run `/bin/ls /some/dir` when
+a modification event is received.
+
+compile:
+
+You'll need the OS X Developer Tools installed on 10.4 or higher.
+
+  gcc fswatch.c -framework CoreServices -o fswatch
+
+This code was adapted from the example program in the FSEvents API pdf.
