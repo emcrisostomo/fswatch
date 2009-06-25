@@ -6,8 +6,8 @@
 
 /* fswatch.c
  * 
- * usage: ./fswatch /some/directory /some/command
- * /some/command is executed with /some/directory as an arg
+ * usage: ./fswatch /some/directory "some command" 
+ * "some command" is eval'd by bash when /some/directory generates any file events
  *
  * compile me with something like: gcc fswatch.c -framework CoreServices -o fswatch
  *
@@ -15,7 +15,7 @@
 */
 
 extern char **environ;
-char *to_watch;
+//the command to run
 char *to_run;
 
 //fork a process when there's any change in watch file
@@ -36,10 +36,10 @@ void callback(
     fprintf(stderr, "error: couldn't fork \n");
     exit(1);
   } else if (pid == 0) {
-    /*char *envp[1] = { 0 };*/
-    char *args[8] = {
+    char *args[4] = {
+      "/bin/bash",
+      "-c",
       to_run,
-      to_watch,
       0
     };
     if(execve(args[0], args, environ) < 0) {
@@ -60,10 +60,9 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  to_watch = argv[1];
   to_run = argv[2];
 
-  CFStringRef mypath = CFStringCreateWithCString(NULL, to_watch, kCFStringEncodingUTF8); 
+  CFStringRef mypath = CFStringCreateWithCString(NULL, argv[1], kCFStringEncodingUTF8); 
   CFArrayRef pathsToWatch = CFArrayCreate(NULL, (const void **)&mypath, 1, NULL); 
   void *callbackInfo = NULL; 
   FSEventStreamRef stream; 

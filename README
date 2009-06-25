@@ -2,14 +2,19 @@ fswatch.c
 
 This is a small program using the Mac OS X FSEvents API to monitor a directory.
 When an event about any change to that directory is received, the specified
-command is executed with the monitored directory as an argument.
+shell command is executed by /bin/bash.
 
 usage:
 
-  ./fswatch /some/dir /bin/ls
+  ./fswatch /some/dir "echo changed" 
 
-This would monitor /some/dir for any change, and run `/bin/ls /some/dir` when
+This would monitor /some/dir for any change, and run `echo changed` when
 a modification event is received.
+
+fswatch passes along the parent processes' environment, so you can do things
+like this:
+
+  fswatch components/ "~/local/bin/componentize.rb components/ > resources/components.js"
 
 compile:
 
