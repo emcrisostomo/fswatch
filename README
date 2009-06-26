@@ -6,7 +6,7 @@ shell command is executed by /bin/bash.
 
 usage:
 
-  ./fswatch /some/dir "echo changed" 
+  > ./fswatch /some/dir "echo changed" 
 
 This would monitor /some/dir for any change, and run `echo changed` when
 a modification event is received.
@@ -14,12 +14,12 @@ a modification event is received.
 fswatch passes along the parent processes' environment, so you can do things
 like this:
 
-  fswatch components/ "~/local/bin/componentize.rb components/ > resources/components.js"
+  > fswatch components/ "~/local/bin/componentize.rb components/ > resources/components.js"
 
 compile:
 
-You'll need the OS X Developer Tools installed on 10.4 or higher.
+You'll need the OS X Developer Tools installed on 10.5 or higher.
 
-  gcc fswatch.c -framework CoreServices -o fswatch
+  > make
 
 This code was adapted from the example program in the FSEvents API pdf.
