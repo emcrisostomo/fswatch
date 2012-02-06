@@ -29,17 +29,19 @@ with a local directory continuously as local files change.  The
 following example was contributed by
 [Michael A. Smith](http://twitter.com/michaelasmith):
 
-    #!/bin/sh
-    
-    ##
-    # Keep local path in sync with remote path on server.
-    # Ignore .git metadata.
-    #
-    local=$1
-    remote=$2
-    
-    cd "$local_path" &&
-    fswatch . "date +%H:%M:%S && rsync -iru --exclude .git --exclude-from=.gitignore --delete . $remote"
+```bash
+#!/bin/sh
+
+##
+# Keep local path in sync with remote path on server.
+# Ignore .git metadata.
+#
+local=$1
+remote=$2
+
+cd "$local_path" &&
+fswatch . "date +%H:%M:%S && rsync -iru --exclude .git --exclude-from=.gitignore --delete . $remote"
+```
 
 ### About
 
