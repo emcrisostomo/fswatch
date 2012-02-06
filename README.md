@@ -39,7 +39,7 @@ following example was contributed by
 local=$1
 remote=$2
 
-cd "$local_path" &&
+cd "$local" &&
 fswatch . "date +%H:%M:%S && rsync -iru --exclude .git --exclude-from=.gitignore --delete . $remote"
 ```
 
