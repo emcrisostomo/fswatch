@@ -6,7 +6,7 @@
 
 /* fswatch.c
  * 
- * usage: ./fswatch /some/directory "some command" 
+ * usage: ./fswatch /some/directory[:/some/otherdirectory:...] "some command" 
  * "some command" is eval'd by bash when /some/directory generates any file events
  *
  * compile me with something like: gcc fswatch.c -framework CoreServices -o fswatch
@@ -63,7 +63,8 @@ int main(int argc, char **argv) {
   to_run = argv[2];
 
   CFStringRef mypath = CFStringCreateWithCString(NULL, argv[1], kCFStringEncodingUTF8); 
-  CFArrayRef pathsToWatch = CFArrayCreate(NULL, (const void **)&mypath, 1, NULL); 
+  CFArrayRef pathsToWatch = CFStringCreateArrayBySeparatingStrings (NULL, mypath, CFSTR(":"));
+
   void *callbackInfo = NULL; 
   FSEventStreamRef stream; 
   CFAbsoluteTime latency = 1.0;

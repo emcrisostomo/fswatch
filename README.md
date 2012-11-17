@@ -22,6 +22,11 @@ a directory on your `$PATH`.
 This would monitor `/some/dir` for any change, and run `echo changed`
 when a modification event is received.
 
+In the case you want to watch multiple directories, just separate them
+with colons like:
+
+    ./fswatch /some/dir:/some/otherdir "echo changed" 
+
 ### Usage with rsync
 
 `fswatch` can be used with `rsync` to keep a remote directory in sync
