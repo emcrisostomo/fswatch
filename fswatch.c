@@ -16,7 +16,12 @@
 
 extern char **environ;
 //the command to run
-char *to_run;
+char *bash_command[4] = {
+    "/bin/bash",
+    "-c",
+    0, // updated later
+    0
+};
 
 //fork a process when there's any change in watch file
 void callback( 
@@ -36,13 +41,7 @@ void callback(
     fprintf(stderr, "error: couldn't fork \n");
     exit(1);
   } else if (pid == 0) {
-    char *args[4] = {
-      "/bin/bash",
-      "-c",
-      to_run,
-      0
-    };
-    if(execve(args[0], args, environ) < 0) {
+    if(execve(bash_command[0], bash_command, environ) < 0) {
       fprintf(stderr, "error: error executing\n");
       exit(1);
     }
@@ -50,17 +49,36 @@ void callback(
     while(wait(&status) != pid)
       ;
   }
-} 
- 
+}
+
 //set up fsevents and callback
 int main(int argc, char **argv) {
 
-  if(argc != 3) {
-    fprintf(stderr, "You must specify a directory to watch and a command to execute on change\n");
+  if(argc < 3) {
+    fprintf(stderr, "usage: %s directory command [argument ...]\n", argv[0]);
     exit(1);
   }
 
-  to_run = argv[2];
+  int n_args = argc - 2;
+
+  // find total length of argument to bash -c, including spaces
+  int n_bash_arg_chars = 0;
+  for(int i=2; i<argc; ++i) {
+    n_bash_arg_chars += strlen(argv[i]) + 1;
+  }
+
+  // build the space-separated string argument
+  char bash_arg[n_bash_arg_chars];
+  int i_chars = 0;
+  for(int i=2; i<argc; ++i) {
+    memcpy(&bash_arg[i_chars], argv[i], strlen(argv[i]) * sizeof(char));
+    i_chars += strlen(argv[i]);
+    bash_arg[i_chars++] = ' ';
+  }
+  bash_arg[i_chars - 1] = 0;
+
+  // update the global bash command to be run
+  bash_command[2] = bash_arg;
 
   CFStringRef mypath = CFStringCreateWithCString(NULL, argv[1], kCFStringEncodingUTF8); 
   CFArrayRef pathsToWatch = CFStringCreateArrayBySeparatingStrings (NULL, mypath, CFSTR(":"));
