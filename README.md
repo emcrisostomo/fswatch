@@ -9,6 +9,12 @@ If you're on GNU/Linux,
 `inotify-tools` package on most distributions) provides similar
 functionality.
 
+### Installation
+
+```
+$ brew install fswatch
+```
+
 ### Compile
 
 You need to be on Mac OS X 10.5 or higher with Developer Tools
