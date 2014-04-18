@@ -1,25 +1,36 @@
-## fswatch.c
+README
+======
 
 This is a small program using the Mac OS X FSEvents API to monitor a directory.
 When an event about any change to that directory is received, the specified
 shell command is executed by `/bin/bash`.
 
-If you're on GNU/Linux,
-[inotifywatch](http://linux.die.net/man/1/inotifywatch) (part of the
-`inotify-tools` package on most distributions) provides similar
-functionality.
+If you're on GNU/Linux, [inotifywatch][inw] (part of the `inotify-tools`
+package on most distributions) provides similar functionality.
 
-### Installation
+[inw]: http://linux.die.net/man/1/inotifywatch
 
-```
-$ brew install fswatch
-```
+Installation
+------------
 
-### Compile
+You can install fswatch using brew:
 
-You need to be on Mac OS X 10.5 or higher with Developer Tools
-installed.  Then, run `make`.  Copy the resulting `fswatch` binary to
-a directory on your `$PATH`.
+    $ brew install fswatch
+
+Compile
+-------
+
+The recommended way to get the sources of fswatch in order to build it on your
+system is getting a release tarball.  A release tarball contains everything a 
+user needs to build fsw on his system, following the instructions detailed in
+the INSTALL file.
+
+Getting a copy of the source repository is not recommended, unless you are a
+developer, you have the GNU Build System installed on your machine and you know
+how to boostrap it on the sources.
+
+A script called `autogen.sh` is included to boostrap the GNU Build System
+on a development machine.
 
 ### Basic Usage
 
