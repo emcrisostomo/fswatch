@@ -1,4 +1,21 @@
+# GNU Build System
+autom4te.cache/
 
-fswatch.o
+# Eclipse CDT
+.autotools
+.cproject
+.project
+.settings/
 
-fswatch
+# NetBeans
+nbproject/
+
+# GNU Build System
+Makefile.in
+compile
+configure
+aclocal.m4
+config.*
+depcomp
+install-sh
+missing
