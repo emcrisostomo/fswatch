@@ -1,0 +1,123 @@
+README.osx
+**********
+
+Introduction
+============
+
+This file describes the steps required to build this bundle on a supported
+Apple OS X system.  A complete C/C++ toolchain for OS X is provided with Apple
+XCode, which can be freely installed from the Apple App Store.  See README for
+more information about the tested configurations.
+
+XCode
+=====
+
+If you plan to build the bundle with CLang/LLVM, the easiest way to get a
+working toolchain is installing Apple XCode.  Apple XCode ships with both the
+CLang/LLVM and the GCC compiler.
+
+  XCode, however, does not install some required command line tools by default.
+To install them, the following operations must be performed:
+
+  1. Choose the "XCode/Preferences..." menu item.
+
+  2. Navigate to the "Downloads" pane.
+
+  3. Select the "Components" tab.
+
+  4. Select the "Command Line Tools" item and press the "Install" button.
+
+XCode 4.x
+=========
+
+XCode 4 ships with the following C/C++ compilers:
+
+  1. Apple clang++/LLVM v. 4.2:
+       Apple LLVM version 4.2 (clang-425.0.28) (based on LLVM 3.2svn)
+       Target: x86_64-apple-darwin12.4.0
+       Thread model: posix
+
+  2. GNU GCC v. 4.2.1:
+       i686-apple-darwin11-llvm-gcc-4.2 (GCC) 4.2.1
+       (Based on Apple Inc. build 5658) (LLVM build 2336.11.00)
+
+Only clang++ implements the required C++11 features required by fsw, so that it
+must be configured with this compiler:
+
+  $ CXX=clang++ ./configure
+
+XCode 5.x
+=========
+
+XCode 5 ships with the following C/C++ compilers:
+
+  1. Apple clang++/LLVM v. 5.0:
+       Apple LLVM version 5.0 (clang-500.2.75) (based on LLVM 3.3svn)
+       Target: x86_64-apple-darwin12.5.0
+       Thread model: posix
+
+  2. GNU GCC v. 5.0:
+       Apple LLVM version 5.0 (clang-500.2.76) (based on LLVM 3.3svn)
+       Target: x86_64-apple-darwin12.5.0
+       Thread model: posix
+
+The GCC suite has been deprecated in favour of LLVM/CLang and gcc/g++ are now
+aliases to clang/clang++.  The project can be configured with the default
+compiler:
+
+  $ ./configure
+
+GNU Build System
+================
+
+The GNU Build System is required only by developers willing to modify the code
+on a OS X machine.  Regular users only willing to install fsw do not need the
+GNU Build System.
+
+  Recent XCode Command Line Tools releases are not shipping all the components
+of the GNU Build System any longer.  OS X users are thus required to build an
+alternate GNU Build System on their system.
+
+  The required source bundles can be downloaded from their official web pages:
+
+  1. Autoconf:
+
+     (http://www.gnu.org/software/autoconf/) (>= v. 2.69) 
+
+  2. Automake
+
+     (http://www.gnu.org/software/automake/) (>= v. 1.14.1)
+
+  3. Libtool:
+
+     (http://www.gnu.org/software/libtool/)  (>= v. 2.4.2)
+
+  Libtool is not required to build this package but it's a core component of the
+GNU Build System.
+
+  XCode Command Line Tools still ships GNU M4 (v. 1.4.6).
+
+  To avoid conflicts with the binaries installed by XCode, it is strongly
+suggested to install the GNU Build System in an alternate location (such as
+the default /usr/local/bin) or in a private user folder.  To choose the desired
+install location, use the --prefix configure option.
+
+  For further instruction on building the GNU Build System from scratch, please
+check the README.gnu-build-system file.
+
+-----
+
+Copyright (C) 2014 Enrico M. Crisostomo
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

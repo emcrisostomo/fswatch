@@ -1,0 +1,93 @@
+README.gnu-build-system
+***********************
+
+Introduction
+============
+
+fsw is built using the GNU Build System and developers willing to modify the
+configuration files must have the GNU Build System installed in order to do so.
+
+  For further information about the GNU Build System and its use, please refer
+to its official documentation.
+
+Installing the GNU Build System
+===============================
+
+  To install the GNU Build System, the following operations must be performed:
+
+  1. Get the GNU Build System components:
+     - Autoconf:
+       (http://www.gnu.org/software/autoconf/) (>= v. 2.69) 
+
+     - Automake
+       (http://www.gnu.org/software/automake/) (>= v. 1.14.1)
+
+     - Libtool:
+       (http://www.gnu.org/software/libtool/)  (>= v. 2.4.2)
+  
+  2. Install the packages in the following order:
+     a. Autoconf
+     b. Automake
+     c. Libtool
+
+  3. From now on, <bundle> will indicate any of the above-mentioned components.
+
+  4. Grab the sources:
+
+     $ wget <sources-url>
+
+  5. Uncompress the source bundle:
+
+     $ gunzip <bundle>.tar.gz
+     $ tar -xf <bundle>.tar
+
+  6. Configure the package:
+
+     $ ./configure [...]
+
+  7. If you want to install the package in the default location (/usr/local/bin)
+     you can invoke ./configure with no option, otherwise provide the desired
+     installation directory using the --prefix option:
+
+     $ ./configure --prefix=/destdir
+
+  8. Build the package:
+
+     $ make
+
+  9. Test the components:
+
+     $ make check
+
+ 10. Test the installed components:
+
+     $ make check
+
+ 11. Install the components:
+
+     $ make install
+
+     Depending on the installation directory additional privileges may be
+     required.
+     
+ 12. Add the installation directory to the PATH, otherwise builds of the
+     package may fail:
+
+     $ export PATH=/destdir/bin:$PATH
+
+-----
+
+Copyright (C) 2014 Enrico M. Crisostomo
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
