@@ -12,7 +12,7 @@ kinds of monitors:
     system changes to applications.
   * A monitor which periodically stats the file system, saves file modification
     times in memory and manually calculates file system changes, which can work
-    on any operating system where `stat` (2) can be used.
+    on any operating system where `stat (2)` can be used.
 
 fswatch should build and work correctly on any system shipping either of the
 aforementioned APIs.
