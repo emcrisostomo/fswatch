@@ -83,11 +83,12 @@ int main(int argc, char **argv) {
   CFStringRef mypath = CFStringCreateWithCString(NULL, argv[1], kCFStringEncodingUTF8); 
   CFArrayRef pathsToWatch = CFStringCreateArrayBySeparatingStrings (NULL, mypath, CFSTR(":"));
 
-  void *callbackInfo = NULL; 
+  FSEventStreamContext *callbackInfo = NULL; 
   FSEventStreamRef stream; 
   CFAbsoluteTime latency = 1.0;
 
-  stream = FSEventStreamCreate(NULL,
+  stream = FSEventStreamCreate(
+    NULL,
     &callback,
     callbackInfo,
     pathsToWatch,

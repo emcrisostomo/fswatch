@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 bin_PROGRAMS = fswatch
-fswatch_SOURCES = fswatch.c
+fswatch_SOURCES = fswatch.cpp
 
 if USE_CORESERVICES
   fswatch_LDFLAGS = -framework CoreServices

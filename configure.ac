@@ -19,14 +19,17 @@
 AC_PREREQ([2.69])
 AC_INIT([fswatch], [0.0.3], [https://github.com/alandipert/fswatch/issues])
 AC_REVISION([$Revision: 0.0.3-1 $])
-AC_CONFIG_SRCDIR([fswatch.c])
+AC_CONFIG_SRCDIR([fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile])
 AM_INIT_AUTOMAKE([-Wall -Werror gnu])
 
+# Configure language
+AC_LANG(C++)
+
 # Checks for programs.
-AC_PROG_CC([clang gcc])
+AC_PROG_CXX([clang++ g++])
 
 # Checks for libraries.
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
