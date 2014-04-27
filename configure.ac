@@ -26,7 +26,7 @@ AC_CONFIG_FILES([Makefile])
 AM_INIT_AUTOMAKE([-Wall -Werror gnu])
 
 # Checks for programs.
-AC_PROG_CC
+AC_PROG_CC([clang gcc])
 
 # Checks for libraries.
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
