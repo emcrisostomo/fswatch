@@ -1,0 +1,12 @@
+ChangeLog
+*********
+
+2014-18-04  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 0.0.2:
+
+	* .gitignore:
+	  - Exclude GNU Build System, NetBeans and Eclipse CDT files.
+	* autogen.sh: Add initial version.
+        * configure.ac: Add initial version.
+        * Makefile.am: Add initial version.
