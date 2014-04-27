@@ -13,8 +13,16 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 bin_PROGRAMS = fswatch
-fswatch_SOURCES = fswatch.cpp
+fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
+fswatch_SOURCES += path_utils.cpp path_utils.h
+fswatch_SOURCES += fswatch_exception.cpp fswatch_exception.h event.cpp event.h
+fswatch_SOURCES += monitor.cpp monitor.h fswatch_map.h fswatch_set.h
+fswatch_SOURCES += fsevent_monitor.cpp fsevent_monitor.h
+fswatch_SOURCES += kqueue_monitor.cpp kqueue_monitor.h
+fswatch_SOURCES += poll_monitor.cpp poll_monitor.h
+fswatch_SOURCES += inotify_monitor.cpp inotify_monitor.h
 
 if USE_CORESERVICES
   fswatch_LDFLAGS = -framework CoreServices

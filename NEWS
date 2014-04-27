@@ -1,0 +1,6 @@
+NEWS
+****
+
+New in 1.0.0:
+
+  * fswatch has been merged with fsw (https://github.com/emcrisostomo/fsw).

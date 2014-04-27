@@ -11,7 +11,27 @@ ChangeLog
           - Reconfigure the project as C++.
           - Bump v. 0.0.3.
           - Bump revision 0.0.3-2.
+        * event.cpp: Added.
+        * event.h: Added.
+        * fsevent_monitor.cpp: Added.
+        * fsevent_monitor.h: Added.
         * fswatch.cpp: Rename from fswatch.c.
+        * fswatch.h: Added.
+        * fswatch_exception.cpp: Added.
+        * fswatch_exception.h: Added.
+        * fswatch_log.cpp: Added.
+        * fswatch_log.h: Added.
+        * fswatch_map.h: Added.
+        * inotify_monitor.cpp: Added.
+        * inotify_monitor.h: Added.
+        * kqueue_monitor.cpp: Added.
+        * kqueue_monitor.h: Added.
+        * monitor.cpp: Added.
+        * monitor.h: Added.
+        * path_utils.cpp: Added.
+        * path_utils.h: Added.
+        * poll_monitor.cpp: Added.
+        * poll_monitor.h: Added.
 
 2014-04-18  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
