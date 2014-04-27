@@ -3,7 +3,7 @@ ChangeLog
 
 2014-04-27  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
-        release: stable micro release 0.0.3:
+        release: stable major release 1.0.0:
 
         * Makefile.am: Update source files.
         * configure.ac:
