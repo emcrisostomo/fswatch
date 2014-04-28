@@ -2,7 +2,7 @@ README
 ======
 
 `fswatch` is a file change monitor that receives notifications when the contents
-of the specified files or directories are modified.  fswatch implements four 
+of the specified files or directories are modified.  `fswatch` implements four 
 kinds of monitors:
 
   * A monitor based on the _File System Events API_ of Apple OS X.
@@ -17,25 +17,53 @@ kinds of monitors:
 fswatch should build and work correctly on any system shipping either of the
 aforementioned APIs.
 
+History
+-------
+
+[Alan Dipert][alan] wrote the first implementation of `fswatch` in 2009.  This 
+version ran exclusively on OS X and relied on the [FSEvents][fse] API to get
+change events from the OS.
+
+At the end of 2013 [Enrico M. Crisostomo][enrico]
+wrote `fsw` aiming at providing not only a drop-in replacement for `fswatch`,
+but a common front-end from multiple file system change events APIs, including:
+
+  * OS X FSEvents.
+  * *BSD kqueue.
+  * Linux inotify.
+
+In April 2014 Alan and Enrico, in the best interest of users of either
+`fswatch` and `fsw`, agreed on merging the two programs together.  At the same
+time, Enrico was taking over `fswatch` as a maintainer.
+
+As a consequence, development of `fswatch` will continue on its [main
+repository][fswatchrepo] while the `fsw` repository will likely be frozen and
+its documentation updated to redirect users to `fswatch`.
+
+[alan]: http://alandipert.tumblr.com
+[fse]: https://developer.apple.com/library/mac/documentation/Darwin/Reference/FSEvents_Ref/Reference/reference.html
+[enrico]: http://thegreyblog.blogspot.com
+[fswatchrepo]: https://github.com/alandipert/fswatch
+
 Limitations
 -----------
 
-The limitations of fswatch depend largely on the monitor being used:
+The limitations of `fswatch` depend largely on the monitor being used:
 
   * The FSEvents monitor, available only on Apple OS X, has no known limitations
     and scales very well with the number of files being observed.
   * The kqueue monitor, available on any *BSD system featuring kqueue, requires
     a file descriptor to be opened for every file being watched.  As a result,
     this monitor scales badly with the number of files being observed and may
-    begin to misbehave as soon as the fswatch process runs out of file 
-    descriptors.  In this case, fswatch dumps one error on standard error for
+    begin to misbehave as soon as the `fswatch` process runs out of file 
+    descriptors.  In this case, `fswatch` dumps one error on standard error for
     every file that cannot be opened.
   * The inotify monitor, available on Linux since kernel 2.6.13, may suffer a
     queue overflow if events are generated faster than they are read from the
     queue.  In any case, the application is guaranteed to receive an overflow
-    notification which can be handled to gracefully recover.  fswatch currently
-    throws an exception if a queue overflow occurs.  Future versions will handle
-    the overflow by emitting proper notifications.
+    notification which can be handled to gracefully recover.  `fswatch`
+    currently throws an exception if a queue overflow occurs.  Future versions
+    will handle the overflow by emitting proper notifications.
   * The poll monitor, available on any platform, only relies on available CPU
     and memory to perform its task.  The performance of this monitor degrades
     linearly with the number of files being watched.  
@@ -52,7 +80,7 @@ Usage recommendations are as follows:
     on either a per process or a system-wide basis.
   * If feasible, watch directories instead of watching files.
   * If none of the above applies, use the poll monitor.  The authors' experience
-    indicates that fswatch requires approximately 150 MB or RAM memory to 
+    indicates that `fswatch` requires approximately 150 MB or RAM memory to 
     observe a hierarchy of 500.000 files with a minimum path length of 32
     characters.  A common bottleneck of the poll monitor is disk access, since
     `stat()`-ing a great number of files may take a huge amount of time.  In this
@@ -63,10 +91,10 @@ Usage recommendations are as follows:
 Getting fswatch
 ---------------
 
-The recommended way to get the sources of fswatch in order to build it on your
-system is getting a release tarball.  A release tarball contains everything a 
-user needs to build fswatch on his system, following the instructions detailed
-in the Installation section below and the INSTALL file.
+The recommended way to get the sources of `fswatch` in order to build it on
+your system is getting a release tarball.  A release tarball contains
+everything a user needs to build `fswatch` on his system, following the
+instructions detailed in the Installation section below and the INSTALL file.
 
 Getting a copy of the source repository is not recommended, unless you are a
 developer, you have the GNU Build System installed on your machine and you know
@@ -76,28 +104,28 @@ Installation
 ------------
 
 See the `INSTALL` file for detailed information about how to configure and
-install fswatch.
+install `fswatch`.
 
-fswatch is a C++ program and a C++ compiler compliant with the C++11 standard
+`fswatch` is a C++ program and a C++ compiler compliant with the C++11 standard
 is required to compile it.  Check your OS documentation for information about
 how to install the C++ toolchain and the C++ runtime.
 
 No other software packages or dependencies are required to configure and
-install fswatch but the aforementioned APIs used by the file system monitors.
+install `fswatch` but the aforementioned APIs used by the file system monitors.
 
 Usage
 -----
 
-fswatch accepts a list of paths for which change events should be received:
+`fswatch` accepts a list of paths for which change events should be received:
 
     $ fswatch [options] ... path-0 ... path-n
 
 The event stream is created even if any of the paths do not exist yet.  If they
-are created after fswatch is launched, change events will be properly received.
-Depending on the wathcher being used, newly created paths will be monitored
-after the amount of configured latency has elapsed.
+are created after `fswatch` is launched, change events will be properly
+received.  Depending on the wathcher being used, newly created paths will be
+monitored after the amount of configured latency has elapsed.
 
-For more information, refer to the fswatch man page.
+For more information, refer to the `fswatch` man page.
 
 Bug Reports
 -----------
