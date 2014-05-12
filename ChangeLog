@@ -3,14 +3,14 @@ ChangeLog
 
 2014-04-27  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
-        release: stable major release 1.0.0:
+        release: stable major release 1.3.2:
 
         * Makefile.am: Update source files.
         * configure.ac:
           - Set the C++ compiler search list to {clang++, g++}.
           - Reconfigure the project as C++.
-          - Bump v. 0.0.3.
-          - Bump revision 0.0.3-2.
+          - Bump v. 1.3.2.
+          - Bump revision 1.3.2-1.
         * event.cpp: Added.
         * event.h: Added.
         * fsevent_monitor.cpp: Added.
@@ -35,10 +35,388 @@ ChangeLog
 
 2014-04-18  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
-        release: stable micro release 0.0.2:
+        merging fsw with fswatch:
 
         * .gitignore:
           - Exclude GNU Build System, NetBeans and Eclipse CDT files.
         * autogen.sh: Add initial version.
         * configure.ac: Add initial version.
         * Makefile.am: Add initial version.
+
+2014-18-03  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.4.0:
+
+        * ChangeLog:
+          - Update.
+        * configure.ac:
+          - Bump version to 1.4.0.
+          - Add AC_CHECK_HEADERS([sys/inotify.h]).
+        * inotify_monitor.cpp:
+          - Add inotify monitor.
+        * inotify_monitor.h:
+          - Add inotify monitor.
+        * README:
+          - Update to reflect the addition of the inotify monitor.
+
+2014-18-03  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.3.1:
+        
+        * .gitignore:
+          - Ignore NetBeans project files.
+        * ChangeLog:
+          - Update.
+        * configure.ac:
+          - Bump version to 1.3.1.
+          - Remove error on failed kqueue check.
+          - Check for struct stat.st_mtime and struct stat.st_mtimespec.
+	* event.cpp:
+	  - Reformat.
+	* fsevent_monitor.cpp:
+	  - Reformat.
+	* fsevent_monitor.h:
+	  - Reformat.
+        * fsw.7:
+          - Replace watcher with monitor in the docs.
+	* fsw.cpp:
+          - Reformat.
+	* fsw.h:
+          - Define FSW_EXIT_ENFILE.
+	* fsw_exception.cpp:  
+          - Reformat.
+	* fsw_exception.h:
+          - Reformat.
+        * kqueue_monitor.cpp:
+          - Fix bug in kqueue_monitor resulting in event loss when a child
+            directory of an observed directory was deleted.
+          - Reformat.
+        * kqueue_monitor.h:
+          - Reformat.
+        * Makefile.am:
+          - Add README.* files to dist_doc_DATA.
+        * monitor.cpp:
+          - Reformat.
+        * monitor.h:
+          - Reformat.
+        * path_utils.cpp:
+          - Exit with FSW_EXIT_ENFILE when no file descriptors are left either
+            at the process or system level.
+        * path_utils.cpp:
+          - Reformat.
+        * poll_monitor.cpp:
+          - Reformat.
+          - Update code to use FSW_MTIME and FSW_CTIME.
+        * poll_monitor.h:
+          - Reformat.
+          - Add FSW_MTIME and FSW_CTIME preprocessor macro to use the correct
+            struct stat time fields.
+        * README:
+          - Remove file and create a symbolic link to README.md.
+          - Replace watcher with monitor in the docs.
+        * README.bsd:
+          - Replace watcher with monitor in the docs.
+        * README.freebsd:
+          - Replace watcher with monitor in the docs.
+        * README.md:
+          - Replace watcher with monitor in the docs.
+
+2014-03-02  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable minor release 1.3.0:
+        
+        * ChangeLog:
+          - Update.
+        * configure.ac:
+          - Bump version to 1.3.0.
+          - Add AC_CONFIG_AUX_DIR to segregate configuration utilities in an
+            auxiliary directory.
+          - Add AC_CHECK_FUNCS([regcomp]) to check for the availability of the
+            regcomp function in <regex.h>.
+          - Remove the check of having either CoreServices or sys/event.h for
+            fsw to compile.
+        * event.cpp:
+          - Remove using namespace statements from header files.
+        * event.h:
+          - Update events so that their ordinals are a bit mask.
+          - Remove using namespace statements from header files.
+        * fseventwatcher.cpp:
+          - Remove using namespace statements from header files.
+        * fseventwatcher.h:
+          - Remove using namespace statements from header files.
+        * fsw.7:
+          - Update man page.
+        * fsw.cpp:
+          - Optionally support exclude filters and regular expressions (-i, -e
+            and -E) only if regcomp is available (HAVE_REGCOMP is defined).
+          - Add -0/--print0 to use the ASCII NUL character (\0) as a line
+            separator.
+          - Use ostringstream to concatecate strings.
+          - Fix bug when getopt_long is not available.
+          - Reimplement -n/--numeric to dump platform independent event codes.
+          - Add -x/--event-flags to print event flags.
+          - Update -n/--numeric so that it turns -x on.
+          - Add -L/--follow-links to follow symbolic links.
+          - Update after name refactoring.
+        * fsw.h:
+          - Remove using namespace statements from header files.
+        * fsw_exception.h
+          - Remove using namespace statements from header files.
+        * fsw_map.h:
+          - Remove using namespace statements from header files.
+        * fsw_monitor.cpp:
+          - Rename from fsw_watcher.cpp.
+          - Update after name refactoring.
+        * fsw_monitor.h:
+          - Rename from fsw_watcher.h.
+          - Update after name refactoring.
+        * fsw_set.h:
+          - Remove using namespace statements from header files.
+        * kqueue_monitor.cpp
+          - Remane from kqueue_watcher.cpp.
+          - Update after name refactoring.
+          - Use ::fstat instead of ::stat if a file descriptor is available.
+          - Reimplement -n/--numeric to dump platform independent event codes.
+          - Remove using namespace statements from header files.
+          - Implement -L/--follow-links to follow symbolic links.
+        * kqueue_monitor.h:
+          - Rename from kqueue_watcher.h
+          - Update after name refactoring.
+          - Remove using namespace statements from header files.
+        * Makefile.am:
+          - Update rename files.
+        * monitor.cpp:
+          - Rename from watcher.cpp.
+          - Optionally support exclude filters and regular expressions (-i, -e
+            and -E) only if regcomp is available (HAVE_REGCOMP is defined).
+          - Fix missing import.
+          - Remove using namespace statements from header files.
+          - Implement -L/--follow-links to follow symbolic links.
+        * monitor.h:
+          - Rename from watcher.h.
+          - Optionally support exclude filters and regular expressions (-i, -e
+            and -E) only if regcomp is available (HAVE_REGCOMP is defined).
+          - Fix missing import.
+          - Remove using namespace statements from header files.
+          - Implement -L/--follow-links to follow symbolic links.
+        * NEWS:
+          - Update.
+        * path_utils.h:
+          - Remove using namespace statements from header files.
+        * poll_monitor.cpp:
+          - Rename from poll_watcher.cpp.
+          - Update after name refactoring.
+          - Use ::fstat instead of ::stat if a file descriptor is available.
+          - Reimplement -n/--numeric to dump platform independent event codes.
+          - Fix missing import.
+          - Remove using namespace statements from header files.
+          - Implement -L/--follow-links to follow symbolic links.
+        * poll_monitor.h:
+          - Rename from poll_watcher.h.
+          - Update after name refactoring.
+          - Remove using namespace statements from header files.
+        * README:
+          - Update memory requirement description.
+        * README.md:
+          - Update memory requirement description.
+
+2014-02-25  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.2.2:
+
+        * configure.ac:
+          - Bump version to 1.2.2.
+          - Add AC_CHECK_HEADERS([unordered_set]).
+        * fsevent_watcher.cpp: check paths with exclude filters.
+        * fsw.cpp: add -e/--exclude option to define exclude filters with
+          regular expressions.
+        * fsw_set: typedef fsw_set to std::unordered_set when available,
+          otherwise to std::set.
+        * kqueue_watcher.cpp:
+          - Check paths with exclude filters.
+          - Use sets instead of maps when feasible.
+        * kqueue_watcher.h: use sets instead of maps when feasible.
+        * Makefile.am: added fsw_set.h to fsw_SOURCES.
+        * poll_watcher.cpp: check paths with exclude filters.
+        * watcher.cpp: add accept_path() method to check if a path should be
+          accepted according to the exclude filters.
+        * watcher.h: add accept_path() method to check if a path should be
+          accepted according to the exclude filters.
+        
+2014-02-24  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.2.1:
+        
+        * configure.ac: bump version to 1.2.1.
+        * fsw.7: updated.
+        * m4/ax_cxx_namespaces.m4: added to check for C++ compiler namespace
+          support.
+        * poll_watcher.cpp: optimise internal storage to reduce memory
+          requirements.
+        * poll_watcher.h: optimise internal storage to reduce memory
+          requirements.
+        * README:
+          - Updated.
+          - Use markdown syntax.
+        * README.md: updated.
+        
+2014-02-20  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable minor release 1.2.0:
+        
+        * ChangeLog: updated.
+        * configure.ac: add AC_CHECK_HEADERS([unordered_map]).
+        * fsw.7: updated.
+        * fsw_map.h: define fsw_hash_map as an std::unordered_map if this type
+          exists otherwise as std::map. 
+        * Makefile.am:
+          - Add poll_watcher.cpp and poll_watcher.h to fsw_SOURCES.
+          - Add fsw_map.h to fsw_SOURCES.
+        * NEWS: updated.
+        * path_utils.cpp: added.
+        * path_utils.h: added.
+        * poll_watcher.cpp: added.
+        * poll_watcher.h: added.
+
+2014-02-20  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+		release: stable minor release 1.1.0:
+		
+		* autogen.sh: add script to bootstrap the GNU Build System.
+		* ChangeLog: updated.
+		* configure.ac:
+		  - Bump version to 1.1.0.
+		  - Check for either FSEvents (CoreServices/CoreServices.h) or kqueue
+		    (sys/event.h) to be available.
+		  - Remove OS check and check for available headers instead.
+		  - Require strict C++11 conformance mode for the compiler.
+		  - Search for clang++ and g++ compilers.
+		  - Add AC_PROG_CC after autoscan complains.
+		  - Add sys/time.h to the list of AC_CHECK_HEADERS.
+		  - Add AC_TYPE_UINT32_T.
+		  - Add AC_CHECK_FUNCS([modf],,AC_MSG_ERROR([...])).
+		  - Add AC_TYPE_MOD_T.
+		  - Add AC_CHECK_FUNCS([realpath]) and fail if missing.
+		* fsevent_watcher.cpp:
+		  - Check for all the existing FSEventFlagName flags.
+		  - Map platform-specific event flags to generic event flags. 
+		* fsw.7: updated.
+		* fsw.cpp:
+		  - Use watcher base class.
+		  - Fix includes so that fsw builds on FreeBSD (v. 10.0 was checked).
+		  - Use static linkage whenever possible.
+		  - Add -r/--recursive option.
+		  - Normalize paths with ::realpath.
+		  - Add -k/--kqueue option to use a kqueue watcher when more than one
+		    kind of watcher is available.
+		* fsw_log.cpp: added wrapper function triggering perror() only if the
+		  application is in verbose mode.
+		* fsw_log.h: added wrapper function triggering perror() only if the
+		  application is in verbose mode.
+		* kqueue_watcher.cpp:
+		  - Add kqueue-based watcher for systems with kqueue.
+		  - Map platform-specific event flags to generic event flags.
+		  - Check presence of the EV_ERROR event flag and print an error if
+		    found.
+		  - Implement -r/--recursive directory walking.
+		  - Look for EV_ERROR in struct kevent::flags.
+		* kqueue_watcher.h: add kqueue-based watcher for systems with kqueue.
+		* Makefile.am:
+		  - Add new files.
+		  - Use conditional to use the -framework linker flag on OS X.
+		* NEWS: updated.
+		* README: updated.
+		* README.bsd: added.
+		* README.freebsd: added.
+		* README.gnu-build-system: added.
+		* README.osx: added.
+		* watcher.cpp: add watcher base class.
+		* watcher.h: add watcher base class.
+
+2014-02-14  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.0.7.
+
+		* configure.ac: bump version number to 1.0.7.
+		* fsevent_watcher.cpp: throw fsw_exception instead of int.
+		* fsw.cpp:
+		  - Define fsw_exception.
+		  - Throw fsw_exception instead of int.
+		* fsw.h: declare fsw_exception.
+		
+2014-02-11  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.0.6.
+
+		* configure.ac: bump version number to 1.0.6.
+		* fsw_log.cpp: rename from log.cpp.
+		* fsw_log.h: rename from log.h. 
+
+2014-02-10  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.0.5.
+        
+        * configure.ac: bump version number to 1.0.5.
+        * Makefile.am: add fsw man page.
+        * fsevent_watcher.h: add class to encapsulate watcher logic.
+        * fsevent_watcher.cpp: add class to encapsulate watcher logic.
+        * fsw.cpp: move watcher code into fsevent_watcher class and refactor.
+
+2014-02-10  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.0.4.
+        
+        * configure.ac: bump version number to 1.0.4.
+        * fsw.cpp:
+          - Format date with user-specified format with -t/--time-format.
+          - Convert time to UTC time with -u/--utc-time.
+
+2014-02-10  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.0.3.
+        
+          * configure.ac: bump version number to 1.0.3.
+          * fsw.cpp:
+            - Improve the event flag printing function.
+            - Add verbose output with -v/--verbose.
+          * fsw.h: export definition of bool is_verbose().
+          * log.cpp:
+            - Add.
+            - Implement fsw_log(const char *) writing to stdout.
+          * log.h:
+            - Add.
+            - Export definition of void fsw_log(const char *).
+
+2014-02-10  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.0.2.
+        
+          * configure.ac:
+            - Bump version number to 1.0.2.
+            - Check that host_os >= darwin 10.0 and fails otherwise.
+            - Add stdlib.h to AC_CHECK_HEADERS.
+            - Add AC_FUNC_STRTOD.
+          * fsw.cpp: add support for latency configuration with -l/--latency.
+          * fsw.cpp: reorganize code.
+          * fsw.h: add.
+          * fsw.h: define exit codes.
+          
+2014-02-10  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.0.1.
+
+          * configure.ac: bump version number to 1.0.1.
+          * AUTHORS: update.
+          * ChangeLog: update.
+          * COPYING: update.
+          * INSTALL: add.
+          * NEWS: update.
+          * README: update.
+
+2014-02-09  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable minor release 1.0.0.
+        
+          * configure.ac: add initial version.
+          * Makefile.am: add initial version.
+          * fsw.cpp: add initial version.	 
