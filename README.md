@@ -92,13 +92,16 @@ Getting fswatch
 ---------------
 
 The recommended way to get the sources of `fswatch` in order to build it on
-your system is getting a release tarball.  A release tarball contains
-everything a user needs to build `fswatch` on his system, following the
-instructions detailed in the Installation section below and the INSTALL file.
+your system is getting a [release tarball][release].  A release tarball
+contains everything a user needs to build `fswatch` on his system, following
+the instructions detailed in the Installation section below and the INSTALL
+file.
 
 Getting a copy of the source repository is not recommended, unless you are a
 developer, you have the GNU Build System installed on your machine and you know
 how to boostrap it on the sources.
+
+[release]: https://github.com/alandipert/fswatch/releases
 
 Installation
 ------------
