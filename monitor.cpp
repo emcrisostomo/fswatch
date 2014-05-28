@@ -45,34 +45,53 @@ void monitor::set_recursive(bool recursive)
   this->recursive = recursive;
 }
 
-void monitor::set_exclude(const vector<string> &exclusions,
-                          bool case_sensitive,
-                          bool extended)
-{
-#ifdef HAVE_REGCOMP
-  for (string exclusion : exclusions)
-  {
-    regex_t regex;
-    int flags = 0;
-
-    if (!case_sensitive) flags |= REG_ICASE;
-    if (extended) flags |= REG_EXTENDED;
-
-    if (::regcomp(&regex, exclusion.c_str(), flags))
-    {
-      string err = "An error occurred during the compilation of " + exclusion;
-      throw fsw_exception(err);
-    }
-
-    exclude_regex.push_back(regex);
-  }
-#endif
-}
-
 void monitor::set_follow_symlinks(bool follow)
 {
   follow_symlinks = follow;
 }
+
+#ifdef HAVE_REGCOMP
+void monitor::set_case_insensitive(bool case_insensitive)
+{
+  if (case_insensitive) regex_flags |= REG_ICASE;
+}
+
+void monitor::set_extended(bool extended)
+{
+  if (extended) regex_flags |= REG_EXTENDED;
+}
+
+void monitor::set_exclude(const vector<string> &exclusions)
+{
+  for (string exclusion : exclusions)
+  {
+    regex_t regex = compile_pattern(exclusion);
+    exclude_regex.push_back(regex);
+  }
+}
+
+void monitor::set_include(const vector<string> &inclusions)
+{
+  for (string inclusion : inclusions)
+  {
+    regex_t regex = compile_pattern(inclusion);
+    include_regex.push_back(regex);
+  }
+}
+
+regex_t monitor::compile_pattern(string pattern)
+{
+  regex_t regex;
+
+  if (::regcomp(&regex, pattern.c_str(), regex_flags))
+  {
+    string err = "An error occurred during the compilation of " + pattern;
+    throw fsw_exception(err);
+  }
+
+  return regex;
+}
+#endif /* HAVE_REGCOMP */
 
 bool monitor::accept_path(const string &path)
 {
@@ -85,6 +104,14 @@ bool monitor::accept_path(const char *path)
   for (auto re : exclude_regex)
   {
     if (::regexec(&re, path, 0, nullptr, 0) == 0)
+    {
+      return false;
+    }
+  }
+
+  for (auto re : include_regex)
+  {
+    if (::regexec(&re, path, 0, nullptr, 0) != 0)
     {
       return false;
     }
@@ -102,6 +129,12 @@ monitor::~monitor()
     ::regfree(&re);
   }
 
+  for (auto &re : include_regex)
+  {
+    ::regfree(&re);
+  }
+
   exclude_regex.clear();
+  include_regex.clear();
 #endif
 }
