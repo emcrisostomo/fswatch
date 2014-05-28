@@ -33,11 +33,14 @@ public:
   monitor(std::vector<std::string> paths, EVENT_CALLBACK callback);
   virtual ~monitor();
   void set_latency(double latency);
-  void set_recursive(bool recursive);
-  void set_exclude(const std::vector<std::string> &exclusions,
-                   bool case_sensitive = true,
-                   bool extended = false);
-  void set_follow_symlinks(bool follow);
+  void set_recursive(bool recursive = false);
+  void set_follow_symlinks(bool follow = false);
+#ifdef HAVE_REGCOMP
+  void set_case_insensitive(bool case_insensitive = false);
+  void set_extended(bool extended = false);
+  void set_exclude(const std::vector<std::string> &exclusions);
+  void set_include(const std::vector<std::string> &inclusions);
+#endif
 
   virtual void run() = 0;
 
@@ -54,7 +57,11 @@ protected:
 
 private:
 #ifdef HAVE_REGCOMP
+  regex_t compile_pattern(std::string pattern);
+
+  int regex_flags = 0;
   std::vector<regex_t> exclude_regex;
+  std::vector<regex_t> include_regex;
 #endif
 };
 

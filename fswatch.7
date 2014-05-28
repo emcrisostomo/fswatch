@@ -99,6 +99,11 @@ Show the help message.
 .It Fl i, -insensitive
 Use case insensitive regular expressions.
 
+.It Fl I, -include Ar regexp
+Include paths matching
+.Ar regexp .
+Multiple include filters can be specified using this option multiple times. 
+
 .It Fl k, -kqueue
 Use the kqueue monitor.
 This option is only available when more than one monitor is available, and one
