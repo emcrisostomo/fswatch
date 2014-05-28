@@ -1,6 +1,13 @@
 ChangeLog
 *********
 
+2014-05-28  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable minor release 1.3.3:
+
+	* configure.ac: Bump v. 1.3.3.
+	* README.md: Add link to the release page (Issue 22).
+
 2014-04-27  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
         release: stable major release 1.3.2:
