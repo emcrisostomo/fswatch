@@ -164,6 +164,23 @@ are created after `fswatch` is launched, change events will be properly
 received.  Depending on the watchher being used, newly created paths will be
 monitored after the amount of configured latency has elapsed.
 
+The output of `fswatch` can be piped to other program in order to process it
+further:
+
+    $ fswatch -0 path | while read -d "" event \
+      do \
+        // do something with ${event}
+      done
+
+To run a command when a set of change events is printed to standard output but
+no event details are required, then the following command can be used:
+
+    $ fswatch -o path | xargs -n1 -I{} program
+
+The behaviour is consistent with earlier versions of `fswatch` (v. 0.x).
+Please, read the _Compability Issues with fswatch v. 0.x_ section for further
+information.
+
 For more information, refer to the `fswatch` man page.
 
 Bug Reports
