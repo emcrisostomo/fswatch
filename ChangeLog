@@ -1,12 +1,17 @@
 ChangeLog
 *********
 
-2014-05-28  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+2014-05-29  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
         release: stable minor release 1.3.3:
 
+        * ChangeLog: Update.
 	* configure.ac: Bump v. 1.3.3.
-	* README.md: Add link to the release page (Issue 22).
+        * fswatch.cpp: Add -o/--one-per-batch option to print a single message 
+          with the number of change events in the current batch.
+	* README.md:
+          - Add link to the release page (Issue 22).
+          - Add section about compatibility issues with v. 0.x.
 
 2014-04-27  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 

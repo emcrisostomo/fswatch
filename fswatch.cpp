@@ -55,6 +55,7 @@ static bool kflag = false;
 static bool lflag = false;
 static bool Lflag = false;
 static bool nflag = false;
+static bool oflag = false;
 static bool pflag = false;
 static bool rflag = false;
 static bool tflag = false;
@@ -97,6 +98,8 @@ static void usage()
   cout << " -l, --latency=DOUBLE  Set the latency.\n";
   cout << " -L, --follow-links    Follow symbolic links.\n";
   cout << " -n, --numeric         Print a numeric event mask.\n";
+  cout << " -o, --one-per-batch   Print a single message with the number of change events\n";
+  cout << "                       in the current batch.\n";
   cout << " -p, --poll            Use the poll monitor.\n";
   cout << " -r, --recursive       Recurse subdirectories.\n";
   cout << " -t, --timestamp       Print the event timestamp.\n";
@@ -108,7 +111,7 @@ static void usage()
   cout << endl;
 #else
   string option_string = "[";
-  option_string += "01"
+  option_string += "01";
 #  ifdef HAVE_REGCOMP
   option_string += "eE";
 #  endif
@@ -119,7 +122,7 @@ static void usage()
 #  ifdef HAVE_SYS_EVENT_H
   option_string += "k";
 #  endif
-  option_string += "lLnprtuvx";
+  option_string += "lLnoprtuvx";
   option_string += "]";
 
   cout << PACKAGE_STRING << "\n\n";
@@ -128,7 +131,7 @@ static void usage()
   cout << "\n";
   cout << "Usage:\n";
   cout << " -0  Use the ASCII NUL character (0) as line separator.\n";
-  cout << " -1  Exit fsw after the first set of events is received.\n"
+  cout << " -1  Exit fsw after the first set of events is received.\n";
   cout << " -e  Exclude paths matching REGEX.\n";
   cout << " -E  Use exended regular expressions.\n";
   cout << " -f  Print the event time stamp with the specified format.\n";
@@ -140,6 +143,8 @@ static void usage()
   cout << " -l  Set the latency.\n";
   cout << " -L  Follow symbolic links.\n";
   cout << " -n  Print a numeric event masks.\n";
+  cout << " -o  Print a single message with the number of change events in the current\n";
+  cout << "     batch.\n";
   cout << " -p  Use the poll monitor.\n";
   cout << " -r  Recurse subdirectories.\n";
   cout << " -t  Print the event timestamp.\n";
@@ -316,33 +321,53 @@ static void print_event_flags(const vector<event_flag> &flags)
   }
 }
 
-static void process_events(const vector<event> &events)
+static void end_event_record()
+{
+  if (_0flag)
+  {
+    cout << '\0';
+    cout.flush();
+  }
+  else
+  {
+    cout << endl;
+  }
+}
+
+static void write_one_batch_event(const vector<event> &events)
+{
+  cout << events.size();
+  end_event_record();
+}
+
+static void write_events(const vector<event> &events)
 {
   for (const event &evt : events)
   {
-    vector<event_flag> flags = evt.get_flags();
-
     if (tflag) print_event_timestamp(evt.get_time());
 
     cout << evt.get_path();
 
-    if (xflag) print_event_flags(flags);
+    if (xflag)
+    {
+      print_event_flags(evt.get_flags());
+    }
 
-    if (_0flag)
-    {
-      cout << '\0';
-      cout.flush();
-    }
-    else
-    {
-      cout << endl;
-    }
+    end_event_record();
   }
-  
+
   if (_1flag)
   {
     ::exit(FSW_EXIT_OK);
   }
+}
+
+static void process_events(const vector<event> &events)
+{
+  if (oflag)
+    write_one_batch_event(events);
+  else
+    write_events(events);
 }
 
 static void start_monitor(int argc, char ** argv, int optind)
@@ -398,7 +423,7 @@ static void parse_opts(int argc, char ** argv)
   int ch;
   ostringstream short_options;
 
-  short_options << "01f:hkl:Lnprtuvx";
+  short_options << "01f:hkl:Lnoprtuvx";
 #ifdef HAVE_REGCOMP
   short_options << "e:Ei";
 #endif
@@ -426,6 +451,7 @@ static void parse_opts(int argc, char ** argv)
     { "latency", required_argument, nullptr, 'l'},
     { "follow-links", no_argument, nullptr, 'L'},
     { "numeric", no_argument, nullptr, 'n'},
+    { "one-per-batch", no_argument, nullptr, 'o'},
     { "poll", no_argument, nullptr, 'p'},
     { "recursive", no_argument, nullptr, 'r'},
     { "timestamp", no_argument, nullptr, 't'},
@@ -456,7 +482,7 @@ static void parse_opts(int argc, char ** argv)
     case '1':
       _1flag = true;
       break;
-      
+
 #ifdef HAVE_REGCOMP
     case 'e':
       exclude_regex.push_back(optarg);
@@ -508,6 +534,10 @@ static void parse_opts(int argc, char ** argv)
       xflag = true;
       break;
 
+    case 'o':
+      oflag = true;
+      break;
+
     case 'p':
       pflag = true;
       break;
@@ -556,7 +586,7 @@ int main(int argc, char ** argv)
     cerr << "-k and -p are mutually exclusive." << endl;
     ::exit(FSW_EXIT_OPT);
   }
-  
+
   // configure and start the monitor
   try
   {
