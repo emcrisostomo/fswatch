@@ -152,6 +152,15 @@ command could be used:
 
     $ fswatch -o path | xargs -n1 -I{} program
 
+Although we encourage you to embrace the new fswatch behaviour and update your
+scripts, we provide a little wrapper called `fswatch-run` which is installed
+alongside `fswatch` which lets you use the legacy syntax:
+
+    $ fswatch-run path program
+
+Under the hood, `fswatch-run` simply calls `fswatch -o` piping its output to
+`xargs`.
+
 Usage
 -----
 

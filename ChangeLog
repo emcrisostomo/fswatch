@@ -6,15 +6,17 @@ ChangeLog
         release: stable minor release 1.3.3:
 
         * ChangeLog: Update.
+	* Makefile.am: Add fswatch-run to the script installation list.
+	* README.md:
+          - Add link to the release page (Issue 22).
+          - Add section about compatibility issues with v. 0.x.
+          - Add information about fswatch-run in README.
 	* configure.ac: Bump v. 1.3.3.
         * fswatch.cpp: Add -o/--one-per-batch option to print a single message 
           with the number of change events in the current batch.
 	* fswatch-run: Add shell script to mimic the behaviour of earlier
           fswatch versions and launch the specified command when change events
           are received.
-	* README.md:
-          - Add link to the release page (Issue 22).
-          - Add section about compatibility issues with v. 0.x.
 
 2014-04-27  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
