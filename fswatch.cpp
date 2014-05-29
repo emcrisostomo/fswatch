@@ -98,7 +98,7 @@ static void usage()
   cout << " -l, --latency=DOUBLE  Set the latency.\n";
   cout << " -L, --follow-links    Follow symbolic links.\n";
   cout << " -n, --numeric         Print a numeric event mask.\n";
-  cout << " -o, --one-per-batch   Print a single message with the number of change events\n";
+  cout << " -o, --one-per-batch   Print a single message with the number of change events.\n";
   cout << "                       in the current batch.\n";
   cout << " -p, --poll            Use the poll monitor.\n";
   cout << " -r, --recursive       Recurse subdirectories.\n";
