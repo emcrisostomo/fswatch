@@ -32,3 +32,5 @@ man_MANS = fswatch.7
 EXTRA_DIST = $(man_MANS)
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
 dist_doc_DATA += README.osx
+
+dist_bin_SCRIPTS = scripts/fswatch-run

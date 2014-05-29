@@ -1,6 +1,13 @@
 NEWS
 ****
 
-New in 1.0.0:
+New in 1.3.3:
+
+  * Add -o/--one-per-batch option to print a single message with the number of
+    change events in the current batch.
+  * Add fswatch-run shell script to mimic the behaviour of earlier fswatch
+    versions and launch the specified command when change events are received.
+
+New in 1.3.2:
 
   * fswatch has been merged with fsw (https://github.com/emcrisostomo/fsw).

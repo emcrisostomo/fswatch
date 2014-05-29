@@ -1,0 +1,13 @@
+#!/bin/sh
+
+[ $# -eq 2 ] || {
+    echo "Illegal number of arguments."
+    exit 1
+}
+
+command -v xargs >/dev/null 2>&1 || {
+    echo >&2 "xargs is required. Aborting."
+    exit 2
+}
+
+fswatch -o "$1" | xargs -n1 -I{} "$2"
