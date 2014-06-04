@@ -1,6 +1,15 @@
 ChangeLog
 *********
 
+2014-06-04  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+        release: stable micro release 1.3.5:
+
+	* ChangeLog: Update.
+	* configure.ac: Bump v. 1.3.5.
+	* fswatch.cpp: Write usage to standard error when invalid arguments
+	  are specified.
+
 2014-05-30  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
         release: stable micro release 1.3.4:

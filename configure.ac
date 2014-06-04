@@ -18,9 +18,9 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.69])
-AC_INIT([fswatch], [1.3.4], [enrico.m.crisostomo@gmail.com], [], [https://github.com/alandipert/fswatch])
+AC_INIT([fswatch], [1.3.5], [enrico.m.crisostomo@gmail.com], [], [https://github.com/alandipert/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: 1.3.4-1 $])
+AC_REVISION([$Revision: 1.3.5-1 $])
 AC_CONFIG_SRCDIR([fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
