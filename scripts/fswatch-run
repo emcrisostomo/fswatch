@@ -1,6 +1,17 @@
 #!/bin/sh
 
-[ $# -eq 2 ] || {
+usage() {
+    echo "Usage: fswatch-run command path ..."
+}
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    usage
+    exit 0
+fi
+
+[ $# -ge 2 ] || {
+    usage
+    echo
     echo "Illegal number of arguments."
     exit 1
 }
@@ -10,4 +21,6 @@ command -v xargs >/dev/null 2>&1 || {
     exit 2
 }
 
-fswatch -o "$1" | xargs -n1 -I{} $2
+cmd=$1
+shift
+fswatch -o $* | xargs -n1 -I{} $cmd
