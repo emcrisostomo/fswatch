@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/zsh
 
-[ $# -eq 2 ] || {
+[ $# -ge 2 ] || {
     echo "Illegal number of arguments."
     exit 1
 }
@@ -10,4 +10,4 @@ command -v xargs >/dev/null 2>&1 || {
     exit 2
 }
 
-fswatch -o "$1" | xargs -n1 -I{} $2
+fswatch -o ${=*[1,-2]} | xargs -n1 -I{} ${*[-1,-1]}

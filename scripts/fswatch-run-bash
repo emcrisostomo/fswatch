@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ $# -ge 2 ] || {
+    echo "Illegal number of arguments."
+    exit 1
+}
+
+command -v xargs >/dev/null 2>&1 || {
+    echo >&2 "xargs is required. Aborting."
+    exit 2
+}
+
+args=("$@")
+arg_length=${#args[@]}
+last_index=$(($arg_length - 1))
+paths_to_watch=${args[@]:0:$last_index}
+cmd=${args[$last_index]}
+
+fswatch -o $paths_to_watch | xargs -n1 -I{} $cmd
