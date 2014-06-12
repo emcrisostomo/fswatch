@@ -18,9 +18,9 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.69])
-AC_INIT([fswatch], [1.3.5], [enrico.m.crisostomo@gmail.com], [], [https://github.com/alandipert/fswatch])
+AC_INIT([fswatch], [1.3.6], [enrico.m.crisostomo@gmail.com], [], [https://github.com/alandipert/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: 1.3.5-1 $])
+AC_REVISION([$Revision: 1.3.6-1 $])
 AC_CONFIG_SRCDIR([fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
@@ -33,6 +33,15 @@ AC_LANG(C++)
 
 # Checks for programs.
 AC_PROG_CXX([clang++ g++])
+AC_CHECK_PROG([HAVE_ZSH], [zsh], [yes])
+AC_CHECK_PROG([HAVE_BASH], [bash], [yes])
+
+AM_CONDITIONAL([HAVE_ZSH], [test "x${HAVE_ZSH}" = "xyes"])
+AM_CONDITIONAL([HAVE_BASH], [test "x${HAVE_BASH}" = "xyes"])
+
+if test "x${HAVE_ZSH}" != "xyes" && test "x${HAVE_BASH}" != "xyes" ; then
+    AC_MSG_WARN([Either ZSH or the Bash shell is required by fswatch-run.])
+fi
 
 # Configure C++ compiler
 AX_CXX_COMPILE_STDCXX_11(noext)
