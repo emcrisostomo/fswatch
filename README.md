@@ -161,6 +161,10 @@ alongside `fswatch` which lets you use the legacy syntax:
 Under the hood, `fswatch-run` simply calls `fswatch -o` piping its output to
 `xargs`.
 
+`fswatch-run` is a symbolic link to a shell-specific wrapper.  Currently, ZSH
+and Bash scripts are provided.  If no suitable shells are found in the target
+system, the `fswatch-run` symbolic link is _not_ created.
+
 Usage
 -----
 
