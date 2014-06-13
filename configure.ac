@@ -35,19 +35,30 @@ AC_LANG(C++)
 # Checks for programs.
 AC_PROG_CXX([clang++ g++])
 AC_PROG_LN_S
-AC_CHECK_PROG([HAVE_ZSH], [zsh], [yes])
-AC_CHECK_PROG([HAVE_BASH], [bash], [yes])
-AC_PATH_PROG([ZSH_PATH], [zsh], [no])
-AC_PATH_PROG([BASH_PATH], [bash], [no])
-AC_SUBST([ZSH_PATH])
-AC_SUBST([BASH_PATH])
+AC_PATH_PROG([ZSH_PROG], [zsh], [no])
+AC_PATH_PROG([BASH_PROG], [bash], [no])
 
-AM_CONDITIONAL([HAVE_ZSH], [test "x${HAVE_ZSH}" = "xyes"])
-AM_CONDITIONAL([HAVE_BASH], [test "x${HAVE_BASH}" = "xyes"])
-
-if test "x${HAVE_ZSH}" != "xyes" && test "x${HAVE_BASH}" != "xyes" ; then
+if test "x${ZSH_PROG}" = "xno" && test "x${BASH_PROG}" = "xno" ; then
     AC_MSG_WARN([Either ZSH or the Bash shell is required by fswatch-run.])
 fi
+
+AM_CONDITIONAL([HAVE_ZSH], [test "x${ZSH_PROG}" != "xno"])
+AM_CONDITIONAL([HAVE_BASH], [test "x${BASH_PROG}" != "xno"])
+
+if test "x${ZSH_PROG}" = "xno" ; then
+ZSH_PATH=/bin/zsh
+else
+ZSH_PATH=$ZSH_PROG
+fi
+
+if test "x${BASH_PROG}" = "xno" ; then
+BASH_PATH=/bin/bash
+else
+BASH_PATH=$BASH_PROG
+fi
+
+AC_SUBST([ZSH_PATH])
+AC_SUBST([BASH_PATH])
 
 # Configure C++ compiler
 AX_CXX_COMPILE_STDCXX_11(noext)
