@@ -25,6 +25,7 @@ AC_CONFIG_SRCDIR([fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror gnu])
 
@@ -36,6 +37,10 @@ AC_PROG_CXX([clang++ g++])
 AC_PROG_LN_S
 AC_CHECK_PROG([HAVE_ZSH], [zsh], [yes])
 AC_CHECK_PROG([HAVE_BASH], [bash], [yes])
+AC_PATH_PROG([ZSH_PATH], [zsh], [no])
+AC_PATH_PROG([BASH_PATH], [bash], [no])
+AC_SUBST([ZSH_PATH])
+AC_SUBST([BASH_PATH])
 
 AM_CONDITIONAL([HAVE_ZSH], [test "x${HAVE_ZSH}" = "xyes"])
 AM_CONDITIONAL([HAVE_BASH], [test "x${HAVE_BASH}" = "xyes"])
