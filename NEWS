@@ -1,6 +1,18 @@
 NEWS
 ****
 
+New in 1.3.6:
+
+  * fswatch-run scripts are provided for ZSH and Bash.
+  * System is scanned during installation to check for ZSH and Bash
+    availability.  Path of found shells is substituted in the corresponding
+    scripts, otherwise the default /bin/[shell] is used.
+  * If a supported shell is found, the fswatch-run symbolic link is created in
+    the installation directory to the corresponding script.  The lookup order
+    of the shells is:
+    - ZSH.
+    - Bash.
+
 New in 1.3.5:
 
   * Fix bug to write usage to standard error when invalid arguments are
