@@ -1,4 +1,4 @@
-#!/bin/bash
+#!@BASH_PATH@
 
 [ $# -ge 2 ] || {
     echo "Illegal number of arguments."
