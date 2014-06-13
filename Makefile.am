@@ -33,4 +33,12 @@ EXTRA_DIST = $(man_MANS)
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
 dist_doc_DATA += README.osx
 
-dist_bin_SCRIPTS = scripts/fswatch-run
+dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
+
+install-exec-hook:
+	-rm $(DESTDIR)$(bindir)/fswatch-run
+if HAVE_ZSH
+	$(LN_S) $(DESTDIR)$(bindir)/fswatch-run-zsh $(DESTDIR)$(bindir)/fswatch-run
+else
+	$(LN_S) $(DESTDIR)$(bindir)/fswatch-run-bash $(DESTDIR)$(bindir)/fswatch-run
+endif

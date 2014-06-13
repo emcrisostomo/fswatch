@@ -33,6 +33,7 @@ AC_LANG(C++)
 
 # Checks for programs.
 AC_PROG_CXX([clang++ g++])
+AC_PROG_LN_S
 AC_CHECK_PROG([HAVE_ZSH], [zsh], [yes])
 AC_CHECK_PROG([HAVE_BASH], [bash], [yes])
 

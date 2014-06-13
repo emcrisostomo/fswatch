@@ -1,6 +1,22 @@
 ChangeLog
 *********
 
+2014-06-13  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	release: stable micro release 1.3.6:
+
+	* ChangeLog: Update.
+	* Makefile.am:
+	  - Create install-exec-hook.
+	  - Link the shell-specific wrapper to fswatch-run.
+	* configure.ac:
+	  - Bump v. 1.3.6.
+	  - Check if ZSH and Bash are available.
+	  - Prepare Automake variable to link fswatch-run with the correct
+	    wrapper.
+	* scripts/fswatch-run-bash: Add fswatch-run wrapper for Bash.
+	* scripts/fswatch-run-zsh: Add fswatch-run wrapper for ZSH.
+
 2014-06-04  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
         release: stable micro release 1.3.5:
