@@ -35,10 +35,18 @@ dist_doc_DATA += README.osx
 
 dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
 
-install-exec-hook:
-	-rm $(DESTDIR)$(bindir)/fswatch-run
+install-exec-hook: fswatch-remove-links
 if HAVE_ZSH
 	$(LN_S) $(DESTDIR)$(bindir)/fswatch-run-zsh $(DESTDIR)$(bindir)/fswatch-run
 else
+if HAVE_BASH
 	$(LN_S) $(DESTDIR)$(bindir)/fswatch-run-bash $(DESTDIR)$(bindir)/fswatch-run
+else
+	@echo "No compatible shell was found for fswatch-run."
 endif
+endif
+
+uninstall-local: fswatch-remove-links
+
+fswatch-remove-links:
+	-rm $(DESTDIR)$(bindir)/fswatch-run
