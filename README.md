@@ -50,8 +50,8 @@ Limitations
 
 The limitations of `fswatch` depend largely on the monitor being used:
 
-  * The FSEvents monitor, available only on Apple OS X, has no known limitations
-    and scales very well with the number of files being observed.
+  * The FSEvents monitor, available only on Apple OS X, has no known
+    limitations and scales very well with the number of files being observed.
   * The kqueue monitor, available on any *BSD system featuring kqueue, requires
     a file descriptor to be opened for every file being watched.  As a result,
     this monitor scales badly with the number of files being observed and may
@@ -174,7 +174,7 @@ Usage
 
 The event stream is created even if any of the paths do not exist yet.  If they
 are created after `fswatch` is launched, change events will be properly
-received.  Depending on the watchher being used, newly created paths will be
+received.  Depending on the watcher being used, newly created paths will be
 monitored after the amount of configured latency has elapsed.
 
 The output of `fswatch` can be piped to other program in order to process it
