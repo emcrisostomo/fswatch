@@ -1,9 +1,17 @@
 ChangeLog
 *********
 
+2014-06-24  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	* ChangeLog: Update.
+	* configure.ac:
+	  - Bump v. 1.3.6.
+        * fsevent_monitor.cpp: Remove usages of C++11 initializer lists so that
+          fswatch builds with older compilers.
+
 2014-06-13  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
-	release: stable micro release 1.3.6:
+	release: stable micro release 1.3.7:
 
 	* ChangeLog: Update.
 	* Makefile.am:

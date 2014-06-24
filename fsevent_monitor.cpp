@@ -31,28 +31,35 @@ typedef struct FSEventFlagType
   event_flag type;
 } FSEventFlagType;
 
-static const vector<FSEventFlagType> event_flag_type = {
-  { kFSEventStreamEventFlagNone, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagMustScanSubDirs, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagUserDropped, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagKernelDropped, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagEventIdsWrapped, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagHistoryDone, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagRootChanged, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagMount, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagUnmount, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagItemCreated, event_flag::Created},
-  { kFSEventStreamEventFlagItemRemoved, event_flag::Removed},
-  { kFSEventStreamEventFlagItemInodeMetaMod, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagItemRenamed, event_flag::Renamed},
-  { kFSEventStreamEventFlagItemModified, event_flag::Updated},
-  { kFSEventStreamEventFlagItemFinderInfoMod, event_flag::PlatformSpecific},
-  { kFSEventStreamEventFlagItemChangeOwner, event_flag::OwnerModified},
-  { kFSEventStreamEventFlagItemXattrMod, event_flag::AttributeModified},
-  { kFSEventStreamEventFlagItemIsFile, event_flag::IsFile},
-  { kFSEventStreamEventFlagItemIsDir, event_flag::IsDir},
-  { kFSEventStreamEventFlagItemIsSymlink, event_flag::IsSymLink}
-};
+static vector<FSEventFlagType> create_flag_type_vector();
+static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
+
+vector<FSEventFlagType> create_flag_type_vector()
+{
+  vector<FSEventFlagType> flags;
+  flags.push_back({ kFSEventStreamEventFlagNone, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagMustScanSubDirs, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagUserDropped, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagKernelDropped, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagEventIdsWrapped, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagHistoryDone, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagRootChanged, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagMount, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagUnmount, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagItemCreated, event_flag::Created});
+  flags.push_back({ kFSEventStreamEventFlagItemRemoved, event_flag::Removed});
+  flags.push_back({ kFSEventStreamEventFlagItemInodeMetaMod, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagItemRenamed, event_flag::Renamed});
+  flags.push_back({ kFSEventStreamEventFlagItemModified, event_flag::Updated});
+  flags.push_back({ kFSEventStreamEventFlagItemFinderInfoMod, event_flag::PlatformSpecific});
+  flags.push_back({ kFSEventStreamEventFlagItemChangeOwner, event_flag::OwnerModified});
+  flags.push_back({ kFSEventStreamEventFlagItemXattrMod, event_flag::AttributeModified});
+  flags.push_back({ kFSEventStreamEventFlagItemIsFile, event_flag::IsFile});
+  flags.push_back({ kFSEventStreamEventFlagItemIsDir, event_flag::IsDir});
+  flags.push_back({ kFSEventStreamEventFlagItemIsSymlink, event_flag::IsSymLink});
+  
+  return flags;
+}
 
 fsevent_monitor::fsevent_monitor(vector<string> paths_to_monitor,
                                  EVENT_CALLBACK callback) :
