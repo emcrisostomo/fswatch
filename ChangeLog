@@ -1,6 +1,14 @@
 ChangeLog
 *********
 
+2014-07-04  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	* ChangeLog: Update.
+	* configure.ac:
+	  - Bump v. 1.3.7.
+       	* inotify_monitor.cpp:
+          - Print diagnostic messages in verbose mode only. 
+
 2014-06-24  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
 	* ChangeLog: Update.

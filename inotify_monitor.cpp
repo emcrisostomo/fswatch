@@ -74,7 +74,10 @@ void inotify_monitor::scan(const string &path)
 
   file_names_by_descriptor[inotify_desc] = path;
 
-  cout << "Watching " << path << "." << endl;
+  std::ostringstream s;
+  s << "Watching " << path << ".\n";
+  
+  fsw_log(s.str().c_str());
 }
 
 void inotify_monitor::collect_initial_data()
