@@ -140,9 +140,6 @@ bool kqueue_monitor::add_watch(const string & path, const struct stat &fd_stat)
 
 bool kqueue_monitor::scan(const string &path)
 {
-  if (!accept_path(path))
-    return true;
-
   struct stat fd_stat;
   if (!stat_path(path, fd_stat)) return false;
 
@@ -179,7 +176,6 @@ bool kqueue_monitor::scan(const string &path)
 
       const string fqpath = current_dir + "/" + child;
 
-      if (!accept_path(fqpath)) continue;
       if (!stat_path(fqpath, fd_stat)) continue;
 
       if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
