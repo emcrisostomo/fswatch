@@ -28,16 +28,16 @@
 #include "poll_monitor.h"
 
 #ifdef HAVE_GETOPT_LONG
-#  include <getopt.h>
+#include <getopt.h>
 #endif
 #ifdef HAVE_CORESERVICES_CORESERVICES_H
-#  include "fsevent_monitor.h"
+#include "fsevent_monitor.h"
 #endif
 #ifdef HAVE_SYS_EVENT_H
-#  include "kqueue_monitor.h"
+#include "kqueue_monitor.h"
 #endif
 #ifdef HAVE_SYS_INOTIFY_H
-#  include "inotify_monitor.h"
+#include "inotify_monitor.h"
 #endif
 
 using namespace std;
@@ -45,8 +45,7 @@ using namespace std;
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
 static monitor *active_monitor = nullptr;
-static vector<string> exclude_regex;
-static vector<string> include_regex;
+static vector<monitor_filter> filters;
 static bool _0flag = false;
 static bool _1flag = false;
 static bool Eflag = false;
@@ -83,20 +82,20 @@ static void usage(ostream& stream)
     << " -0, --print0          Use the ASCII NUL character (0) as line separator.\n";
   stream
     << " -1, --one-event       Exit fswatch after the first set of events is received.\n";
-#  ifdef HAVE_REGCOMP
+#ifdef HAVE_REGCOMP
   stream << " -e, --exclude=REGEX   Exclude paths matching REGEX.\n";
   stream << " -E, --extended        Use extended regular expressions.\n";
-#  endif
+#endif
   stream
     << " -f, --format-time     Print the event time using the specified format.\n";
   stream << " -h, --help            Show this message.\n";
-#  ifdef HAVE_REGCOMP
+#ifdef HAVE_REGCOMP
   stream << " -i, --include=REGEX   Include paths matching REGEX.\n";
   stream << " -I, --insensitive     Use case insensitive regular expressions.\n";
-#  endif
-#  if defined(HAVE_SYS_EVENT_H)
+#endif
+#if defined(HAVE_SYS_EVENT_H)
   stream << " -k, --kqueue          Use the kqueue monitor.\n";
-#  endif
+#endif
   stream << " -l, --latency=DOUBLE  Set the latency.\n";
   stream << " -L, --follow-links    Follow symbolic links.\n";
   stream << " -n, --numeric         Print a numeric event mask.\n";
@@ -114,16 +113,16 @@ static void usage(ostream& stream)
 #else
   string option_string = "[";
   option_string += "01";
-#  ifdef HAVE_REGCOMP
+#ifdef HAVE_REGCOMP
   option_string += "eE";
-#  endif
+#endif
   option_string += "fh";
-#  ifdef HAVE_REGCOMP
+#ifdef HAVE_REGCOMP
   option_string += "i";
-#  endif
-#  ifdef HAVE_SYS_EVENT_H
+#endif
+#ifdef HAVE_SYS_EVENT_H
   option_string += "k";
-#  endif
+#endif
   option_string += "lLnoprtuvx";
   option_string += "]";
 
@@ -134,19 +133,19 @@ static void usage(ostream& stream)
   stream << "Usage:\n";
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1  Exit fswatch after the first set of events is received.\n";
-#  ifdef HAVE_REGCOMP
+#ifdef HAVE_REGCOMP
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
-#  endif
+#endif
   stream << " -f  Print the event time stamp with the specified format.\n";
   stream << " -h  Show this message.\n";
-#  ifdef HAVE_REGCOMP
+#ifdef HAVE_REGCOMP
   stream << " -i  Use case insensitive regular expressions.\n";
   stream << " -i  Include paths matching REGEX.\n";
-#  endif
-#  ifdef HAVE_SYS_EVENT_H
+#endif
+#ifdef HAVE_SYS_EVENT_H
   stream << " -k  Use the kqueue monitor.\n";
-#  endif
+#endif
   stream << " -l  Set the latency.\n";
   stream << " -L  Follow symbolic links.\n";
   stream << " -n  Print a numeric event masks.\n";
@@ -419,8 +418,7 @@ static void start_monitor(int argc, char ** argv, int optind)
 
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
-  active_monitor->set_exclude(exclude_regex, !Iflag, Eflag);
-  active_monitor->set_include(include_regex, !Iflag, Eflag);
+  active_monitor->set_filters(filters, !Iflag, Eflag);
   active_monitor->set_follow_symlinks(Lflag);
 
   active_monitor->run();
@@ -444,19 +442,19 @@ static void parse_opts(int argc, char ** argv)
   static struct option long_options[] = {
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
-#  ifdef HAVE_REGCOMP
+#ifdef HAVE_REGCOMP
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
-#  endif
+#endif
     { "format-time", required_argument, nullptr, 'f'},
     { "help", no_argument, nullptr, 'h'},
-#  ifdef HAVE_REGCOMP
+#ifdef HAVE_REGCOMP
     { "include", required_argument, nullptr, 'i'},
     { "insensitive", no_argument, nullptr, 'I'},
-#  endif
-#  ifdef HAVE_SYS_EVENT_H
+#endif
+#ifdef HAVE_SYS_EVENT_H
     { "kqueue", no_argument, nullptr, 'k'},
-#  endif
+#endif
     { "latency", required_argument, nullptr, 'l'},
     { "follow-links", no_argument, nullptr, 'L'},
     { "numeric", no_argument, nullptr, 'n'},
@@ -494,7 +492,7 @@ static void parse_opts(int argc, char ** argv)
 
 #ifdef HAVE_REGCOMP
     case 'e':
-      exclude_regex.push_back(optarg);
+      filters.push_back({optarg, filter_type::filter_exclude});
       break;
 
     case 'E':
@@ -513,9 +511,9 @@ static void parse_opts(int argc, char ** argv)
 
 #ifdef HAVE_REGCOMP
     case 'i':
-      include_regex.push_back(optarg);
+      filters.push_back({optarg, filter_type::filter_include});
       break;
-      
+
     case 'I':
       Iflag = true;
       break;

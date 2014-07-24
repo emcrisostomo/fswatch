@@ -27,6 +27,20 @@
 
 typedef void (*EVENT_CALLBACK)(const std::vector<event> &);
 
+enum class filter_type
+{
+  filter_include,
+  filter_exclude
+};
+
+struct monitor_filter
+{
+  std::string text;
+  filter_type type;
+};
+
+struct compiled_monitor_filter;
+
 class monitor
 {
 public:
@@ -34,10 +48,7 @@ public:
   virtual ~monitor();
   void set_latency(double latency);
   void set_recursive(bool recursive);
-  void set_exclude(const std::vector<std::string> &exclusions,
-                   bool case_sensitive = true,
-                   bool extended = false);
-  void set_include(const std::vector<std::string> &inclusions,
+  void set_filters(const std::vector<monitor_filter> &filters,
                    bool case_sensitive = true,
                    bool extended = false);
   void set_follow_symlinks(bool follow);
@@ -57,8 +68,7 @@ protected:
 
 private:
 #ifdef HAVE_REGCOMP
-  std::vector<regex_t> exclude_regex;
-  std::vector<regex_t> include_regex;
+  std::vector<compiled_monitor_filter> filters;
 #endif
 };
 

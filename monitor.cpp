@@ -21,6 +21,12 @@
 
 using namespace std;
 
+struct compiled_monitor_filter
+{
+  regex_t regex;
+  filter_type type;
+};
+
 monitor::monitor(vector<string> paths_to_watch, EVENT_CALLBACK callback) :
   paths(paths_to_watch), callback(callback)
 {
@@ -45,12 +51,12 @@ void monitor::set_recursive(bool recursive)
   this->recursive = recursive;
 }
 
-void monitor::set_exclude(const vector<string> &exclusions,
+void monitor::set_filters(const std::vector<monitor_filter> &filters,
                           bool case_sensitive,
                           bool extended)
 {
 #ifdef HAVE_REGCOMP
-  for (string exclusion : exclusions)
+  for (const monitor_filter &filter : filters)
   {
     regex_t regex;
     int flags = 0;
@@ -58,40 +64,15 @@ void monitor::set_exclude(const vector<string> &exclusions,
     if (!case_sensitive) flags |= REG_ICASE;
     if (extended) flags |= REG_EXTENDED;
 
-    if (::regcomp(&regex, exclusion.c_str(), flags))
+    if (::regcomp(&regex, filter.text.c_str(), flags))
     {
-      string err = "An error occurred during the compilation of " + exclusion;
+      string err = "An error occurred during the compilation of " + filter.text;
       throw fsw_exception(err);
     }
 
-    exclude_regex.push_back(regex);
+    this->filters.push_back({regex, filter.type});
   }
-#endif
-}
-
-void monitor::set_include(const std::vector<std::string> &inclusions,
-                          bool case_sensitive,
-                          bool extended)
-{
-#ifdef HAVE_REGCOMP
-  for (string inclusion : inclusions)
-  {
-    regex_t regex;
-    int flags = 0;
-
-    if (!case_sensitive) flags |= REG_ICASE;
-    if (extended) flags |= REG_EXTENDED;
-
-    if (::regcomp(&regex, inclusion.c_str(), flags))
-    {
-      string err = "An error occurred during the compilation of " + inclusion;
-      throw fsw_exception(err);
-    }
-
-    include_regex.push_back(regex);
-  }
-#endif
-
+#endif  
 }
 
 void monitor::set_follow_symlinks(bool follow)
@@ -107,39 +88,26 @@ bool monitor::accept_path(const string &path)
 bool monitor::accept_path(const char *path)
 {
 #ifdef HAVE_REGCOMP
-  for (auto re : exclude_regex)
+  for (auto &filter : filters)
   {
-    if (::regexec(&re, path, 0, nullptr, 0) == 0)
+    if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
     {
-      return false;
+      return filter.type == filter_type::filter_include;
     }
   }
-  
-  if (!include_regex.size()) return true;
-  
-  for (auto re : include_regex)
-  {
-    if (::regexec(&re, path, 0, nullptr, 0) == 0)
-    {
-      return true;
-    }
-  }
-  
-  return false;
-
-#else
-  return true;
 #endif
+
+  return true;
 }
 
 monitor::~monitor()
 {
 #ifdef HAVE_REGCOMP
-  for (auto &re : exclude_regex)
+  for (auto &re : filters)
   {
-    ::regfree(&re);
+    ::regfree(&re.regex);
   }
 
-  exclude_regex.clear();
+  filters.clear();
 #endif
 }
