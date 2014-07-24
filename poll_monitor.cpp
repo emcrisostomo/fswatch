@@ -91,8 +91,7 @@ bool poll_monitor::intermediate_scan_callback(const string &path,
   return true;
 }
 
-bool poll_monitor::add_path(
-                            const string &path,
+bool poll_monitor::add_path(const string &path,
                             const struct stat &fd_stat,
                             poll_monitor_scan_callback poll_callback)
 {
@@ -101,8 +100,6 @@ bool poll_monitor::add_path(
 
 void poll_monitor::scan(const string &path, poll_monitor_scan_callback fn)
 {
-  if (!accept_path(path)) return;
-
   struct stat fd_stat;
   if (!stat_path(path, fd_stat)) return;
 
@@ -114,51 +111,20 @@ void poll_monitor::scan(const string &path, poll_monitor_scan_callback fn)
 
     return;
   }
-  else if (!add_path(path, fd_stat, fn))
-    return;
 
+  if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return;
+  if (!add_path(path, fd_stat, fn)) return;
   if (!recursive) return;
   if (!S_ISDIR(fd_stat.st_mode)) return;
 
-  vector<string> dirs_to_process;
-  dirs_to_process.push_back(path);
+  vector<string> children;
+  get_directory_children(path, children);
 
-  while (dirs_to_process.size() > 0)
+  for (string &child : children)
   {
-    const string current_dir = dirs_to_process.back();
-    dirs_to_process.pop_back();
+    if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
-    vector<string> children;
-    get_directory_children(current_dir, children);
-
-    for (string &child : children)
-    {
-      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
-
-      const string fqpath = current_dir + "/" + child;
-
-      if (!accept_path(path)) continue;
-      if (!stat_path(fqpath, fd_stat)) continue;
-
-      if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
-      {
-        string link_path;
-        if (read_link_path(fqpath, link_path))
-        {
-          scan(link_path, fn);
-        }
-        continue;
-      }
-      else if (!add_path(fqpath, fd_stat, fn))
-      {
-        continue;
-      }
-
-      if (S_ISDIR(fd_stat.st_mode))
-      {
-        dirs_to_process.push_back(fqpath);
-      }
-    }
+    scan(path + "/" + child, fn);
   }
 }
 
