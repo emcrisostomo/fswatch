@@ -98,12 +98,9 @@ void fsevent_monitor::run()
 
   for (string path : paths)
   {
-    if (accept_path(path))
-    {
       dirs.push_back(CFStringCreateWithCString(NULL,
                                                path.c_str(),
                                                kCFStringEncodingUTF8));
-    }
   }
 
   if (dirs.size() == 0) return;
