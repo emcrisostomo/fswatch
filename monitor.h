@@ -37,6 +37,9 @@ public:
   void set_exclude(const std::vector<std::string> &exclusions,
                    bool case_sensitive = true,
                    bool extended = false);
+  void set_include(const std::vector<std::string> &inclusions,
+                   bool case_sensitive = true,
+                   bool extended = false);
   void set_follow_symlinks(bool follow);
 
   virtual void run() = 0;
@@ -55,6 +58,7 @@ protected:
 private:
 #ifdef HAVE_REGCOMP
   std::vector<regex_t> exclude_regex;
+  std::vector<regex_t> include_regex;
 #endif
 };
 

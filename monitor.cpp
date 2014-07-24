@@ -69,6 +69,31 @@ void monitor::set_exclude(const vector<string> &exclusions,
 #endif
 }
 
+void monitor::set_include(const std::vector<std::string> &inclusions,
+                          bool case_sensitive,
+                          bool extended)
+{
+#ifdef HAVE_REGCOMP
+  for (string inclusion : inclusions)
+  {
+    regex_t regex;
+    int flags = 0;
+
+    if (!case_sensitive) flags |= REG_ICASE;
+    if (extended) flags |= REG_EXTENDED;
+
+    if (::regcomp(&regex, inclusion.c_str(), flags))
+    {
+      string err = "An error occurred during the compilation of " + inclusion;
+      throw fsw_exception(err);
+    }
+
+    include_regex.push_back(regex);
+  }
+#endif
+
+}
+
 void monitor::set_follow_symlinks(bool follow)
 {
   follow_symlinks = follow;
@@ -89,9 +114,22 @@ bool monitor::accept_path(const char *path)
       return false;
     }
   }
-#endif
+  
+  if (!include_regex.size()) return true;
+  
+  for (auto re : include_regex)
+  {
+    if (::regexec(&re, path, 0, nullptr, 0) == 0)
+    {
+      return true;
+    }
+  }
+  
+  return false;
 
+#else
   return true;
+#endif
 }
 
 monitor::~monitor()

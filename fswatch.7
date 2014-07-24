@@ -20,6 +20,7 @@ hierarchies are modified.
 .Op Fl 0EhIkLnoprtuvx
 .Op Fl e Ar regexp
 .Op Fl f Ar format-time
+.Op Fl i Ar regexp
 .Op Fl l Ar latency
 
 .Sh DESCRIPTION
@@ -95,6 +96,11 @@ Supported formats are specified by
 
 .It Fl h, -help
 Show the help message.
+
+.It Fl i, -exclude Ar regexp
+Include paths matching
+.Ar regexp .
+Multiple include filters can be specified using this option multiple times. 
 
 .It Fl I, -insensitive
 Use case insensitive regular expressions.
