@@ -151,47 +151,22 @@ bool kqueue_monitor::scan(const string &path)
 
     return false;
   }
-  else if (!add_watch(path, fd_stat))
-  {
-    return false;
-  }
 
+  if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return true;
+  if (!add_watch(path, fd_stat)) return false;
   if (!recursive) return true;
   if (!S_ISDIR(fd_stat.st_mode)) return true;
 
-  vector<string> dirs_to_process;
-  dirs_to_process.push_back(path);
+  vector<string> children;
+  get_directory_children(path, children);
 
-  while (dirs_to_process.size() > 0)
+  for (string &child : children)
   {
-    const string current_dir = dirs_to_process.back();
-    dirs_to_process.pop_back();
+    if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
-    vector<string> children;
-    get_directory_children(current_dir, children);
-
-    for (string &child : children)
-    {
-      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
-
-      const string fqpath = current_dir + "/" + child;
-
-      if (!stat_path(fqpath, fd_stat)) continue;
-
-      if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
-      {
-        string link_path;
-        if (read_link_path(fqpath, link_path))
-        {
-          scan(link_path);
-        }
-        continue;
-      }
-      else if (!add_watch(fqpath, fd_stat)) continue;
-
-      if (S_ISDIR(fd_stat.st_mode)) dirs_to_process.push_back(fqpath);
-    }
+    scan(path + "/" + child);
   }
+
 
   return true;
 }
