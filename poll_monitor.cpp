@@ -135,7 +135,10 @@ void poll_monitor::find_removed_files()
 
   for (auto &removed : previous_data->tracked_files)
   {
-    events.push_back({removed.first, curr_time, flags});
+    if (accept_path(removed.first))
+    {
+      events.push_back({removed.first, curr_time, flags});
+    }
   }
 }
 
