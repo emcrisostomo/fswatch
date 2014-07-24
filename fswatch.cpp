@@ -50,7 +50,8 @@ static bool _0flag = false;
 static bool _1flag = false;
 static bool Eflag = false;
 static bool fflag = false;
-static bool iflag = false;
+static bool Iflag = false;
+static bool includeFlag = false;
 static bool kflag = false;
 static bool lflag = false;
 static bool Lflag = false;
@@ -90,7 +91,8 @@ static void usage(ostream& stream)
     << " -f, --format-time     Print the event time using the specified format.\n";
   stream << " -h, --help            Show this message.\n";
 #  ifdef HAVE_REGCOMP
-  stream << " -i, --insensitive     Use case insensitive regular expressions.\n";
+  stream << " -i, --include=REGEX   Include paths matching REGEX.\n";
+  stream << " -I, --insensitive     Use case insensitive regular expressions.\n";
 #  endif
 #  if defined(HAVE_SYS_EVENT_H)
   stream << " -k, --kqueue          Use the kqueue monitor.\n";
@@ -132,11 +134,16 @@ static void usage(ostream& stream)
   stream << "Usage:\n";
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1  Exit fswatch after the first set of events is received.\n";
+#  ifdef HAVE_REGCOMP
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
+#  endif
   stream << " -f  Print the event time stamp with the specified format.\n";
   stream << " -h  Show this message.\n";
+#  ifdef HAVE_REGCOMP
   stream << " -i  Use case insensitive regular expressions.\n";
+  stream << " -i  Include paths matching REGEX.\n";
+#  endif
 #  ifdef HAVE_SYS_EVENT_H
   stream << " -k  Use the kqueue monitor.\n";
 #  endif
@@ -412,7 +419,7 @@ static void start_monitor(int argc, char ** argv, int optind)
 
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
-  active_monitor->set_exclude(exclude_regex, !iflag, Eflag);
+  active_monitor->set_exclude(exclude_regex, !Iflag, Eflag);
   active_monitor->set_follow_symlinks(Lflag);
 
   active_monitor->run();
@@ -425,7 +432,7 @@ static void parse_opts(int argc, char ** argv)
 
   short_options << "01f:hkl:Lnoprtuvx";
 #ifdef HAVE_REGCOMP
-  short_options << "e:Ei";
+  short_options << "e:EI";
 #endif
 #ifdef HAVE_SYS_EVENT_H
   short_options << "k";
@@ -443,7 +450,7 @@ static void parse_opts(int argc, char ** argv)
     { "format-time", required_argument, nullptr, 'f'},
     { "help", no_argument, nullptr, 'h'},
 #  ifdef HAVE_REGCOMP
-    { "insensitive", no_argument, nullptr, 'i'},
+    { "insensitive", no_argument, nullptr, 'I'},
 #  endif
 #  ifdef HAVE_SYS_EVENT_H
     { "kqueue", no_argument, nullptr, 'k'},
@@ -503,8 +510,8 @@ static void parse_opts(int argc, char ** argv)
       exit(FSW_EXIT_USAGE);
 
 #ifdef HAVE_REGCOMP
-    case 'i':
-      iflag = true;
+    case 'I':
+      Iflag = true;
       break;
 #endif
 
