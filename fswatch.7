@@ -84,6 +84,9 @@ such as using xargs -0 and the shell builtin read -d ''.
 Exclude paths matching
 .Ar regexp .
 Multiple exclude filters can be specified using this option multiple times. 
+See
+.Sx FILTERING PATHS
+for further information.
 
 .It Fl E, -extended
 Use extended regular expressions.
@@ -101,6 +104,9 @@ Show the help message.
 Include paths matching
 .Ar regexp .
 Multiple include filters can be specified using this option multiple times. 
+See
+.Sx FILTERING PATHS
+for further information.
 
 .It Fl I, -insensitive
 Use case insensitive regular expressions.
@@ -161,6 +167,31 @@ Print verbose output.
 
 .It Fl x, -event-flags
 Prints the event flags.
+
+.El
+
+.Sh FILTERING PATHS
+Received events can be filtered by path using regular expressions.
+Regular expressions can be used to include or exclude matching paths.
+The user can specify multiple filter expression in any order and the
+.Em first
+matching expression wins.
+
+Other options govern how regular expressions are interpreted:
+.Bl -tag -width indent
+.It -
+Regular expressions can be
+.Em extended
+if option
+.Fl E
+is specified.
+
+.It -
+Regular expressions can be
+.Em case insensitive
+if option
+.Fl I
+is specified.
 
 .El
 
