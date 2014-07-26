@@ -14,7 +14,7 @@ kinds of monitors:
     times in memory and manually calculates file system changes, which can work
     on any operating system where `stat (2)` can be used.
 
-fswatch should build and work correctly on any system shipping either of the
+`fswatch` should build and work correctly on any system shipping either of the
 aforementioned APIs.
 
 History
