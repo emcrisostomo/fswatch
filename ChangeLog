@@ -1,6 +1,45 @@
 ChangeLog
 *********
 
+2014-07-26  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	* ChangeLog: Updated.
+	* configure.ac: Bump v. 1.3.9.
+	* fsevent_monitor.cpp:
+	  - Check filters only on the file path and not on scanned parent
+	    directories.
+	* fswatch.7:
+	  - Move -i option to -I.
+	  - Add -i, --include option and basic implementation to support the
+	    use of an include regexp.
+	* fswatch.cpp:
+	  - Move -i option to -I.
+	  - Add -i, --include option and basic implementation to support the
+	    use of an include regexp.
+	  - Change the filter rules so that the first wins, no matter whether
+	    it's an exclusion or an inclusion filter.
+	* kqueue_monitor.cpp:
+	  - Check filters only on the file path and not on scanned parent
+	    directories for the kqueue monitor.
+	  - Refactor kqueue monitor directory scanning implementation.
+	* monitor.cpp:
+	  - Add -i, --include option and basic implementation to support the
+	    use of an include regexp.
+	* monitor.cpp:
+	  - Add -i, --include option and basic implementation to support the
+	    use of an include regexp.
+	  - Change the filter rules so that the first wins, no matter whether
+	    it's an exclusion or an inclusion filter.
+	* monitor.h:
+	  - Add -i, --include option and basic implementation to support the
+	    use of an include regexp.
+	  - Change the filter rules so that the first wins, no matter whether
+	    it's an exclusion or an inclusion filter.
+	* poll_monitor.cpp:
+	  - Refactor poll monitor directory scanning implementation.
+	  - Directory names must be filtered when events are fired because
+	    they are not filtered while scanning.
+
 2014-07-04  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
 	* ChangeLog: Update.
