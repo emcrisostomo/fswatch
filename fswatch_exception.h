@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW_EXCEPTION_H
-#define FSW_EXCEPTION_H
+#  define FSW_EXCEPTION_H
 
-#include <exception>
-#include <string>
+#  include <exception>
+#  include <string>
 
 class fsw_exception : public std::exception
 {

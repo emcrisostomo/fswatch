@@ -34,7 +34,9 @@ void get_directory_children(const string &path, vector<string> &children)
     {
       perror("opendir");
       ::exit(FSW_EXIT_ENFILE);
-    } else {
+    }
+    else
+    {
       fsw_perror("opendir");
     }
     return;

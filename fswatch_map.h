@@ -15,22 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW_MAP_H
-#define FSW_MAP_H
+#  define FSW_MAP_H
 
-#include "config.h"
+#  include "config.h"
 
-#if defined(HAVE_UNORDERED_MAP)
-#include <unordered_map>
+#  if defined(HAVE_UNORDERED_MAP)
+#    include <unordered_map>
 
 template <typename K, typename V>
 using fsw_hash_map = std::unordered_map<K, V>;
 
-#else
-#include <map>
+#  else
+#    include <map>
 
 template <typename K, typename V>
 using fsw_hash_map = std::map<K, V>;
 
-#endif
+#  endif
 
 #endif  /* FSW_MAP_H */

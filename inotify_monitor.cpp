@@ -76,7 +76,7 @@ void inotify_monitor::scan(const string &path)
 
   std::ostringstream s;
   s << "Watching " << path << ".\n";
-  
+
   fsw_log(s.str().c_str());
 }
 

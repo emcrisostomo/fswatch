@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW_PATH_UTILS_H
-#define FSW_PATH_UTILS_H
+#  define FSW_PATH_UTILS_H
 
-#include <string>
-#include <vector>
-#include <sys/stat.h>
+#  include <string>
+#  include <vector>
+#  include <sys/stat.h>
 
 void get_directory_children(const std::string &path,
                             std::vector<std::string> &children);

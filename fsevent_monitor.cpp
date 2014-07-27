@@ -18,10 +18,10 @@
 
 #ifdef HAVE_CORESERVICES_CORESERVICES_H
 
-#include "fswatch_exception.h"
-#include "fswatch_log.h"
-#include <iostream>
-#include "event.h"
+#  include "fswatch_exception.h"
+#  include "fswatch_log.h"
+#  include <iostream>
+#  include "event.h"
 
 using namespace std;
 
@@ -37,27 +37,27 @@ static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector()
 vector<FSEventFlagType> create_flag_type_vector()
 {
   vector<FSEventFlagType> flags;
-  flags.push_back({ kFSEventStreamEventFlagNone, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagMustScanSubDirs, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagUserDropped, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagKernelDropped, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagEventIdsWrapped, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagHistoryDone, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagRootChanged, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagMount, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagUnmount, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagItemCreated, event_flag::Created});
-  flags.push_back({ kFSEventStreamEventFlagItemRemoved, event_flag::Removed});
-  flags.push_back({ kFSEventStreamEventFlagItemInodeMetaMod, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagItemRenamed, event_flag::Renamed});
-  flags.push_back({ kFSEventStreamEventFlagItemModified, event_flag::Updated});
-  flags.push_back({ kFSEventStreamEventFlagItemFinderInfoMod, event_flag::PlatformSpecific});
-  flags.push_back({ kFSEventStreamEventFlagItemChangeOwner, event_flag::OwnerModified});
-  flags.push_back({ kFSEventStreamEventFlagItemXattrMod, event_flag::AttributeModified});
-  flags.push_back({ kFSEventStreamEventFlagItemIsFile, event_flag::IsFile});
-  flags.push_back({ kFSEventStreamEventFlagItemIsDir, event_flag::IsDir});
-  flags.push_back({ kFSEventStreamEventFlagItemIsSymlink, event_flag::IsSymLink});
-  
+  flags.push_back({kFSEventStreamEventFlagNone, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagMustScanSubDirs, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagUserDropped, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagKernelDropped, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagEventIdsWrapped, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagHistoryDone, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagRootChanged, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagMount, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagUnmount, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagItemCreated, event_flag::Created});
+  flags.push_back({kFSEventStreamEventFlagItemRemoved, event_flag::Removed});
+  flags.push_back({kFSEventStreamEventFlagItemInodeMetaMod, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagItemRenamed, event_flag::Renamed});
+  flags.push_back({kFSEventStreamEventFlagItemModified, event_flag::Updated});
+  flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, event_flag::PlatformSpecific});
+  flags.push_back({kFSEventStreamEventFlagItemChangeOwner, event_flag::OwnerModified});
+  flags.push_back({kFSEventStreamEventFlagItemXattrMod, event_flag::AttributeModified});
+  flags.push_back({kFSEventStreamEventFlagItemIsFile, event_flag::IsFile});
+  flags.push_back({kFSEventStreamEventFlagItemIsDir, event_flag::IsDir});
+  flags.push_back({kFSEventStreamEventFlagItemIsSymlink, event_flag::IsSymLink});
+
   return flags;
 }
 
@@ -98,9 +98,9 @@ void fsevent_monitor::run()
 
   for (string path : paths)
   {
-      dirs.push_back(CFStringCreateWithCString(NULL,
-                                               path.c_str(),
-                                               kCFStringEncodingUTF8));
+    dirs.push_back(CFStringCreateWithCString(NULL,
+                                             path.c_str(),
+                                             kCFStringEncodingUTF8));
   }
 
   if (dirs.size() == 0) return;
@@ -182,7 +182,7 @@ void fsevent_monitor::fsevent_callback(ConstFSEventStreamRef streamRef,
   for (size_t i = 0; i < numEvents; ++i)
   {
     const char * path = ((char **) eventPaths)[i];
-    
+
     if (!fse_monitor->accept_path(path)) continue;
 
     events.push_back({path, curr_time, decode_flags(eventFlags[i])});

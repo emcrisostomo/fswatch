@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW_EVENT_H
-#define FSW_EVENT_H
+#  define FSW_EVENT_H
 
-#include <string>
-#include <ctime>
-#include <vector>
+#  include <string>
+#  include <ctime>
+#  include <vector>
 
 enum class event_flag
 {

@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW_FSEVENT_MONITOR_H
-#define FSW_FSEVENT_MONITOR_H
+#  define FSW_FSEVENT_MONITOR_H
 
-#include "config.h"
+#  include "config.h"
 
-#ifdef HAVE_CORESERVICES_CORESERVICES_H
+#  ifdef HAVE_CORESERVICES_CORESERVICES_H
 
-#include "monitor.h"
-#include <CoreServices/CoreServices.h>
+#    include "monitor.h"
+#    include <CoreServices/CoreServices.h>
 
 class fsevent_monitor : public monitor
 {
@@ -48,5 +48,5 @@ private:
   bool numeric_event = false;
 };
 
-#endif  /* HAVE_CORESERVICES_CORESERVICES_H */
+#  endif  /* HAVE_CORESERVICES_CORESERVICES_H */
 #endif  /* FSW_FSEVENT_MONITOR_H */

@@ -15,18 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW_KQUEUE_MONITOR_H
-#define FSW_KQUEUE_MONITOR_H
+#  define FSW_KQUEUE_MONITOR_H
 
-#include "config.h"
+#  include "config.h"
 
-#ifdef HAVE_SYS_EVENT_H
+#  ifdef HAVE_SYS_EVENT_H
 
-#include "monitor.h"
-#include "fswatch_map.h"
-#include "fswatch_set.h"
-#include <string>
-#include <vector>
-#include <sys/stat.h>
+#    include "monitor.h"
+#    include "fswatch_map.h"
+#    include "fswatch_set.h"
+#    include <string>
+#    include <vector>
+#    include <sys/stat.h>
 
 class kqueue_monitor : public monitor
 {
@@ -66,5 +66,5 @@ private:
   static const unsigned int MIN_SPIN_LATENCY = 1;
 };
 
-#endif  /* HAVE_SYS_EVENT_H */
+#  endif  /* HAVE_SYS_EVENT_H */
 #endif  /* FSW_KQUEUE_MONITOR_H */

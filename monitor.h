@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW__MONITOR_H
-#define FSW__MONITOR_H
+#  define FSW__MONITOR_H
 
-#include "config.h"
-#include <vector>
-#include <string>
-#ifdef HAVE_REGCOMP
-#include <regex.h>
-#endif
-#include "event.h"
+#  include "config.h"
+#  include <vector>
+#  include <string>
+#  ifdef HAVE_REGCOMP
+#    include <regex.h>
+#  endif
+#  include "event.h"
 
 typedef void (*EVENT_CALLBACK)(const std::vector<event> &);
 
@@ -67,9 +67,9 @@ protected:
   bool follow_symlinks = false;
 
 private:
-#ifdef HAVE_REGCOMP
+#  ifdef HAVE_REGCOMP
   std::vector<compiled_monitor_filter> filters;
-#endif
+#  endif
 };
 
 #endif  /* FSW__MONITOR_H */

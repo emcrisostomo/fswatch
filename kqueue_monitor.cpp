@@ -18,17 +18,17 @@
 
 #ifdef HAVE_SYS_EVENT_H
 
-#include "fswatch_exception.h"
-#include "fswatch_log.h"
-#include "path_utils.h"
-#include <iostream>
-#include <sys/types.h>
-#include <sys/event.h>
-#include <sys/time.h>
-#include <cstdio>
-#include <cmath>
-#include <unistd.h>
-#include <fcntl.h>
+#  include "fswatch_exception.h"
+#  include "fswatch_log.h"
+#  include "path_utils.h"
+#  include <iostream>
+#  include <sys/types.h>
+#  include <sys/event.h>
+#  include <sys/time.h>
+#  include <cstdio>
+#  include <cmath>
+#  include <unistd.h>
+#  include <fcntl.h>
 
 using namespace std;
 
@@ -109,16 +109,16 @@ bool kqueue_monitor::add_watch(const string & path, const struct stat &fd_stat)
   }
 
   int o_flags = 0;
-#ifdef O_SYMLINK
+#  ifdef O_SYMLINK
   o_flags |= O_SYMLINK;
-#elif defined(O_NOFOLLOW)
+#  elif defined(O_NOFOLLOW)
   o_flags |= O_NOFOLLOW;
-#endif
-#ifdef O_EVTONLY
+#  endif
+#  ifdef O_EVTONLY
   o_flags |= O_EVTONLY;
-#else
+#  else
   o_flags |= O_RDONLY;
-#endif
+#  endif
 
   int fd = ::open(path.c_str(), o_flags);
 
@@ -166,7 +166,6 @@ bool kqueue_monitor::scan(const string &path)
 
     scan(path + "/" + child);
   }
-
 
   return true;
 }
