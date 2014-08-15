@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Fswatch : A cross-platform file change monitor with multiple backends: Apple OS X File System Events API, *BSD kqueue, Linux inotify and a stat-based backend.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Fswatch</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/emcrisostomo/fswatch">View on GitHub</a>
+
+          <h1 id="project_title">Fswatch</h1>
+          <h2 id="project_tagline">A cross-platform file change monitor with multiple backends: Apple OS X File System Events API, *BSD kqueue, Linux inotify and a stat-based backend.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/emcrisostomo/fswatch/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/emcrisostomo/fswatch/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><code>fswatch</code> is a file change monitor that receives notifications when the contents
+of the specified files or directories are modified.  <code>fswatch</code> implements four 
+kinds of monitors:</p>
+
+<ul>
+<li>A monitor based on the <em>File System Events API</em> of Apple OS X.</li>
+<li>A monitor based on <em>kqueue</em>, an event notification interface introduced in
+FreeBSD 4.1 and supported on most *BSD systems (including OS X).</li>
+<li>A monitor based on <em>inotify</em>, a Linux kernel subsystem that reports file
+system changes to applications.</li>
+<li>A monitor which periodically stats the file system, saves file modification
+times in memory and manually calculates file system changes, which can work
+on any operating system where <code>stat (2)</code> can be used.</li>
+</ul><p><code>fswatch</code> should build and work correctly on any system shipping either of the
+aforementioned APIs.</p>
+
+<h2>
+<a name="getting-fswatch" class="anchor" href="#getting-fswatch"><span class="octicon octicon-link"></span></a>Getting fswatch</h2>
+
+<p>The recommended way to get the sources of <code>fswatch</code> in order to build it on
+your system is getting a <a href="https://github.com/alandipert/fswatch/releases">release tarball</a>.  A release tarball
+contains everything a user needs to build <code>fswatch</code> on his system, following
+the instructions detailed in the Installation section below and the INSTALL
+file.</p>
+
+<p>Getting a copy of the source repository is not recommended, unless you are a
+developer, you have the GNU Build System installed on your machine and you know
+how to bootstrap it on the sources.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>See the <code>INSTALL</code> file for detailed information about how to configure and
+install <code>fswatch</code>.</p>
+
+<p><code>fswatch</code> is a C++ program and a C++ compiler compliant with the C++11 standard
+is required to compile it.  Check your OS documentation for information about
+how to install the C++ toolchain and the C++ runtime.</p>
+
+<p>No other software packages or dependencies are required to configure and
+install <code>fswatch</code> but the aforementioned APIs used by the file system monitors.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p><code>fswatch</code> accepts a list of paths for which change events should be received:</p>
+
+<pre><code>$ fswatch [options] ... path-0 ... path-n
+</code></pre>
+
+<p>The event stream is created even if any of the paths do not exist yet.  If they
+are created after <code>fswatch</code> is launched, change events will be properly
+received.  Depending on the watcher being used, newly created paths will be
+monitored after the amount of configured latency has elapsed.</p>
+
+<p>The output of <code>fswatch</code> can be piped to other program in order to process it
+further:</p>
+
+<pre><code>$ fswatch -0 path | while read -d "" event \
+  do \
+    // do something with ${event}
+  done
+</code></pre>
+
+<p>To run a command when a set of change events is printed to standard output but
+no event details are required, then the following command can be used:</p>
+
+<pre><code>$ fswatch -o path | xargs -n1 -I{} program
+</code></pre>
+
+<p>The behaviour is consistent with earlier versions of <code>fswatch</code> (v. 0.x).
+Please, read the <em>Compatibility Issues with fswatch v. 0.x</em> section for further
+information.</p>
+
+<p>For more information, refer to the <code>fswatch</code> man page.</p>
+
+<hr><p>Copyright (C) 2014 Enrico M. Crisostomo</p>
+
+<p>This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3, or (at your option)
+any later version.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Fswatch maintained by <a href="https://github.com/emcrisostomo">emcrisostomo</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
