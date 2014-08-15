@@ -43,7 +43,7 @@ its documentation updated to redirect users to `fswatch`.
 [alan]: http://alandipert.tumblr.com
 [fse]: https://developer.apple.com/library/mac/documentation/Darwin/Reference/FSEvents_Ref/Reference/reference.html
 [enrico]: http://thegreyblog.blogspot.com
-[fswatchrepo]: https://github.com/alandipert/fswatch
+[fswatchrepo]: https://github.com/emcrisostomo/fswatch
 
 Limitations
 -----------
