@@ -1,0 +1,40 @@
+ChangeLog
+*********
+
+2014-07-29  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	* AUTHORS: Add.
+	* ChangeLog: Updated
+	* configure.ac:
+	  - Copy from fsw.
+	  - Bump v. 1.4.0.
+	* COPYING: Add.
+	* INSTALL: Add.
+	* Makefile.am: Move libfsw pieces from fsw.
+	* event.h: Move from fsw.
+	* event.cpp: Move from fsw.
+	* fsevent_monitor.cpp: Move from fsw.
+	* fsevent_monitor.h: Move from fsw.
+	* inotify_monitor.cpp: Move from fsw.
+	* inotify_monitor.h: Move from fsw.
+	* kqueue_monitor.cpp: Move from fsw.
+	* kqueue_monitor.h: Move from fsw.
+	* libfsw.cpp: Add.
+	* libfsw.h: Add.
+	* libfsw_exception.cpp: Move from fsw.
+	* libfsw_exception.h: Move from fsw.
+	* libfsw_log.cpp: Move from fsw.
+	* libfsw_log.h: Move from fsw.
+	* m4/ax_append_flag.m4: Add.
+	* m4/ax_cflags_warn_all.m4: Add.
+	* m4/ax_cxx_compile_stdcxx_11.m4: Add.
+	* m4/ax_cxx_namespaces.m4: Add.
+	* m4/ax_require_defined.m4: Add.
+	* monitor.cpp: Move from fsw.
+	* monitor.h: Move from fsw.
+	* path_utils.cpp: Move from fsw.
+	* path_utils.h: Move from fsw.
+	* poll_monitor.cpp: Move from fsw.
+	* poll_monitor.h: Move from fsw.
+	* NEWS: Add.
+	* README: Add.
