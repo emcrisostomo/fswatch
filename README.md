@@ -99,7 +99,7 @@ file.
 
 Getting a copy of the source repository is not recommended, unless you are a
 developer, you have the GNU Build System installed on your machine and you know
-how to boostrap it on the sources.
+how to bootstrap it on the sources.
 
 [release]: https://github.com/alandipert/fswatch/releases
 
@@ -116,7 +116,7 @@ how to install the C++ toolchain and the C++ runtime.
 No other software packages or dependencies are required to configure and
 install `fswatch` but the aforementioned APIs used by the file system monitors.
 
-Compability Issues with fswatch v. 0.x
+Compatibility Issues with fswatch v. 0.x
 --------------------------------------
 
 The previous major version of `fswatch` (v. 0.x) allowed users to run a command
@@ -191,7 +191,7 @@ no event details are required, then the following command can be used:
     $ fswatch -o path | xargs -n1 -I{} program
 
 The behaviour is consistent with earlier versions of `fswatch` (v. 0.x).
-Please, read the _Compability Issues with fswatch v. 0.x_ section for further
+Please, read the _Compatibility Issues with fswatch v. 0.x_ section for further
 information.
 
 For more information, refer to the `fswatch` man page.
