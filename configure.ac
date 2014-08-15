@@ -18,16 +18,28 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.69])
-AC_INIT([fswatch], [1.3.9], [enrico.m.crisostomo@gmail.com], [], [https://github.com/alandipert/fswatch])
+AC_INIT([fswatch], [1.4.0], [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: 1.3.9-1 $])
+AC_REVISION([$Revision: 1.4.0-1 $])
 AC_CONFIG_SRCDIR([fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
 AC_CONFIG_MACRO_DIRS([m4])
-AM_INIT_AUTOMAKE([-Wall -Werror gnu])
+AC_CONFIG_MACRO_DIR([m4])
+
+# Other packages
+AC_CONFIG_SUBDIRS([libfswatch])
+
+# Initialize Automake
+AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
+AM_PROG_AR
+
+# Initialize libtool 
+LT_PREREQ([2.4.2])
+LT_INIT
+AC_SUBST([LIBTOOL_DEPS])
 
 # Configure language
 AC_LANG(C++)
@@ -39,22 +51,22 @@ AC_PATH_PROG([ZSH_PROG], [zsh], [no])
 AC_PATH_PROG([BASH_PROG], [bash], [no])
 
 if test "x${ZSH_PROG}" = "xno" && test "x${BASH_PROG}" = "xno" ; then
-    AC_MSG_WARN([Either ZSH or the Bash shell is required by fswatch-run.])
+  AC_MSG_WARN([Either ZSH or the Bash shell is required by fswatch-run.])
 fi
 
 AM_CONDITIONAL([HAVE_ZSH], [test "x${ZSH_PROG}" != "xno"])
 AM_CONDITIONAL([HAVE_BASH], [test "x${BASH_PROG}" != "xno"])
 
 if test "x${ZSH_PROG}" = "xno" ; then
-ZSH_PATH=/bin/zsh
+  ZSH_PATH=/bin/zsh
 else
-ZSH_PATH=$ZSH_PROG
+  ZSH_PATH=$ZSH_PROG
 fi
 
 if test "x${BASH_PROG}" = "xno" ; then
-BASH_PATH=/bin/bash
+  BASH_PATH=/bin/bash
 else
-BASH_PATH=$BASH_PROG
+  BASH_PATH=$BASH_PROG
 fi
 
 AC_SUBST([ZSH_PATH])
@@ -67,34 +79,10 @@ AX_CXXFLAGS_WARN_ALL
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h unistd.h getopt.h fcntl.h sys/event.h sys/time.h])
-AC_CHECK_HEADERS([CoreServices/CoreServices.h])
-AC_CHECK_HEADERS([unordered_map unordered_set])
-AC_CHECK_HEADERS([sys/inotify.h])
-
-AM_CONDITIONAL([USE_CORESERVICES], [test "x${ac_cv_header_CoreServices_CoreServices_h}" = "xyes"])
+AC_CHECK_HEADERS([stdlib.h getopt.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
-AC_TYPE_SIZE_T
-AC_TYPE_UINT32_T
-AC_TYPE_MODE_T
-
-AC_CHECK_MEMBERS([struct stat.st_mtime],
-   [],
-   [],
-   [
-     AC_INCLUDES_DEFAULT
-     #include <sys/stat.h>
-   ])
-
-AC_CHECK_MEMBERS([struct stat.st_mtimespec],
-   [],
-   [],
-   [
-     AC_INCLUDES_DEFAULT
-     #include <sys/stat.h>
-   ])
 
 # Checks for library functions.
 AC_FUNC_STRTOD
@@ -104,23 +92,6 @@ AC_CHECK_FUNCS(
   ,
   AC_MSG_ERROR([The realpath function cannot be found.])
 )
-AC_CHECK_FUNCS(
-  [modf],
-  ,
-  AC_MSG_ERROR([The modf function cannot be found.])
-)
 AC_CHECK_FUNCS([regcomp])
-
-AC_CHECK_DECLS(
-  [kqueue, kevent],
-  ,
-  ,
-  [
-    AC_INCLUDES_DEFAULT
-    [#include <sys/event.h>]
-    [#include <sys/types.h>]
-    [#include <sys/time.h>]
-  ]
-)
 
 AC_OUTPUT
