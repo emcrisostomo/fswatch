@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.4.0:
+
+  * The libfswatch library has been added with bindings for C and C++.
+
 New in 1.3.9:
 
   * Paths can be included using -i/--include and providing a set of regular
