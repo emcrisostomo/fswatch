@@ -18,7 +18,7 @@
 #  define LIBFSW_SET_H
 
 #  ifdef HAVE_CONFIG_H
-#    include "libfsw_config.h"
+#    include "libfswatch_config.h"
 #  endif
 
 #  if defined(HAVE_UNORDERED_SET)

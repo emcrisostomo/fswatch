@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
-#  include "libfsw_config.h"
+#  include "libfswatch_config.h"
 #endif
 
 #ifdef HAVE_SYS_EVENT_H
 
 #  include "kqueue_monitor.h"
-#  include "libfsw_map.h"
-#  include "libfsw_set.h"
-#  include "libfsw_exception.h"
-#  include "../c/libfsw_log.h"
+#  include "libfswatch_map.h"
+#  include "libfswatch_set.h"
+#  include "libfswatch_exception.h"
+#  include "../c/libfswatch_log.h"
 #  include "path_utils.h"
 #  include <iostream>
 #  include <sys/types.h>

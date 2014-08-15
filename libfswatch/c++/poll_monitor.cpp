@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
-#  include "libfsw_config.h"
+#  include "libfswatch_config.h"
 #endif
 
 #include "poll_monitor.h"
-#include "c/libfsw_log.h"
+#include "c/libfswatch_log.h"
 #include "path_utils.h"
-#include "libfsw_map.h"
+#include "libfswatch_map.h"
 #include <unistd.h>
 #include <cstdlib>
 #include <fcntl.h>

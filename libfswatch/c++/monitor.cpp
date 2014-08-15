@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
-#  include "libfsw_config.h"
+#  include "libfswatch_config.h"
 #endif
 #include "monitor.h"
-#include "libfsw_exception.h"
+#include "libfswatch_exception.h"
 #include <cstdlib>
 #ifdef HAVE_REGCOMP
 #  include <regex.h>

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
-#  include "libfsw_config.h"
+#  include "libfswatch_config.h"
 #endif
 
 #include "inotify_monitor.h"
@@ -25,9 +25,9 @@
 #include <iostream>
 #include <sstream>
 #include <ctime>
-#include "libfsw_exception.h"
-#include "libfsw_log.h"
-#include "libfsw_map.h"
+#include "libfswatch_exception.h"
+#include "libfswatch_log.h"
+#include "libfswatch_map.h"
 
 using namespace std;
 

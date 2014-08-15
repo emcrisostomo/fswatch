@@ -16,7 +16,7 @@ configure
 aclocal.m4
 config/
 config.*
-libfsw_config.h.in
+libfswatch_config.h.in
 
 # libtool
 libtool.m4

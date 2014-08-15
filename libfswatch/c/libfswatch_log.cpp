@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfsw.h"
-#include "libfsw_log.h"
+#include "libfswatch.h"
+#include "libfswatch_log.h"
 #include <iostream>
 
 using namespace std;

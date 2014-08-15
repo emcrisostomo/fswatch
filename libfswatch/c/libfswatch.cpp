@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
-#  include "libfsw_config.h"
+#  include "libfswatch_config.h"
 #endif
 
 #include <atomic>
@@ -23,11 +23,11 @@
 #include <mutex>
 #include <ctime>
 #include <stdlib.h>
-#include "libfsw.h"
-#include "../c++/libfsw_map.h"
+#include "libfswatch.h"
+#include "../c++/libfswatch_map.h"
 #include "../c++/filter.h"
 #include "../c++/monitor.h"
-#include "../c++/libfsw_exception.h"
+#include "../c++/libfswatch_exception.h"
 
 using namespace std;
 using namespace fsw;

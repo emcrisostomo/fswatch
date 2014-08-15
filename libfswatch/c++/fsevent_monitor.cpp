@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #  ifdef HAVE_CONFIG_H
-#    include "libfsw_config.h"
+#    include "libfswatch_config.h"
 #  endif
 
 #include "fsevent_monitor.h"
 
-#  include "libfsw_exception.h"
-#  include "c/libfsw_log.h"
+#  include "libfswatch_exception.h"
+#  include "c/libfswatch_log.h"
 #  include <iostream>
 #  include "event.h"
 
