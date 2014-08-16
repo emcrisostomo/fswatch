@@ -32,7 +32,7 @@ fswatch_LDADD = libfswatch/libfswatch.la
 man_MANS = fswatch.7
 EXTRA_DIST = $(man_MANS)
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
-dist_doc_DATA += README.osx
+dist_doc_DATA += README.osx AUTHORS COPYING LICENSE NEWS
 
 dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
 

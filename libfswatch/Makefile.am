@@ -67,3 +67,6 @@ if USE_INOTIFY
 endif
 libfswatch_cpp_HEADERS += c++/poll_monitor.h
 libfswatch_cpp_HEADERS += c++/filter.h c++/event.h c++/libfswatch_exception.h
+
+dist_doc_DATA  = README.md
+dist_doc_DATA += AUTHORS COPYING LICENSE NEWS
