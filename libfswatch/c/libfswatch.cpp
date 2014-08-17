@@ -58,7 +58,9 @@ static FSW_THREAD_LOCAL unsigned int last_error;
 FSW_EVENT_CALLBACK libfsw_cpp_callback_proxy;
 FSW_SESSION * get_session(const FSW_HANDLE handle);
 
-int create_monitor(FSW_HANDLE handle, const fsw_monitor_type type);
+static int create_monitor(FSW_HANDLE handle, const fsw_monitor_type type);
+static FSW_STATUS fsw_set_last_error(const int error);
+
 
 void libfsw_cpp_callback_proxy(const std::vector<event> & events,
                                void * handle_ptr)
