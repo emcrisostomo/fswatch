@@ -1,8 +1,9 @@
 README
 ======
 
-`libfsw` is a library that provides developers the functionality of `fsw`, the
-main `libfsw` frontend.  The library provides both C and C++ bindings.
+`libfswatch` is a library that provides developers the functionality of
+`fswatch`, the main `libfswatch` frontend.  The library provides both C and C++
+bindings.
 
 The library is currently documented by its header files.
 

@@ -14,6 +14,8 @@ ChangeLog
 	* Makefile.am:
 	  - Move libfsw pieces from fsw.
 	  - Update distributed document data.
+	* NEWS: Add.
+	* README.md: Add.
 	* event.h: Move from fsw.
 	* event.cpp: Move from fsw.
 	* fsevent_monitor.cpp:
