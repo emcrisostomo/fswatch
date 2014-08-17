@@ -30,6 +30,8 @@ namespace fsw
 
   class kqueue_monitor : public monitor
   {
+    REGISTER_MONITOR(kqueue_monitor, kqueue_monitor_type);
+
   public:
     kqueue_monitor(std::vector<std::string> paths,
                    FSW_EVENT_CALLBACK * callback,

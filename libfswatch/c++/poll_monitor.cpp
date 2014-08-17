@@ -19,13 +19,13 @@
 #endif
 
 #include "poll_monitor.h"
-#include "c/libfswatch_log.h"
-#include "path_utils.h"
-#include "libfswatch_map.h"
 #include <unistd.h>
 #include <cstdlib>
 #include <fcntl.h>
 #include <iostream>
+#include "c/libfswatch_log.h"
+#include "path_utils.h"
+#include "libfswatch_map.h"
 
 using namespace std;
 
@@ -45,6 +45,8 @@ namespace fsw
     fsw_hash_map<std::string, poll_monitor::watched_file_info> tracked_files;
   }
   poll_monitor_data;
+
+  REGISTER_MONITOR_IMPL(poll_monitor, poll_monitor_type);
 
   poll_monitor::poll_monitor(vector<string> paths,
                              FSW_EVENT_CALLBACK * callback,

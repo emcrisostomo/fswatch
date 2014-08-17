@@ -25,9 +25,11 @@
 namespace fsw
 {
   struct inotify_monitor_load;
-  
+
   class inotify_monitor : public monitor
   {
+    REGISTER_MONITOR(inotify_monitor, inotify_monitor_type);
+
   public:
     inotify_monitor(std::vector<std::string> paths,
                     FSW_EVENT_CALLBACK * callback,

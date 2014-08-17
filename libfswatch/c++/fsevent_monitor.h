@@ -25,6 +25,8 @@ namespace fsw
 
   class fsevent_monitor : public monitor
   {
+    REGISTER_MONITOR(fsevent_monitor, fsevents_monitor_type);
+
   public:
     fsevent_monitor(std::vector<std::string> paths,
                     FSW_EVENT_CALLBACK * callback,

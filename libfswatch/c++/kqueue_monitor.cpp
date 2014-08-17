@@ -54,10 +54,7 @@ namespace fsw
     fsw_event_flag type;
   } KqueueFlagType;
 
-  static vector<KqueueFlagType> create_flag_type_vector();
-  static const vector<KqueueFlagType> event_flag_type = create_flag_type_vector();
-
-  vector<KqueueFlagType> create_flag_type_vector()
+  static vector<KqueueFlagType> create_flag_type_vector()
   {
     vector<KqueueFlagType> flags;
     flags.push_back({NOTE_DELETE, fsw_event_flag::Removed});
@@ -70,6 +67,10 @@ namespace fsw
 
     return flags;
   }
+
+  static const vector<KqueueFlagType> event_flag_type = create_flag_type_vector();
+
+  REGISTER_MONITOR_IMPL(kqueue_monitor, kqueue_monitor_type);
 
   kqueue_monitor::kqueue_monitor(vector<string> paths_to_monitor,
                                  FSW_EVENT_CALLBACK * callback,

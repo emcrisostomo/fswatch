@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#  ifdef HAVE_CONFIG_H
-#    include "libfswatch_config.h"
-#  endif
+#ifdef HAVE_CONFIG_H
+#  include "libfswatch_config.h"
+#endif
 
 #include "fsevent_monitor.h"
 
-#  include "libfswatch_exception.h"
-#  include "c/libfswatch_log.h"
-#  include <iostream>
-#  include "event.h"
+#include "libfswatch_exception.h"
+#include "c/libfswatch_log.h"
+#include <iostream>
+#include "event.h"
 
 using namespace std;
 
@@ -36,10 +36,7 @@ namespace fsw
     fsw_event_flag type;
   } FSEventFlagType;
 
-  static vector<FSEventFlagType> create_flag_type_vector();
-  static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
-
-  vector<FSEventFlagType> create_flag_type_vector()
+  static vector<FSEventFlagType> create_flag_type_vector()
   {
     vector<FSEventFlagType> flags;
     flags.push_back({kFSEventStreamEventFlagNone, fsw_event_flag::PlatformSpecific});
@@ -65,6 +62,10 @@ namespace fsw
 
     return flags;
   }
+
+  static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
+
+  REGISTER_MONITOR_IMPL(fsevent_monitor, fsevents_monitor_type);
 
   fsevent_monitor::fsevent_monitor(vector<string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK * callback,

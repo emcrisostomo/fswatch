@@ -44,6 +44,8 @@ namespace fsw
 
   static const unsigned int BUFFER_SIZE = (10 * ((sizeof (struct inotify_event)) + NAME_MAX + 1));
 
+  REGISTER_MONITOR_IMPL(inotify_monitor, inotify_monitor_type);
+  
   inotify_monitor::inotify_monitor(vector<string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK * callback,
                                    void * context) :
