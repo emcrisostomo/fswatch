@@ -100,15 +100,48 @@ extern "C"
    */
   FSW_STATUS fsw_set_callback(const FSW_HANDLE handle,
                               const FSW_CEVENT_CALLBACK callback);
+  
+  /*
+   * Sets the latency of the monitor.  By default, the latency is set to 1 s.
+   */
   FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency);
+  
+  /*
+   * Determines whether the monitor recursively scans each watched path or not.
+   * Recursive scanning is an optional feature which could not be implemented
+   * by all the monitors.  By default, recursive scanning is disabled.
+   */
   FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive);
+  
+  /*
+   * Determines whether a symbolic link is followed or not.  By default, a
+   * symbolic link are not followed.
+   */
   FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
                                      const bool follow_symlinks);
+  
+  /*
+   * Adds a filter to the current session.  A filter is a regular expression
+   * that, depending on whether the filter type is exclusion or not, must or
+   * must not be matched for an event path for the event to be accepted.
+   */
   FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
                             const fsw_cmonitor_filter filter);
+  
+  /*
+   * Starts the monitor if it is properly configured.  Depending on the type of
+   * monitor this call might return when a monitor is stopped or not.
+   */
   FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle);
+  
+  /*
+   * Destroys an existing session and invalidates its handle.
+   */
   FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle);
-  FSW_STATUS fsw_set_last_error(const int error);
+    
+  /*
+   * Gets the last error code.
+   */
   FSW_STATUS fsw_last_error();
   // TODO: implement function to signal a monitor to stop.
   bool fsw_is_verbose();
