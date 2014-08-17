@@ -44,23 +44,33 @@ static bool _1flag = false;
 static bool Eflag = false;
 static bool fflag = false;
 static bool Iflag = false;
-static bool kflag = false;
 static bool lflag = false;
 static bool Lflag = false;
+static bool mflag = false;
 static bool nflag = false;
 static bool oflag = false;
-static bool pflag = false;
 static bool rflag = false;
 static bool tflag = false;
 static bool uflag = false;
 static bool vflag = false;
 static bool xflag = false;
 static double lvalue = 1.0;
+static string monitor_name;
 static string tformat = "%c";
 
 bool is_verbose()
 {
   return vflag;
+}
+
+static void list_monitor_types(ostream& stream)
+{
+  stream << "Available monitors in this platform:\n\n";
+
+  for (const auto & type : fsw::monitor_factory::get_types())
+  {
+    stream << "  " << type << "\n";
+  }
 }
 
 static void usage(ostream& stream)
@@ -86,21 +96,18 @@ static void usage(ostream& stream)
   stream << " -i, --include=REGEX   Include paths matching REGEX.\n";
   stream << " -I, --insensitive     Use case insensitive regular expressions.\n";
 #  endif
-  stream << " -k, --kqueue          Use the kqueue monitor.\n";
   stream << " -l, --latency=DOUBLE  Set the latency.\n";
   stream << " -L, --follow-links    Follow symbolic links.\n";
+  stream << " -m, --monitor=NAME    Use the specified monitor.\n";
   stream << " -n, --numeric         Print a numeric event mask.\n";
   stream << " -o, --one-per-batch   Print a single message with the number of change events.\n";
   stream << "                       in the current batch.\n";
-  stream << " -p, --poll            Use the poll monitor.\n";
   stream << " -r, --recursive       Recurse subdirectories.\n";
   stream << " -t, --timestamp       Print the event timestamp.\n";
   stream << " -u, --utc-time        Print the event time as UTC time.\n";
   stream << " -v, --verbose         Print verbose output.\n";
   stream << " -x, --event-flags     Print the event flags.\n";
   stream << "\n";
-  stream << "See the man page for more information.";
-  stream << endl;
 #else
   string option_string = "[";
   option_string += "01";
@@ -111,8 +118,7 @@ static void usage(ostream& stream)
 #  ifdef HAVE_REGCOMP
   option_string += "i";
 #  endif
-  option_string += "k";
-  option_string += "lLnoprtuvx";
+  option_string += "lLmnortuvx";
   option_string += "]";
 
   stream << PACKAGE_STRING << "\n\n";
@@ -132,22 +138,25 @@ static void usage(ostream& stream)
   stream << " -i  Use case insensitive regular expressions.\n";
   stream << " -i  Include paths matching REGEX.\n";
 #  endif
-  stream << " -k  Use the kqueue monitor.\n";
   stream << " -l  Set the latency.\n";
+  stream << " -m  Use the specified monitor.\n";
   stream << " -L  Follow symbolic links.\n";
   stream << " -n  Print a numeric event masks.\n";
   stream << " -o  Print a single message with the number of change events in the current\n";
   stream << "     batch.\n";
-  stream << " -p  Use the poll monitor.\n";
   stream << " -r  Recurse subdirectories.\n";
   stream << " -t  Print the event timestamp.\n";
   stream << " -u  Print the event time as UTC time.\n";
   stream << " -v  Print verbose output.\n";
   stream << " -x  Print the event flags.\n";
   stream << "\n";
-  stream << "See the man page for more information.";
-  stream << endl;
 #endif
+
+  list_monitor_types(stream);
+
+  stream << "\nSee the man page for more information.";
+  stream << endl;
+
   exit(FSW_EXIT_USAGE);
 }
 
@@ -385,23 +394,18 @@ static void start_monitor(int argc, char ** argv, int optind)
     paths.push_back(path);
   }
 
-  if (pflag)
-  {
-    active_monitor = fsw::monitor::create_monitor(poll_monitor_type, paths, process_events);
-  }
-  else if (kflag)
-  {
-    active_monitor = fsw::monitor::create_monitor(kqueue_monitor_type, paths, process_events);
-  }
+  if (mflag)
+    active_monitor = fsw::monitor_factory::create_monitor_by_name(monitor_name,
+                                                                  paths,
+                                                                  process_events);
   else
-  {
-    active_monitor = fsw::monitor::create_default_monitor(paths, process_events);
-  }
+    active_monitor = fsw::monitor::create_default_monitor(paths,
+                                                          process_events);
 
   /* 
-   * libfsw supports case sensitivity and extended flags to be set on any
-   * filter but fsw does not.  For the time being, we apply the same flags to
-   * every filter.
+   * libfswatch supports case sensitivity and extended flags to be set on any
+   * filter but fswatch does not.  For the time being, we apply the same flags
+   * to every filter.
    */
 
   for (auto & filter : filters)
@@ -423,7 +427,7 @@ static void parse_opts(int argc, char ** argv)
   int ch;
   ostringstream short_options;
 
-  short_options << "01f:hkl:Lnoprtuvx";
+  short_options << "01f:hl:Lm:nortuvx";
 #ifdef HAVE_REGCOMP
   short_options << "e:Ei:I";
 #endif
@@ -444,12 +448,11 @@ static void parse_opts(int argc, char ** argv)
     { "include", required_argument, nullptr, 'i'},
     { "insensitive", no_argument, nullptr, 'I'},
 #  endif
-    { "kqueue", no_argument, nullptr, 'k'},
     { "latency", required_argument, nullptr, 'l'},
     { "follow-links", no_argument, nullptr, 'L'},
+    { "monitor", required_argument, nullptr, 'm'},
     { "numeric", no_argument, nullptr, 'n'},
     { "one-per-batch", no_argument, nullptr, 'o'},
-    { "poll", no_argument, nullptr, 'p'},
     { "recursive", no_argument, nullptr, 'r'},
     { "timestamp", no_argument, nullptr, 't'},
     { "utc-time", no_argument, nullptr, 'u'},
@@ -508,10 +511,6 @@ static void parse_opts(int argc, char ** argv)
       break;
 #endif
 
-    case 'k':
-      kflag = true;
-      break;
-
     case 'l':
       lflag = true;
       lvalue = strtod(optarg, nullptr);
@@ -527,6 +526,11 @@ static void parse_opts(int argc, char ** argv)
       Lflag = true;
       break;
 
+    case 'm':
+      mflag = true;
+      monitor_name = string(optarg);
+      break;
+
     case 'n':
       nflag = true;
       xflag = true;
@@ -534,10 +538,6 @@ static void parse_opts(int argc, char ** argv)
 
     case 'o':
       oflag = true;
-      break;
-
-    case 'p':
-      pflag = true;
       break;
 
     case 'r':
@@ -578,11 +578,10 @@ int main(int argc, char ** argv)
     ::exit(FSW_EXIT_UNK_OPT);
   }
 
-  // only one kind of monitor can be used at a time
-  if (pflag && kflag)
+  if (mflag && !fsw::monitor_factory::exists_type(monitor_name))
   {
-    cerr << "-k and -p are mutually exclusive." << endl;
-    ::exit(FSW_EXIT_OPT);
+    cerr << "Invalid monitor name." << endl;
+    ::exit(FSW_EXIT_MONITOR_NAME);
   }
 
   // configure and start the monitor
