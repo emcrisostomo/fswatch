@@ -17,6 +17,7 @@ ChangeLog
 	* event.h: Remove elements migrated to libfswatch.
 	* fsevent_monitor.cpp: Remove elements migrated to libfswatch.
 	* fsevent_monitor.h: Remove elements migrated to libfswatch.
+	* fswatch.7: Update mane page.
 	* fswatch.cpp:
 	  - Update all monitors to register themselves into the factory.
 	  - Update fswatch so that users can specify the monitor to be used by
