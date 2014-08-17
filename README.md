@@ -194,6 +194,15 @@ The behaviour is consistent with earlier versions of `fswatch` (v. 0.x).
 Please, read the _Compatibility Issues with fswatch v. 0.x_ section for further
 information.
 
+By default `fswatch` chooses the best monitor available on the current
+platform, in terms of performance and resource consumption.  If the user wishes
+to specify a different monitor, the `-m` option can be used to specify the
+monitor by name:
+
+    $ fswatch -m kqueue_monitor path
+
+The list of available monitors can be obtained with the `-h` option.
+
 For more information, refer to the `fswatch` man page.
 
 Bug Reports
