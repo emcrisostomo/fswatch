@@ -24,7 +24,6 @@
 #  include <regex.h>
 #endif
 
-
 /*
  * Conditionally include monitor headers for default construction.
  */
@@ -38,6 +37,8 @@
 #  include "inotify_monitor.h"
 #endif
 #include "poll_monitor.h"
+
+#include <iostream>
 
 using namespace std;
 
@@ -205,10 +206,54 @@ namespace fsw
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
     }
   }
-  
+
   void monitor::start()
   {
     lock_guard<mutex> run_guard(run_mutex);
     this->run();
+  }
+
+  map<string, fsw_monitor_type> monitor_factory::type_by_string;
+  
+  monitor * monitor_factory::create_monitor_by_name(const std::string& name,
+                                                    std::vector<std::string> paths,
+                                                    FSW_EVENT_CALLBACK * callback,
+                                                    void * context)
+  {
+    auto i = type_by_string.find(name);
+
+    if (i == type_by_string.end())
+      return nullptr;
+    else
+      return monitor::create_monitor(i->second, paths, callback, context);
+  }
+  
+  bool monitor_factory::exists_type(const std::string& name)
+  {
+    auto i = type_by_string.find(name);
+
+    return (i != type_by_string.end());
+  }
+
+  void monitor_factory::register_type(const std::string& name, fsw_monitor_type type)
+  {
+    type_by_string[name] = type;
+  }
+  
+  vector<string> monitor_factory::get_types()
+  {
+    vector<string> types;
+    
+    for (auto & i : type_by_string)
+    {
+      types.push_back(i.first);
+    }
+    
+    return types;
+  }
+  
+  monitor_registrant::monitor_registrant(const std::string & name, fsw_monitor_type type)
+  {
+    monitor_factory::register_type(name, type);
   }
 }
