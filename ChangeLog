@@ -12,6 +12,7 @@ ChangeLog
 	  - Update.
 	  - Update repository URL.
 	* configure.ac:
+	  - Bump v. 1.4.0.
 	  - Add libfswatch module to configure.ac and Makefile.am.
 	* event.cpp: Remove elements migrated to libfswatch.
 	* event.h: Remove elements migrated to libfswatch.
