@@ -41,7 +41,7 @@ namespace fsw
     return code;
   }
 
-  libfsw_exception::~libfsw_exception()
+  libfsw_exception::~libfsw_exception() noexcept
   {
   }
 }

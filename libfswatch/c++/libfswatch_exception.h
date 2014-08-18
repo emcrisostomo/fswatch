@@ -31,7 +31,7 @@ namespace fsw
     libfsw_exception(std::string cause, int code = FSW_ERR_UNKNOWN_ERROR);
     virtual const char * what() const noexcept;
     virtual int error_code() const noexcept;
-    virtual ~libfsw_exception();
+    virtual ~libfsw_exception() noexcept;
 
     explicit operator int() const noexcept;
 

@@ -62,8 +62,12 @@ ChangeLog
 	* c++/kqueue_monitor.h:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
-	* c++/libfswatch_exception.cpp: Move from fsw.
-	* c++/libfswatch_exception.h: Move from fsw.
+	* c++/libfswatch_exception.cpp:
+	  - Move from fsw.
+	  - Declare destructor noexcept.
+	* c++/libfswatch_exception.h:
+	  - Move from fsw.
+	  - Declare destructor noexcept.
 	* c++/libfswatch_map.h:
 	  - Move from fsw.
 	  - Rename to libfswatch_map.h.
