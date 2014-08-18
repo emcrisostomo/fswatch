@@ -24,6 +24,7 @@
 #include <ctime>
 #include <stdlib.h>
 #include <cstring>
+#include <memory>
 #include "libfswatch.h"
 #include "../c++/libfswatch_map.h"
 #include "../c++/filter.h"
@@ -38,7 +39,7 @@ typedef struct FSW_SESSION
   FSW_HANDLE handle;
   vector<string> paths;
   fsw_monitor_type type;
-  monitor *monitor;
+  monitor * monitor;
   FSW_CEVENT_CALLBACK callback;
   double latency;
   bool recursive;
