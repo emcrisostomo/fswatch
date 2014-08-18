@@ -39,7 +39,7 @@ typedef struct FSW_SESSION
   FSW_HANDLE handle;
   vector<string> paths;
   fsw_monitor_type type;
-  monitor * monitor;
+  fsw::monitor * monitor;
   FSW_CEVENT_CALLBACK callback;
   double latency;
   bool recursive;
@@ -83,7 +83,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
   if (cevents == nullptr)
     throw int(FSW_ERR_MEMORY);
 
-  for (int i = 0; i < events.size(); ++i)
+  for (unsigned int i = 0; i < events.size(); ++i)
   {
     fsw_cevent * cevt = &cevents[i];
     const event & evt = events[i];
@@ -110,7 +110,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
       if (!cevt->flags) throw int(FSW_ERR_MEMORY);
     }
 
-    for (int e = 0; e < cevt->flags_num; ++e)
+    for (unsigned int e = 0; e < cevt->flags_num; ++e)
     {
       cevt->flags[e] = flags[e];
     }
@@ -120,7 +120,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
   (*(context->callback))(cevents, events.size());
 
   // Deallocate memory allocated by events.
-  for (int i = 0; i < events.size(); ++i)
+  for (unsigned int i = 0; i < events.size(); ++i)
   {
     fsw_cevent * cevt = &cevents[i];
 

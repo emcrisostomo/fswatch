@@ -29,6 +29,7 @@ ChangeLog
 	  - Simplify the libfsw_cpp_callback_proxy memory allocation.
 	  - Pass callback address to C proxy callback as context data.
 	  - Include <memory> header required by unique_ptr.
+	  - Do not compare signed types against unsigned types.
 	* c/libfswatch.h:
 	  - Move from fsw.
 	  - Rename to libfswatch.h
