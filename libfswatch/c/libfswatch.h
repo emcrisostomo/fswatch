@@ -74,7 +74,7 @@ extern "C"
    * FSW_CEVENT_CALLBACK, that is it is a function conforming with the
    * following signature:
    * 
-   *     void c_process_events(fsw_cevent const * const * const events,
+   *     void c_process_events(fsw_cevent const * const events,
    *                           const unsigned int event_num);
    * 
    * When a monitor receives change events satisfying all the session criteria,
