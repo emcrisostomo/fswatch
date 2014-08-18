@@ -26,7 +26,7 @@
 #include <sstream>
 #include <ctime>
 #include "libfswatch_exception.h"
-#include "libfswatch_log.h"
+#include "../c/libfswatch_log.h"
 #include "libfswatch_map.h"
 
 using namespace std;
@@ -168,7 +168,7 @@ namespace fsw
   {
     if (load->events.size())
     {
-      callback(load->events);
+      callback(load->events, context);
       load->events.clear();
     }
   }
