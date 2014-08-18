@@ -124,11 +124,11 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
   {
     fsw_cevent * cevt = &cevents[i];
 
-    if (!cevt->flags) ::free(static_cast<void *> (cevt->flags));
+    if (cevt->flags) ::free(static_cast<void *> (cevt->flags));
     ::free(static_cast<void *> (cevt->path));
   }
 
-  ::free(static_cast<void *>(cevents));
+  ::free(static_cast<void *> (cevents));
 }
 
 FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
