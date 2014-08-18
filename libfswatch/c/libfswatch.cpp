@@ -55,20 +55,26 @@ static FSW_THREAD_LOCAL unsigned int last_error;
 #endif
 
 // Default library callback.
-FSW_EVENT_CALLBACK libfsw_cpp_callback_proxy;
-FSW_SESSION * get_session(const FSW_HANDLE handle);
+static FSW_EVENT_CALLBACK libfsw_cpp_callback_proxy;
+static FSW_SESSION * get_session(const FSW_HANDLE handle);
 
 static int create_monitor(FSW_HANDLE handle, const fsw_monitor_type type);
 static FSW_STATUS fsw_set_last_error(const int error);
 
+typedef struct fsw_callback_context
+{
+  FSW_HANDLE handle;
+  FSW_CEVENT_CALLBACK callback;
+} fsw_callback_context;
+
 void libfsw_cpp_callback_proxy(const std::vector<event> & events,
-                               void * handle_ptr)
+                               void * context_ptr)
 {
   // TODO: A C friendly error handler should be notified instead of throwing an exception.
-  if (!handle_ptr)
+  if (!context_ptr)
     throw int(FSW_ERR_MISSING_CONTEXT);
 
-  const FSW_HANDLE * handle = static_cast<FSW_HANDLE *> (handle_ptr);
+  const fsw_callback_context * context = static_cast<fsw_callback_context *> (context_ptr);
 
   fsw_cevent * cevents = static_cast<fsw_cevent *> (::malloc(sizeof (fsw_cevent) * events.size()));
 
@@ -108,10 +114,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
   }
 
   // TODO manage C++ exceptions from C code
-  std::lock_guard<std::mutex> session_lock(session_mutex);
-  FSW_SESSION * session = get_session(*handle);
-
-  (*(session->callback))(cevents, events.size());
+  (*(context->callback))(cevents, events.size());
 
   // TODO deallocate memory allocated by events
 }
@@ -162,11 +165,14 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     if (!session->paths.size())
       return fsw_set_last_error(int(FSW_ERR_PATHS_NOT_SET));
 
-    FSW_HANDLE * handle_ptr = new FSW_HANDLE(session->handle);
+    fsw_callback_context * context_ptr = new fsw_callback_context;
+    context_ptr->callback = session->callback;
+    context_ptr->handle = session->handle;
+
     monitor * current_monitor = monitor::create_monitor(type,
                                                         session->paths,
                                                         libfsw_cpp_callback_proxy,
-                                                        handle_ptr);
+                                                        context_ptr);
     session->monitor = current_monitor;
   }
   catch (libfsw_exception ex)
@@ -370,7 +376,7 @@ int fsw_destroy_session(const FSW_HANDLE handle)
       if (!context)
       {
         session->monitor->set_context(nullptr);
-        delete static_cast<FSW_HANDLE *> (context);
+        delete static_cast<fsw_callback_context *> (context);
       }
 
       delete session->monitor;

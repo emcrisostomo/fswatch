@@ -27,6 +27,7 @@ ChangeLog
 	  - Move from fsw.
 	  - Rename to libfswatch.cpp.
 	  - Simplify the libfsw_cpp_callback_proxy memory allocation.
+	  - Pass callback address to C proxy callback as context data.
 	* c/libfswatch.h:
 	  - Move from fsw.
 	  - Rename to libfswatch.h
