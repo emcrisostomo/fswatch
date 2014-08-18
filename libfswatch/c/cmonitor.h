@@ -24,6 +24,11 @@ extern "C"
 {
 #  endif
 
+  /*
+   * This enumeration lists all the available monitors, where the special
+   * system_default_monitor_type element refers to the (platform-specific)
+   * default monitor.
+   */
   enum fsw_monitor_type
   {
     system_default_monitor_type = 0,
