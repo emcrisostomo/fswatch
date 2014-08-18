@@ -13,6 +13,7 @@ ChangeLog
 	  - Update.
 	  - Update repository URL.
 	  - Add usage example of the -m option.
+	* autogen.sh: Update to forward arguments to autoreconf.
 	* configure.ac:
 	  - Bump v. 1.4.0.
 	  - Add libfswatch module to configure.ac and Makefile.am.
