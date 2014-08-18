@@ -24,6 +24,11 @@ extern "C"
 {
 #  endif
 
+  /*
+   * Each element of this enum represents a backend-agnostic change flag,
+   * providing information about the different kind of changes an event refers
+   * to.
+   */
   enum fsw_event_flag
   {
     PlatformSpecific = 1,
@@ -39,14 +44,28 @@ extern "C"
     Link = 1024
   };
 
+  /*
+   * An file change event is represented as an instance of this struct where:
+   *   - path is the path where the event was triggered.
+   *   - evt_time the time when the event was triggered.
+   *   - flags is an array of fsw_event_flag of size flags_num.
+   *   - flags_num is the size of the flags array.
+   */
   typedef struct fsw_cevent
   {
     char * path;
     time_t evt_time;
-    fsw_event_flag *flags;
+    fsw_event_flag * flags;
     unsigned int flags_num;
   } fsw_cevent;
 
+  /*
+   * A function pointer of type FSW_CEVENT_CALLBACK is used by the API as a
+   * callback to provide information about received events.  The callback is
+   * passed the following arguments:
+   *   - events, a const pointer to a const array of events of type fsw_cevent.
+   *   - event_num, the size of the *events array.
+   */
   typedef void (*FSW_CEVENT_CALLBACK)(fsw_cevent const * const * const events,
     const unsigned int event_num);
 
