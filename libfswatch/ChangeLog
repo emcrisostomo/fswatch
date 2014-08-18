@@ -9,59 +9,81 @@ ChangeLog
 	  - Copy from fsw.
 	  - Bump v. 1.4.0.
 	* COPYING: Add.
-	* LICENSE: Add GPL.
 	* INSTALL: Add.
+	* LICENSE: Add GPL.
 	* Makefile.am:
 	  - Move libfsw pieces from fsw.
 	  - Update distributed document data.
 	* NEWS: Add.
 	* README.md: Add.
-	* event.h: Move from fsw.
-	* event.cpp: Move from fsw.
-	* fsevent_monitor.cpp:
+	* c/cevent.h:
+	  - Add.
+	  - Document.
+	* c/cmonitor.h:
+	  - Add.
+	  - Document.
+	* c/error.h: Move from fsw.
+	* c/libfswatch.cpp:
+	  - Move from fsw.
+	  - Rename to libfswatch.cpp.
+	* c/libfswatch.h:
+	  - Move from fsw.
+	  - Rename to libfswatch.h
+	  - Document.
+	* c/libfswatch_log.cpp:
+	  - Move from fsw.
+	  - Rename to libfswatch_log.cpp.
+	* c/libfswatch_log.h:
+	  - Move from fsw.
+	  - Rename to libfswatch_log.h.
+	* c/libfswatch_log.h:
+	* c++/event.h: Move from fsw.
+	* c++/event.cpp: Move from fsw.
+	* c++/filter.h: Move from fsw.
+	* c++/fsevent_monitor.cpp:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
-	* fsevent_monitor.h:
+	* c++/fsevent_monitor.h:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
-	* inotify_monitor.cpp:
+	* c++/inotify_monitor.cpp:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
-	* inotify_monitor.h:
+	* c++/inotify_monitor.h:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
-	* kqueue_monitor.cpp:
+	* c++/kqueue_monitor.cpp:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
-	* kqueue_monitor.h:
+	* c++/kqueue_monitor.h:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
-	* libfsw.cpp: Add.
-	* libfsw.h: Add.
-	* libfsw_exception.cpp: Move from fsw.
-	* libfsw_exception.h: Move from fsw.
-	* libfsw_log.cpp: Move from fsw.
-	* libfsw_log.h: Move from fsw.
+	* c++/libfswatch_exception.cpp: Move from fsw.
+	* c++/libfswatch_exception.h: Move from fsw.
+	* c++/libfswatch_map.h:
+	  - Move from fsw.
+	  - Rename to libfswatch_map.h.
+	* c++/libfswatch_set.h:
+	  - Move from fsw.
+	  - Rename to libfswatch_set.h.
+	* c++/monitor.cpp:
+	  - Move from fsw.
+	  - Add a monitor registration and factory facility in order to create
+	    monitors by name.
+	* c++/monitor.h:
+	  - Move from fsw.
+	  - Add a monitor registration and factory facility in order to create
+	    monitors by name.
+	* c++/path_utils.cpp: Move from fsw.
+	* c++/path_utils.h: Move from fsw.
+	* c++/poll_monitor.cpp:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	* c++/poll_monitor.h:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
 	* m4/ax_append_flag.m4: Add.
 	* m4/ax_cflags_warn_all.m4: Add.
 	* m4/ax_cxx_compile_stdcxx_11.m4: Add.
 	* m4/ax_cxx_namespaces.m4: Add.
 	* m4/ax_require_defined.m4: Add.
-	* monitor.cpp:
-	  - Move from fsw.
-	  - Add a monitor registration and factory facility in order to create
-	    monitors by name.
-	* monitor.h:
-	  - Move from fsw.
-	  - Add a monitor registration and factory facility in order to create
-	    monitors by name.
-	* path_utils.cpp: Move from fsw.
-	* path_utils.h: Move from fsw.
-	* poll_monitor.cpp:
-	  - Move from fsw.
-	  - Update all monitors to register themselves into the factory.
-	* poll_monitor.h:
-	  - Move from fsw.
-	  - Update all monitors to register themselves into the factory.
-	* NEWS: Add.
-	* README: Add.
