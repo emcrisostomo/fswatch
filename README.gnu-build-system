@@ -1,79 +1,91 @@
 README.gnu-build-system
-***********************
+=======================
 
 Introduction
-============
+------------
 
-fsw is built using the GNU Build System and developers willing to modify the
-configuration files must have the GNU Build System installed in order to do so.
+`fswatch` is built using the GNU Build System and developers willing to modify
+the configuration files must have the GNU Build System installed in order to do 
+so.
 
   For further information about the GNU Build System and its use, please refer
 to its official documentation.
 
 Installing the GNU Build System
-===============================
+-------------------------------
 
-  To install the GNU Build System, the following operations must be performed:
+To install the GNU Build System, the following operations must be performed:
 
   1. Get the GNU Build System components:
-     - Autoconf:
-       (http://www.gnu.org/software/autoconf/) (>= v. 2.69) 
+     - [Autoconf] (>= v. 2.69).
+     - [Automake]: (>= v. 1.14.1).
+     - [Libtool]: (>= v. 2.4.2).
 
-     - Automake
-       (http://www.gnu.org/software/automake/) (>= v. 1.14.1)
-
-     - Libtool:
-       (http://www.gnu.org/software/libtool/)  (>= v. 2.4.2)
-  
   2. Install the packages in the following order:
-     a. Autoconf
-     b. Automake
-     c. Libtool
+    - Autoconf
+    - Automake
+    - Libtool
 
-  3. From now on, <bundle> will indicate any of the above-mentioned components.
+  3. From now on, `<bundle>` will indicate any of the above-mentioned
+     components.
 
   4. Grab the sources:
 
-     $ wget <sources-url>
+        $ wget <sources-url>
 
   5. Uncompress the source bundle:
 
-     $ gunzip <bundle>.tar.gz
-     $ tar -xf <bundle>.tar
+        $ gunzip <bundle>.tar.gz
+        $ tar -xf <bundle>.tar
 
-  6. Configure the package:
+  6. Configure the GNU Build System using the provided `autogen.sh` script:
 
-     $ ./configure [...]
+        $ ./autogen.sh
 
-  7. If you want to install the package in the default location (/usr/local/bin)
-     you can invoke ./configure with no option, otherwise provide the desired
-     installation directory using the --prefix option:
+     Whenever any component of the GNU Build System is updated, the `--force`
+     option should be passed to `autogen.sh`, which in turn forwards it to
+     `autoreconf`, to make sure that automatically generated scripts and macros 
+     are updated:
 
-     $ ./configure --prefix=/destdir
+        $ ./autogen.sh --force
 
-  8. Build the package:
+  7. Configure the package:
 
-     $ make
+        $ ./configure [...]
 
-  9. Test the components:
+  8. If you want to install the package in the default location 
+     (`/usr/local/bin`) you can invoke `./configure` with no option, otherwise 
+     provide the desired installation directory using the `--prefix` option:
 
-     $ make check
+        $ ./configure --prefix=/destdir
 
- 10. Test the installed components:
+  9. Build the package:
 
-     $ make check
+        $ make
 
- 11. Install the components:
+  10. Test the components:
 
-     $ make install
+        $ make check
 
-     Depending on the installation directory additional privileges may be
+  11. Test the installed components:
+
+        $ make check
+
+  12. Install the components:
+
+        $ make install
+
+    Depending on the installation directory additional privileges may be
      required.
      
- 12. Add the installation directory to the PATH, otherwise builds of the
+  13. Add the installation directory to the `PATH`, otherwise builds of the
      package may fail:
 
-     $ export PATH=/destdir/bin:$PATH
+        $ export PATH=/destdir/bin:$PATH
+
+[Autoconf]: http://www.gnu.org/software/autoconf/
+[Automake]: http://www.gnu.org/software/automake/
+[Libtool]: http://www.gnu.org/software/libtool/
 
 -----
 

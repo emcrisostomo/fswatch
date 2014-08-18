@@ -9,6 +9,7 @@ ChangeLog
 	  - Add libfswatch module to configure.ac and Makefile.am.
 	  - Update distributed document data.
 	* NEWS: Update.
+	* README.gnu-build-system: Updated instructions.
 	* README.md:
 	  - Update.
 	  - Update repository URL.
