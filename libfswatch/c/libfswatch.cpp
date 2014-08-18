@@ -61,7 +61,6 @@ FSW_SESSION * get_session(const FSW_HANDLE handle);
 static int create_monitor(FSW_HANDLE handle, const fsw_monitor_type type);
 static FSW_STATUS fsw_set_last_error(const int error);
 
-
 void libfsw_cpp_callback_proxy(const std::vector<event> & events,
                                void * handle_ptr)
 {
@@ -71,15 +70,15 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
 
   const FSW_HANDLE * handle = static_cast<FSW_HANDLE *> (handle_ptr);
 
-  fsw_cevent ** cevents = static_cast<fsw_cevent **> (::malloc(sizeof (fsw_cevent) * events.size()));
+  fsw_cevent * cevents = static_cast<fsw_cevent *> (::malloc(sizeof (fsw_cevent) * events.size()));
 
   if (cevents == nullptr)
     throw int(FSW_ERR_MEMORY);
 
   for (int i = 0; i < events.size(); ++i)
   {
-    const event evt = events[i];
-    fsw_cevent *cevt = new fsw_cevent();
+    fsw_cevent * cevt = &cevents[i];
+    const event & evt = events[i];
 
     // Copy event into C event wrapper.
     const string path = evt.get_path();
@@ -106,14 +105,15 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
     {
       cevt->flags[e] = flags[e];
     }
-
-    cevents[i] = cevt;
   }
 
   // TODO manage C++ exceptions from C code
   std::lock_guard<std::mutex> session_lock(session_mutex);
   FSW_SESSION * session = get_session(*handle);
+
   (*(session->callback))(cevents, events.size());
+
+  // TODO deallocate memory allocated by events
 }
 
 FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
@@ -131,7 +131,8 @@ FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
   do
   {
     handle = rand();
-  }  while (sessions.find(handle) != sessions.end());
+  }
+  while (sessions.find(handle) != sessions.end());
 
   FSW_SESSION *session = new FSW_SESSION{};
 
