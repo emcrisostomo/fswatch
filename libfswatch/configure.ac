@@ -48,6 +48,7 @@ AX_CXX_COMPILE_STDCXX_11(noext)
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
+AX_FSEVENTS_HAVE_FILE_EVENTS
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h unistd.h fcntl.h])
