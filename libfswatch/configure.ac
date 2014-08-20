@@ -60,8 +60,9 @@ AM_CONDITIONAL([USE_INOTIFY], [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
 
 if test "x${ac_cv_header_CoreServices_CoreServices_h}" = "xyes" ; then
   AX_FSEVENTS_HAVE_FILE_EVENTS
-  AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
 fi
+
+AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL

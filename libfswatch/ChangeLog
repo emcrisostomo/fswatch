@@ -12,6 +12,7 @@ ChangeLog
 	    events.
 	  - Compile the FSEvents monitor only if the OS X FSEvents API
 	    supports file events.
+	  - Define Automake conditionals in every code path.
 	* COPYING: Add.
 	* INSTALL: Add.
 	* LICENSE: Add GPL.
