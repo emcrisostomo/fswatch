@@ -23,22 +23,22 @@
 namespace fsw
 {
 
-  class fsevent_monitor : public monitor
+  class fsevents_monitor : public monitor
   {
-    REGISTER_MONITOR(fsevent_monitor, fsevents_monitor_type);
+    REGISTER_MONITOR(fsevents_monitor, fsevents_monitor_type);
 
   public:
-    fsevent_monitor(std::vector<std::string> paths,
+    fsevents_monitor(std::vector<std::string> paths,
                     FSW_EVENT_CALLBACK * callback,
                     void * context = nullptr);
-    virtual ~fsevent_monitor();
+    virtual ~fsevents_monitor();
 
     void run();
     void set_numeric_event(bool numeric);
 
   private:
-    fsevent_monitor(const fsevent_monitor& orig) = delete;
-    fsevent_monitor& operator=(const fsevent_monitor & that) = delete;
+    fsevents_monitor(const fsevents_monitor& orig) = delete;
+    fsevents_monitor& operator=(const fsevents_monitor & that) = delete;
 
     static void fsevent_callback(ConstFSEventStreamRef streamRef,
                                  void *clientCallBackInfo,

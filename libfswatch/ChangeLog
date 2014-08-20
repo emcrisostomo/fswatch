@@ -20,6 +20,7 @@ ChangeLog
 	  - Update distributed document data.
 	  - Compile the FSEvents monitor only if the OS X FSEvents API
 	    supports file events.
+	  - Refactor after fsevents_monitor name change.
 	* NEWS: Add.
 	* README.md: Add.
 	* c/cevent.h:
@@ -51,14 +52,16 @@ ChangeLog
 	* c++/event.h: Move from fsw.
 	* c++/event.cpp: Move from fsw.
 	* c++/filter.h: Move from fsw.
-	* c++/fsevent_monitor.cpp:
+	* c++/fsevents_monitor.cpp:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
 	  - Use the fsevent_monitor only if the FSEvents API supports file
 	    events.
-	* c++/fsevent_monitor.h:
+	  - Moved from fsevent_monitor.cpp.
+	* c++/fsevents_monitor.h:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
+	  - Moved from fsevent_monitor.h.
 	* c++/inotify_monitor.cpp:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
@@ -89,6 +92,7 @@ ChangeLog
 	  - Move from fsw.
 	  - Add a monitor registration and factory facility in order to create
 	    monitors by name.
+	  - Refactor after fsevents_monitor name change.
 	* c++/monitor.h:
 	  - Move from fsw.
 	  - Add a monitor registration and factory facility in order to create

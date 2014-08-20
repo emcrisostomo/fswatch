@@ -18,7 +18,7 @@
 #  include "libfswatch_config.h"
 #endif
 
-#include "fsevent_monitor.h"
+#include "fsevents_monitor.h"
 
 #include "libfswatch_exception.h"
 #include "c/libfswatch_log.h"
@@ -65,16 +65,16 @@ namespace fsw
 
   static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
 
-  REGISTER_MONITOR_IMPL(fsevent_monitor, fsevents_monitor_type);
+  REGISTER_MONITOR_IMPL(fsevents_monitor, fsevents_monitor_type);
 
-  fsevent_monitor::fsevent_monitor(vector<string> paths_to_monitor,
+  fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK * callback,
                                    void * context) :
     monitor(paths_to_monitor, callback, context)
   {
   }
 
-  fsevent_monitor::~fsevent_monitor()
+  fsevents_monitor::~fsevents_monitor()
   {
     if (stream)
     {
@@ -91,12 +91,12 @@ namespace fsw
     stream = nullptr;
   }
 
-  void fsevent_monitor::set_numeric_event(bool numeric)
+  void fsevents_monitor::set_numeric_event(bool numeric)
   {
     numeric_event = numeric;
   }
 
-  void fsevent_monitor::run()
+  void fsevents_monitor::run()
   {
     if (stream) return;
 
@@ -127,7 +127,7 @@ namespace fsw
 
     libfsw_log("Creating FSEvent stream...\n");
     stream = FSEventStreamCreate(NULL,
-                                 &fsevent_monitor::fsevent_callback,
+                                 &fsevents_monitor::fsevent_callback,
                                  context,
                                  pathsToWatch,
                                  kFSEventStreamEventIdSinceNow,
@@ -166,19 +166,19 @@ namespace fsw
     return evt_flags;
   }
 
-  void fsevent_monitor::fsevent_callback(ConstFSEventStreamRef streamRef,
+  void fsevents_monitor::fsevent_callback(ConstFSEventStreamRef streamRef,
                                          void *clientCallBackInfo,
                                          size_t numEvents,
                                          void *eventPaths,
                                          const FSEventStreamEventFlags eventFlags[],
                                          const FSEventStreamEventId eventIds[])
   {
-    fsevent_monitor *fse_monitor =
-      static_cast<fsevent_monitor *> (clientCallBackInfo);
+    fsevents_monitor *fse_monitor =
+      static_cast<fsevents_monitor *> (clientCallBackInfo);
 
     if (!fse_monitor)
     {
-      throw libfsw_exception("The callback info cannot be cast to fsevent_monitor.");
+      throw libfsw_exception("The callback info cannot be cast to fsevents_monitor.");
     }
 
     vector<event> events;
