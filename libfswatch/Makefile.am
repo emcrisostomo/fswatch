@@ -30,7 +30,7 @@ libfswatch_la_SOURCES += c++/libfswatch_exception.cpp
 libfswatch_la_SOURCES += c++/event.cpp
 libfswatch_la_SOURCES += c++/monitor.cpp
 libfswatch_la_SOURCES += c++/poll_monitor.cpp
-if USE_CORESERVICES
+if USE_FSEVENTS
   libfswatch_la_SOURCES += c++/fsevent_monitor.cpp
 endif
 if USE_KQUEUE
@@ -43,7 +43,7 @@ libfswatch_la_SOURCES += c++/path_utils.cpp c++/path_utils.h
 
 libfswatch_la_LDFLAGS =
 
-if USE_CORESERVICES
+if USE_FSEVENTS
   libfswatch_la_LDFLAGS += -framework CoreServices
 endif
 
@@ -56,7 +56,7 @@ libfswatch_c_HEADERS = c/libfswatch.h c/cevent.h c/cfilter.h c/cmonitor.h c/erro
 
 # Distribute C++ headers conditionally adding available backends.
 libfswatch_cpp_HEADERS  = c++/monitor.h
-if USE_CORESERVICES
+if USE_FSEVENTS
   libfswatch_cpp_HEADERS += c++/fsevent_monitor.h 
 endif
 if USE_KQUEUE

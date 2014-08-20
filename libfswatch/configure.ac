@@ -48,7 +48,6 @@ AX_CXX_COMPILE_STDCXX_11(noext)
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
-AX_FSEVENTS_HAVE_FILE_EVENTS
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h unistd.h fcntl.h])
@@ -56,9 +55,13 @@ AC_CHECK_HEADERS([sys/event.h sys/inotify.h])
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
 AC_CHECK_HEADERS([unordered_map unordered_set])
 
-AM_CONDITIONAL([USE_CORESERVICES], [test "x${ac_cv_header_CoreServices_CoreServices_h}" = "xyes"])
 AM_CONDITIONAL([USE_KQUEUE], [test "x${ac_cv_header_sys_event_h}" = "xyes"])
 AM_CONDITIONAL([USE_INOTIFY], [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
+
+if test "x${ac_cv_header_CoreServices_CoreServices_h}" = "xyes" ; then
+  AX_FSEVENTS_HAVE_FILE_EVENTS
+  AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
+fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
