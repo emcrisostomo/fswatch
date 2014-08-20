@@ -27,7 +27,7 @@
 /*
  * Conditionally include monitor headers for default construction.
  */
-#if defined(HAVE_CORESERVICES_CORESERVICES_H)
+#if defined(HAVE_FSEVENTS_FILE_EVENTS)
 #  include "fsevent_monitor.h"
 #endif
 #if defined(HAVE_SYS_EVENT_H)
@@ -157,7 +157,7 @@ namespace fsw
                                             FSW_EVENT_CALLBACK * callback,
                                             void * context)
   {
-#if defined(HAVE_CORESERVICES_CORESERVICES_H)
+#if defined(HAVE_FSEVENTS_FILE_EVENTS)
     return new fsevent_monitor(paths, callback, context);
 #elif defined(HAVE_SYS_EVENT_H)
     return new kqueue_monitor(paths, callback, context);
@@ -179,7 +179,7 @@ namespace fsw
       return monitor::create_default_monitor(paths, callback, context);
 
     case fsevents_monitor_type:
-#if defined(HAVE_CORESERVICES_CORESERVICES_H)
+#if defined(HAVE_FSEVENTS_FILE_EVENTS)
       return new fsevent_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);

@@ -8,12 +8,18 @@ ChangeLog
 	* configure.ac:
 	  - Copy from fsw.
 	  - Bump v. 1.4.0.
+	  - Add M4 macro to check whether the OS X FSEvents API supports file
+	    events.
+	  - Compile the FSEvents monitor only if the OS X FSEvents API
+	    supports file events.
 	* COPYING: Add.
 	* INSTALL: Add.
 	* LICENSE: Add GPL.
 	* Makefile.am:
 	  - Move libfsw pieces from fsw.
 	  - Update distributed document data.
+	  - Compile the FSEvents monitor only if the OS X FSEvents API
+	    supports file events.
 	* NEWS: Add.
 	* README.md: Add.
 	* c/cevent.h:
@@ -48,6 +54,8 @@ ChangeLog
 	* c++/fsevent_monitor.cpp:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
+	  - Use the fsevent_monitor only if the FSEvents API supports file
+	    events.
 	* c++/fsevent_monitor.h:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
@@ -97,4 +105,6 @@ ChangeLog
 	* m4/ax_cflags_warn_all.m4: Add.
 	* m4/ax_cxx_compile_stdcxx_11.m4: Add.
 	* m4/ax_cxx_namespaces.m4: Add.
+	* m4/ax_fsevents_have_file_events.m4: Add M4 macro to check whether
+	  the OS X FSEvents API supports file events.
 	* m4/ax_require_defined.m4: Add.
