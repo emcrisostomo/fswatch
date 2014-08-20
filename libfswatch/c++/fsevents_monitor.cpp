@@ -68,8 +68,8 @@ namespace fsw
   REGISTER_MONITOR_IMPL(fsevents_monitor, fsevents_monitor_type);
 
   fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
-                                   FSW_EVENT_CALLBACK * callback,
-                                   void * context) :
+                                     FSW_EVENT_CALLBACK * callback,
+                                     void * context) :
     monitor(paths_to_monitor, callback, context)
   {
   }
@@ -127,7 +127,7 @@ namespace fsw
 
     libfsw_log("Creating FSEvent stream...\n");
     stream = FSEventStreamCreate(NULL,
-                                 &fsevents_monitor::fsevent_callback,
+                                 &fsevents_monitor::fsevents_callback,
                                  context,
                                  pathsToWatch,
                                  kFSEventStreamEventIdSinceNow,
@@ -166,12 +166,12 @@ namespace fsw
     return evt_flags;
   }
 
-  void fsevents_monitor::fsevent_callback(ConstFSEventStreamRef streamRef,
-                                         void *clientCallBackInfo,
-                                         size_t numEvents,
-                                         void *eventPaths,
-                                         const FSEventStreamEventFlags eventFlags[],
-                                         const FSEventStreamEventId eventIds[])
+  void fsevents_monitor::fsevents_callback(ConstFSEventStreamRef streamRef,
+                                           void *clientCallBackInfo,
+                                           size_t numEvents,
+                                           void *eventPaths,
+                                           const FSEventStreamEventFlags eventFlags[],
+                                           const FSEventStreamEventId eventIds[])
   {
     fsevents_monitor *fse_monitor =
       static_cast<fsevents_monitor *> (clientCallBackInfo);

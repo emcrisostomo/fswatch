@@ -58,10 +58,12 @@ ChangeLog
 	  - Use the fsevent_monitor only if the FSEvents API supports file
 	    events.
 	  - Moved from fsevent_monitor.cpp.
+	  - Rename members using the fsevent_ prefix to use fsevents_.
 	* c++/fsevents_monitor.h:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
 	  - Moved from fsevent_monitor.h.
+	  - Rename members using the fsevent_ prefix to use fsevents_.
 	* c++/inotify_monitor.cpp:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.

@@ -29,8 +29,8 @@ namespace fsw
 
   public:
     fsevents_monitor(std::vector<std::string> paths,
-                    FSW_EVENT_CALLBACK * callback,
-                    void * context = nullptr);
+                     FSW_EVENT_CALLBACK * callback,
+                     void * context = nullptr);
     virtual ~fsevents_monitor();
 
     void run();
@@ -40,12 +40,12 @@ namespace fsw
     fsevents_monitor(const fsevents_monitor& orig) = delete;
     fsevents_monitor& operator=(const fsevents_monitor & that) = delete;
 
-    static void fsevent_callback(ConstFSEventStreamRef streamRef,
-                                 void *clientCallBackInfo,
-                                 size_t numEvents,
-                                 void *eventPaths,
-                                 const FSEventStreamEventFlags eventFlags[],
-                                 const FSEventStreamEventId eventIds[]);
+    static void fsevents_callback(ConstFSEventStreamRef streamRef,
+                                  void *clientCallBackInfo,
+                                  size_t numEvents,
+                                  void *eventPaths,
+                                  const FSEventStreamEventFlags eventFlags[],
+                                  const FSEventStreamEventId eventIds[]);
 
     FSEventStreamRef stream = nullptr;
     bool numeric_event = false;
