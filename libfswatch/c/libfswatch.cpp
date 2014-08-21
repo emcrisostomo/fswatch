@@ -53,11 +53,22 @@ typedef struct FSW_SESSION
 } FSW_SESSION;
 
 static bool srand_initialized = false;
+
+#ifdef HAVE_CXX_UNIQUE_PTR
 static fsw_hash_map<FSW_HANDLE, unique_ptr<FSW_SESSION>> sessions;
+#else
+static fsw_hash_map<FSW_HANDLE, FSW_SESSION *> sessions;
+#endif
+
 #ifdef HAVE_CXX_MUTEX
+#  ifdef HAVE_CXX_UNIQUE_PTR
 static fsw_hash_map<FSW_HANDLE, unique_ptr<mutex>> session_mutexes;
+#  else
+static fsw_hash_map<FSW_HANDLE, mutex *> session_mutexes;
+#  endif
 static std::mutex session_mutex;
 #endif
+
 #if defined(HAVE_CXX_THREAD_LOCAL)
 static FSW_THREAD_LOCAL unsigned int last_error;
 #endif
@@ -163,9 +174,18 @@ FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
   session->type = type;
 
   // Store the handle and a mutex to guard access to session instances.
+#ifdef HAVE_CXX_UNIQUE_PTR
   sessions[handle] = unique_ptr<FSW_SESSION>(session);
+#else
+  sessions[handle] = session;
+#endif
+
 #ifdef HAVE_CXX_MUTEX
+#  ifdef HAVE_CXX_UNIQUE_PTR
   session_mutexes[handle] = unique_ptr<mutex>(new mutex);
+#  else
+  session_mutexes[handle] = new mutex;
+#  endif
 #endif
 
   return handle;
@@ -373,8 +393,13 @@ int fsw_start_monitor(const FSW_HANDLE handle)
     if (session->running.load(memory_order_acquire))
       return fsw_set_last_error(int(FSW_ERR_MONITOR_ALREADY_RUNNING));
 
+#  ifdef HAVE_CXX_UNIQUE_PTR
     unique_ptr<mutex> & sm = session_mutexes.at(handle);
     lock_guard<mutex> lock_sm(*sm.get());
+#  else
+    mutex * sm = session_mutexes.at(handle);
+    lock_guard<mutex> lock_sm(*sm);
+#  endif
 
     session_lock.unlock();
 #endif
@@ -412,8 +437,13 @@ int fsw_destroy_session(const FSW_HANDLE handle)
     FSW_SESSION * session = get_session(handle);
 
 #ifdef HAVE_CXX_MUTEX
-    unique_ptr<mutex> & sm = session_mutexes[handle];
+#  ifdef HAVE_CXX_UNIQUE_PTR
+    const unique_ptr<mutex> & sm = session_mutexes[handle];
     lock_guard<mutex> sm_lock(*sm.get());
+#  else
+    mutex * sm = session_mutexes[handle];
+    lock_guard<mutex> sm_lock(*sm);
+#  endif
 #endif
 
     if (session->monitor)
@@ -447,7 +477,11 @@ FSW_SESSION * get_session(const FSW_HANDLE handle)
   if (sessions.find(handle) == sessions.end())
     throw int(FSW_ERR_SESSION_UNKNOWN);
 
+#ifdef HAVE_CXX_UNIQUE_PTR
   return sessions[handle].get();
+#else
+  return sessions[handle];
+#endif
 }
 
 int fsw_set_last_error(const int error)

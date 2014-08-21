@@ -3,6 +3,15 @@ ChangeLog
 
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
+	release: stable micro release 1.4.1.1.
+
+	* c/libfswatch.cpp:
+	  - Refactor code to support the unavailability of std::unique_ptr.
+
+2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	release: stable micro release 1.4.1.
+
 	* c/libfswatch.cpp:
 	  - Use <mutex> only if HAVE_CXX_MUTEX is defined.
 	* c++/monitor.cpp:
@@ -14,6 +23,8 @@ ChangeLog
 	  - Bump v. 1.4.1.
 
 2014-08-17  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	release: stable mini release 1.4.0.
 
 	* AUTHORS: Add.
 	* ChangeLog: Updated
