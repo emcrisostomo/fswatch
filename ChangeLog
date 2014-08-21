@@ -8,12 +8,18 @@ ChangeLog
 	* Makefile.am:
 	  - Add libfswatch module to configure.ac and Makefile.am.
 	  - Update distributed document data.
+	  - Remove local cleanup hook becase it broke builds on the root
+	  directory.
 	* NEWS: Update.
+	* README.freebsd: Update and rename fsw to fswatch.
 	* README.gnu-build-system: Updated instructions.
 	* README.md:
 	  - Update.
 	  - Update repository URL.
 	  - Add usage example of the -m option.
+	  - Update installation section with information about MacPorts and
+	    Homebrew.
+	* README.osx: Update and rename fsw to fswatch.
 	* autogen.sh: Update to forward arguments to autoreconf.
 	* configure.ac:
 	  - Bump v. 1.4.0.

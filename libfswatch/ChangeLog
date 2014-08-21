@@ -70,9 +70,11 @@ ChangeLog
 	  - Update all monitors to register themselves into the factory.
 	  - Fix wrong included header path.
 	  - Fix missing context parameter when invoking callback.
+	  - Rename inotify monitor's pimpl.
 	* c++/inotify_monitor.h:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.
+	  - Rename inotify monitor's pimpl.
 	* c++/kqueue_monitor.cpp:
 	  - Move from fsw.
 	  - Update all monitors to register themselves into the factory.

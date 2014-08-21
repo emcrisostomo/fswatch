@@ -83,24 +83,46 @@ Usage recommendations are as follows:
     indicates that `fswatch` requires approximately 150 MB or RAM memory to 
     observe a hierarchy of 500.000 files with a minimum path length of 32
     characters.  A common bottleneck of the poll monitor is disk access, since
-    `stat()`-ing a great number of files may take a huge amount of time.  In this
-    case, the latency should be set to a sufficiently large value in order to
-    reduce the performance degradation that may result from frequent disk
+    `stat()`-ing a great number of files may take a huge amount of time.  In 
+    this case, the latency should be set to a sufficiently large value in order
+    to reduce the performance degradation that may result from frequent disk
     access.
 
 Getting fswatch
 ---------------
 
-The recommended way to get the sources of `fswatch` in order to build it on
-your system is getting a [release tarball][release].  A release tarball
-contains everything a user needs to build `fswatch` on his system, following
-the instructions detailed in the Installation section below and the INSTALL
+A regular user may be able to fetch `fswatch` from the package manager of your
+OS or a third-party one.  If you are looking for `fswatch` for OS X, you can
+install it using either [MacPorts] or [Homebrew]:
+
+```
+# MacPorts
+$ port install fswatch
+
+# Homebrew
+$ brew install fswatch
+```
+
+Check your favourite package manager and let us know if `fswatch` is missing
+there.
+
+A user who whishes to build `fswatch` should get a
+[release tarball][release].  A release tarball contains everything a user needs
+to build `fswatch` on his system, following the instructions detailed in the 
+Installation section below and the INSTALL
 file.
 
-Getting a copy of the source repository is not recommended, unless you are a
+A developer who wishes to modify `fswatch` should get the sources (either from
+a source tarball or cloning the repository) and have the GNU Build System
+installed on his machine.  Please read `README.gnu-build-system` to get further
+details about how to bootstrap `fswatch` from sources on your machine.
+
+Getting a copy of the source repository is not recommended unless you are a
 developer, you have the GNU Build System installed on your machine and you know
 how to bootstrap it on the sources.
 
+[MacPorts]: https://www.macports.org
+[Homebrew]: http://brew.sh
 [release]: https://github.com/alandipert/fswatch/releases
 
 Installation
