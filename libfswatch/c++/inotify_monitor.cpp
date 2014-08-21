@@ -25,9 +25,11 @@
 #include <iostream>
 #include <sstream>
 #include <ctime>
+#include <sys/stat.h>
 #include "libfswatch_exception.h"
 #include "../c/libfswatch_log.h"
 #include "libfswatch_map.h"
+#include "path_utils.h"
 
 using namespace std;
 
@@ -82,6 +84,18 @@ namespace fsw
 
   void inotify_monitor::scan(const string &path)
   {
+    struct stat fd_stat;
+    if (!stat_path(path, fd_stat)) return;
+
+    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+    {
+      string link_path;
+      if (read_link_path(path, link_path))
+        scan(link_path/*, fn */);
+
+      return;
+    }
+    
     int inotify_desc = ::inotify_add_watch(impl->inotify_monitor_handle,
                                            path.c_str(),
                                            IN_ALL_EVENTS);
@@ -94,11 +108,26 @@ namespace fsw
     {
       impl->file_names_by_descriptor[inotify_desc] = path;
     }
-
+    
     std::ostringstream s;
     s << "Watching " << path << ".\n";
 
+    if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return;
+    // if (!add_path(path, fd_stat, fn)) return;
+    if (!recursive) return;
+    if (!S_ISDIR(fd_stat.st_mode)) return;   
+
     libfsw_log(s.str().c_str());
+    
+    vector<string> children;
+    get_directory_children(path, children);
+
+    for (string &child : children)
+    {
+      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
+
+      scan(path + "/" + child /*, fn */);
+    }
   }
 
   void inotify_monitor::collect_initial_data()
