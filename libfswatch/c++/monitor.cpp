@@ -213,16 +213,21 @@ namespace fsw
     this->run();
   }
 
-  map<string, fsw_monitor_type> monitor_factory::type_by_string;
+  map<string, fsw_monitor_type> & monitor_factory::type_by_string()
+  {
+    static map<string, fsw_monitor_type> type_by_string_map;
+    
+    return type_by_string_map;
+  };
   
   monitor * monitor_factory::create_monitor_by_name(const std::string& name,
                                                     std::vector<std::string> paths,
                                                     FSW_EVENT_CALLBACK * callback,
                                                     void * context)
   {
-    auto i = type_by_string.find(name);
+    auto i = type_by_string().find(name);
 
-    if (i == type_by_string.end())
+    if (i == type_by_string().end())
       return nullptr;
     else
       return monitor::create_monitor(i->second, paths, callback, context);
@@ -230,21 +235,21 @@ namespace fsw
   
   bool monitor_factory::exists_type(const std::string& name)
   {
-    auto i = type_by_string.find(name);
+    auto i = type_by_string().find(name);
 
-    return (i != type_by_string.end());
+    return (i != type_by_string().end());
   }
 
   void monitor_factory::register_type(const std::string& name, fsw_monitor_type type)
   {
-    type_by_string[name] = type;
+    type_by_string()[name] = type;
   }
   
   vector<string> monitor_factory::get_types()
   {
     vector<string> types;
     
-    for (auto & i : type_by_string)
+    for (auto & i : type_by_string())
     {
       types.push_back(i.first);
     }

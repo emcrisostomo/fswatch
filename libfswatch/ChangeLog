@@ -96,10 +96,12 @@ ChangeLog
 	  - Add a monitor registration and factory facility in order to create
 	    monitors by name.
 	  - Refactor after fsevents_monitor name change.
+	  - Avoid race conditions when initializing static members.
 	* c++/monitor.h:
 	  - Move from fsw.
 	  - Add a monitor registration and factory facility in order to create
 	    monitors by name.
+	  - Avoid race conditions when initializing static members.
 	* c++/path_utils.cpp: Move from fsw.
 	* c++/path_utils.h: Move from fsw.
 	* c++/poll_monitor.cpp:

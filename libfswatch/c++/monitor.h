@@ -99,7 +99,7 @@ namespace fsw
     monitor_factory(const monitor_factory& orig) = delete;
     monitor_factory& operator=(const monitor_factory & that) = delete;
   private:
-    static std::map<std::string, fsw_monitor_type> type_by_string;
+    static std::map<std::string, fsw_monitor_type> & type_by_string();
   };
 
   /*
