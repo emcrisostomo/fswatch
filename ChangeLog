@@ -8,6 +8,8 @@ ChangeLog
 	* Makefile.am:
 	  - Add libfswatch module to configure.ac and Makefile.am.
 	  - Update distributed document data.
+	  - Remove local cleanup hook becase it broke builds on the root
+	  directory.
 	* NEWS: Update.
 	* README.freebsd: Update and rename fsw to fswatch.
 	* README.gnu-build-system: Updated instructions.
