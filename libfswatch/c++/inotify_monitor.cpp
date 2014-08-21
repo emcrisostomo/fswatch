@@ -85,16 +85,17 @@ namespace fsw
     if (!accept_path(path)) return;
 
     int inotify_desc = ::inotify_add_watch(impl->inotify_monitor_handle,
-                                           path.c_str(), 
+                                           path.c_str(),
                                            IN_ALL_EVENTS);
 
     if (inotify_desc == -1)
     {
       ::perror("inotify_add_watch");
-      throw libfsw_exception("Cannot add watch.");
     }
-
-    impl->file_names_by_descriptor[inotify_desc] = path;
+    else
+    {
+      impl->file_names_by_descriptor[inotify_desc] = path;
+    }
 
     std::ostringstream s;
     s << "Watching " << path << ".\n";
