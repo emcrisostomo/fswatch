@@ -11,6 +11,7 @@ ChangeLog
 	  - Use <mutex> only if HAVE_CXX_MUTEX is defined.
 	* configure.ac:
 	  - Add an Autoconf check for the <mutex> header.
+	  - Bump v. 1.4.1.
 
 2014-08-17  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
