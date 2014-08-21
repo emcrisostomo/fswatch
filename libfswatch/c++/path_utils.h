@@ -14,30 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "event.h"
+#ifndef FSW_PATH_UTILS_H
+#  define FSW_PATH_UTILS_H
 
-using namespace std;
+#  include <string>
+#  include <vector>
+#  include <sys/stat.h>
 
-event::event(string path, time_t evt_time, vector<event_flag> flags) :
-  path(path), evt_time(evt_time), evt_flags(flags)
+namespace fsw
 {
+  void get_directory_children(const std::string &path,
+                              std::vector<std::string> &children);
+  bool read_link_path(const std::string &path, std::string &link_path);
+  bool stat_path(const std::string &path, struct stat &fd_stat);
 }
-
-event::~event()
-{
-}
-
-string event::get_path() const
-{
-  return path;
-}
-
-time_t event::get_time() const
-{
-  return evt_time;
-}
-
-vector<event_flag> event::get_flags() const
-{
-  return evt_flags;
-}
+#endif  /* FSW_PATH_UTILS_H */

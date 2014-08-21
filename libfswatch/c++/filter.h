@@ -14,23 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW_MAP_H
-#  define FSW_MAP_H
+#ifndef FSW__FILTER_H
+#  define FSW__FILTER_H
 
-#  include "config.h"
+#  include <string>
+#  include "../c/cfilter.h"
 
-#  if defined(HAVE_UNORDERED_MAP)
-#    include <unordered_map>
+typedef struct monitor_filter
+{
+  std::string text;
+  fsw_filter_type type;
+  bool case_sensitive;
+  bool extended;
+} monitor_filter;
 
-template <typename K, typename V>
-using fsw_hash_map = std::unordered_map<K, V>;
-
-#  else
-#    include <map>
-
-template <typename K, typename V>
-using fsw_hash_map = std::map<K, V>;
-
-#  endif
-
-#endif  /* FSW_MAP_H */
+#endif  /* FSW__FILTER_H */

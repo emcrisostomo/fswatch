@@ -14,20 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "fswatch_exception.h"
+#ifndef LIBFSW_EXCEPTION_H
+#  define LIBFSW_EXCEPTION_H
 
-using namespace std;
+#  include "../c/error.h"
+#  include <exception>
+#  include <string>
 
-fsw_exception::fsw_exception(string cause) :
-  cause(cause)
+namespace fsw
 {
+
+  class libfsw_exception : public std::exception
+  {
+  public:
+    // TODO default code value should be taken from an error header
+    libfsw_exception(std::string cause, int code = FSW_ERR_UNKNOWN_ERROR);
+    virtual const char * what() const noexcept;
+    virtual int error_code() const noexcept;
+    virtual ~libfsw_exception() noexcept;
+
+    explicit operator int() const noexcept;
+
+  private:
+    const std::string cause;
+    const int code;
+  };
 }
 
-const char * fsw_exception::what() const throw ()
-{
-  return (string("Error: ") + this->cause).c_str();
-}
-
-fsw_exception::~fsw_exception() throw ()
-{
-}
+#endif  /* LIBFSW_EXCEPTION_H */

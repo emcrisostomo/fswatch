@@ -14,22 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW_H
-#  define FSW_H
+#include "libfswatch_exception.h"
 
-#  include <exception>
-#  include <string>
+using namespace std;
 
-#  define FSW_EXIT_OK              0
-#  define FSW_EXIT_UNK_OPT         1
-#  define FSW_EXIT_USAGE           2
-#  define FSW_EXIT_LATENCY         4
-#  define FSW_EXIT_STREAM          8
-#  define FSW_EXIT_ERROR          16
-#  define FSW_EXIT_ENFILE         32
-#  define FSW_EXIT_OPT            64
-#  define FSW_EXIT_MONITOR_NAME  128
+namespace fsw
+{
 
-bool is_verbose();
+  libfsw_exception::libfsw_exception(string cause, int code) :
+    cause(cause), code(code)
+  {
+  }
 
-#endif  /* FSW_H */
+  const char * libfsw_exception::what() const noexcept
+  {
+    return (string("Error: ") + this->cause).c_str();
+  }
+
+  int libfsw_exception::error_code() const noexcept
+  {
+    return code;
+  }
+
+  libfsw_exception::operator int() const noexcept
+  {
+    return code;
+  }
+
+  libfsw_exception::~libfsw_exception() noexcept
+  {
+  }
+}

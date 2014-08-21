@@ -17,7 +17,7 @@ hierarchies are modified.
 
 .Sh SYNOPSIS
 .Nm fswatch
-.Op Fl 0EhIkLnoprtuvx
+.Op Fl 0EhILmnortuvx
 .Op Fl e Ar regexp
 .Op Fl f Ar format-time
 .Op Fl i Ar regexp
@@ -111,11 +111,6 @@ for further information.
 .It Fl I, -insensitive
 Use case insensitive regular expressions.
 
-.It Fl k, -kqueue
-Use the kqueue monitor.
-This option is only available when more than one monitor is available, and one
-of them is the kqueue monitor.
-
 .It Fl l, -latency Ar latency
 Set the
 .Ar latency 
@@ -128,6 +123,13 @@ The default latency is 1 second.
 .It Fl L, -follow-links
 Follow symbolic links.
 
+.It Fl m, -monitor Ar name
+Uses the monitor specified by
+.Ar name .
+The list of currently available monitors can be obtained using the
+.Fl h
+option.
+
 .It Fl n, -numeric
 Print the numeric value of the event flag, instead of the array of symbolic
 names.
@@ -137,15 +139,6 @@ As a consequence, the use of numeric values is discouraged.
 
 .It Fl o, -one-per-batch
 Print a single message with the number of change events.
-
-.It Fl p, -poll
-Use the poll-based monitor.
-This monitor periodically stats the file system to detect changes on the
-observed paths.
-The time required by this monitor linearly increases with the number of files to
-watch.
-This monitor should be considered a last resource in case other monitors cannot
-be used.  
  
 .It Fl r, -recursive
 Watch subdirectories recursively.  This option may not be supported on all

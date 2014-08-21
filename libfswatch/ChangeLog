@@ -1,0 +1,121 @@
+ChangeLog
+*********
+
+2014-08-17  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	* AUTHORS: Add.
+	* ChangeLog: Updated
+	* configure.ac:
+	  - Copy from fsw.
+	  - Bump v. 1.4.0.
+	  - Add M4 macro to check whether the OS X FSEvents API supports file
+	    events.
+	  - Compile the FSEvents monitor only if the OS X FSEvents API
+	    supports file events.
+	  - Define Automake conditionals in every code path.
+	* COPYING: Add.
+	* INSTALL: Add.
+	* LICENSE: Add GPL.
+	* Makefile.am:
+	  - Move libfsw pieces from fsw.
+	  - Update distributed document data.
+	  - Compile the FSEvents monitor only if the OS X FSEvents API
+	    supports file events.
+	  - Refactor after fsevents_monitor name change.
+	* NEWS: Add.
+	* README.md: Add.
+	* c/cevent.h:
+	  - Add.
+	  - Document.
+	* c/cmonitor.h:
+	  - Add.
+	  - Document.
+	* c/error.h: Move from fsw.
+	* c/libfswatch.cpp:
+	  - Move from fsw.
+	  - Rename to libfswatch.cpp.
+	  - Simplify the libfsw_cpp_callback_proxy memory allocation.
+	  - Pass callback address to C proxy callback as context data.
+	  - Include <memory> header required by unique_ptr.
+	  - Do not compare signed types against unsigned types.
+	  - Fix missed deallocation.
+	* c/libfswatch.h:
+	  - Move from fsw.
+	  - Rename to libfswatch.h
+	  - Document.
+	* c/libfswatch_log.cpp:
+	  - Move from fsw.
+	  - Rename to libfswatch_log.cpp.
+	* c/libfswatch_log.h:
+	  - Move from fsw.
+	  - Rename to libfswatch_log.h.
+	* c/libfswatch_log.h:
+	* c++/event.h: Move from fsw.
+	* c++/event.cpp: Move from fsw.
+	* c++/filter.h: Move from fsw.
+	* c++/fsevents_monitor.cpp:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	  - Use the fsevent_monitor only if the FSEvents API supports file
+	    events.
+	  - Moved from fsevent_monitor.cpp.
+	  - Rename members using the fsevent_ prefix to use fsevents_.
+	* c++/fsevents_monitor.h:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	  - Moved from fsevent_monitor.h.
+	  - Rename members using the fsevent_ prefix to use fsevents_.
+	* c++/inotify_monitor.cpp:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	  - Fix wrong included header path.
+	  - Fix missing context parameter when invoking callback.
+	  - Rename inotify monitor's pimpl.
+	* c++/inotify_monitor.h:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	  - Rename inotify monitor's pimpl.
+	* c++/kqueue_monitor.cpp:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	* c++/kqueue_monitor.h:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	* c++/libfswatch_exception.cpp:
+	  - Move from fsw.
+	  - Declare destructor noexcept.
+	* c++/libfswatch_exception.h:
+	  - Move from fsw.
+	  - Declare destructor noexcept.
+	* c++/libfswatch_map.h:
+	  - Move from fsw.
+	  - Rename to libfswatch_map.h.
+	* c++/libfswatch_set.h:
+	  - Move from fsw.
+	  - Rename to libfswatch_set.h.
+	* c++/monitor.cpp:
+	  - Move from fsw.
+	  - Add a monitor registration and factory facility in order to create
+	    monitors by name.
+	  - Refactor after fsevents_monitor name change.
+	  - Avoid race conditions when initializing static members.
+	* c++/monitor.h:
+	  - Move from fsw.
+	  - Add a monitor registration and factory facility in order to create
+	    monitors by name.
+	  - Avoid race conditions when initializing static members.
+	* c++/path_utils.cpp: Move from fsw.
+	* c++/path_utils.h: Move from fsw.
+	* c++/poll_monitor.cpp:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	* c++/poll_monitor.h:
+	  - Move from fsw.
+	  - Update all monitors to register themselves into the factory.
+	* m4/ax_append_flag.m4: Add.
+	* m4/ax_cflags_warn_all.m4: Add.
+	* m4/ax_cxx_compile_stdcxx_11.m4: Add.
+	* m4/ax_cxx_namespaces.m4: Add.
+	* m4/ax_fsevents_have_file_events.m4: Add M4 macro to check whether
+	  the OS X FSEvents API supports file events.
+	* m4/ax_require_defined.m4: Add.

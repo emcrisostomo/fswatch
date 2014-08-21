@@ -14,22 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW_H
-#  define FSW_H
+#ifndef FSW_EVENT_H
+#  define FSW_EVENT_H
 
-#  include <exception>
 #  include <string>
+#  include <ctime>
+#  include <vector>
+#  include "../c/cevent.h"
 
-#  define FSW_EXIT_OK              0
-#  define FSW_EXIT_UNK_OPT         1
-#  define FSW_EXIT_USAGE           2
-#  define FSW_EXIT_LATENCY         4
-#  define FSW_EXIT_STREAM          8
-#  define FSW_EXIT_ERROR          16
-#  define FSW_EXIT_ENFILE         32
-#  define FSW_EXIT_OPT            64
-#  define FSW_EXIT_MONITOR_NAME  128
+class event
+{
+public:
+  event(std::string path, time_t evt_time, std::vector<fsw_event_flag> flags);
+  virtual ~event();
+  std::string get_path() const;
+  time_t get_time() const;
+  std::vector<fsw_event_flag> get_flags() const;
 
-bool is_verbose();
+private:
+  std::string path;
+  time_t evt_time;
+  std::vector<fsw_event_flag> evt_flags;
+};
 
-#endif  /* FSW_H */
+#endif  /* FSW_EVENT_H */

@@ -14,41 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW_EVENT_H
-#  define FSW_EVENT_H
+#include "libfswatch.h"
+#include "libfswatch_log.h"
+#include <iostream>
 
-#  include <string>
-#  include <ctime>
-#  include <vector>
+using namespace std;
 
-enum class event_flag
+void libfsw_log(const char * msg)
 {
-  PlatformSpecific = 1,
-  Created = 2,
-  Updated = 4,
-  Removed = 8,
-  Renamed = 16,
-  OwnerModified = 32,
-  AttributeModified = 64,
-  IsFile = 128,
-  IsDir = 256,
-  IsSymLink = 512,
-  Link = 1024
-};
+  if (fsw_is_verbose())
+  {
+    cout << msg;
+  }
+}
 
-class event
+void libfsw_perror(const char * msg)
 {
-public:
-  event(std::string path, time_t evt_time, std::vector<event_flag> flags);
-  virtual ~event();
-  std::string get_path() const;
-  time_t get_time() const;
-  std::vector<event_flag> get_flags() const;
-
-private:
-  std::string path;
-  time_t evt_time;
-  std::vector<event_flag> evt_flags;
-};
-
-#endif  /* FSW_EVENT_H */
+  // TODO
+  if (fsw_is_verbose())
+  {
+    perror(msg);
+  }
+}

@@ -1,4 +1,20 @@
-Copyright (C) 2014, Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+README
+======
+
+`libfswatch` is a library that provides developers the functionality of
+`fswatch`, the main `libfswatch` frontend.  The library provides both C and C++
+bindings.
+
+The library is currently documented by its header files.
+
+Bug Reports
+-----------
+
+Bug reports can be sent directly to the authors.
+
+-----
+
+Copyright (C) 2014 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

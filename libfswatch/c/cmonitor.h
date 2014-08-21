@@ -14,23 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW_SET_H
-#  define FSW_SET_H
+#ifndef FSW__CMONITOR_H
+#  define FSW__CMONITOR_H
 
-#  include "config.h"
+#  include <ctime>
 
-#  if defined(HAVE_UNORDERED_SET)
-#    include <unordered_set>
-
-template <typename K>
-using fsw_hash_set = std::unordered_set<K>;
-
-#  else
-#    include <set>
-
-template <typename K>
-using fsw_hash_set = std::set<K>;
-
+#  ifdef __cplusplus
+extern "C"
+{
 #  endif
 
-#endif  /* FSW_SET_H */
+  /*
+   * This enumeration lists all the available monitors, where the special
+   * system_default_monitor_type element refers to the (platform-specific)
+   * default monitor.
+   */
+  enum fsw_monitor_type
+  {
+    system_default_monitor_type = 0,
+    fsevents_monitor_type,
+    kqueue_monitor_type,
+    inotify_monitor_type,
+    poll_monitor_type
+  };
+
+#  ifdef __cplusplus
+}
+#  endif
+
+#endif  /* FSW__CMONITOR_H */
+

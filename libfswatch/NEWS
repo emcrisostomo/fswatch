@@ -1,0 +1,9 @@
+NEWS
+****
+
+New in 1.4.0:
+
+  * Move monitors to separate library.
+  * Provide a libtool-configured library exposing the functionality of fswatch
+    monitors.
+  * Provide C and C++ headers and bindings.

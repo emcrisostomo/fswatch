@@ -18,19 +18,15 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.69])
-AC_INIT([fswatch], [1.4.0], [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+AC_INIT([libfswatch], [1.4.0], [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
 AC_REVISION([$Revision: 1.4.0-1 $])
-AC_CONFIG_SRCDIR([fswatch.cpp])
+AC_CONFIG_SRCDIR([c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([libfswatch_config.h])
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
-
-# Other packages
-AC_CONFIG_SUBDIRS([libfswatch])
 
 # Initialize Automake
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
@@ -46,31 +42,6 @@ AC_LANG(C++)
 
 # Checks for programs.
 AC_PROG_CXX([clang++ g++])
-AC_PROG_LN_S
-AC_PATH_PROG([ZSH_PROG], [zsh], [no])
-AC_PATH_PROG([BASH_PROG], [bash], [no])
-
-if test "x${ZSH_PROG}" = "xno" && test "x${BASH_PROG}" = "xno" ; then
-  AC_MSG_WARN([Either ZSH or the Bash shell is required by fswatch-run.])
-fi
-
-AM_CONDITIONAL([HAVE_ZSH], [test "x${ZSH_PROG}" != "xno"])
-AM_CONDITIONAL([HAVE_BASH], [test "x${BASH_PROG}" != "xno"])
-
-if test "x${ZSH_PROG}" = "xno" ; then
-  ZSH_PATH=/bin/zsh
-else
-  ZSH_PATH=$ZSH_PROG
-fi
-
-if test "x${BASH_PROG}" = "xno" ; then
-  BASH_PATH=/bin/bash
-else
-  BASH_PATH=$BASH_PROG
-fi
-
-AC_SUBST([ZSH_PATH])
-AC_SUBST([BASH_PATH])
 
 # Configure C++ compiler
 AX_CXX_COMPILE_STDCXX_11(noext)
@@ -79,19 +50,71 @@ AX_CXXFLAGS_WARN_ALL
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h getopt.h])
+AC_CHECK_HEADERS([stdlib.h unistd.h fcntl.h])
+AC_CHECK_HEADERS([sys/event.h sys/inotify.h])
+AC_CHECK_HEADERS([CoreServices/CoreServices.h])
+AC_CHECK_HEADERS([unordered_map unordered_set])
+
+AM_CONDITIONAL([USE_KQUEUE], [test "x${ac_cv_header_sys_event_h}" = "xyes"])
+AM_CONDITIONAL([USE_INOTIFY], [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
+
+if test "x${ac_cv_header_CoreServices_CoreServices_h}" = "xyes" ; then
+  AX_FSEVENTS_HAVE_FILE_EVENTS
+fi
+
+AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
+AC_TYPE_SIZE_T
+AC_TYPE_UINT32_T
+AC_TYPE_MODE_T
+
+AC_CHECK_MEMBERS([struct stat.st_mtime],
+   [],
+   [],
+   [
+     AC_INCLUDES_DEFAULT
+     #include <sys/stat.h>
+   ])
+
+AC_CHECK_MEMBERS([struct stat.st_mtimespec],
+   [],
+   [],
+   [
+     AC_INCLUDES_DEFAULT
+     #include <sys/stat.h>
+   ])
 
 # Checks for library functions.
-AC_FUNC_STRTOD
-AC_CHECK_FUNCS([getopt_long])
 AC_CHECK_FUNCS(
   [realpath],
   ,
   AC_MSG_ERROR([The realpath function cannot be found.])
 )
+AC_CHECK_FUNCS(
+  [modf],
+  ,
+  AC_MSG_ERROR([The modf function cannot be found.]) 
+)
 AC_CHECK_FUNCS([regcomp])
+
+AC_CHECK_DECLS(
+  [kqueue, kevent],
+  ,
+  ,
+  [
+    AC_INCLUDES_DEFAULT
+    [#include <sys/event.h>]
+    [#include <sys/types.h>]
+    [#include <sys/time.h>]
+  ]
+)
+
+AX_CXX_HAVE_THREAD_LOCAL
+
+if ! test "x${ax_cv_cxx_have_thread_local}" = "xyes" ; then
+  AC_WARN(AC_PACKAGE_NAME [is missing some functions because the current combination of compiler and libraries do not support the thread_local storage specifier].)
+fi
 
 AC_OUTPUT

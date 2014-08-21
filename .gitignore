@@ -12,10 +12,15 @@ nbproject/
 
 # GNU Build System
 Makefile.in
-compile
 configure
 aclocal.m4
+config/
 config.*
-depcomp
-install-sh
-missing
+libfswatch_config.h.in
+
+# libtool
+libtool.m4
+ltoptions.m4
+ltsugar.m4
+ltversion.m4
+lt~obsolete.m4

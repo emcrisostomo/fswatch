@@ -14,22 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW_H
-#  define FSW_H
+#ifndef LIBFSW_MAP_H
+#  define LIBFSW_MAP_H
 
-#  include <exception>
-#  include <string>
+#  ifdef HAVE_CONFIG_H
+#    include "libfswatch_config.h"
+#  endif
 
-#  define FSW_EXIT_OK              0
-#  define FSW_EXIT_UNK_OPT         1
-#  define FSW_EXIT_USAGE           2
-#  define FSW_EXIT_LATENCY         4
-#  define FSW_EXIT_STREAM          8
-#  define FSW_EXIT_ERROR          16
-#  define FSW_EXIT_ENFILE         32
-#  define FSW_EXIT_OPT            64
-#  define FSW_EXIT_MONITOR_NAME  128
+#  if defined(HAVE_UNORDERED_MAP)
+#    include <unordered_map>
 
-bool is_verbose();
+namespace fsw
+{
+  template <typename K, typename V>
+  using fsw_hash_map = std::unordered_map<K, V>;
+}
 
-#endif  /* FSW_H */
+#  else
+#    include <map>
+
+namespace fsw
+{
+  template <typename K, typename V>
+  using fsw_hash_map = std::map<K, V>;
+}
+
+#  endif
+
+#endif  /* LIBFSW_MAP_H */
