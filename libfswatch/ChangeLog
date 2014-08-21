@@ -1,6 +1,11 @@
 ChangeLog
 *********
 
+2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	* configure.ac:
+	  - Add an Autoconf check for the <mutex> header.
+
 2014-08-17  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
 	* AUTHORS: Add.

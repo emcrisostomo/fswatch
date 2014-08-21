@@ -64,6 +64,20 @@ fi
 
 AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
 
+# Some compilers declare to conform to C++11 but the library does not.
+# These OS X versions are known to miss at least the listed headers:
+#   - 10.6 Snow Leopard: mutex, atomic
+#   - 10.7 Lion: mutex, atomic
+#   - 10.8 Mountain Lion: mutex, atomic
+# Let's check for <mutex> and skip multi-threading code if not found.
+AC_CHECK_HEADER([mutex])
+
+if test "x${ac_cv_header_mutex}" = "xyes" ; then
+  AC_DEFINE(HAVE_CXX_MUTEX,
+        1,
+        [Define if <mutex> is available.])
+fi
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
 AC_TYPE_SIZE_T
