@@ -18,9 +18,9 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.69])
-AC_INIT([libfswatch], [1.4.1], [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+AC_INIT([libfswatch], [1.4.1.1], [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: 1.4.1-1 $])
+AC_REVISION([$Revision: 1.4.1.1-1 $])
 AC_CONFIG_SRCDIR([c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
@@ -101,6 +101,13 @@ AC_CHECK_MEMBERS([struct stat.st_mtimespec],
      AC_INCLUDES_DEFAULT
      #include <sys/stat.h>
    ])
+
+AC_CHECK_TYPE([std::unique_ptr<std::string>],
+  [AC_DEFINE(HAVE_CXX_UNIQUE_PTR,
+        1,
+        [Define if std::unique_ptr in <memory> is available.])],
+  [],
+  [[#include <memory>]])
 
 # Checks for library functions.
 AC_CHECK_FUNCS(
