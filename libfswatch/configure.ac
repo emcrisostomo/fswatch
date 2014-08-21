@@ -18,9 +18,9 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.69])
-AC_INIT([libfswatch], [1.4.0], [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+AC_INIT([libfswatch], [1.4.1], [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: 1.4.0-1 $])
+AC_REVISION([$Revision: 1.4.1-1 $])
 AC_CONFIG_SRCDIR([c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
@@ -63,6 +63,22 @@ if test "x${ac_cv_header_CoreServices_CoreServices_h}" = "xyes" ; then
 fi
 
 AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
+
+# Some compilers declare to conform to C++11 but the library does not.
+# These OS X versions are known to miss at least the listed headers:
+#   - 10.6 Snow Leopard: mutex, atomic
+#   - 10.7 Lion: mutex, atomic
+#   - 10.8 Mountain Lion: mutex, atomic
+# Let's check for <mutex> and skip multi-threading code if not found.
+AC_CHECK_HEADER([mutex])
+
+if test "x${ac_cv_header_mutex}" = "xyes" ; then
+  AC_DEFINE(HAVE_CXX_MUTEX,
+        1,
+        [Define if <mutex> is available.])
+else
+    AC_WARN(AC_PACKAGE_NAME [is not thread-safe because required C++11 library classes are not available.].)
+fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
