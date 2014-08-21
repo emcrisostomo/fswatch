@@ -24,7 +24,7 @@
 
 namespace fsw
 {
-  struct inotify_monitor_load;
+  struct inotify_monitor_impl;
 
   class inotify_monitor : public monitor
   {
@@ -49,7 +49,7 @@ namespace fsw
     void preprocess_node_event(struct inotify_event * event);
     void scan(const std::string &path);
 
-    inotify_monitor_load * load;
+    inotify_monitor_impl * impl;
   };
 }
 

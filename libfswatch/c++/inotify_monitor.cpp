@@ -34,7 +34,7 @@ using namespace std;
 namespace fsw
 {
 
-  struct inotify_monitor_load
+  struct inotify_monitor_impl
   {
     int inotify_monitor_handle = -1;
     std::vector<event> events;
@@ -45,15 +45,15 @@ namespace fsw
   static const unsigned int BUFFER_SIZE = (10 * ((sizeof (struct inotify_event)) + NAME_MAX + 1));
 
   REGISTER_MONITOR_IMPL(inotify_monitor, inotify_monitor_type);
-  
+
   inotify_monitor::inotify_monitor(vector<string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK * callback,
                                    void * context) :
-    monitor(paths_to_monitor, callback, context), load(new inotify_monitor_load())
+    monitor(paths_to_monitor, callback, context), impl(new inotify_monitor_impl())
   {
-    load->inotify_monitor_handle = ::inotify_init();
+    impl->inotify_monitor_handle = ::inotify_init();
 
-    if (load->inotify_monitor_handle == -1)
+    if (impl->inotify_monitor_handle == -1)
     {
       ::perror("inotify_init");
       throw libfsw_exception("Cannot initialize inotify.");
@@ -63,28 +63,30 @@ namespace fsw
   inotify_monitor::~inotify_monitor()
   {
     // close inotify watchers
-    for (auto inotify_desc_pair : load->file_names_by_descriptor)
+    for (auto inotify_desc_pair : impl->file_names_by_descriptor)
     {
-      if (::inotify_rm_watch(load->inotify_monitor_handle, inotify_desc_pair.first))
+      if (::inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair.first))
       {
         ::perror("rm");
       }
     }
 
     // close inotify
-    if (load->inotify_monitor_handle > 0)
+    if (impl->inotify_monitor_handle > 0)
     {
-      ::close(load->inotify_monitor_handle);
+      ::close(impl->inotify_monitor_handle);
     }
 
-    delete load;
+    delete impl;
   }
 
   void inotify_monitor::scan(const string &path)
   {
     if (!accept_path(path)) return;
 
-    int inotify_desc = ::inotify_add_watch(load->inotify_monitor_handle, path.c_str(), IN_ALL_EVENTS);
+    int inotify_desc = ::inotify_add_watch(impl->inotify_monitor_handle,
+                                           path.c_str(), 
+                                           IN_ALL_EVENTS);
 
     if (inotify_desc == -1)
     {
@@ -92,7 +94,7 @@ namespace fsw
       throw libfsw_exception("Cannot add watch.");
     }
 
-    load->file_names_by_descriptor[inotify_desc] = path;
+    impl->file_names_by_descriptor[inotify_desc] = path;
 
     std::ostringstream s;
     s << "Watching " << path << ".\n";
@@ -119,7 +121,7 @@ namespace fsw
 
     if (flags.size())
     {
-      load->events.push_back({load->file_names_by_descriptor[event->wd], load->curr_time, flags});
+      impl->events.push_back({impl->file_names_by_descriptor[event->wd], impl->curr_time, flags});
     }
   }
 
@@ -141,7 +143,7 @@ namespace fsw
     if (flags.size())
     {
       ostringstream path_stream;
-      path_stream << load->file_names_by_descriptor[event->wd];
+      path_stream << impl->file_names_by_descriptor[event->wd];
 
       if (event->len > 1)
       {
@@ -149,7 +151,7 @@ namespace fsw
         path_stream << event->name;
       }
 
-      load->events.push_back({path_stream.str(), load->curr_time, flags});
+      impl->events.push_back({path_stream.str(), impl->curr_time, flags});
     }
   }
 
@@ -166,10 +168,10 @@ namespace fsw
 
   void inotify_monitor::notify_events()
   {
-    if (load->events.size())
+    if (impl->events.size())
     {
-      callback(load->events, context);
-      load->events.clear();
+      callback(impl->events, context);
+      impl->events.clear();
     }
   }
 
@@ -181,7 +183,7 @@ namespace fsw
 
     while (true)
     {
-      ssize_t record_num = ::read(load->inotify_monitor_handle,
+      ssize_t record_num = ::read(impl->inotify_monitor_handle,
                                   buffer,
                                   BUFFER_SIZE);
 
@@ -196,7 +198,7 @@ namespace fsw
         throw libfsw_exception("::read() on inotify descriptor returned -1.");
       }
 
-      time(&load->curr_time);
+      time(&impl->curr_time);
 
       for (char *p = buffer; p < buffer + record_num;)
       {
