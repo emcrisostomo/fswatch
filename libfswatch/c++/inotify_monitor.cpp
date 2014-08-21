@@ -82,8 +82,6 @@ namespace fsw
 
   void inotify_monitor::scan(const string &path)
   {
-    if (!accept_path(path)) return;
-
     int inotify_desc = ::inotify_add_watch(impl->inotify_monitor_handle,
                                            path.c_str(),
                                            IN_ALL_EVENTS);
