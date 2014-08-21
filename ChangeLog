@@ -14,6 +14,8 @@ ChangeLog
 	  - Update.
 	  - Update repository URL.
 	  - Add usage example of the -m option.
+	  - Update installation section with information about MacPorts and
+	    Homebrew.
 	* autogen.sh: Update to forward arguments to autoreconf.
 	* configure.ac:
 	  - Bump v. 1.4.0.
