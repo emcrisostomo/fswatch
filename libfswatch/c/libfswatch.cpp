@@ -18,9 +18,11 @@
 #  include "libfswatch_config.h"
 #endif
 
-#include <atomic>
 #include <iostream>
-#include <mutex>
+#ifdef HAVE_CXX_MUTEX
+#  include <mutex>
+#  include <atomic>
+#endif
 #include <ctime>
 #include <stdlib.h>
 #include <cstring>
@@ -45,13 +47,17 @@ typedef struct FSW_SESSION
   bool recursive;
   bool follow_symlinks;
   vector<monitor_filter> filters;
+#ifdef HAVE_CXX_MUTEX
   atomic<bool> running;
+#endif
 } FSW_SESSION;
 
 static bool srand_initialized = false;
 static fsw_hash_map<FSW_HANDLE, unique_ptr<FSW_SESSION>> sessions;
+#ifdef HAVE_CXX_MUTEX
 static fsw_hash_map<FSW_HANDLE, unique_ptr<mutex>> session_mutexes;
 static std::mutex session_mutex;
+#endif
 #if defined(HAVE_CXX_THREAD_LOCAL)
 static FSW_THREAD_LOCAL unsigned int last_error;
 #endif
@@ -133,7 +139,9 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
 
 FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
 {
+#ifdef HAVE_CXX_MUTEX
   std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
 
   if (!srand_initialized)
   {
@@ -156,7 +164,9 @@ FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
 
   // Store the handle and a mutex to guard access to session instances.
   sessions[handle] = unique_ptr<FSW_SESSION>(session);
+#ifdef HAVE_CXX_MUTEX
   session_mutexes[handle] = unique_ptr<mutex>(new mutex);
+#endif
 
   return handle;
 }
@@ -206,7 +216,9 @@ int fsw_add_path(const FSW_HANDLE handle, const char * path)
 
   try
   {
+#ifdef HAVE_CXX_MUTEX
     std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
     FSW_SESSION * session = get_session(handle);
 
     session->paths.push_back(path);
@@ -226,7 +238,9 @@ int fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback
 
   try
   {
+#ifdef HAVE_CXX_MUTEX
     std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
     FSW_SESSION * session = get_session(handle);
 
     session->callback = callback;
@@ -246,7 +260,9 @@ int fsw_set_latency(const FSW_HANDLE handle, const double latency)
 
   try
   {
+#ifdef HAVE_CXX_MUTEX
     std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
     FSW_SESSION * session = get_session(handle);
 
     session->latency = latency;
@@ -263,7 +279,9 @@ int fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
 {
   try
   {
+#ifdef HAVE_CXX_MUTEX
     std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
     FSW_SESSION * session = get_session(handle);
 
     session->recursive = recursive;
@@ -281,7 +299,9 @@ int fsw_set_follow_symlinks(const FSW_HANDLE handle,
 {
   try
   {
+#ifdef HAVE_CXX_MUTEX
     std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
     FSW_SESSION * session = get_session(handle);
 
     session->follow_symlinks = follow_symlinks;
@@ -299,7 +319,9 @@ int fsw_add_filter(const FSW_HANDLE handle,
 {
   try
   {
+#ifdef HAVE_CXX_MUTEX
     std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
     FSW_SESSION * session = get_session(handle);
 
     session->filters.push_back({filter.text, filter.type, filter.case_sensitive, filter.extended});
@@ -311,6 +333,8 @@ int fsw_add_filter(const FSW_HANDLE handle,
 
   return fsw_set_last_error(FSW_OK);
 }
+
+#ifdef HAVE_CXX_MUTEX
 
 template <typename T>
 class monitor_start_guard
@@ -332,16 +356,20 @@ public:
     a.store(val, memory_order_release);
   }
 };
+#endif
 
 int fsw_start_monitor(const FSW_HANDLE handle)
 {
   try
   {
+#ifdef HAVE_CXX_MUTEX
     unique_lock<mutex> session_lock(session_mutex, defer_lock);
     session_lock.lock();
+#endif
 
     FSW_SESSION * session = get_session(handle);
 
+#ifdef HAVE_CXX_MUTEX
     if (session->running.load(memory_order_acquire))
       return fsw_set_last_error(int(FSW_ERR_MONITOR_ALREADY_RUNNING));
 
@@ -349,6 +377,7 @@ int fsw_start_monitor(const FSW_HANDLE handle)
     lock_guard<mutex> lock_sm(*sm.get());
 
     session_lock.unlock();
+#endif
 
     if (!session->monitor)
       create_monitor(handle, session->type);
@@ -357,9 +386,11 @@ int fsw_start_monitor(const FSW_HANDLE handle)
     session->monitor->set_follow_symlinks(session->follow_symlinks);
     session->monitor->set_latency(session->latency);
     session->monitor->set_recursive(session->recursive);
-    session->running.store(true, memory_order_release);
 
+#ifdef HAVE_CXX_MUTEX
+    session->running.store(true, memory_order_release);
     monitor_start_guard<bool> guard(session->running, false);
+#endif
 
     session->monitor->start();
   }
@@ -375,11 +406,15 @@ int fsw_destroy_session(const FSW_HANDLE handle)
 {
   try
   {
+#ifdef HAVE_CXX_MUTEX
     std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
     FSW_SESSION * session = get_session(handle);
 
+#ifdef HAVE_CXX_MUTEX
     unique_ptr<mutex> & sm = session_mutexes[handle];
     lock_guard<mutex> sm_lock(*sm.get());
+#endif
 
     if (session->monitor)
     {
@@ -395,7 +430,9 @@ int fsw_destroy_session(const FSW_HANDLE handle)
     }
 
     sessions.erase(handle);
+#ifdef HAVE_CXX_MUTEX
     session_mutexes.erase(handle);
+#endif
   }
   catch (int error)
   {

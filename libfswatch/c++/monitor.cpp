@@ -209,17 +209,19 @@ namespace fsw
 
   void monitor::start()
   {
+#ifdef HAVE_CXX_MUTEX
     lock_guard<mutex> run_guard(run_mutex);
+#endif
     this->run();
   }
 
   map<string, fsw_monitor_type> & monitor_factory::type_by_string()
   {
     static map<string, fsw_monitor_type> type_by_string_map;
-    
+
     return type_by_string_map;
   };
-  
+
   monitor * monitor_factory::create_monitor_by_name(const std::string& name,
                                                     std::vector<std::string> paths,
                                                     FSW_EVENT_CALLBACK * callback,
@@ -232,7 +234,7 @@ namespace fsw
     else
       return monitor::create_monitor(i->second, paths, callback, context);
   }
-  
+
   bool monitor_factory::exists_type(const std::string& name)
   {
     auto i = type_by_string().find(name);
@@ -244,19 +246,19 @@ namespace fsw
   {
     type_by_string()[name] = type;
   }
-  
+
   vector<string> monitor_factory::get_types()
   {
     vector<string> types;
-    
+
     for (auto & i : type_by_string())
     {
       types.push_back(i.first);
     }
-    
+
     return types;
   }
-  
+
   monitor_registrant::monitor_registrant(const std::string & name, fsw_monitor_type type)
   {
     monitor_factory::register_type(name, type);
