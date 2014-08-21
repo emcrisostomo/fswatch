@@ -41,8 +41,8 @@ XCode 4 ships with the following C/C++ compilers:
        i686-apple-darwin11-llvm-gcc-4.2 (GCC) 4.2.1
        (Based on Apple Inc. build 5658) (LLVM build 2336.11.00)
 
-Only clang++ implements the required C++11 features required by fsw, so that it
-must be configured with this compiler:
+Only clang++ implements the required C++11 features required by fswatch, so
+that it must be configured with this compiler:
 
   $ CXX=clang++ ./configure
 
@@ -71,8 +71,8 @@ GNU Build System
 ================
 
 The GNU Build System is required only by developers willing to modify the code
-on a OS X machine.  Regular users only willing to install fsw do not need the
-GNU Build System.
+on a OS X machine.  Regular users only willing to install fswatch do not need
+the GNU Build System.
 
   Recent XCode Command Line Tools releases are not shipping all the components
 of the GNU Build System any longer.  OS X users are thus required to build an
@@ -92,8 +92,8 @@ alternate GNU Build System on their system.
 
      (http://www.gnu.org/software/libtool/)  (>= v. 2.4.2)
 
-  Libtool is not required to build this package but it's a core component of the
-GNU Build System.
+  Libtool is not required to build this package but it's a core component of
+the GNU Build System.
 
   XCode Command Line Tools still ships GNU M4 (v. 1.4.6).
 

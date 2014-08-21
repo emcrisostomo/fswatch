@@ -9,6 +9,7 @@ ChangeLog
 	  - Add libfswatch module to configure.ac and Makefile.am.
 	  - Update distributed document data.
 	* NEWS: Update.
+	* README.freebsd: Update and rename fsw to fswatch.
 	* README.gnu-build-system: Updated instructions.
 	* README.md:
 	  - Update.
@@ -16,6 +17,7 @@ ChangeLog
 	  - Add usage example of the -m option.
 	  - Update installation section with information about MacPorts and
 	    Homebrew.
+	* README.osx: Update and rename fsw to fswatch.
 	* autogen.sh: Update to forward arguments to autoreconf.
 	* configure.ac:
 	  - Bump v. 1.4.0.
