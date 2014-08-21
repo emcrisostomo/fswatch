@@ -76,6 +76,8 @@ if test "x${ac_cv_header_mutex}" = "xyes" ; then
   AC_DEFINE(HAVE_CXX_MUTEX,
         1,
         [Define if <mutex> is available.])
+else
+    AC_WARN(AC_PACKAGE_NAME [is not thread-safe because required C++11 library classes are not available.].)
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.
