@@ -3,6 +3,12 @@ ChangeLog
 
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
+	* c/libfswatch.cpp:
+	  - Use <mutex> only if HAVE_CXX_MUTEX is defined.
+	* c++/monitor.cpp:
+	  - Use <mutex> only if HAVE_CXX_MUTEX is defined.
+	* c++/monitor.h:
+	  - Use <mutex> only if HAVE_CXX_MUTEX is defined.
 	* configure.ac:
 	  - Add an Autoconf check for the <mutex> header.
 

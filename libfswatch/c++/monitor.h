@@ -20,7 +20,9 @@
 #  include "filter.h"
 #  include <vector>
 #  include <string>
-#  include <mutex>
+#  ifdef HAVE_CXX_MUTEX
+#    include <mutex>
+#  endif
 #  include <map>
 #  include "event.h"
 #  include "../c/cmonitor.h"
@@ -74,7 +76,9 @@ namespace fsw
     bool follow_symlinks = false;
 
   private:
+#  ifdef HAVE_CXX_MUTEX
     std::mutex run_mutex;
+#  endif
     std::vector<compiled_monitor_filter> filters;
   };
 
