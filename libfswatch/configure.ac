@@ -30,6 +30,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 # Initialize Automake
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
+AM_SILENT_RULES([yes])
 AM_PROG_AR
 
 # Initialize libtool 

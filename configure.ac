@@ -34,6 +34,7 @@ AC_CONFIG_SUBDIRS([libfswatch])
 
 # Initialize Automake
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects no-dist-gzip dist-zip])
+AM_SILENT_RULES([yes])
 AM_PROG_AR
 
 # Initialize libtool 
