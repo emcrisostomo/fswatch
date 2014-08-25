@@ -33,7 +33,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SUBDIRS([libfswatch])
 
 # Initialize Automake
-AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
+AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects no-dist-gzip dist-zip])
 AM_PROG_AR
 
 # Initialize libtool 
