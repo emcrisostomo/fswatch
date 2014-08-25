@@ -95,7 +95,7 @@ namespace fsw
 
       if (::inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair))
       {
-        ::perror("rm");
+        ::perror("inotify_rm_watch");
       }
     }
 
