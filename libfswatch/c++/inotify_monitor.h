@@ -52,7 +52,7 @@ namespace fsw
     void scan(const std::string &path, const bool accept_non_dirs = true);
     bool add_watch(const std::string &path,
                    const struct stat &fd_stat);
-    void remove_deleted();
+    void process_pending_events();
     void remove_watch(int fd);
 
     inotify_monitor_impl * impl;

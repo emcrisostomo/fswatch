@@ -332,7 +332,7 @@ namespace fsw
     impl->wd_to_path.erase(wd);
   }
 
-  void inotify_monitor::remove_deleted()
+  void inotify_monitor::process_pending_events()
   {
     // Remove watches.
     auto wtd = impl->watches_to_remove.begin();
@@ -375,7 +375,7 @@ namespace fsw
 
     while (true)
     {
-      remove_deleted();
+      process_pending_events();
 
       scan_root_paths();
 
