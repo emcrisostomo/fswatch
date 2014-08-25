@@ -31,17 +31,19 @@ extern "C"
    */
   enum fsw_event_flag
   {
-    PlatformSpecific = 1,
-    Created = 2,
-    Updated = 4,
-    Removed = 8,
-    Renamed = 16,
-    OwnerModified = 32,
-    AttributeModified = 64,
-    IsFile = 128,
-    IsDir = 256,
-    IsSymLink = 512,
-    Link = 1024
+    PlatformSpecific = (1 << 0),
+    Created = (1 << 1),
+    Updated = (1 << 2),
+    Removed = (1 << 3),
+    Renamed = (1 << 4),
+    OwnerModified = (1 << 5),
+    AttributeModified = (1 << 6),
+    MovedFrom = (1 << 7),
+    MovedTo = (1 << 8),
+    IsFile = (1 << 9),
+    IsDir = (1 << 10),
+    IsSymLink = (1 << 11),
+    Link = (1 << 12)
   };
 
   /*

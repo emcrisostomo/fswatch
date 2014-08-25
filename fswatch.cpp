@@ -264,6 +264,12 @@ static vector<string> decode_event_flag_name(vector<fsw_event_flag> flags)
     case fsw_event_flag::AttributeModified:
       names.push_back("AttributeModified");
       break;
+    case fsw_event_flag::MovedFrom:
+      names.push_back("MovedFrom");
+      break;
+    case fsw_event_flag::MovedTo:
+      names.push_back("MovedTo");
+      break;
     case fsw_event_flag::IsFile:
       names.push_back("IsFile");
       break;
