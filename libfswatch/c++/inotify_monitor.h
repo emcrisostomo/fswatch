@@ -21,6 +21,7 @@
 #  include <sys/inotify.h>
 #  include <string>
 #  include <vector>
+#  include <sys/stat.h>
 
 namespace fsw
 {
@@ -42,12 +43,17 @@ namespace fsw
     inotify_monitor(const inotify_monitor& orig) = delete;
     inotify_monitor& operator=(const inotify_monitor & that) = delete;
 
-    void collect_initial_data();
+    void scan_root_paths();
+    bool is_watched(const std::string & path);
     void notify_events();
     void preprocess_dir_event(struct inotify_event * event);
     void preprocess_event(struct inotify_event * event);
     void preprocess_node_event(struct inotify_event * event);
-    void scan(const std::string &path);
+    void scan(const std::string &path, const bool accept_non_dirs = true);
+    bool add_watch(const std::string &path,
+                   const struct stat &fd_stat);
+    void remove_deleted();
+    void remove_watch(int fd);
 
     inotify_monitor_impl * impl;
   };
