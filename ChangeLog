@@ -5,11 +5,18 @@ ChangeLog
 
 	release: stable micro release 1.4.1.1.
 
-	* .version: Store version in plain text file.
+	* .version:
+	  - Store version in plain text file.
+	  - Remove old file.
+	* build-aux/git-generate-revision.sh:
+	  - Add script to get revision number from git logs.
+	* build-aux/git-generate-version.sh:
+	  - Add script to get version number from git tags.
 	* configure.ac:
 	  - Bump v. 1.4.1.1.
 	  - Add type check for std::unique_ptr in <memory>.
 	  - Read version number from file.
+	  - Read version from script output.
 
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 

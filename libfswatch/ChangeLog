@@ -10,6 +10,7 @@ ChangeLog
 	  - Refactor code to support the unavailability of std::unique_ptr.
 	* configure.ac:
 	  - Read version number from file.
+	  - Read version from script output.
 
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
