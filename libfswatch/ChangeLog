@@ -5,8 +5,11 @@ ChangeLog
 
 	release: stable micro release 1.4.1.1.
 
+	* .version: Store version in plain text file.
 	* c/libfswatch.cpp:
 	  - Refactor code to support the unavailability of std::unique_ptr.
+	* configure.ac:
+	  - Read version number from file.
 
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
