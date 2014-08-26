@@ -17,10 +17,11 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
+dnl Copyright (C) 2014, Enrico M. Crisostomo
 AC_PREREQ([2.69])
-AC_INIT([fswatch], [1.4.1.1], [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+AC_INIT([fswatch], m4_esyscmd([./build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: 1.4.1.1-1 $])
+AC_REVISION([$Revision: m4_esyscmd([./build-aux/git-generate-version.sh])-m4_esyscmd([./build-aux/git-generate-revision.sh])$])
 AC_CONFIG_SRCDIR([fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
@@ -33,7 +34,8 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SUBDIRS([libfswatch])
 
 # Initialize Automake
-AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
+AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects no-dist-gzip dist-zip])
+AM_SILENT_RULES([yes])
 AM_PROG_AR
 
 # Initialize libtool 

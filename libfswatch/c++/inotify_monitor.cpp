@@ -28,6 +28,8 @@
 #include "libfswatch_exception.h"
 #include "../c/libfswatch_log.h"
 #include "libfswatch_map.h"
+#include "libfswatch_set.h"
+#include "path_utils.h"
 
 using namespace std;
 
@@ -37,8 +39,29 @@ namespace fsw
   struct inotify_monitor_impl
   {
     int inotify_monitor_handle = -1;
-    std::vector<event> events;
-    fsw_hash_map<int, std::string> file_names_by_descriptor;
+    vector<event> events;
+    /*
+     * A map of file names by descriptor is kept in sync because the name field
+     * of the inotify_event structure is present only when it identifies a
+     * child of a watched directory.  In all the other cases, we store the path
+     * for easy retrieval.
+     */
+    fsw_hash_set<int> watched_descriptors;
+    fsw_hash_map<string, int> path_to_wd;
+    /*
+     * Since the inotify API maintains only works with watch
+     * descriptors a cache maintaining a relationship between a watch
+     * descriptor and the path used to get it is required to be able to map an
+     * event to the path it refers to.  From man inotify:
+     * 
+     *   The inotify API identifies events via watch descriptors.  It is the
+     *   application's responsibility to cache a mapping (if one is needed)
+     *   between watch descriptors and pathnames.  Be aware that directory
+     *   renamings may affect multiple cached pathnames.
+     */
+    fsw_hash_map<int, string> wd_to_path;
+    fsw_hash_set<int> descriptors_to_remove;
+    fsw_hash_set<int> watches_to_remove;
     time_t curr_time;
   };
 
@@ -49,7 +72,8 @@ namespace fsw
   inotify_monitor::inotify_monitor(vector<string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK * callback,
                                    void * context) :
-    monitor(paths_to_monitor, callback, context), impl(new inotify_monitor_impl())
+    monitor(paths_to_monitor, callback, context),
+    impl(new inotify_monitor_impl())
   {
     impl->inotify_monitor_handle = ::inotify_init();
 
@@ -63,11 +87,15 @@ namespace fsw
   inotify_monitor::~inotify_monitor()
   {
     // close inotify watchers
-    for (auto inotify_desc_pair : impl->file_names_by_descriptor)
+    for (auto inotify_desc_pair : impl->watched_descriptors)
     {
-      if (::inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair.first))
+      ostringstream log;
+      log << "Removing: " << inotify_desc_pair << "\n";
+      libfsw_log(log.str().c_str());
+
+      if (::inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair))
       {
-        ::perror("rm");
+        ::perror("inotify_rm_watch");
       }
     }
 
@@ -80,33 +108,81 @@ namespace fsw
     delete impl;
   }
 
-  void inotify_monitor::scan(const string &path)
+  bool inotify_monitor::add_watch(const string &path,
+                                  const struct stat &fd_stat)
   {
-    if (!accept_path(path)) return;
-
+    // TODO: Consider optionally adding the IN_EXCL_UNLINK flag.
     int inotify_desc = ::inotify_add_watch(impl->inotify_monitor_handle,
-                                           path.c_str(), 
+                                           path.c_str(),
                                            IN_ALL_EVENTS);
 
     if (inotify_desc == -1)
     {
       ::perror("inotify_add_watch");
-      throw libfsw_exception("Cannot add watch.");
+    }
+    else
+    {
+      impl->watched_descriptors.insert(inotify_desc);
+      impl->wd_to_path[inotify_desc] = path;
+      impl->path_to_wd[path] = inotify_desc;
+
+      ostringstream log;
+      log << "ADDED " << path << "\n";
+      libfsw_log(log.str().c_str());
     }
 
-    impl->file_names_by_descriptor[inotify_desc] = path;
-
-    std::ostringstream s;
-    s << "Watching " << path << ".\n";
-
-    libfsw_log(s.str().c_str());
+    return (inotify_desc != -1);
   }
 
-  void inotify_monitor::collect_initial_data()
+  void inotify_monitor::scan(const string &path, const bool accept_non_dirs)
+  {
+    struct stat fd_stat;
+    if (!stat_path(path, fd_stat)) return;
+
+    /*
+     * When watching a directory the inotify API will return change events of
+     * first-level children.  Therefore, we do not need to manually add a watch
+     * for a child unless it is a directory.  By default, accept_non_dirs is
+     * true to allow watching a file when first invoked on a node.
+     */
+    if (!accept_non_dirs && !S_ISDIR(fd_stat.st_mode)) return;
+    else if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+    {
+      string link_path;
+      if (read_link_path(path, link_path))
+        scan(link_path/*, fn */, accept_non_dirs);
+
+      return;
+    }
+
+    if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return;
+    if (!add_watch(path, fd_stat /*, fn */)) return;
+    if (!recursive || !S_ISDIR(fd_stat.st_mode)) return;
+
+    vector<string> children;
+    get_directory_children(path, children);
+
+    for (const string &child : children)
+    {
+      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
+
+      /*
+       * Scan children but only watch directories.
+       */
+      scan(path + "/" + child /*, fn */, false);
+    }
+  }
+
+  bool inotify_monitor::is_watched(const string & path)
+  {
+    return (impl->path_to_wd.find(path) != impl->path_to_wd.end());
+  }
+
+  void inotify_monitor::scan_root_paths()
   {
     for (string &path : paths)
     {
-      scan(path);
+      if (!is_watched(path)) scan(path);
     }
   }
 
@@ -114,14 +190,14 @@ namespace fsw
   {
     vector<fsw_event_flag> flags;
 
-    if (event->mask & IN_DELETE_SELF) flags.push_back(fsw_event_flag::Removed);
     if (event->mask & IN_ISDIR) flags.push_back(fsw_event_flag::IsDir);
+    //if (event->mask & IN_DELETE_SELF) flags.push_back(fsw_event_flag::Removed);
     if (event->mask & IN_MOVE_SELF) flags.push_back(fsw_event_flag::Updated);
     if (event->mask & IN_UNMOUNT) flags.push_back(fsw_event_flag::PlatformSpecific);
 
     if (flags.size())
     {
-      impl->events.push_back({impl->file_names_by_descriptor[event->wd], impl->curr_time, flags});
+      impl->events.push_back({impl->wd_to_path[event->wd], impl->curr_time, flags});
     }
   }
 
@@ -136,22 +212,90 @@ namespace fsw
     if (event->mask & IN_CREATE) flags.push_back(fsw_event_flag::Created);
     if (event->mask & IN_DELETE) flags.push_back(fsw_event_flag::Removed);
     if (event->mask & IN_MODIFY) flags.push_back(fsw_event_flag::Updated);
-    if (event->mask & IN_MOVED_FROM) flags.push_back(fsw_event_flag::Updated);
-    if (event->mask & IN_MOVED_TO) flags.push_back(fsw_event_flag::Updated);
+    if (event->mask & IN_MOVED_FROM)
+    {
+      flags.push_back(fsw_event_flag::Removed);
+      flags.push_back(fsw_event_flag::MovedFrom);
+    }
+    if (event->mask & IN_MOVED_TO)
+    {
+      flags.push_back(fsw_event_flag::Created);
+      flags.push_back(fsw_event_flag::MovedTo);
+    }
     if (event->mask & IN_OPEN) flags.push_back(fsw_event_flag::PlatformSpecific);
+
+    // Build the file name.
+    ostringstream filename_stream;
+    filename_stream << impl->wd_to_path[event->wd];
+
+    if (event->len > 1)
+    {
+      filename_stream << "/";
+      filename_stream << event->name;
+    }
 
     if (flags.size())
     {
-      ostringstream path_stream;
-      path_stream << impl->file_names_by_descriptor[event->wd];
+      impl->events.push_back({filename_stream.str(), impl->curr_time, flags});
+    }
 
-      if (event->len > 1)
-      {
-        path_stream << "/";
-        path_stream << event->name;
-      }
+    {
+      ostringstream log;
+      log << "GENERIC: " << event->wd << "::" << filename_stream.str() << "\n";
+      libfsw_log(log.str().c_str());
+    }
 
-      impl->events.push_back({path_stream.str(), impl->curr_time, flags});
+    /*
+     * inotify automatically removes the watch of a watched item that has been
+     * removed and posts an IN_IGNORED event after an IN_DELETE_SELF.
+     */
+    if (event->mask & IN_IGNORED)
+    {
+      ostringstream log;
+      log << "IN_IGNORED: " << event->wd << "::" << filename_stream.str() << "\n";
+      libfsw_log(log.str().c_str());
+
+      impl->descriptors_to_remove.insert(event->wd);
+    }
+
+    /*
+     * inotify sends an IN_MOVE_SELF event when a watched object is moved into
+     * the same filesystem and keeps watching it.  Since its path has changed,
+     * we remove the watch so that recreation is attempted at the next
+     * iteration.
+     * 
+     * Beware that a race condition exists which may result in events go
+     * unnoticed when a watched file x is removed and a new file named x is
+     * created thereafter.  In this case, fswatch could be blocked on ::read
+     * and it would not have any chance to create a new watch descriptor for x
+     * until an event is received and ::read unblocks.
+     */
+    if (event->mask & IN_MOVE_SELF)
+    {
+      ostringstream log;
+      log << "IN_MOVE_SELF: " << event->wd << "::" << filename_stream.str() << "\n";
+      libfsw_log(log.str().c_str());
+
+      impl->watches_to_remove.insert(event->wd);
+      impl->descriptors_to_remove.insert(event->wd);
+    }
+
+    /*
+     * An file could be moved to a path which is being observed.  The clobbered
+     * file is handled by the corresponding IN_DELETE_SELF event.
+     */
+
+    /*
+     * inotify automatically removes the watch of the object the IN_DELETE_SELF
+     * event is related to.
+     */
+    if (event->mask & IN_DELETE_SELF)
+    {
+      ostringstream log;
+      log << "IN_DELETE_SELF: " << event->wd << "::" << filename_stream.str() << "\n";
+      libfsw_log(log.str().c_str());
+
+      impl->descriptors_to_remove.insert(event->wd);
     }
   }
 
@@ -170,22 +314,80 @@ namespace fsw
   {
     if (impl->events.size())
     {
+      ostringstream log;
+      log << "Notifying events #: " << impl->events.size() << "\n";
+      libfsw_log(log.str().c_str());
+
       callback(impl->events, context);
       impl->events.clear();
     }
   }
 
+  void inotify_monitor::remove_watch(int wd)
+  {
+    /*
+     * No need to remove the inotify watch because it is removed automatically
+     * when a watched element is deleted. 
+     */
+    impl->wd_to_path.erase(wd);
+  }
+
+  void inotify_monitor::process_pending_events()
+  {
+    // Remove watches.
+    auto wtd = impl->watches_to_remove.begin();
+
+    while (wtd != impl->watches_to_remove.end())
+    {
+      if (::inotify_rm_watch(impl->inotify_monitor_handle, *wtd) != 0)
+      {
+        ::perror("inotify_rm_watch");
+      }
+      else
+      {
+        ostringstream log;
+        log << "REMOVED " << *wtd << "\n";
+        libfsw_log(log.str().c_str());
+      }
+
+      impl->watches_to_remove.erase(wtd++);
+    }
+
+    // Clean up descriptors.
+    auto fd = impl->descriptors_to_remove.begin();
+
+    while (fd != impl->descriptors_to_remove.end())
+    {
+      // remove_watch(*fd);
+
+      const string & curr_path = impl->wd_to_path[*fd];
+      impl->path_to_wd.erase(curr_path);
+      impl->wd_to_path.erase(*fd);
+      impl->watched_descriptors.erase(*fd);
+
+      impl->descriptors_to_remove.erase(fd++);
+    }
+  }
+
   void inotify_monitor::run()
   {
-    collect_initial_data();
-
     char buffer[BUFFER_SIZE];
 
     while (true)
     {
+      process_pending_events();
+
+      scan_root_paths();
+
       ssize_t record_num = ::read(impl->inotify_monitor_handle,
                                   buffer,
                                   BUFFER_SIZE);
+
+      {
+        ostringstream log;
+        log << "RECORD_NUM: " << record_num << "\n";
+        libfsw_log(log.str().c_str());
+      }
 
       if (!record_num)
       {

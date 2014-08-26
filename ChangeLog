@@ -1,6 +1,25 @@
 ChangeLog
 *********
 
+2014-08-26  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	release: stable micro release 1.4.2.
+
+	* .version:
+	  - Store version in plain text file.
+	  - Remove old file.
+	* build-aux/git-generate-revision.sh:
+	  - Add script to get revision number from git logs.
+	* build-aux/git-generate-version.sh:
+	  - Add script to get version number from git tags.
+	* configure.ac:
+	  - Read version number from file.
+	  - Read version from script output.
+	  - Set dist-zip by default and disable dist-gzip.
+	  - Enable silent make rules.
+	* fswatch.cpp:
+	  - Add the MovedFrom and MovedTo elements to fsw_event_flag.
+
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
 	release: stable micro release 1.4.1.1.
