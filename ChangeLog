@@ -1,9 +1,9 @@
 ChangeLog
 *********
 
-2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+2014-08-26  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
-	release: stable micro release 1.4.1.1.
+	release: stable micro release 1.4.2.
 
 	* .version:
 	  - Store version in plain text file.
@@ -13,10 +13,20 @@ ChangeLog
 	* build-aux/git-generate-version.sh:
 	  - Add script to get version number from git tags.
 	* configure.ac:
-	  - Bump v. 1.4.1.1.
-	  - Add type check for std::unique_ptr in <memory>.
 	  - Read version number from file.
 	  - Read version from script output.
+	  - Set dist-zip by default and disable dist-gzip.
+	  - Enable silent make rules.
+	* fswatch.cpp:
+	  - Add the MovedFrom and MovedTo elements to fsw_event_flag.
+
+2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	release: stable micro release 1.4.1.1.
+
+	* configure.ac:
+	  - Bump v. 1.4.1.1.
+	  - Add type check for std::unique_ptr in <memory>.
 
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 

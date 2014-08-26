@@ -1,16 +1,36 @@
 ChangeLog
 *********
 
+2014-08-26  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	release: stable micro release 1.4.2.
+
+	* .version:
+	  - Store version in plain text file.
+	  - Remove hardcoded version file.
+	* c/cevent.h:
+	  - Add the MovedFrom and MovedTo elements to fsw_event_flag.
+	* c++/inotify_monitor.cpp:
+	  - Do not throw on non-existing path.
+	  - Do not check paths against filters during watch creation.
+	  - Update the inotify monitor to recursively scan directories.
+	  - Update the inotify monitor.
+	  - Refactor method name.
+	  - Update misleading ::perror argument.
+	* c++/inotify_monitor.h:
+	  - Update the inotify monitor.
+	  - Refactor method name.
+	* configure.ac:
+	  - Read version number from file.
+	  - Read version from script output.
+	  - Enable silent make rules.
+
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
 	release: stable micro release 1.4.1.1.
 
-	* .version: Store version in plain text file.
 	* c/libfswatch.cpp:
 	  - Refactor code to support the unavailability of std::unique_ptr.
-	* configure.ac:
-	  - Read version number from file.
-	  - Read version from script output.
 
 2014-08-21  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
