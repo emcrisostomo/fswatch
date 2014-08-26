@@ -82,6 +82,8 @@ To install the GNU Build System, the following operations must be performed:
      package may fail:
 
         $ export PATH=/destdir/bin:$PATH
+  
+  14. Run `ldconfig` (with root privileges) to refresh the links and cache to the shared libraries.
 
 [Autoconf]: http://www.gnu.org/software/autoconf/
 [Automake]: http://www.gnu.org/software/automake/
