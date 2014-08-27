@@ -43,6 +43,9 @@ LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
+# Required because libraries are built in this package.
+AC_PROG_RANLIB
+
 # Configure language
 AC_LANG(C++)
 
@@ -88,6 +91,7 @@ AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
 AC_FUNC_STRTOD
+AC_CHECK_FUNCS([atexit])
 AC_CHECK_FUNCS([getopt_long])
 AC_CHECK_FUNCS(
   [realpath],
