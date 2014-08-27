@@ -29,8 +29,7 @@ fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
 # Link fswatch against dependent libraries
 fswatch_LDADD = libfswatch/libfswatch.la
 
-man_MANS = fswatch.7
-EXTRA_DIST = $(man_MANS)
+dist_man_MANS = fswatch.7
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
 dist_doc_DATA += README.osx AUTHORS COPYING LICENSE NEWS
 
@@ -51,3 +50,8 @@ uninstall-local: fswatch-remove-links
 
 fswatch-remove-links:
 	-rm $(DESTDIR)$(bindir)/fswatch-run
+
+dist-hook:
+# The recipe cannot assume a file in $(distdir) is writable.
+	chmod u+w $(distdir)/ChangeLog
+	git log --oneline --decorate >> $(distdir)/ChangeLog

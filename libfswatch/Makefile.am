@@ -72,3 +72,8 @@ libfswatch_cpp_HEADERS += c++/filter.h c++/event.h c++/libfswatch_exception.h
 
 dist_doc_DATA  = README.md
 dist_doc_DATA += AUTHORS COPYING LICENSE NEWS
+
+dist-hook:
+# The recipe cannot assume a file in $(distdir) is writable.
+	chmod u+w $(distdir)/ChangeLog
+	git log --oneline --decorate >> $(distdir)/ChangeLog
