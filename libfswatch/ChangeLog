@@ -7,6 +7,9 @@ ChangeLog
 
 	* Makefile.am
 	  - Set library version info to 1.0.0.
+	  - Set library version info using an Autoconf-substituted variable.
+	* configure.ac:
+	  - Set library version info using an Autoconf-substituted variable.
 
 2014-08-26  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 

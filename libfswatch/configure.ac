@@ -39,6 +39,9 @@ LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
+# Set library interface version
+AC_SUBST([LIBFSWATCH_VERSION], [1:0:0])
+
 # Configure language
 AC_LANG(C++)
 

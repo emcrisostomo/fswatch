@@ -16,6 +16,8 @@
 #
 ACLOCAL_AMFLAGS = -I m4
 
+LIBFSWATCH_VERSION = @LIBFSWATCH_VERSION@
+
 # Refresh configuration if libtool dependencies change
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
@@ -41,7 +43,7 @@ if USE_INOTIFY
 endif
 libfswatch_la_SOURCES += c++/path_utils.cpp c++/path_utils.h
 
-libfswatch_la_LDFLAGS = -version-info 1:0:0
+libfswatch_la_LDFLAGS = -version-info $(LIBFSWATCH_VERSION)
 
 if USE_FSEVENTS
   libfswatch_la_LDFLAGS += -framework CoreServices
