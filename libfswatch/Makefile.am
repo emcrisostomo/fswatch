@@ -41,7 +41,7 @@ if USE_INOTIFY
 endif
 libfswatch_la_SOURCES += c++/path_utils.cpp c++/path_utils.h
 
-libfswatch_la_LDFLAGS =
+libfswatch_la_LDFLAGS = -version-info 1:0:0
 
 if USE_FSEVENTS
   libfswatch_la_LDFLAGS += -framework CoreServices

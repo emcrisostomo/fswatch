@@ -1,6 +1,13 @@
 ChangeLog
 *********
 
+2014-08-27  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
+
+	release: stable micro release 1.4.3.
+
+	* Makefile.am
+	  - Set library version info to 1.0.0.
+
 2014-08-26  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
 	release: stable micro release 1.4.2.
