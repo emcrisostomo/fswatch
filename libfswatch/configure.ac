@@ -115,22 +115,15 @@ AC_CHECK_TYPE([std::unique_ptr<std::string>],
   [[#include <memory>]])
 
 # Checks for library functions.
-AC_CHECK_FUNCS(
-  [realpath],
-  ,
-  AC_MSG_ERROR([The realpath function cannot be found.])
-)
-AC_CHECK_FUNCS(
-  [modf],
-  ,
-  AC_MSG_ERROR([The modf function cannot be found.]) 
-)
+AC_CHECK_FUNCS([realpath], [], AC_MSG_ERROR([The realpath function cannot be found.]))
+AC_CHECK_FUNCS([modf], [], AC_MSG_ERROR([The modf function cannot be found.]))
+AC_CHECK_FUNCS([select], [], AC_MSG_ERROR([The select function cannot be found.]))
 AC_CHECK_FUNCS([regcomp])
 
 AC_CHECK_DECLS(
   [kqueue, kevent],
-  ,
-  ,
+  [],
+  [],
   [
     AC_INCLUDES_DEFAULT
     [#include <sys/event.h>]
