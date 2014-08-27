@@ -5,7 +5,9 @@ ChangeLog
 
 	release: stable micro release 1.4.3.
 
-	* README.md: Added mention to ldconfig in README.md.
+	* README.md:
+	  - Added mention to ldconfig in README.md.
+	  - Update.
 
 2014-08-26  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 

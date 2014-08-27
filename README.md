@@ -78,7 +78,9 @@ Usage recommendations are as follows:
     as 256 are not uncommon), even if the operating system may allow a much
     larger value.  In this case, check your OS documentation to raise this limit
     on either a per process or a system-wide basis.
-  * If feasible, watch directories instead of watching files.
+  * If feasible, watch directories instead of watching files.  Properly crafting
+    the receiving side of the events to deal with directories may sensibly
+    reduce the monitor resource consumption.
   * If none of the above applies, use the poll monitor.  The authors' experience
     indicates that `fswatch` requires approximately 150 MB or RAM memory to 
     observe a hierarchy of 500.000 files with a minimum path length of 32
