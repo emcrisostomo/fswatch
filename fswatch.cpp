@@ -53,6 +53,7 @@ static bool rflag = false;
 static bool tflag = false;
 static bool uflag = false;
 static bool vflag = false;
+static int version_flag = false;
 static bool xflag = false;
 static double lvalue = 1.0;
 static string monitor_name;
@@ -71,6 +72,18 @@ static void list_monitor_types(ostream& stream)
   {
     stream << "  " << type << "\n";
   }
+}
+
+static void print_version(ostream& stream)
+{
+  stream << PACKAGE_STRING << "\n";
+  stream << "Copyright (C) 2014, Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n";
+  stream << "This is free software: you are free to change and redistribute it.\n";
+  stream << "There is NO WARRANTY, to the extent permitted by law.\n";
+  stream << "\n";
+  stream << "Written by Enrico M. Crisostomo.";
+  stream << endl;
 }
 
 static void usage(ostream& stream)
@@ -106,6 +119,7 @@ static void usage(ostream& stream)
   stream << " -t, --timestamp       Print the event timestamp.\n";
   stream << " -u, --utc-time        Print the event time as UTC time.\n";
   stream << " -v, --verbose         Print verbose output.\n";
+  stream << "     --version         Print the version of " << PACKAGE_NAME << " and exit.\n";
   stream << " -x, --event-flags     Print the event flags.\n";
   stream << "\n";
 #else
@@ -466,6 +480,7 @@ static void parse_opts(int argc, char ** argv)
     { "timestamp", no_argument, nullptr, 't'},
     { "utc-time", no_argument, nullptr, 'u'},
     { "verbose", no_argument, nullptr, 'v'},
+    { "version", no_argument, &version_flag, true},
     { "event-flags", no_argument, nullptr, 'x'},
     { nullptr, 0, nullptr, 0}
   };
@@ -569,10 +584,16 @@ static void parse_opts(int argc, char ** argv)
       xflag = true;
       break;
 
-    default:
+    case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
     }
+  }
+
+  if (version_flag)
+  {
+    print_version(cout);
+    ::exit(FSW_EXIT_OK);
   }
 }
 
