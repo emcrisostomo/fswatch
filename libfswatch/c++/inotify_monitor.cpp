@@ -22,9 +22,10 @@
 #include <limits.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <iostream>
 #include <sstream>
 #include <ctime>
+#include <cmath>
+#include <sys/select.h>
 #include "libfswatch_exception.h"
 #include "../c/libfswatch_log.h"
 #include "libfswatch_map.h"
@@ -378,6 +379,36 @@ namespace fsw
       process_pending_events();
 
       scan_root_paths();
+
+      // Use select to timeout on file descriptor read the amount specified by
+      // the monitor latency.  This way, the monitor has a chance to update its
+      // watches with at least the periodicity expected by the user.
+      fd_set set;
+      struct timeval timeout;
+
+      FD_ZERO(&set);
+      FD_SET(impl->inotify_monitor_handle, &set);
+      double sec;
+      double frac = ::modf(this->latency, &sec);
+      timeout.tv_sec = sec;
+      timeout.tv_usec = 1000 * 1000 * frac;
+
+      int rv = ::select(impl->inotify_monitor_handle + 1,
+                        &set,
+                        nullptr,
+                        nullptr,
+                        &timeout);
+
+      if (rv == -1)
+      {
+        throw libfsw_exception("::select() on inotify descriptor encountered an error.");
+      }
+
+      // In case of read timeout just repeat the loop.
+      if (rv == 0)
+      {
+        continue;
+      }
 
       ssize_t record_num = ::read(impl->inotify_monitor_handle,
                                   buffer,

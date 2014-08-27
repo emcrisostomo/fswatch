@@ -8,8 +8,12 @@ ChangeLog
 	* Makefile.am
 	  - Set library version info to 1.0.0.
 	  - Set library version info using an Autoconf-substituted variable.
+	* c++/inotify_monitor.cpp:
+	  - Use ::select to timeout a wait on ::read using the monitor
+	  latency.
 	* configure.ac:
 	  - Set library version info using an Autoconf-substituted variable.
+	  - Add Autoconf function checks for ::modf and ::select.
 
 2014-08-26  Enrico M. Crisostomo  <enrico.m.crisostomo@gmail.com>
 
