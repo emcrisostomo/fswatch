@@ -154,7 +154,10 @@ static void usage(ostream& stream)
 
   list_monitor_types(stream);
 
-  stream << "\nSee the man page for more information.";
+  stream << "\nSee the man page for more information.\n\n";
+
+  stream << "Report bugs to <" << PACKAGE_BUGREPORT << ">.\n";
+  stream << PACKAGE << " home page: <" << PACKAGE_URL << ">.";
   stream << endl;
 
   exit(FSW_EXIT_USAGE);

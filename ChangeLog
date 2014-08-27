@@ -5,6 +5,8 @@ ChangeLog
 
 	release: stable micro release 1.4.3.
 
+	* fswatch.cpp:
+	  - Improve help message adding bug report email and web page.
 	* README.md:
 	  - Added mention to ldconfig in README.md.
 	  - Update.
