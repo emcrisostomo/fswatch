@@ -5,6 +5,9 @@ ChangeLog
 
 	release: stable micro release 1.4.3.
 
+	* configure.ac:
+	  - Add Autoconf function check for ::atexit.
+	  - Exit with error if atexit is not found.
 	* fswatch.cpp:
 	  - Improve help message adding bug report email and web page.
 	  - Add --version option.
