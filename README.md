@@ -29,7 +29,7 @@ wrote `fsw` aiming at providing not only a drop-in replacement for `fswatch`,
 but a common front-end from multiple file system change events APIs, including:
 
   * OS X FSEvents.
-  * *BSD kqueue.
+  * \*BSD kqueue.
   * Linux inotify.
 
 In April 2014 Alan and Enrico, in the best interest of users of either
@@ -52,7 +52,7 @@ The limitations of `fswatch` depend largely on the monitor being used:
 
   * The FSEvents monitor, available only on Apple OS X, has no known
     limitations and scales very well with the number of files being observed.
-  * The kqueue monitor, available on any *BSD system featuring kqueue, requires
+  * The kqueue monitor, available on any \*BSD system featuring kqueue, requires
     a file descriptor to be opened for every file being watched.  As a result,
     this monitor scales badly with the number of files being observed and may
     begin to misbehave as soon as the `fswatch` process runs out of file 
@@ -129,7 +129,18 @@ Installation
 ------------
 
 See the `INSTALL` file for detailed information about how to configure and
-install `fswatch`.
+install `fswatch`.  Since the `fswatch` builds and uses dynamic libraries, in
+some platforms you may need to perform additional tasks before you can use
+`fswatch`:
+
+  * Make sure the installation directory of dynamic libraries ($PREFIX/lib) is
+    included in the lookup paths of the dynamic linker of your operating
+    system.  The default path, `/usr/local/lib`, will work in nearly every
+    operating system. 
+  * Refreshing the links and cache to the dynamic libraries may be required.
+    In GNU/Linux systems you may need to run `ldconfig`:
+
+        $ ldconfig
 
 `fswatch` is a C++ program and a C++ compiler compliant with the C++11 standard
 is required to compile it.  Check your OS documentation for information about
