@@ -39,6 +39,9 @@ A monitor based on kqueue, an event notification interface introduces in
 FreeBSD 4.1 and supported on most *BSD systems (including OS X).
 
 .It -
+A monitor based on inotify, a Linux kernel subsystem that reports file system changes to applications.
+
+.It -
 A monitor which periodically stats the file system, saves file modification
 times in memory and manually calculates changes.
 
@@ -75,7 +78,7 @@ The following options are available:
 .Bl -tag -width indent
 
 .It Fl 0, -print0
-Use the ASCII NUL character (\0) as line separator.
+Use the ASCII NUL character (\e0) as line separator.
 Since file names can potentially contain any character but NUL, this option
 assures that the output of @FSWATCH@ can be safely parsed using NUL as delimiter,
 such as using xargs -0 and the shell builtin read -d ''. 
@@ -150,8 +153,7 @@ Print the event timestamp.
 .It Fl u, -utf-time
 Print the event time in UTC format.
 When this option is not specified, the time is printed using the system
-.Em
-local
+.Em local
 time, as defined by
 .Sy localtime (3) .
 
@@ -227,15 +229,122 @@ kFSEventStreamEventFlagItemIsSymlink, "isSymLink".
 .El 
 
 .Sh EXAMPLES
+.Ss Basic Usage
+.Nm
+syntax is the following:
+.Pp
+.Dl $ fswatch [options] [paths] ...
+.Pp
+.Nm
+will then output change events to standard output. By default, only the affected file name is printed.
+However, many options are available to format the event record, including: 
+.Bl -tag -width indent
+.It -
+The possibility of adding the event timestamp.
+.It -
+The possibility of adding the event mask in both textual and numerical form.
+.El
+
 The following command listens for changes in the current directory and events
 are delivered every 5 seconds:
 .Pp
 .Dl "$ @FSWATCH@ -l 5 ."
 .Pp 
 The following command listens for changes in the current user home directory and
-/var/log:
+.Em /var/log :
 .Pp
 .Dl "$ @FSWATCH@ ~ /var/log"
+
+.Ss Piping @FSWATCH@ Output to Another Process
+Very often you wish to not only receive an event, but react to it.
+The simplest way to do it is piping fswatch output to another process.
+Since in UNIX and UNIX-like file system file names may potentially contain any character but
+.Em NUL (\e0)
+and the path separator
+.Em (/) ,
+.Nm
+has a specific mode of operation when its output must be piped to another process.
+When the
+.Op Fl 0
+option is used,
+.Nm
+will use the
+.Em NUL
+character as record separator, thus allowing any other character to appear in a path.
+This is important because many commands and shell builtins (such as
+.Em read )
+split words and lines by default using the characters in
+.Em $IFS ,
+which by default contains characters which may be present (although rarely) in a file name, resulting in a wrong event path being received and processed.
+
+.Pp
+Probably the simplest way to pipe
+.Nm
+to another program in order to respond to an event is using
+.Em xargs
+:
+.Pp
+.Dl "$ fswatch -0 [opts] [paths] | xargs -0 -n 1 -I {} [command]"
+
+.Pp In this example:
+.Bl -tag -width indent
+.It -
+.Em fswatch -0
+will split records using the
+.Em NUL
+character.
+
+.It -
+.Em xargs -0
+will split records using the
+.Em NUL
+character. This is required to correctly match impedance with
+.Nm
+.
+
+.It -
+.Em xargs -n 1
+will invoke command every command. If you want to do it every
+.Em x
+records, then use
+.Em xargs -n x
+.
+
+.It -
+.Em xargs -I {}
+will substitute occurrences of
+.Em {}
+in command with the parsed argument. If the command you are running does not need the event path name, just delete this option. If you prefer using another replacement string, substitute
+.Em {}
+with yours.
+.El
+
+.Ss Bubbling Events
+An often requested feature is being able to receive a single event "per batch", instead of receiving multiple events.
+This use case is implemented by the
+.Op Fl o, -one-per-batch
+option which tells
+.Nm
+to dump a record containing the number of received events, without any other detail:
+.Pp
+.Dl $ fswatch -or /path/to/watch
+.Dl 1
+.Dl 10
+.Dl [...]
+.Pp
+This is useful if, for example, you want to respond to change events in a way which is (or can easily be) path-independent (because you are not receiving any event detail) and you prefer to "bubble" events together to reduce the overhead of the command being executed.
+A typical case is a directory synchronisation job whenever some files change.
+
+.Ss Receiving a Single Event
+Another requested feature is the possibility of receiving a single event and exit.
+This is most useful when existing scripts processing events include the restart logic of
+.Nm.
+This use case is implemented by the
+.Op Fl 1, -one-event
+option:
+.Pp
+.Dl $ fswatch -1 /path/to/watch
+.Dl /path/to/watch
 
 .Sh DIAGNOSTICS
 The
@@ -246,4 +355,8 @@ This utility can be built on any system supporting at least one of the available
 monitors.
 
 .Sh BUGS
-No bugs are known.
+See
+.UR
+https://github.com/emcrisostomo/fswatch/issues
+.UE
+for open issues.
