@@ -103,8 +103,10 @@ AC_CHECK_FUNCS([regcomp])
 # Variables used in man files
 MAN_DATE=$(date +'%B %d, %Y')
 FSWATCH=${PACKAGE_NAME}
+MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
 AC_SUBST([MAN_DATE])
 AC_SUBST([FSWATCH])
+AC_SUBST([MAN_BUG_REPORT])
 
 AC_CONFIG_FILES([man/fswatch.7])
 
