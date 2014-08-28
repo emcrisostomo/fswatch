@@ -8,7 +8,7 @@
 .Dt "@FSWATCH@" "7" "@FSWATCH@ file system monitor"
 .Os "@TARGET_VENDOR@" "@TARGET_OS@"
 .An Enrico Maria Crisostomo
-.Ad enrico.m.crisostomo@gmail.com
+.Ad @MAN_BUG_REPORT@
 .Pp
 .Sh NAME
 .Nm @FSWATCH@
@@ -163,6 +163,160 @@ Print verbose output.
 .It Fl x, -event-flags
 Prints the event flags.
 
+.El
+
+.Sh MONITORS
+.Nm
+acts as a front-end to system-specific monitors.
+Currently, the available monitors are:
+.Bl -tag -width indent
+.It -
+The
+.Em FSEvents monitor ,
+a monitor based on the File System Events API of Apple OS X.
+.It -
+The
+.Em kqueue monitor ,
+a monitor based on kqueue, an event notification interface introduced in FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+.It -
+The
+.Em inotify monitor ,
+a Linux kernel subsystem that reports file system changes to applications.
+.It -
+The
+.Em poll monitor ,
+a monitor which periodically stats the file system, saves file modification times in memory and manually calculates file system changes, which can work on any operating system where
+.Xr stat 2
+can be used.
+.El
+.Pp
+Each monitor has its own strengths, weakness and peculiarities.
+Although
+.Nm
+strives to provide a uniform experience no matter which monitor is used, it is
+still important for users to know which monitor they are using and to be aware
+of existing bugs, limitations, corner cases or pathological behaviour.
+
+.Ss The FSEvents Monitor
+The
+.Em FSEvents monitor ,
+available only on Apple OS X, has no known limitations and scales very well with
+the number of files being observed.
+In fact, I observed no performance degradation when testing
+.Nm
+observing changes on a filesystem of 500 GB over long periods of time.
+On OS X, this is the default monitor.
+
+.Ss The kqueue Monitor
+The
+.Em kqueue monitor ,
+available on any *BSD system featuring kqueue, requires a file descriptor to be
+opened for every file being watched.
+As a result, this monitor scales badly with the number of files being observed
+and may begin to misbehave as soon as the
+.Nm
+process runs out of file descriptors.
+In this case,
+.Nm
+dumps one error on standard error for every file that cannot be opened.
+Beware that on some systems the maximum number of file descriptors that can be
+opened by a process is set to a very low value (values as low as 256 are not
+uncommon), even if the operating system may allow a much larger value.
+.Pp
+If you are running out of file descriptors when using this monitor and you
+cannot reduce the number of observed items, either:
+.Bl -tag -width indent
+.It -
+Consider raising the number of maximum open file descriptors (check your OS
+documentation).
+.It -
+Consider using another monitor.
+.El
+
+.Ss The inotify Monitor
+The
+.Em inotify monitor ,
+available on Linux since kernel 2.6.13, may suffer a queue overflow if events
+are generated faster than they are read from the queue.
+In any case, the application is guaranteed to receive an overflow notification
+which can be handled to gracefully recover.
+.Nm
+currently throws an exception if a queue overflow occurs.
+Future versions will handle the overflow by emitting proper notifications.
+However, the odds of observing a queue overflow on a default configured
+mainstream GNU/Linux distribution is very low.
+.Pp
+The inotify API sends events for the direct child elements of a watched
+directory and it scales pretty well with the number of watched items.
+For this reason, depending on the number of files to watch, it may sometimes be
+preferable to watch a common parent directory and filter received events rather
+than adding a huge number of file watches.
+
+.Ss The Poll Monitor
+The
+.Em poll monitor
+was added as a fallback mechanisms in the cases where no other monitor could be
+used, including:
+.Bl -tag -width indent
+.It -
+Operating system without any sort of file events API.
+.It -
+Situations where the limitations of the available monitors cannot be overcome
+(i.e.: observing a number of files greater than the available file descriptors
+on a system using the kqueue monitor).
+.El
+.Pp
+The poll monitor, available on any platform, only relies on available CPU and
+memory to perform its task (besides the
+.Xr stat 2
+function).
+The performance of this monitor degrades linearly with the number of files being
+watched.
+
+The authors' experience indicates that
+.Nm
+requires approximately 150 MB or RAM memory to observe a hierarchy of 500.000
+files with a minimum path length of 32 characters.
+A common bottleneck of the poll monitor is disk access, since stat()-ing a great
+number of files may take a huge amount of time.
+In this case, the latency should be set to a sufficiently large value in order
+to reduce the performance degradation that may result from frequent disk access.
+
+.Ss How to Choose a Monitor
+.Nm
+already chooses the "best" monitor for your platform if you do not specify any.
+However, a specific monitor may be better suited to specific use cases.
+Please, read the
+.Sx MONITORS
+section to get a description of all the available monitors and their
+limitations.
+.Pp
+Usage recommendations are as follows:
+.Bl -tag -width indent
+.It -
+On OS X, use only the FSEvents monitor (which is the default behaviour).
+.It -
+On Linux, use the inotify monitor (which is the default behaviour).
+.It -
+If the number of files to observe is sufficiently small, use the kqueue monitor.
+Beware that on some systems the maximum number of file descriptors that can be
+opened by a process is set to a very low value (values as low as 256 are not
+uncommon), even if the operating system may allow a much larger value.
+In this case, check your OS documentation to raise this limit on either a per
+process or a system-wide basis.
+.It -
+If feasible, watch directories instead of watching files.
+Properly crafting the receiving side of the events to deal with directories may
+sensibly reduce the monitor resource consumption.
+.It -
+If none of the above applies, use the poll monitor.
+The authors' experience indicates that fswatch requires approximately 150 MB or
+RAM memory to observe a hierarchy of 500.000 files with a minimum path length of
+32 characters.
+A common bottleneck of the poll monitor is disk access, since stat()-ing a great
+number of files may take a huge amount of time.
+In this case, the latency should be set to a sufficiently large value in order
+to reduce the performance degradation that may result from frequent disk access.
 .El
 
 .Sh FILTERING PATHS
@@ -346,12 +500,35 @@ option:
 .Dl $ fswatch -1 /path/to/watch
 .Dl /path/to/watch
 
-.Sh DIAGNOSTICS
-The
+.Sh EXIT STATUS
 .Nm
-utility exits 0 on success, and >0 if an error occurs.
+may exit with one of the following exit statuses:
+.Pp
+.Dl FSW_OK                            0
+.Dl FSW_ERR_UNKNOWN_ERROR             (1 << 0) 
+.Dl FSW_ERR_SESSION_UNKNOWN           (1 << 1)
+.Dl FSW_ERR_MONITOR_ALREADY_EXISTS    (1 << 2)
+.Dl FSW_ERR_MEMORY                    (1 << 3)
+.Dl FSW_ERR_UNKNOWN_MONITOR_TYPE      (1 << 4)
+.Dl FSW_ERR_CALLBACK_NOT_SET          (1 << 5)
+.Dl FSW_ERR_PATHS_NOT_SET             (1 << 6)
+.Dl FSW_ERR_UNKNOWN_MONITOR           (1 << 7)
+.Dl FSW_ERR_MISSING_CONTEXT           (1 << 8)
+.Dl FSW_ERR_INVALID_PATH              (1 << 9)
+.Dl FSW_ERR_INVALID_CALLBACK          (1 << 10)
+.Dl FSW_ERR_INVALID_LATENCY           (1 << 11)
+.Dl FSW_ERR_INVALID_REGEX             (1 << 12)
+.Dl FSW_ERR_MONITOR_ALREADY_RUNNING   (1 << 13)
+.Dl FSW_ERR_STALE_MONITOR_THREAD      (1 << 14)
+.Dl FSW_ERR_THREAD_FAULT              (1 << 15)
+.Dl FSW_ERR_UNSUPPORTED_OPERATION     (1 << 16)
+
+.Sh DIAGNOSTICS
+.Nm
+exits 0 on success, and >0 if an error occurs.
 .Sh COMPATIBILITY
-This utility can be built on any system supporting at least one of the available
+.Nm
+can be built on any system supporting at least one of the available
 monitors.
 
 .Sh BUGS
