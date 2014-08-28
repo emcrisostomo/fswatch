@@ -30,6 +30,13 @@ AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
+# Compute the canonical target-system type variables
+AC_CANONICAL_TARGET
+TARGET_VENDOR=$target_vendor
+TARGET_OS=$target_os
+AC_SUBST([TARGET_VENDOR])
+AC_SUBST([TARGET_OS])
+
 # Other packages
 AC_CONFIG_SUBDIRS([libfswatch])
 
@@ -95,7 +102,9 @@ AC_CHECK_FUNCS([regcomp])
 
 # Variables used in man files
 MAN_DATE=$(date +'%B %d, %Y')
+FSWATCH=${PACKAGE_NAME}
 AC_SUBST([MAN_DATE])
+AC_SUBST([FSWATCH])
 
 AC_CONFIG_FILES([man/fswatch.7])
 

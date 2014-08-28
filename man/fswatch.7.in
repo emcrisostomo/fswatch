@@ -1,22 +1,22 @@
 .\"   $Id$
 .\"
-.\"   Man page for the fswatch command.
+.\"   Man page for the @FSWATCH@ command.
 .\"
 .\"   $Log$
 .\"
 .Dd @MAN_DATE@
-.Dt FSWATCH "" "fswatch file system monitor"
-.Os "Darwin 10.0"
+.Dt "@FSWATCH@" "7" "@FSWATCH@ file system monitor"
+.Os "@TARGET_VENDOR@" "@TARGET_OS@"
 .An Enrico Maria Crisostomo
 .Ad enrico.m.crisostomo@gmail.com
 .Pp
 .Sh NAME
-.Nm fswatch
+.Nm @FSWATCH@
 .Nd Ask for notification when the contents of the specified files or directory
 hierarchies are modified.
 
 .Sh SYNOPSIS
-.Nm fswatch
+.Nm @FSWATCH@
 .Op Fl 0EhILmnortuvx
 .Op Fl e Ar regexp
 .Op Fl f Ar format-time
@@ -28,7 +28,7 @@ The
 .Nm
 command receives notifications when the contents of the specified files or
 directories are modified.
-fswatch implements three kind of monitors:
+@FSWATCH@ implements three kind of monitors:
 .Bl -tag -width indent
 
 .It -
@@ -77,7 +77,7 @@ The following options are available:
 .It Fl 0, -print0
 Use the ASCII NUL character (\0) as line separator.
 Since file names can potentially contain any character but NUL, this option
-assures that the output of fswatch can be safely parsed using NUL as delimiter,
+assures that the output of @FSWATCH@ can be safely parsed using NUL as delimiter,
 such as using xargs -0 and the shell builtin read -d ''. 
 
 .It Fl e, -exclude Ar regexp
@@ -230,19 +230,20 @@ kFSEventStreamEventFlagItemIsSymlink, "isSymLink".
 The following command listens for changes in the current directory and events
 are delivered every 5 seconds:
 .Pp
-.Dl "$ fswatch -l 5 ."
+.Dl "$ @FSWATCH@ -l 5 ."
 .Pp 
 The following command listens for changes in the current user home directory and
 /var/log:
 .Pp
-.Dl "$ fswatch ~ /var/log"
+.Dl "$ @FSWATCH@ ~ /var/log"
 
 .Sh DIAGNOSTICS
 The
 .Nm
 utility exits 0 on success, and >0 if an error occurs.
 .Sh COMPATIBILITY
-This utility can be built on Apple OS X v. 10.6 or greater.
+This utility can be built on any system supporting at least one of the available
+monitors.
 
 .Sh BUGS
 No bugs are known.
