@@ -21,8 +21,6 @@
 .Dd @MAN_DATE@
 .Dt "@FSWATCH@" "7" "@FSWATCH@ file system monitor"
 .Os "@TARGET_VENDOR@" "@TARGET_OS@"
-.An Enrico Maria Crisostomo
-.Ad @MAN_BUG_REPORT@
 .Pp
 .Sh NAME
 .Nm @FSWATCH@
@@ -577,4 +575,6 @@ See
 .UR
 https://github.com/emcrisostomo/fswatch/issues
 .UE
-for open issues.
+for open issues or to create a new one.
+.Pp
+Bugs can also be submitted to @MAN_BUG_REPORT@.
