@@ -4,7 +4,7 @@
 .\"
 .\"   $Log$
 .\"
-.Dd February 24, 2014
+.Dd @MAN_DATE@
 .Dt FSWATCH "" "fswatch file system monitor"
 .Os "Darwin 10.0"
 .An Enrico Maria Crisostomo

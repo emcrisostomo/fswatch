@@ -93,4 +93,10 @@ AC_CHECK_FUNCS([getopt_long])
 AC_CHECK_FUNCS([realpath], [], AC_MSG_ERROR([The realpath function cannot be found.]))
 AC_CHECK_FUNCS([regcomp])
 
+# Variables used in man files
+MAN_DATE=$(date +'%B %d, %Y')
+AC_SUBST([MAN_DATE])
+
+AC_CONFIG_FILES([man/fswatch.7])
+
 AC_OUTPUT
