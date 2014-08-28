@@ -29,7 +29,7 @@ fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
 # Link fswatch against dependent libraries
 fswatch_LDADD = libfswatch/libfswatch.la
 
-dist_man_MANS = fswatch.7
+dist_man_MANS = man/fswatch.7
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
 dist_doc_DATA += README.osx AUTHORS COPYING LICENSE NEWS
 
