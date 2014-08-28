@@ -52,6 +52,7 @@ changes to applications.
 A monitor which periodically stats the file system, saves file modification
 times in memory and manually calculates changes.
 .El
+.Pp
 .Nm
 writes a record for each event it receives containing:
 .Bl -tag -width indent
@@ -145,6 +146,10 @@ time, as defined by
 .Sy localtime (3) .
 .It Fl v, -verbose
 Print verbose output.
+.It Fl -version
+Print the version of
+.Nm
+and exits.
 .It Fl x, -event-flags
 Prints the event flags.
 .El
@@ -363,6 +368,7 @@ The possibility of adding the event timestamp.
 .It -
 The possibility of adding the event mask in both textual and numerical form.
 .El
+.Pp
 The following command listens for changes in the current directory and events
 are delivered every 5 seconds:
 .Pp
@@ -419,7 +425,10 @@ character. This is required to correctly match impedance with
 .Nm .
 .It -
 .Em xargs -n 1
-will invoke command every command. If you want to do it every
+will invoke
+.Em command
+every record.
+If you want to do it every
 .Em x
 records, then use
 .Em xargs -n x .
