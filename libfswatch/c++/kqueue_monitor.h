@@ -62,8 +62,6 @@ namespace fsw
     int kq = -1;
     // initial load
     kqueue_monitor_load * load;
-
-    static const unsigned int MIN_SPIN_LATENCY = 1;
   };
 }
 

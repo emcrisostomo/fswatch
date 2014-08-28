@@ -380,6 +380,13 @@ namespace fsw
 
       scan_root_paths();
 
+      // If no files can be watched, sleep and repeat the loop.
+      if (!impl->watched_descriptors.size())
+      {
+        ::sleep(latency);
+        continue;
+      }
+
       // Use select to timeout on file descriptor read the amount specified by
       // the monitor latency.  This way, the monitor has a chance to update its
       // watches with at least the periodicity expected by the user.
