@@ -1,0 +1,137 @@
+\input texinfo   @c -*-texinfo-*-
+
+@c %**start of header
+@setfilename fswatch.info
+
+@c Automake automatically updates version.texi to @set VERSION and
+@c @set UPDATED to appropriate values.
+@include version.texi
+
+@settitle fswatch @value{VERSION}
+
+@c @finalout
+
+@smallbook
+
+@include value.texi
+
+@defcodeindex op
+
+@paragraphindent 2
+@c %**end of header
+
+@copying
+This manual is for @command{fswatch} (version @value{VERSION},
+@value{UPDATED}), a cross-platform file change monitor with multiple backends,
+including Apple OS X File System Events API, *BSD kqueue, Linux inotify and a
+@command{stat}-based backend. 
+
+Copyright @copyright{} 2014, Enrico M. Crisostomo
+@end copying
+
+@setchapternewpage odd
+
+@shorttitlepage fswatch
+@titlepage
+@title fswatch
+@subtitle Cross-platform file change monitor with multiple backends
+@subtitle for @command{fswatch} version @value{VERSION}, @value{UPDATED}
+
+@author Enrico M. Crisostomo
+
+@c Include the Distribution inside the titlepage so
+@c that headings are turned off.
+
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+
+@end titlepage
+
+@c Output the table of contents at the beginning.
+@summarycontents
+@contents
+
+@ifnottex
+@node Top
+@top fswatch
+@insertcopying
+@end ifnottex
+@menu
+* Introduction::
+* Index of Command Line Options::
+* Index::
+@end menu
+
+@node Introduction
+@chapter Introduction
+@command{fswatch} is a file change
+monitor that receives notifications when the contents of the specified files or
+directories are modified.  @command{fswatch} implements four kinds of monitors:
+@itemize
+@item
+A monitor based on the File System Events API of Apple OS X.
+@item
+A monitor based on kqueue, an event notification interface introduced in
+FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+@item
+A monitor based on inotify, a Linux kernel subsystem that reports file system
+changes to applications.
+@item
+A monitor which periodically stats the file
+system, saves file modification times in memory and manually calculates file
+system changes, which can work on any operating system where stat (2) can be
+used.
+@end itemize
+
+fswatch should build and work correctly on any system shipping either of the
+aforementioned APIs.
+
+@section History and @command{fswatch} authors
+Alan Dipert wrote the first implementation of @command{fswatch} in 2009.
+This version ran exclusively on OS X and relied on the @emph{FSEvents} API to
+get change events from the OS.
+
+At the end of 2013 Enrico M. Crisostomo wrote @command{fsw} aiming at providing
+not only a drop-in replacement for @command{fswatch}, but a common front-end
+from multiple file system change events APIs, including:
+@itemize
+@item
+OS X FSEvents.
+@item
+*BSD kqueue.
+@item
+Linux inotify.
+@end itemize
+
+In April 2014 Alan and Enrico, in the best interest of users of either
+@command{fswatch} and @command{fsw}, agreed on merging the two programs
+together.  At the same time, Enrico was taking over @command{fswatch} as a
+maintainer.
+
+As a consequence, development of @command{fswatch} will continue on its main
+repository while the @command{fsw} repository will likely be frozen and its
+documentation updated to redirect users to @command{fswatch}.
+
+@section Reporting bugs and suggestions
+If you find problems or have suggestions about this program or this manual,
+please report them as new issues in the official GitHub repository of
+@command{fswatch} at @file{https://github.com/emcrisostomo/fswatch}.
+If you with you may contact the authors at the addresses listed in the
+@file{AUTHORS} file.
+
+When reporting a bug, please be sure to include as much detail as possible, in
+order to reproduce it.
+
+@node Index of Command Line Options
+@appendix Index of Command Line Options
+This appendix contains an index of all @command{fswatch} long command line options.
+The options are listed without the preceding double-dash.
+
+@printindex op
+
+@node Index
+@unnumbered Index
+@printindex cp
+
+@bye

@@ -35,6 +35,9 @@ dist_doc_DATA += README.osx AUTHORS COPYING LICENSE NEWS
 
 dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
 
+# TeXinfo documentation
+info_TEXINFOS = doc/fswatch.texi
+
 install-exec-hook: fswatch-remove-links
 if HAVE_ZSH
 	$(LN_S) $(DESTDIR)$(bindir)/fswatch-run-zsh $(DESTDIR)$(bindir)/fswatch-run
