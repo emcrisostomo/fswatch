@@ -25,7 +25,7 @@ AC_REVISION([$Revision: m4_esyscmd([./build-aux/git-generate-version.sh])-m4_esy
 AC_CONFIG_SRCDIR([fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile doc/Makefile])
 AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])

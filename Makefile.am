@@ -21,7 +21,7 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status libtool
 
-SUBDIRS = libfswatch
+SUBDIRS = libfswatch doc
 
 bin_PROGRAMS = fswatch
 fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
@@ -34,9 +34,6 @@ dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
 dist_doc_DATA += README.osx AUTHORS COPYING LICENSE NEWS
 
 dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
-
-# TeXinfo documentation
-info_TEXINFOS = doc/fswatch.texi
 
 install-exec-hook: fswatch-remove-links
 if HAVE_ZSH
