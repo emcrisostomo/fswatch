@@ -97,7 +97,7 @@ static void usage(ostream& stream)
   stream
     << " -0, --print0          Use the ASCII NUL character (0) as line separator.\n";
   stream
-    << " -1, --one-event       Exit fsw after the first set of events is received.\n";
+    << " -1, --one-event       Exit fswatch after the first set of events is received.\n";
 #  ifdef HAVE_REGCOMP
   stream << " -e, --exclude=REGEX   Exclude paths matching REGEX.\n";
   stream << " -E, --extended        Use extended regular expressions.\n";
@@ -141,7 +141,7 @@ static void usage(ostream& stream)
   stream << "\n";
   stream << "Usage:\n";
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
-  stream << " -1  Exit fsw after the first set of events is received.\n";
+  stream << " -1  Exit fswatch after the first set of events is received.\n";
 #  ifdef HAVE_REGCOMP
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
