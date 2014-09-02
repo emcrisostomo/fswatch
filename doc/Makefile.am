@@ -15,4 +15,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 info_TEXINFOS = fswatch.texi
-fswatch_TEXINFOS = value.texi
+fswatch_TEXINFOS = fdl.texi value.texi
