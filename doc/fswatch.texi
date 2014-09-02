@@ -702,14 +702,195 @@ In the meantime, the only way to get an unambiguous record format is using
 @end quotation
 
 @section Inclusion and Exclusion Filters
+Filters are @emph{regular expression} which are evaluated against the monitored
+object path to determine whether a path must be accepted or rejected.
+Sometimes, the exclusion of a path may result in the exclusion of an object
+from the list of monitored objects, while other times a path must be
+evaluated only when an event is detected and in this case the corresponding object
+cannot be removed from the monitored object list in advance@footnote{This
+behaviour is monitor-specific.}.
 
+Event though event @emph{filtering} is commonly performed when processing
+@command{fswatch} output, the possibility of filtering paths ``at the source''
+provides not only a greater amount of flexbility, but also:
 
-@section @option{--numeric}: Numeric Event Flags
+@itemize
+@item
+Improved performance, since @command{fswatch} will only monitor matching
+objects@footnote{Whether an object whose path is matched by an exclusion filter
+is monitored or not is a monitor-specific implementation detail.}.
+
+@item
+Less resource pressure, especially when resource-intensive monitors are used.
+This is especially important when using monitors that rely on the availability of
+open file descriptors for any monitored object.
+
+@item
+Simpler processing logic, since part of the path filtering logic is performed
+by @command{fswatch}.
+@end itemize
+
+Since filters are implemented using the @samp{regcomp} library, this feature
+is built into @command{fswatch} only on supported systems.
+
+@subsection Types of Filters and Order of Execution
+Two types of filters are available:
+
+@itemize
+@item
+@emph{Inclusion} filters.
+
+@item
+@emph{Exclusion} filters.
+@end itemize
+
+As their name indicates, they are used to include and exclude paths from the
+monitored object list and from resulting events.
+@command{fswatch} processes filters this way:
+
+@itemize
+@item
+If a path matches an including filter, the path is accepted no matter any
+other filter.
+
+@item
+If a path matches an excluding filter, the path is rejected.
+
+@item
+If a path matches no filters, the path is accepted.
+@end itemize
+
+@noindent
+Said another way:
+
+@itemize
+@item
+All paths are accepted @emph{by default}, unless an exclusion filter
+says otherwise.
+
+@item
+Inclusion filters may override any other exclusion filter.
+
+@item
+The order in the definition of filters in the command line has no effect.
+@end itemize
+
+@subsection Filter Modifiers
+Filters are regular expression executed using the
+@uref{http://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html, @command{regcomp} function}
+which is able to interpret case-sensitive and case-insensitive
+@emph{basic} and @emph{extended} regular expressions
+as described in
+@uref{http://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html,
+Base Definitions volume of @acronym{IEEE} Std 1003.1-2001@comma{} Chapter 9@comma{} Regular Expressions}.
+
+The (@option{--insensitive}, @option{-i}) option instructs @command{fswatch} to use
+case insensitive regular expressions.
+The following example adds an exclusion filter so that @command{fswatch} ignores
+any file system object whose name ends with @kbd{.log}, no matter the case.
+
+@example
+$ fswatch -Ie ".*\.log$" ~
+@end example
+
+The (@option{--extended}, @option{-E}) option instructs @command{fswatch} to use
+extended regular expressions, such as:
+
+@example
+$ fswatch -Ee "xl[st]+" ~
+@end example
+
+Treating the characteristics and the difference between different kinds of
+regular expressions is out of scope in this manual.
+
+@section Latency
+The @emph{latency} @math{l}, expressed in seconds, is the amount of time that
+passes between the moment @command{fswatch} outputs a set of detected changes
+and the next.
+What happens during the time in-between is a monitor-specific
+implementation detail.
+
+Some APIs, such as OS X's FSEvents, implement the concept of latency themselves
+and @command{fswatch} appears idle in between.
+Only when the specified amount of time passes, change events are received,
+processed and written to standard output.
+Others, such as Linux's inotify, do not@footnote{inotify publishes changes on a
+file identified by a descriptor which is @command{read} by @command{fswatch}.};
+in this case, the inotify monitor @emph{waits} for events a maximum of
+@math{l} seconds;
+after that, the monitor logic loops again, performs house-keeping activities@footnote{Such
+as re-scanning objects which did not exist in the previous iteration.}
+and starts waiting again.
+
+The important thing to keep in mind is that latency and a monitor's behaviour
+are implementation-dependent: check the documentation of the monitor you are
+using to get further information about how latency is handled.
+
+@section Symbolic Links
+Symbolic links are commonly used file system objects and, as it is customary for
+file system utilities, @command{fswatch} can either @emph{follow} them and
+monitor the linked object@footnote{When following links, the resolution is
+recursive: that is, if a link points to another symbolic link, this link is
+followed as well, and so on, until an object of different kind is found.}
+or monitor the link itself.
+
+@section Event Flags
+Event flags identify the kind of change a file system object has undergone.
+Many of them directly map to common file system operations (such as creation,
+deletion, update, etc.), others are less common (such as attribute modification),
+and others are monitor and platform specific.
+
+Currently, @command{fswatch} maps monitor-specific event flags to ``global''
+event flags acting as a sort of ``greatest common denominator'' of all the
+available monitor flags.
+The list of all the available global event flags, defined in @file{c/cevent.h},
+is the following:
+
+@table @code
+@item PlatformSpecific
+This event maps a platform-specific event that has no corresponding flag.
+
+@item Created
+The object has been created.
+
+@item Updated
+The object has been updated.
+The kind of update is monitor-dependent.
+
+@item Removed
+The object has been removed.
+
+@item Renamed
+The object has been renamed.
+
+@item OwnerModified
+The object's owner has changed.
+
+@item AttributeModified
+An object's attribute has changed.
+
+@item MovedFrom
+The object has moved from this location to a new location of the same file system.
+
+@item MovedTo
+The object has moved from another location in the same file system into this location.
+
+@item IsFile
+The object is a regular file.
+
+@item IsDir
+The object is a directory.
+
+@item IsSymLink
+The object is a symbolic link.
+
+@item Link
+The object link count has changed.
+@end table
+
+@section Numeric Event Flags
 @anchor{Numeric Event Flags}
-
-
-@section Inclusion and Exclusion Filters
-Ciao
+To do.
 
 @node Event Flags
 @chapter Event Flags
@@ -719,6 +900,7 @@ Ciao
 
 @include fdl.texi
 
+# Print option index
 @node Index of Command Line Options
 @appendix Index of Command Line Options
 This appendix contains an index of all @command{fswatch} long command line options.
