@@ -24,9 +24,18 @@
 This manual is for @command{fswatch} (version @value{VERSION},
 @value{UPDATED}), a cross-platform file change monitor with multiple backends,
 including Apple OS X File System Events API, *BSD kqueue, Linux inotify and a
-@command{stat}-based backend. 
+@command{stat}-based backend.
 
-Copyright @copyright{} 2014, Enrico M. Crisostomo
+Copyright @copyright{} 2013-2014, Enrico M. Crisostomo
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled ``GNU
+Free Documentation License''.
+@end quotation
 @end copying
 
 @setchapternewpage odd
@@ -59,6 +68,10 @@ Copyright @copyright{} 2014, Enrico M. Crisostomo
 @end ifnottex
 @menu
 * Introduction::
+* Tutorial Introduction to @command{fswatch}::
+* Invoking @command{fswatch}::
+* Event Flags::
+* GNU Free Documentation License:: Copying and sharing this manual
 * Index of Command Line Options::
 * Index::
 @end menu
@@ -68,6 +81,7 @@ Copyright @copyright{} 2014, Enrico M. Crisostomo
 @command{fswatch} is a file change
 monitor that receives notifications when the contents of the specified files or
 directories are modified.  @command{fswatch} implements four kinds of monitors:
+
 @itemize
 @item
 A monitor based on the File System Events API of Apple OS X.
@@ -88,11 +102,11 @@ fswatch should build and work correctly on any system shipping either of the
 aforementioned APIs.
 
 @section History and @command{fswatch} authors
-Alan Dipert wrote the first implementation of @command{fswatch} in 2009.
+Alan @sc{Dipert} wrote the first implementation of @command{fswatch} in 2009.
 This version ran exclusively on OS X and relied on the @emph{FSEvents} API to
 get change events from the OS.
 
-At the end of 2013 Enrico M. Crisostomo wrote @command{fsw} aiming at providing
+At the end of 2013 Enrico M. @sc{Crisostomo} wrote @command{fsw} aiming at providing
 not only a drop-in replacement for @command{fswatch}, but a common front-end
 from multiple file system change events APIs, including:
 @itemize
@@ -116,12 +130,594 @@ documentation updated to redirect users to @command{fswatch}.
 @section Reporting bugs and suggestions
 If you find problems or have suggestions about this program or this manual,
 please report them as new issues in the official GitHub repository of
-@command{fswatch} at @file{https://github.com/emcrisostomo/fswatch}.
+@command{fswatch} at @uref{https://github.com/emcrisostomo/fswatch}.
 If you with you may contact the authors at the addresses listed in the
 @file{AUTHORS} file.
 
 When reporting a bug, please be sure to include as much detail as possible, in
 order to reproduce it.
+
+@node Tutorial Introduction to @command{fswatch}
+@chapter Tutorial Introduction to @command{fswatch}
+This chapter is a tutorial walk-through on the most common use cases where fswatch is useful:
+@itemize
+@item Detecting file system changes.
+@item Observing file system changes.
+@item Processing @command{fswatch} output.
+@end itemize
+
+@section Detecting File System Changes
+A common use case is @emph{detecting} file system changes in a set of file
+system objects@footnote{In the context of this manual (unless specified otherwise),
+@emph{file system object} refers undistinctively to @emph{files} and @emph{directories}.}
+where @emph{details} of a change are irrelevant.
+This mode of operation is called @emph{bulk mode} and @command{fswatch} will
+only dump a single event record per batch@footnote{A @emph{batch} is an iteration
+of @command{fswatch} scanning logic, whose frequency is @math{\nu = l^{-1}},
+where @math{l} is the @emph{latency}.}
+containing the number of affected file system objects.
+No other details are avaible in the event record.
+
+The most common application of this mode of operation is performing a bulk
+action on all the observed file system objects, such as a synchronization with
+@command{rsync}, which will serve us as an example.
+In this case, the detection of a change triggers the execution of a
+synchronization script, no matter its kind nor the specific object the event
+affects. 
+
+To run @command{fswatch} in batch mode, the (@option{-o}, @option{--one-per-batch})
+must be used:
+
+@example
+$ fswatch -o @var{path} ...
+2
+10
+@end example
+
+@noindent
+The (@option{-l}, @option{--latency}) option can be used to set the latency
+according to the requirements:
+
+@example
+$ fswatch -o -l 5 @var{path} ...
+4
+7
+@end example
+
+@noindent
+This way, you can respond to change events in a way which is (or can easily be) path-independent
+(because you are not receiving any event detail) and you prefer to "bubble"
+events together to reduce the overhead of the command being executed. 
+
+In bulk mode the output of @command{fswatch} is guaranteed to have the
+following structure:
+
+@example
+@var{number}\n
+@end example
+
+@noindent
+where @samp{number} is an integer value and @samp{\n} is the new line character.
+A line with this structure is very easy to read with either @command{xargs} or
+the @command{read} builtin:
+
+@example
+$ fswatch -o @var{path} | while read num ; \
+  do \
+    ... \
+  done
+@end example
+
+In many scripts of this kind, the @var{num} variable can even be ignored.
+
+@section Observing File System Changes
+@anchor{Observing File System Changes}
+Besides the batch mode, @command{fswatch} provides a @emph{main} mode
+providing full details of the kind of events detected and the file system
+objects they refer to.
+The main mode is @command{fswatch}'s default mode of operation and needs
+no specific flags to be activated.
+
+In this mode, @command{fswatch} outputs change events to the standard output.
+By default, only the affected file name is printed and the change event
+record structure has the following structure:
+
+@example
+/full/path/to/changed/object\n
+@end example
+
+However, many options are available to format@footnote{A new feature is planned
+to allow the user to specify the format string of the event record.}
+the event record, including:
+
+@itemize
+@item The possibility of adding the event timestamp.
+@item The possibility of adding the event mask in both textual and numerical form.
+@end itemize
+
+Since a UNIX file name may contain any character but the path separator @samp{/}
+and @samp{NUL}@footnote{Depending on the file system being used, other
+restrictions may apply.
+However, for file system portability reasons, you should consider @samp{NUL}
+as the only forbidden character.}
+the choice of using @samp{\n} as record separator may lead to unexpected
+results (since a file name can legally contain @samp{\n}).
+For this reason, along the line of what other tools such as @command{find}
+and @command{xargs} already do, the @samp{NUL} character (@samp{\0}) can
+alternatively be used:
+
+@example
+/full/path/to/changed/object\0
+@end example
+
+Beside the full path of the change object, details on the kind of change
+event can be obtained using the (@option{-x}, @option{--event-flags}) option:
+
+@example
+$ fswatch -xr @var{/path/to/observe}
+/path/to/observe Created Renamed OwnerModified IsFile
+...
+@end example
+
+In this case, a space-separated list of change flags are printed after the path
+of the changed object.
+The record structure is thus:
+
+@example
+/full/path/to/changed/object flag ([ ][flag])*
+@end example
+
+@noindent
+where @samp{flag} is an event flag.
+At least one event flag is always present, and additional ones are "bubbled"
+into the same record and separated by space.
+For more information on event flags @pxref{Event Flags}.
+
+@subsection Parseability Issues
+Since a file name may contain spaces, this record structure is not
+unambigually parseable if more than one event flag is present:
+in this case, any subset @math{[0, x], x < n - 1} of the @math{n} event flags
+may be part or the file name and hence any parse result would be indeterminate.
+This issue will be solved when custom record format are introduced.
+
+In the meantime, the only altenative solution offering predictable
+output parsing is using numeric event flags.
+
+@subsection Numeric Event Flags
+Instead of using user-friendly event flag names (as seen in the previous
+section), @emph{numeric} event flags can be used instead.
+Currently, the real advantage this method offers, despite possibly cleaner
+flag-decoding logic, is the availability of a non-ambigous event record
+representation.
+
+To instruct @command{fswatch} to print numeric event flags, the
+(@option{-n}, @option{--numeric}) option must be used:
+
+@example
+$ fswatch -xnr @var{/path/to/observe}
+/path/to/observe 2058
+@end example
+
+@noindent
+The numeric event flag is the bitwise OR of the individual event flag values,
+which are guaranteed to be numbers in the forms @math{2^n} for a given integer
+@math{n} (so that the resulting value only has one possible representation).
+
+In the previous example, the flag @math{2058} is decomposed in powers of 2 as
+@math{2058 = 2048 + 8 + 2 = 2^{11} + 2^3 + 2}, that is, the eleventh, the
+third and the first event flags.
+
+@section Processing @command{fswatch} Output
+Very often you wish to not only receive an event, but react to it.
+The simplest way to do it is piping fswatch output to another process.
+Since in UNIX and UNIX-like file system file names may potentially contain any
+character but @samp{NUL} (@samp{\0}) and the path separator (@samp{/}),
+@command{fswatch} has a specific mode of operation when its output must be
+piped to another process.
+When the (@option{-0}, @option{--print0}) option is used, @command{fswatch} will
+use the @samp{NUL} character as record separator, thus allowing any other
+character to appear in a path.
+This is important because many commands and shell builtins (such as
+@command{read}) split words and lines by default using the characters in
+@env{$IFS}, which by default contains characters which may be present
+(although rarely) in a file name, resulting in a wrong event path being
+received and processed.
+
+The simplest way to pipe @command{fswatch} to another program is using @command{xargs}:
+
+@example
+$ fswatch -0 [@var{opts}] [@var{paths}] | xargs -0 -n 1 -I @{@} @var{command}
+@end example
+
+@noindent
+The command in this example does the following:
+
+@itemize
+@item @command{fswatch -0} will split records using the @samp{NUL} character.
+@item @command{xargs -0} will split records using the @samp{NUL} character.
+This is required to correctly match impedance with @command{fswatch}.
+@item @command{xargs -n 1} will invoke @command{@var{command}} every record.
+If you want to do it every @code{@var{x}} records, then use @command{xargs -n @var{x}}.
+@item @command{xargs -I @{@}} will substitute occurrences of @command{@{@}}
+in command with the parsed argument.
+If the command you are running does not need the event path name, just delete this option.
+If you prefer using another replacement string, substitute @command{@{@}} with 
+your choice.
+@end itemize
+
+@section Receiving a Single Event
+Another requested feature is the possibility of receiving a single event and exit
+@command{fswatch}.
+This is most useful when existing scripts processing events include the restart
+logic of @command{fswatch}.
+This use case is implemented by the @option{-1}, @option{--one-event} option:
+
+@example
+$ fswatch -1 /path/to/watch
+/path/to/watch/child0
+/path/to/watch/child1
+...
+$
+@end example
+
+@node Invoking @command{fswatch}
+@chapter Invoking @command{fswatch}
+This chapter is about how @command{fswatch} is invoked.
+There are many options and two styles for writing them.
+
+@section Synopsis of @command{fswatch}
+@command{fswatch} is invoked with:
+
+@example
+fswatch [options] [paths]
+@end example
+
+@command{fswatch} interprets file names as being relative to the working
+directory and canonicalizes them using @command{realpath}.
+
+If a directory is used as an argument, the directory object is watched and,
+optionally and depending on the monitor being used, the directory is scanned
+recursively and all its children are watched as well.
+
+Depending on the monitor being used, recursively scanning huge directory
+hierarchies or big set of files may be resource consuming, CPU intensive or
+even impossible.
+The characteristics of the available monitors in a system should be assessed
+in order to choose the best monitor according to the specific needs.
+
+Besides successful exits@footnote{Depending on the monitor and options being
+used, @command{fswatch} may not exit unless @emph{stopped} with a signal such
+as @code{TERM} or @code{QUIT}.}, indicated with the exit code 0,
+@command{fswatch} may exit with an error.
+@command{fswatch} will try to print a diagnostic description on @code{stderr}
+when an unexpected error occurs.
+
+The documented@footnote{Exit codes are documented in @file{c/error.h} of
+@command{libfswatch}.} exit codes of @command{fswatch} are the
+following:
+
+@table @asis
+@item 0
+@code{FSW_OK}: No error occurred.
+
+@item 1
+@code{FSW_ERR_UNKNOWN_ERROR}: An unknown error occurred.
+
+@item 2
+@code{FSW_ERR_SESSION_UNKNOWN}: Unknown monitor session.
+
+@item 4
+@code{FSW_ERR_MONITOR_ALREADY_EXISTS}: The monitor already exists.
+
+@item 8
+@code{FSW_ERR_MEMORY}: An error occurred while allocating memory.
+
+@item 16
+@code{FSW_ERR_UNKNOWN_MONITOR_TYPE}: The specified monitor type is unknown.
+
+@item 32
+@code{FSW_ERR_CALLBACK_NOT_SET}: The monitor callback is not set.
+
+@item 64
+@code{FSW_ERR_PATHS_NOT_SET}: No paths were specified.
+
+@item 128
+@code{FSW_ERR_UNKNOWN_MONITOR}: The specified monitor is not available.
+
+@item 256
+@code{FSW_ERR_MISSING_CONTEXT}: The monitor context is missing.
+
+@item 512
+@code{FSW_ERR_INVALID_PATH}: The specified path is invalid.
+
+@item 1024
+@code{FSW_ERR_INVALID_CALLBACK}: The specified callback is invalid.
+
+@item 2048
+@code{FSW_ERR_INVALID_LATENCY}: The specified latency is invalid.
+
+@item 4096
+@code{FSW_ERR_INVALID_REGEX}: The specified regular expression is invalid.
+
+@item 8192
+@code{FSW_ERR_MONITOR_ALREADY_RUNNING}: The specified monitor is already running.
+
+@end table
+
+@section The Two Option Styles
+@command{fswatch} implements two option styles which are common in UNIX and
+UNIX-like operating systems and GNU software: @emph{short} and @emph{long}
+options.
+The biggest difference between short and long options are argument placing
+(for options taking one).
+
+Whether long options are available in a system depend on the availability of
+the @command{getopt_long} function at build time.
+For this reason, users should familiarise themselves with short options and
+use them when possible and do not rely on long options to be available on
+any @command{fswatch} installation.
+
+@subsection Long Options
+In systems where @command{getopt_long} is available, each short option has
+a corresponding long option with a @emph{mnemonic} name starting with
+two dashes (e.g.: @option{--version}).
+
+Long options are meant to be easy to remember and to provide hints about
+what a command is going to perform.
+The following command:
+
+@example
+$ fswatch --event-flags --numeric --recursive ~
+@end example
+
+@noindent
+is clearer than:
+
+@example
+$ fswatch -xnr ~
+@end example
+
+If a long option takes an argument, it can be specified in two ways,
+depending on whether the argument is optional or mandatory:
+
+@itemize
+@item
+Separating the argument from the option name with an equal sign,
+if the argument is of either kind.
+
+@example
+$ fswatch --latency=5 ~
+@end example
+
+@item
+Separating the argument from the option name with any amount of white space,
+if the argument is mandatory.
+
+@example
+$ fswatch --latency 5 ~
+@end example
+
+@end itemize
+
+@subsection Short Options
+Most options have a @emph{short} form consisting of a dash followed by a single
+character, such as @option{-l} (which is equivalent to @option{--latency}).
+When available, a short form is interchangeable with the long one.
+
+If a short option takes an argument, it can be specified in two ways:
+
+@itemize
+
+@item
+Separating the argument from the option name with any amount of white space:
+
+@example
+$ fswatch -l 5 ~
+@end example
+
+@item
+Joining the argument to the option name:
+
+@example
+$ fswatch -l5 ~
+@end example
+
+@end itemize
+
+Short options can be stuck together provided all the options but the last one
+take no argument, in which case it can be specified as described above.
+The command
+
+@example
+$ fswatch -xnrl 5 ~
+@end example
+
+@noindent
+is equivalent to
+
+@example
+$ fswatch -x -n -r -l 5 ~
+@end example
+
+@noindent
+where @samp{5} is the argument of @option{-l}.
+
+@section @command{fswatch} Options
+In the following table you can find the list, in alphabetical order,
+of @command{fswatch}'s options.
+
+@table @option
+
+@opsummary{print0}
+@item --print0
+@itemx -0
+
+Use the @acronym{ASCII} @samp{NUL} (@samp{\0}) as record separator.
+
+@opsummary{one-event}
+@item --one-event
+@itemx -1
+
+Exit @command{fswatch} after the first set of events is received.
+
+@opsummary{exclude}
+@item --exclude
+@itemx -e
+
+Exclude paths matching @command{@var{regex}}.
+
+@opsummary{extended}
+@item --extended
+@itemx -E
+
+Use extended regular expressions.
+
+@opsummary{format-time}
+@item --format-time
+@item -f
+
+Print the event time using the specified @command{@var{format}}.
+
+@opsummary{help}
+@item --help
+@itemx -h
+
+Show the help message.
+
+@opsummary{include}
+@item --include
+@item -i
+
+Include paths matching @command{@var{regex}}.
+
+@opsummary{insensitive}
+@item --insensitive
+@item -I
+
+Use case insensitive regular expressions.
+
+@opsummary{latency}
+@item --latency
+@itemx -l
+
+Set the latency using the specified @command{@var{value}}.
+
+@opsummary{follow-links}
+@item --follow-links
+@itemx -L
+
+Follow symbolic links.
+
+@opsummary{monitor}
+@item --monitor
+@itemx -m
+
+Use the specified @command{@var{monitor}}.
+
+@opsummary{numeric}
+@item --numeric
+@itemx -n
+
+Print a numeric event mask.
+
+@opsummary{one-per-batch}
+@item --one-per-batch
+@itemx -o
+
+Print a single message with the number of change events in the current batch.
+
+@opsummary{recursive}
+@item --recursive
+@itemx -r
+
+Recurse subdirectories.
+
+@opsummary{timestamp}
+@item --timestamp
+@itemx -t
+
+Print the event timestamp.
+
+@opsummary{utc-time}
+@item --utc-time
+@itemx -u
+
+Print the event time as @acronym{UTC} time.
+
+@opsummary{verbose}
+@item --verbose
+@itemx -v
+
+Print verbose output.
+
+@opsummary{version}
+@item --version
+
+Print the version of fswatch and exit.
+
+@opsummary{event-flags}
+@item --event-flags
+@itemx -x
+
+Print the event flags.
+
+@end table
+
+@section Whitespace and Record Format
+As seen in @ref{Observing File System Changes}, file names may contain
+characters such as @samp{\n} which are commonly used as line separators.
+Many commonly used UNIX commands and shell builtins use characters in the
+@env{$IFS} environment variable@footnote{@acronym{IFS, Internal Field Separators}.}
+as @emph{separators} to split words and, by default, @env{$IFS} contains
+the @samp{ } (@kbd{SPC}), @samp{\t}, @samp{\n} and @samp{\0} (@samp{NUL}).
+
+Therefore, if a file contains such a separator character (and all but @samp{NUL} are legal),
+then a parsing ambiguity may arise when using certain record formats such as:
+
+@example
+@var{path}[ @var{flag}]+
+@end example
+
+@noindent
+In this case, for example, if @math{n > 1} flags @var{flag} are present in the record,
+and hence more than one @samp{ } (@kbd{SPC}) is present, then it is not known
+whether any subset containing a number @math{x} of consecutive flags (@math{x < n})
+is part of the path or not.
+
+The same reasoning applies when splitting @emph{lines} instead of @emph{words}:
+since @samp{\n} may be a legal file name character, then it is now known whether
+@samp{\n} indicates a record's end or simply is part of a file name.
+
+For this reason, in order to avoid parsing ambiguity, this options
+instructs @command{fswatch} to use @acronym{ASCII} @samp{NUL} as record
+separator.
+
+@quotation Warning
+The use of the @option{--print0} solves the @emph{line} splitting ambiguity but
+not the @emph{word} splitting ambiguity when using textual event flags.
+A solution to this problem will be provided when custom record formats are
+implemented.
+In the meantime, the only way to get an unambiguous record format is using
+@emph{numeric} event flags (@pxref{Numeric Event Flags}).
+@end quotation
+
+@section Inclusion and Exclusion Filters
+
+
+@section @option{--numeric}: Numeric Event Flags
+@anchor{Numeric Event Flags}
+
+
+@section Inclusion and Exclusion Filters
+Ciao
+
+@node Event Flags
+@chapter Event Flags
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+
+@include fdl.texi
 
 @node Index of Command Line Options
 @appendix Index of Command Line Options
