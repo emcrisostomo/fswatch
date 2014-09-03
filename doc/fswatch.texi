@@ -66,6 +66,7 @@ Free Documentation License''.
 @top fswatch
 @insertcopying
 @end ifnottex
+
 @menu
 * Introduction::
 * Tutorial Introduction to @command{fswatch}::
