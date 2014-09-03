@@ -664,6 +664,7 @@ Print the event flags.
 @end table
 
 @section Whitespace and Record Format
+@anchor{Whitespace and Record Format}
 As seen in @ref{Observing File System Changes}, file names may contain
 characters such as @samp{\n} which are commonly used as line separators.
 Many commonly used UNIX commands and shell builtins use characters in the
@@ -888,9 +889,61 @@ The object is a symbolic link.
 The object link count has changed.
 @end table
 
+@subsection Peculiarities and Pitfalls
+
+As you can see, the list of event flags contains element whose meaning is
+overlapping, at least partially.
+@command{Link}, for instance, may be equivalent to @command{Create} or
+@command{Removed}, depending on the whether the new link count is 1 or 0.
+@command{MovedFrom} and @command{MovedTo} may be equivalent to @command{Create}
+and @command{Removed} if the monitor is unable to discern a move operation
+has taken place (which is not always possible, as in the case of the poll
+monitor).
+
+@command{fswatch} is unable to univocally map the specific flags
+of all the monitors consistently.
+Forcefully, the mapping depends on the capabilities of the monitor which,
+in turn, depend on the capabilities of the API being used.
+
+For this reason, when processing change events, either the behaviour of
+the underlying monitor is known and taken into account, or all the
+flags which could possibly be attached at the operation being looked for
+must be taken into account.
+
+@quotation Warning
+As already explained (@pxref{Whitespace and Record Format}), the record format
+when using event flags in textual form is ambiguous.
+For this reason, using numeric event flags (@pxref{Numeric Event Flags}) is recommended
+when @command{fswatch} output must be processed.
+@end quotation
+
 @section Numeric Event Flags
 @anchor{Numeric Event Flags}
-To do.
+When using the (@option{--numeric}, @option{-n}) @command{fswatch} will output
+event flags in @emph{numeric} format.
+A change event record may have multiple event flags and the numeric value
+is calculated as the bitwise @command{or} of the numeric values of all the flags.
+Since the value of an event flag is guaranteed to be unique and to be a number
+@math{n = 2^k} for a certain integer @math{k}, then the numeric value of a set
+of event flags is univocally determined.
+
+The numeric value of all the event flags is the following:
+
+@itemize
+@item @command{PlatformSpecific}: 1
+@item @command{Created}: 2
+@item @command{Updated}: 4
+@item @command{Removed}: 8
+@item @command{Renamed}: 16
+@item @command{OwnerModified}: 32
+@item @command{AttributeModified}: 64
+@item @command{MovedFrom}: 128
+@item @command{MovedTo}: 256
+@item @command{IsFile}: 512
+@item @command{IsDir}: 1024
+@item @command{IsSymLink}: 2048
+@item @command{Link}: 4096
+@end itemize
 
 @node Event Flags
 @chapter Event Flags
