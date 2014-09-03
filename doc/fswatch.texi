@@ -137,6 +137,11 @@ documentation updated to redirect users to @command{fswatch}.
 
 @section Reporting Bugs and Suggestions
 @anchor{Reporting Bugs and Suggestions}
+@cpindex bug
+@cpindex bug report
+@cpindex GitHub repository
+@cpindex @command{fswatch}, repository
+@cpindex @command{fswatch}, sources
 If you find problems or have suggestions about this program or this manual,
 please report them as new issues in the official GitHub repository of
 @command{fswatch} at @uref{https://github.com/emcrisostomo/fswatch}.
@@ -148,7 +153,9 @@ order to reproduce it.
 
 @node Tutorial Introduction to @command{fswatch}
 @chapter Tutorial Introduction to @command{fswatch}
-This chapter is a tutorial walk-through on the most common use cases where fswatch is useful:
+This chapter is a tutorial walk-through on the most common use cases where
+@command{fswatch} is useful:
+
 @itemize
 @item Detecting file system changes.
 @item Observing file system changes.
@@ -160,6 +167,8 @@ A common use case is @emph{detecting} file system changes in a set of file
 system objects@footnote{In the context of this manual (unless specified otherwise),
 @emph{file system object} refers undistinctively to @emph{files} and @emph{directories}.}
 where @emph{details} of a change are irrelevant.
+@cpindex bulk mode
+@cpindex mode, bulk
 This mode of operation is called @emph{bulk mode} and @command{fswatch} will
 only dump a single event record per batch@footnote{A @emph{batch} is an iteration
 of @command{fswatch} scanning logic, whose frequency is @math{\nu = l^{-1}},
@@ -194,9 +203,9 @@ $ fswatch -o -l 5 @var{path} ...
 @end example
 
 @noindent
-This way, you can respond to change events in a way which is (or can easily be) path-independent
-(because you are not receiving any event detail) and you prefer to "bubble"
-events together to reduce the overhead of the command being executed. 
+This way, you can respond to change events in a way which is (or can easily be)
+path-independent (because you are not receiving any event detail) and you prefer
+to ``bubble'' events together to reduce the overhead of the command being executed. 
 
 In bulk mode the output of @command{fswatch} is guaranteed to have the
 following structure:
@@ -1216,17 +1225,17 @@ overcome@footnote{E.g.: observing a number of files greater than the available f
 The poll monitor, available on any platform, only relies on available CPU and memory
 to perform its task.
 
-@section Peculiarities
+@subsection Peculiarities
 @cpindex monitor, poll, peculiarities
-@subsection Performance Problems
+@subsubsection Performance Problems
 @cpindex monitor, poll, performanc
 The resource consumption of this monitor increases increases @emph{linearly}
 with the number of files being watched (the resulting system performance will
 probably degrade @emph{linearly} or quicker).
 
 The authors' experience indicates that @command{fswatch} requires approximately
-150 MB of RAM memory to observe a hierarchy of 500.000 files with a minimum path
-length of 32 characters.
+150 MB of @acronym{RAM} memory to observe a hierarchy of 500.000 files with a
+minimum path length of 32 characters.
 A common bottleneck of the poll monitor is disk access, since @command{stat()}-ing
 a great number of files may take a @emph{huge} amount of time.
 In this case, the latency (@pxref{Latency}) should be set to a sufficiently
@@ -1243,7 +1252,7 @@ is a better solution when performance problems with the poll monitors are
 experienced or when @command{fswatch} should drive mission-critical processes.
 @end quotation
 
-@subsection Missing Events and Missing Event Flags
+@subsubsection Missing Events and Missing Event Flags
 @cpindex monitor, poll, missing events
 @cpindex missing events
 Since this monitor periodically checks the state of monitored objects looking
@@ -1281,6 +1290,47 @@ other events that would be noticed and raised by other APIs are effectively
 The odds of incurring such a loss is inversely proportional to the latency
 @math{l}: reducing the latency helps alleviating this problem, although on
 the other hands it also results in linearly increasing resource usage.
+
+@section How to Choose a Monitor
+@command{fswatch} already chooses the ``best'' monitor for your platform if you
+do not specify any.
+However, a specific monitor may be better suited to specific use cases.
+Please, see @ref{Monitors} to get a description of all the available
+monitors and their limitations.
+
+Usage recommendations are as follows:
+
+@itemize
+
+@item
+On OS X, use only the FSEvents monitor (which is the default behaviour).
+
+@item
+On Linux, use the inotify monitor (which is the default behaviour).
+
+@item
+If the number of files to observe is sufficiently small, use the kqueue monitor.
+Beware that on some systems the maximum number of file descriptors that can be
+opened by a process is set to a very @emph{low} value (values as low as 256 are
+not uncommon), even if the operating system may allow a much larger value.
+In this case, check your OS documentation to raise this limit on either a per
+process or a system-wide basis.
+
+@item
+If feasible, watch directories instead of watching files.
+Properly crafting the receiving side of the events to deal with directories
+may sensibly reduce the monitor resource consumption.
+
+@item
+If none of the above applies, use the poll monitor.
+The authors' experience indicates that fswatch requires approximately 150 MB of
+@acronym{RAM} memory to observe a hierarchy of 500.000 files with a minimum path
+length of 32 characters.
+A common bottleneck of the poll monitor is disk access, since @command{stat()}-ing
+a great number of files may take a huge amount of time.
+In this case, the latency should be set to a sufficiently large value in order
+to reduce the performance degradation that may result from frequent disk access.
+@end itemize
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
