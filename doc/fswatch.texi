@@ -927,6 +927,20 @@ Since the value of an event flag is guaranteed to be unique and to be a number
 @math{n = 2^k} for a certain integer @math{k}, then the numeric value of a set
 of event flags is univocally determined.
 
+To check whether a given event flag is present when processing @command{fswatch}
+output, it's sufficient to check whether its bit is set to 1 in the event value.
+Let's suppose we want to check whether the event flag whose value is @math{e}
+is present in a record whose flag numerical value is @math{n}.
+If the result @math{r} of
+
+@tex
+$$ r = e \wedge b $$
+@end tex
+
+@noindent
+where @math{\wedge} is the bitwise @command{and} operator, is @math{r > 0},
+then the flag @math{e} is present in @math{n}.
+
 The numeric value of all the event flags is the following:
 
 @itemize
