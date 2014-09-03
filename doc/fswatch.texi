@@ -70,7 +70,6 @@ Free Documentation License''.
 * Introduction::
 * Tutorial Introduction to @command{fswatch}::
 * Invoking @command{fswatch}::
-* Event Flags::
 * GNU Free Documentation License:: Copying and sharing this manual
 * Index of Command Line Options::
 * Index::
@@ -836,6 +835,7 @@ followed as well, and so on, until an object of different kind is found.}
 or monitor the link itself.
 
 @section Event Flags
+@anchor{Event Flags}
 Event flags identify the kind of change a file system object has undergone.
 Many of them directly map to common file system operations (such as creation,
 deletion, update, etc.), others are less common (such as attribute modification),
@@ -959,8 +959,46 @@ The numeric value of all the event flags is the following:
 @item @command{Link}: 4096
 @end itemize
 
-@node Event Flags
-@chapter Event Flags
+@section Monitors
+@anchor{Monitors}
+@command{fswatch} is a front-end to multiple @emph{monitors}, each taking
+advantage of different monitoring APIs that may be available in a system.
+When building @command{fswatch}, @command{configure} scans the system to
+check which APIs are available and builds support for all of them.
+
+A ``special'' monitor, the @emph{poll} monitor, manually scans the file system
+looking for differences.
+This is a fallback monitor where other, more efficient APIs are not available.
+The poll monitor is available on any system providing the @command{stat}
+function.
+
+Although @command{fswatch} chooses the ``best'' monitor between the available
+ones, a user may wish to use another.
+A specific monitor can be chosen using the (@option{--monitor}, @option{-m})
+option.
+A list of available monitors is available at the end of the help message:
+
+@example
+$ fswatch --help
+[...]
+Available monitors in this platform:
+
+  fsevents_monitor
+  kqueue_monitor
+  poll_monitor
+[...]
+@end example
+
+@noindent
+A monitor can then be chosen by passing the mandatory @samp{@var{name}} argument
+to the @option{-m} option:
+
+@example
+$ fswatch -m kqueue_monitor ~
+@end example
+
+@noindent
+In this case, the @samp{kqueue_monitor} is manually chosen.
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
