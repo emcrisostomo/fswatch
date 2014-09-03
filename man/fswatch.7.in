@@ -26,6 +26,9 @@
 .Nm @FSWATCH@
 .Nd Ask for notification when the contents of the specified files or directory
 hierarchies are modified.
+.Pp
+This man page is a stub.
+Please, consult the official TeXinfo documentation shipped with @FSWATCH@.
 .Sh SYNOPSIS
 .Nm @FSWATCH@
 .Op Fl 0EhILmnortuvx
