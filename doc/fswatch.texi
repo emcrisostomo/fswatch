@@ -126,7 +126,8 @@ As a consequence, development of @command{fswatch} will continue on its main
 repository while the @command{fsw} repository will likely be frozen and its
 documentation updated to redirect users to @command{fswatch}.
 
-@section Reporting bugs and suggestions
+@section Reporting Bugs and Suggestions
+@anchor{Reporting Bugs and Suggestions}
 If you find problems or have suggestions about this program or this manual,
 please report them as new issues in the official GitHub repository of
 @command{fswatch} at @uref{https://github.com/emcrisostomo/fswatch}.
@@ -999,6 +1000,34 @@ $ fswatch -m kqueue_monitor ~
 
 @noindent
 In this case, the @samp{kqueue_monitor} is manually chosen.
+
+@section Recursive Scanning
+@command{fswatch}'s behaviour when scanning a directory may vary on a
+monitor by monitor basis.
+The semantics of the (@option{--recursive}, @option{-r}) option is:
+recursively scan subdirectories.
+However, implementations may silently add ``@emph{if the monitor does not do so already}''.
+
+Since each monitor uses a different API, its behaviour depends on that
+of the backing API, and it's monitor-specific.
+The OS X FSEvents API, for example, will always recurse subdirectories
+when monitoring a directory.
+In this case, even though @option{-r} is not specified, the monitor
+will monitor a directory's children nonetheless and there is no way
+to avoid it@footnote{But manually filtering out events based on paths,
+but @command{fswatch} does not do so @emph{by design}.}.
+
+In general, users should always use the @option{-r} option according to
+its semantics, no matter what the monitor does.
+The only case when @option{-r} is ``not'' honoured is when a monitor
+@emph{adds} information by recursively monitoring children even when
+@option{-r} is not specified.
+Please notice that when this happens, there's no performance overhead
+since the backing API is specifically designed to behave like this.
+
+The authors think this is not a problem.
+If you think this behaviour can be improved, please fill a bug report
+(@pxref{Reporting Bugs and Suggestions}).
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
