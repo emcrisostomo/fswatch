@@ -151,6 +151,42 @@ how to install the C++ toolchain and the C++ runtime.
 No other software packages or dependencies are required to configure and
 install `fswatch` but the aforementioned APIs used by the file system monitors.
 
+Documentation
+-------------
+
+`fswatch` provides the following documentation:
+
+  * Texinfo documentation, included with the distribution.
+  * A [wiki] page.
+  * A man page.
+
+`fswatch` official documentation is provided in Texinfo format.
+This is the most comprehensive source of information about `fswatch`.
+The man page, in particular, is a stub meant for quick reference from the
+command line and is not guaranteed to be kept up to date.
+
+By default, only Info and DVI formats are generated when `fswatch` is built,
+according to the default rules of the GNU Build Systems.  However, a PDF manual
+typeset with TeX can be generated from the Texinfo sources by issuing this
+command:
+
+    $ make pdf
+
+and can then be installed invoking the `install-pdf` target:
+
+    $ make install-pdf
+
+Since typical users will not have a TeX distribution installed in their
+computers, the PDF manuals for every version of `fswatch` will be hosted at
+[this address][manual].
+
+If you are installing `fswatch` using a package manager and you would like the
+PDF manual to be bundled into the package, please send a feature request to the
+package maintainer.
+
+[wiki]: https://github.com/emcrisostomo/fswatch/wiki
+[manual]: https://drive.google.com/folderview?id=0BxZtP9CHH-Q6bHF3bmJGRmlVcVU&usp=sharing
+
 Compatibility Issues with fswatch v. 0.x
 --------------------------------------
 
