@@ -17,6 +17,7 @@
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
+#include "gettext.h"
 #include "fswatch.h"
 #include "fswatch_log.h"
 #include <iostream>
@@ -32,6 +33,8 @@
 #ifdef HAVE_GETOPT_LONG
 #  include <getopt.h>
 #endif
+
+#define _(STR) gettext(STR)
 
 using namespace std;
 
@@ -76,7 +79,7 @@ bool is_verbose()
 
 static void list_monitor_types(ostream& stream)
 {
-  stream << "Available monitors in this platform:\n\n";
+  stream << _("Available monitors in this platform:\n\n");
 
   for (const auto & type : fsw::monitor_factory::get_types())
   {
@@ -394,7 +397,7 @@ static void write_events(const vector<event> &events)
   }
 
   write_batch_marker();
-  
+
   if (_1flag)
   {
     ::exit(FSW_EXIT_OK);
@@ -619,6 +622,13 @@ static void parse_opts(int argc, char ** argv)
 
 int main(int argc, char ** argv)
 {
+  // Trigger gettext operations
+#ifdef ENABLE_NLS
+  setlocale(LC_ALL, "");
+  bindtextdomain(PACKAGE, LOCALEDIR);
+  textdomain(PACKAGE);
+#endif
+
   parse_opts(argc, argv);
 
   // validate options
