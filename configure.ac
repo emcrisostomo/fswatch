@@ -25,10 +25,17 @@ AC_REVISION([$Revision: m4_esyscmd([./build-aux/git-generate-version.sh])-m4_esy
 AC_CONFIG_SRCDIR([fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile doc/Makefile])
 AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
+
+# Compute the canonical target-system type variables
+AC_CANONICAL_TARGET
+TARGET_VENDOR=$target_vendor
+TARGET_OS=$target_os
+AC_SUBST([TARGET_VENDOR])
+AC_SUBST([TARGET_OS])
 
 # Other packages
 AC_CONFIG_SUBDIRS([libfswatch])
@@ -88,12 +95,19 @@ AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
 AC_FUNC_STRTOD
+AC_CHECK_FUNCS([atexit], [], AC_MSG_ERROR([The atexit function cannot be found.]))
 AC_CHECK_FUNCS([getopt_long])
-AC_CHECK_FUNCS(
-  [realpath],
-  ,
-  AC_MSG_ERROR([The realpath function cannot be found.])
-)
+AC_CHECK_FUNCS([realpath], [], AC_MSG_ERROR([The realpath function cannot be found.]))
 AC_CHECK_FUNCS([regcomp])
+
+# Variables used in man files
+MAN_DATE=$(date +'%B %d, %Y')
+FSWATCH=${PACKAGE_NAME}
+MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
+AC_SUBST([MAN_DATE])
+AC_SUBST([FSWATCH])
+AC_SUBST([MAN_BUG_REPORT])
+
+AC_CONFIG_FILES([man/fswatch.7])
 
 AC_OUTPUT

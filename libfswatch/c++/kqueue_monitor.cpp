@@ -386,9 +386,12 @@ namespace fsw
         event_list.push_back(event);
       }
 
+      /*
+       * If no files can be observed yet, then wait and repeat the loop.
+       */
       if (!changes.size())
       {
-        ::sleep(latency > MIN_SPIN_LATENCY ? latency : MIN_SPIN_LATENCY);
+        ::sleep(latency);
         continue;
       }
 

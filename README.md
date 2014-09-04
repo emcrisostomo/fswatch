@@ -29,7 +29,7 @@ wrote `fsw` aiming at providing not only a drop-in replacement for `fswatch`,
 but a common front-end from multiple file system change events APIs, including:
 
   * OS X FSEvents.
-  * *BSD kqueue.
+  * \*BSD kqueue.
   * Linux inotify.
 
 In April 2014 Alan and Enrico, in the best interest of users of either
@@ -52,7 +52,7 @@ The limitations of `fswatch` depend largely on the monitor being used:
 
   * The FSEvents monitor, available only on Apple OS X, has no known
     limitations and scales very well with the number of files being observed.
-  * The kqueue monitor, available on any *BSD system featuring kqueue, requires
+  * The kqueue monitor, available on any \*BSD system featuring kqueue, requires
     a file descriptor to be opened for every file being watched.  As a result,
     this monitor scales badly with the number of files being observed and may
     begin to misbehave as soon as the `fswatch` process runs out of file 
@@ -78,7 +78,9 @@ Usage recommendations are as follows:
     as 256 are not uncommon), even if the operating system may allow a much
     larger value.  In this case, check your OS documentation to raise this limit
     on either a per process or a system-wide basis.
-  * If feasible, watch directories instead of watching files.
+  * If feasible, watch directories instead of watching files.  Properly crafting
+    the receiving side of the events to deal with directories may sensibly
+    reduce the monitor resource consumption.
   * If none of the above applies, use the poll monitor.  The authors' experience
     indicates that `fswatch` requires approximately 150 MB or RAM memory to 
     observe a hierarchy of 500.000 files with a minimum path length of 32
@@ -129,7 +131,18 @@ Installation
 ------------
 
 See the `INSTALL` file for detailed information about how to configure and
-install `fswatch`.
+install `fswatch`.  Since the `fswatch` builds and uses dynamic libraries, in
+some platforms you may need to perform additional tasks before you can use
+`fswatch`:
+
+  * Make sure the installation directory of dynamic libraries ($PREFIX/lib) is
+    included in the lookup paths of the dynamic linker of your operating
+    system.  The default path, `/usr/local/lib`, will work in nearly every
+    operating system. 
+  * Refreshing the links and cache to the dynamic libraries may be required.
+    In GNU/Linux systems you may need to run `ldconfig`:
+
+        $ ldconfig
 
 `fswatch` is a C++ program and a C++ compiler compliant with the C++11 standard
 is required to compile it.  Check your OS documentation for information about
@@ -137,6 +150,42 @@ how to install the C++ toolchain and the C++ runtime.
 
 No other software packages or dependencies are required to configure and
 install `fswatch` but the aforementioned APIs used by the file system monitors.
+
+Documentation
+-------------
+
+`fswatch` provides the following documentation:
+
+  * Texinfo documentation, included with the distribution.
+  * A [wiki] page.
+  * A man page.
+
+`fswatch` official documentation is provided in Texinfo format.
+This is the most comprehensive source of information about `fswatch`.
+The man page, in particular, is a stub meant for quick reference from the
+command line and is not guaranteed to be kept up to date.
+
+By default, only Info and DVI formats are generated when `fswatch` is built,
+according to the default rules of the GNU Build Systems.  However, a PDF manual
+typeset with TeX can be generated from the Texinfo sources by issuing this
+command:
+
+    $ make pdf
+
+and can then be installed invoking the `install-pdf` target:
+
+    $ make install-pdf
+
+Since typical users will not have a TeX distribution installed in their
+computers, the PDF manuals for every version of `fswatch` will be hosted at
+[this address][manual].
+
+If you are installing `fswatch` using a package manager and you would like the
+PDF manual to be bundled into the package, please send a feature request to the
+package maintainer.
+
+[wiki]: https://github.com/emcrisostomo/fswatch/wiki
+[manual]: https://drive.google.com/folderview?id=0BxZtP9CHH-Q6bHF3bmJGRmlVcVU&usp=sharing
 
 Compatibility Issues with fswatch v. 0.x
 --------------------------------------

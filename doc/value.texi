@@ -1,0 +1,11 @@
+@macro xopindex{option,text}
+@opindex \option\@r{, \text\}
+@end macro
+
+@macro opsummary{option}
+@ifclear ANCHOR--\option\
+@set ANCHOR--\option\ 1
+@anchor{--\option\}
+@end ifclear
+@xopindex{\option\, summary}
+@end macro

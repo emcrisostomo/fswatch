@@ -1,6 +1,33 @@
 NEWS
 ****
 
+New in 1.4.3:
+
+  * Add batch marker feature to delimit the boundaries of a batch of events.
+  * Add Texinfo documentation.
+  * libfswatch API is now versioned.
+  * Improved Autoconf checks.
+  * The inotify monitor now waits for events and honours the latency settings.
+  * Automaticaly generate the ChangeLog using Git.
+  * Update autogen.sh to honour some commonly used environment variables.
+
+New in 1.4.2:
+
+  * The inotify monitor now provides the same functionality provided by all the
+    other monitors.  Recursive directory monitoring is now implemented.
+  * Version and revision is now determined dynamically from Git by ancillary
+    scripts invoked by the GNU Build System.
+
+New in 1.4.1.1:
+
+  * fswatch does not compile on OS X < 10.9 because some required C++11 classes
+    are not supported by the C++ runtime.
+
+New in 1.4.1:
+
+  * fswatch does not compile on OS X < 10.9 because some required C++11 classes
+    are not supported by the C++ runtime.
+
 New in 1.4.0:
 
   * The libfswatch library has been added with bindings for C and C++.

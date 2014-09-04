@@ -1,4 +1,3 @@
-#!/bin/sh
 #
 # Copyright (C) 2014, Enrico M. Crisostomo
 #
@@ -15,7 +14,5 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-: ${AUTORECONF=autoreconf}
-AUTORECONFFLAGS="--verbose --install --force $ACLOCAL_FLAGS"
-
-${AUTORECONF} ${AUTORECONFFLAGS} "$@" || exit 1
+info_TEXINFOS = fswatch.texi
+fswatch_TEXINFOS = fdl.texi value.texi
