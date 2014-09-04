@@ -180,6 +180,10 @@ Since typical users will not have a TeX distribution installed in their
 computers, the PDF manuals for every version of `fswatch` will be hosted at
 [this address][manual].
 
+If you are installing `fswatch` using a package manager and you would like the
+PDF manual to be bundled into the package, please send a feature request to the
+package maintainer.
+
 [wiki]: https://github.com/emcrisostomo/fswatch/wiki
 [manual]: https://drive.google.com/folderview?id=0BxZtP9CHH-Q6bHF3bmJGRmlVcVU&usp=sharing
 
