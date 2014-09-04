@@ -1,6 +1,16 @@
 NEWS
 ****
 
+New in 1.4.3:
+
+  * Add batch marker feature to delimit the boundaries of a batch of events.
+  * Add Texinfo documentation.
+  * libfswatch API is now versioned.
+  * Improved Autoconf checks.
+  * The inotify monitor now waits for events and honours the latency settings.
+  * Automaticaly generate the ChangeLog using Git.
+  * Update autogen.sh to honour some commonly used environment variables.
+
 New in 1.4.2:
 
   * The inotify monitor now provides the same functionality provided by all the
