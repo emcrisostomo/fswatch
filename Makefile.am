@@ -19,15 +19,9 @@ ACLOCAL_AMFLAGS = -I m4
 # Refresh configuration if libtool dependencies change
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
-	$(SHELL) ./config.status libtool
+	$(SHELL) $(top_builddir)/config.status libtool
 
-SUBDIRS = po libfswatch doc
-
-bin_PROGRAMS = fswatch
-fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
-
-# Link fswatch against dependent libraries
-fswatch_LDADD = libfswatch/libfswatch.la
+SUBDIRS = libfswatch po src doc
 
 dist_man_MANS = man/fswatch.7
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md

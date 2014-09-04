@@ -21,7 +21,7 @@ LIBFSWATCH_VERSION = @LIBFSWATCH_VERSION@
 # Refresh configuration if libtool dependencies change
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
-	$(SHELL) ./config.status libtool
+	$(SHELL) $(top_builddir)/config.status libtool
 
 lib_LTLIBRARIES = libfswatch.la
 
