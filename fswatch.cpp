@@ -35,12 +35,15 @@
 
 using namespace std;
 
+static string decode_event_flag_name(fsw_event_flag flag);
+
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
 static fsw::monitor *active_monitor = nullptr;
 static vector<monitor_filter> filters;
 static bool _0flag = false;
 static bool _1flag = false;
+static int batch_marker_flag = false;
 static bool Eflag = false;
 static bool fflag = false;
 static bool Iflag = false;
@@ -58,6 +61,13 @@ static bool xflag = false;
 static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
+static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
+
+/*
+ * OPT_* variables are used as getopt_long values for long options that do not
+ * have a short option equivalent.
+ */
+static const int OPT_BATCH_MARKER = 128;
 
 bool is_verbose()
 {
@@ -94,16 +104,14 @@ static void usage(ostream& stream)
   stream << PACKAGE_NAME << " [OPTION] ... path ...\n";
   stream << "\n";
   stream << "Options:\n";
-  stream
-    << " -0, --print0          Use the ASCII NUL character (0) as line separator.\n";
-  stream
-    << " -1, --one-event       Exit fswatch after the first set of events is received.\n";
+  stream << " -0, --print0          Use the ASCII NUL character (0) as line separator.\n";
+  stream << " -1, --one-event       Exit fswatch after the first set of events is received.\n";
+  stream << "     --batch-marker    Print a marker at the end of every batch.";
 #  ifdef HAVE_REGCOMP
   stream << " -e, --exclude=REGEX   Exclude paths matching REGEX.\n";
   stream << " -E, --extended        Use extended regular expressions.\n";
 #  endif
-  stream
-    << " -f, --format-time     Print the event time using the specified format.\n";
+  stream << " -f, --format-time     Print the event time using the specified format.\n";
   stream << " -h, --help            Show this message.\n";
 #  ifdef HAVE_REGCOMP
   stream << " -i, --include=REGEX   Include paths matching REGEX.\n";
@@ -252,57 +260,50 @@ static void register_signal_handlers()
   }
 }
 
-static vector<string> decode_event_flag_name(vector<fsw_event_flag> flags)
+static string decode_event_flag_name(fsw_event_flag flag)
+{
+  switch (flag)
+  {
+  case fsw_event_flag::NoOp:
+    return "NoOp";
+  case fsw_event_flag::PlatformSpecific:
+    return "PlatformSpecific";
+  case fsw_event_flag::Created:
+    return "Created";
+  case fsw_event_flag::Updated:
+    return "Updated";
+  case fsw_event_flag::Removed:
+    return "Removed";
+  case fsw_event_flag::Renamed:
+    return "Renamed";
+  case fsw_event_flag::OwnerModified:
+    return "OwnerModified";
+  case fsw_event_flag::AttributeModified:
+    return "AttributeModified";
+  case fsw_event_flag::MovedFrom:
+    return "MovedFrom";
+  case fsw_event_flag::MovedTo:
+    return "MovedTo";
+  case fsw_event_flag::IsFile:
+    return "IsFile";
+  case fsw_event_flag::IsDir:
+    return "IsDir";
+  case fsw_event_flag::IsSymLink:
+    return "IsSymLink";
+  case fsw_event_flag::Link:
+    return "Link";
+  default:
+    return "<Unknown>";
+  }
+}
+
+static vector<string> decode_event_flag_names(vector<fsw_event_flag> flags)
 {
   vector<string> names;
 
   for (fsw_event_flag flag : flags)
   {
-    switch (flag)
-    {
-    case fsw_event_flag::PlatformSpecific:
-      names.push_back("PlatformSpecific");
-      break;
-    case fsw_event_flag::Created:
-      names.push_back("Created");
-      break;
-    case fsw_event_flag::Updated:
-      names.push_back("Updated");
-      break;
-    case fsw_event_flag::Removed:
-      names.push_back("Removed");
-      break;
-    case fsw_event_flag::Renamed:
-      names.push_back("Renamed");
-      break;
-    case fsw_event_flag::OwnerModified:
-      names.push_back("OwnerModified");
-      break;
-    case fsw_event_flag::AttributeModified:
-      names.push_back("AttributeModified");
-      break;
-    case fsw_event_flag::MovedFrom:
-      names.push_back("MovedFrom");
-      break;
-    case fsw_event_flag::MovedTo:
-      names.push_back("MovedTo");
-      break;
-    case fsw_event_flag::IsFile:
-      names.push_back("IsFile");
-      break;
-    case fsw_event_flag::IsDir:
-      names.push_back("IsDir");
-      break;
-    case fsw_event_flag::IsSymLink:
-      names.push_back("IsSymLink");
-      break;
-    case fsw_event_flag::Link:
-      names.push_back("Link");
-      break;
-    default:
-      names.push_back("<Unknown>");
-      break;
-    }
+    names.push_back(decode_event_flag_name(flag));
   }
 
   return names;
@@ -337,7 +338,7 @@ static void print_event_flags(const vector<fsw_event_flag> &flags)
   }
   else
   {
-    vector<string> flag_names = decode_event_flag_name(flags);
+    vector<string> flag_names = decode_event_flag_names(flags);
 
     for (string &name : flag_names)
     {
@@ -359,10 +360,21 @@ static void end_event_record()
   }
 }
 
+static void write_batch_marker()
+{
+  if (batch_marker_flag)
+  {
+    cout << batch_marker;
+    end_event_record();
+  }
+}
+
 static void write_one_batch_event(const vector<event> &events)
 {
   cout << events.size();
   end_event_record();
+
+  write_batch_marker();
 }
 
 static void write_events(const vector<event> &events)
@@ -381,6 +393,8 @@ static void write_events(const vector<event> &events)
     end_event_record();
   }
 
+  write_batch_marker();
+  
   if (_1flag)
   {
     ::exit(FSW_EXIT_OK);
@@ -461,6 +475,7 @@ static void parse_opts(int argc, char ** argv)
   static struct option long_options[] = {
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
+    { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
 #  ifdef HAVE_REGCOMP
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
@@ -582,6 +597,11 @@ static void parse_opts(int argc, char ** argv)
 
     case 'x':
       xflag = true;
+      break;
+
+    case OPT_BATCH_MARKER:
+      if (optarg) batch_marker = optarg;
+      batch_marker_flag = true;
       break;
 
     case '?':

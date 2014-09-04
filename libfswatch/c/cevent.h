@@ -31,6 +31,7 @@ extern "C"
    */
   enum fsw_event_flag
   {
+    NoOp = 0,
     PlatformSpecific = (1 << 0),
     Created = (1 << 1),
     Updated = (1 << 2),
