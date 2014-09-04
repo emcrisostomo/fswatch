@@ -172,6 +172,10 @@ command:
 
     $ make pdf
 
+and can then be installed invoking the `install-pdf` target:
+
+    $ make install-pdf
+
 Since typical users will not have a TeX distribution installed in their
 computers, the PDF manuals for every version of `fswatch` will be hosted at
 [this address][manual].
