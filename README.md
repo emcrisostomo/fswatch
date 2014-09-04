@@ -173,10 +173,11 @@ command:
     $ make pdf
 
 Since typical users will not have a TeX distribution installed in their
-computers, the PDF manual will be hosted at [this address][manual].
+computers, the PDF manuals for every version of `fswatch` will be hosted at
+[this address][manual].
 
 [wiki]: https://github.com/emcrisostomo/fswatch/wiki
-[manual]: 
+[manual]: https://drive.google.com/folderview?id=0BxZtP9CHH-Q6bHF3bmJGRmlVcVU&usp=sharing
 
 Compatibility Issues with fswatch v. 0.x
 --------------------------------------
