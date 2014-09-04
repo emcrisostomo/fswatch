@@ -106,7 +106,7 @@ static void usage(ostream& stream)
   stream << "Options:\n";
   stream << " -0, --print0          Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1, --one-event       Exit fswatch after the first set of events is received.\n";
-  stream << "     --batch-marker    Print a marker at the end of every batch.";
+  stream << "     --batch-marker    Print a marker at the end of every batch.\n";
 #  ifdef HAVE_REGCOMP
   stream << " -e, --exclude=REGEX   Exclude paths matching REGEX.\n";
   stream << " -E, --extended        Use extended regular expressions.\n";
