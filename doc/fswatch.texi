@@ -364,6 +364,31 @@ If you prefer using another replacement string, substitute @command{@{@}} with
 your choice.
 @end itemize
 
+@section Detecting the Boundaries of a Batch of Changes
+@opindex batch-marker@r{, detail}
+If a process or script is piped to @command{fswatch} output, sometimes it would
+be desirable to detect the ``boundaries'' of a batch of changes.
+This way, the process receiving the stream of changes would rely on the timings
+imposed by the latency settings of @command{fswatch} to start a phase of events
+@emph{processing} after a phase or events @emph{gathering}.
+The @option{--batch-marker} option can be used to accomplish this task:
+
+@example
+$ fswatch --batch-marker -r ~
+/Users/enricomariacrisostomo/.zsh_history.LOCK
+NoOp
+/Users/enricomariacrisostomo/.zsh_history.new
+/Users/enricomariacrisostomo/.zsh_history
+/Users/enricomariacrisostomo/.zsh_history.LOCK
+NoOp
+@end example
+
+@noindent
+In this example, the @samp{NoOp} records mark the end of the 1 second batches
+of events output by @command{fswatch}.
+The batch marker can be customized.
+For more information @ref{Batch Marker}.
+
 @section Receiving a Single Event
 Another requested feature is the possibility of receiving a single event and exit
 @command{fswatch}.
@@ -579,6 +604,11 @@ Use the @acronym{ASCII} @samp{NUL} (@samp{\0}) as record separator.
 
 Exit @command{fswatch} after the first set of events is received.
 
+@opsummary{batch-marker}
+@item --batch-marker
+
+Print a marker at the end of every batch.
+
 @opsummary{exclude}
 @item --exclude
 @itemx -e
@@ -720,6 +750,50 @@ implemented.
 In the meantime, the only way to get an unambiguous record format is using
 @emph{numeric} event flags (@pxref{Numeric Event Flags}).
 @end quotation
+
+@section Batch Marker
+@anchor{Batch Marker}
+Since @command{fswatch} typically outputs an endless event stream, processing
+parties parsing its output may be interested in ``batch event processing'':
+that is, processing batches of events instead of endlessly processing events
+one by one.
+
+To support this use case, @command{fswatch} provides the @option{--batch-marker}
+option;
+when specified, @command{fswatch} will output a customizable ``batch marker
+record'' processing parties can use as batch @emph{delimiters}.
+Batch demarcation is made naturally using the monitor's processing loop and
+its latency setting: every time the monitor loops (typically when latency is
+elapsed), then a batch marker is printed as final record, as shown in the
+next example:
+
+@example
+$ fswatch --batch-marker -r ~
+/Users/enricomariacrisostomo/.zsh_history.LOCK
+NoOp
+/Users/enricomariacrisostomo/.zsh_history.new
+/Users/enricomariacrisostomo/.zsh_history
+/Users/enricomariacrisostomo/.zsh_history.LOCK
+NoOp
+@end example
+
+By default, the batch marker takes the form of a single-line record:
+
+@example
+NoOp[\n | \0]
+@end example
+
+@noindent
+terminated with either @samp{\n} or @samp{NUL} (@samp{\0}) depending on other
+@command{fswatch} settings.
+However, the user can customize it by providing the desired marker string as
+optional argument to @option{--batch-marker}:
+
+@example
+% ./fswatch --batch-marker="*** BATCH END ***" -r ~
+/Users/enricomariacrisostomo/.zsh_history.LOCK
+*** BATCH END ***
+@end example
 
 @section Inclusion and Exclusion Filters
 Filters are @emph{regular expression} which are evaluated against the monitored
@@ -1338,7 +1412,7 @@ to reduce the performance degradation that may result from frequent disk access.
 
 @include fdl.texi
 
-# Print option index
+@c Print option index
 @node Index of Command Line Options
 @appendix Index of Command Line Options
 This appendix contains an index of all @command{fswatch} long command line options.
