@@ -35,6 +35,8 @@
 
 using namespace std;
 
+static string decode_event_flag_name(fsw_event_flag flag);
+
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
 static fsw::monitor *active_monitor = nullptr;
@@ -59,6 +61,13 @@ static bool xflag = false;
 static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
+static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
+
+/*
+ * OPT_* variables are used as getopt_long values for long options that do not
+ * have a short option equivalent.
+ */
+static const int OPT_BATCH_MARKER = 128;
 
 bool is_verbose()
 {
@@ -351,10 +360,21 @@ static void end_event_record()
   }
 }
 
+static void write_batch_marker()
+{
+  if (batch_marker_flag)
+  {
+    cout << batch_marker;
+    end_event_record();
+  }
+}
+
 static void write_one_batch_event(const vector<event> &events)
 {
   cout << events.size();
   end_event_record();
+
+  write_batch_marker();
 }
 
 static void write_events(const vector<event> &events)
@@ -373,12 +393,8 @@ static void write_events(const vector<event> &events)
     end_event_record();
   }
 
-  if (batch_marker_flag)
-  {
-    cout << decode_event_flag_name(fsw_event_flag::NoOp);
-    end_event_record();
-  }
-
+  write_batch_marker();
+  
   if (_1flag)
   {
     ::exit(FSW_EXIT_OK);
@@ -459,7 +475,7 @@ static void parse_opts(int argc, char ** argv)
   static struct option long_options[] = {
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
-    { "batch-marker", no_argument, &batch_marker_flag, true},
+    { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
 #  ifdef HAVE_REGCOMP
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
@@ -581,6 +597,11 @@ static void parse_opts(int argc, char ** argv)
 
     case 'x':
       xflag = true;
+      break;
+
+    case OPT_BATCH_MARKER:
+      if (optarg) batch_marker = optarg;
+      batch_marker_flag = true;
       break;
 
     case '?':
