@@ -151,6 +151,23 @@ how to install the C++ toolchain and the C++ runtime.
 No other software packages or dependencies are required to configure and
 install `fswatch` but the aforementioned APIs used by the file system monitors.
 
+Documentation
+-------------
+
+`fswatch` provides the following documentation:
+
+  * Texinfo documentation, included with the distribution.
+  * A [wiki] page.
+  * A man page.
+
+The official documentation is provided in Texinfo format, from which a manual
+in PDF format can be generated.
+This is the most comprehensive source of information about `fswatch`.
+The man page, in particular, is a stub meant for quick reference from the
+command line and is not guaranteed to be kept up to date.
+
+[wiki]: https://github.com/emcrisostomo/fswatch/wiki
+
 Compatibility Issues with fswatch v. 0.x
 --------------------------------------
 
