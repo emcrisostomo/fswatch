@@ -34,7 +34,7 @@
 #  include <getopt.h>
 #endif
 
-#define _(STR) gettext(STR)
+#define _(String) gettext(String)
 
 using namespace std;
 
@@ -91,11 +91,11 @@ static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
   stream << "Copyright (C) 2014, Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
-  stream << "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n";
-  stream << "This is free software: you are free to change and redistribute it.\n";
-  stream << "There is NO WARRANTY, to the extent permitted by law.\n";
+  stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
+  stream << _("This is free software: you are free to change and redistribute it.\n");
+  stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
   stream << "\n";
-  stream << "Written by Enrico M. Crisostomo.";
+  stream << _("Written by Enrico M. Crisostomo.");
   stream << endl;
 }
 
@@ -103,35 +103,35 @@ static void usage(ostream& stream)
 {
 #ifdef HAVE_GETOPT_LONG
   stream << PACKAGE_STRING << "\n\n";
-  stream << "Usage:\n";
-  stream << PACKAGE_NAME << " [OPTION] ... path ...\n";
+  stream << _("Usage:\n");
+  stream << PACKAGE_NAME << _(" [OPTION] ... path ...\n");
   stream << "\n";
-  stream << "Options:\n";
-  stream << " -0, --print0          Use the ASCII NUL character (0) as line separator.\n";
-  stream << " -1, --one-event       Exit fswatch after the first set of events is received.\n";
-  stream << "     --batch-marker    Print a marker at the end of every batch.\n";
+  stream << _("Options:\n");
+  stream << " -0, --print0          " << _("Use the ASCII NUL character (0) as line separator.\n");
+  stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
+  stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
 #  ifdef HAVE_REGCOMP
-  stream << " -e, --exclude=REGEX   Exclude paths matching REGEX.\n";
-  stream << " -E, --extended        Use extended regular expressions.\n";
+  stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
+  stream << " -E, --extended        " << _("Use extended regular expressions.\n");
 #  endif
-  stream << " -f, --format-time     Print the event time using the specified format.\n";
-  stream << " -h, --help            Show this message.\n";
+  stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
+  stream << " -h, --help            " << _("Show this message.\n");
 #  ifdef HAVE_REGCOMP
-  stream << " -i, --include=REGEX   Include paths matching REGEX.\n";
-  stream << " -I, --insensitive     Use case insensitive regular expressions.\n";
+  stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
+  stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
 #  endif
-  stream << " -l, --latency=DOUBLE  Set the latency.\n";
-  stream << " -L, --follow-links    Follow symbolic links.\n";
-  stream << " -m, --monitor=NAME    Use the specified monitor.\n";
-  stream << " -n, --numeric         Print a numeric event mask.\n";
-  stream << " -o, --one-per-batch   Print a single message with the number of change events.\n";
-  stream << "                       in the current batch.\n";
-  stream << " -r, --recursive       Recurse subdirectories.\n";
-  stream << " -t, --timestamp       Print the event timestamp.\n";
-  stream << " -u, --utc-time        Print the event time as UTC time.\n";
-  stream << " -v, --verbose         Print verbose output.\n";
-  stream << "     --version         Print the version of " << PACKAGE_NAME << " and exit.\n";
-  stream << " -x, --event-flags     Print the event flags.\n";
+  stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
+  stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
+  stream << " -m, --monitor=NAME    " << _("Use the specified monitor.\n");
+  stream << " -n, --numeric         " << _("Print a numeric event mask.\n");
+  stream << " -o, --one-per-batch   " << _("Print a single message with the number of change events.\n");
+  stream << "                       " << _("in the current batch.\n");
+  stream << " -r, --recursive       " << _("Recurse subdirectories.\n");
+  stream << " -t, --timestamp       " << _("Print the event timestamp.\n");
+  stream << " -u, --utc-time        " << _("Print the event time as UTC time.\n");
+  stream << " -v, --verbose         " << _("Print verbose output.\n");
+  stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
+  stream << " -x, --event-flags     " << _("Print the event flags.\n");
   stream << "\n";
 #else
   string option_string = "[";
@@ -179,10 +179,10 @@ static void usage(ostream& stream)
 
   list_monitor_types(stream);
 
-  stream << "\nSee the man page for more information.\n\n";
+  stream << _("\nSee the man page for more information.\n\n");
 
-  stream << "Report bugs to <" << PACKAGE_BUGREPORT << ">.\n";
-  stream << PACKAGE << " home page: <" << PACKAGE_URL << ">.";
+  stream << _("Report bugs to <") << PACKAGE_BUGREPORT << ">.\n";
+  stream << PACKAGE << _(" home page: <") << PACKAGE_URL << ">.";
   stream << endl;
 
   exit(FSW_EXIT_USAGE);
@@ -202,7 +202,7 @@ static void close_handler(int signal)
 {
   close_stream();
 
-  fsw_log("Done.\n");
+  fsw_log(_("Done.\n"));
   exit(FSW_EXIT_OK);
 }
 
@@ -210,19 +210,19 @@ static bool validate_latency(double latency, ostream &ost, ostream &est)
 {
   if (lvalue == 0.0)
   {
-    est << "Invalid value: " << optarg << endl;
+    est << _("Invalid value: ") << optarg << endl;
     return false;
   }
 
   if (errno == ERANGE || lvalue == HUGE_VAL)
   {
-    est << "Value out of range: " << optarg << endl;
+    est << _("Value out of range: ") << optarg << endl;
     return false;
   }
 
   if (is_verbose())
   {
-    ost << "Latency set to: " << lvalue << endl;
+    ost << _("Latency set to: ") << lvalue << endl;
   }
 
   return true;
@@ -237,29 +237,29 @@ static void register_signal_handlers()
 
   if (sigaction(SIGTERM, &action, nullptr) == 0)
   {
-    fsw_log("SIGTERM handler registered.\n");
+    fsw_log(_("SIGTERM handler registered.\n"));
   }
   else
   {
-    cerr << "SIGTERM handler registration failed." << endl;
+    cerr << _("SIGTERM handler registration failed.") << endl;
   }
 
   if (sigaction(SIGABRT, &action, nullptr) == 0)
   {
-    fsw_log("SIGABRT handler registered.\n");
+    fsw_log(_("SIGABRT handler registered.\n"));
   }
   else
   {
-    cerr << "SIGABRT handler registration failed." << endl;
+    cerr << _("SIGABRT handler registration failed.") << endl;
   }
 
   if (sigaction(SIGINT, &action, nullptr) == 0)
   {
-    fsw_log("SIGINT handler registered.\n");
+    fsw_log(_("SIGINT handler registered.\n"));
   }
   else
   {
-    cerr << "SIGINT handler registration failed" << endl;
+    cerr << _("SIGINT handler registration failed") << endl;
   }
 }
 
@@ -322,7 +322,7 @@ static void print_event_timestamp(const time_t &evt_time)
              time_format_buffer,
              TIME_FORMAT_BUFF_SIZE,
              tformat.c_str(),
-             tm_time) ? string(time_format_buffer) : string("<date format error>");
+             tm_time) ? string(time_format_buffer) : string(_("<date format error>"));
 
   cout << date << " ";
 }
@@ -427,7 +427,7 @@ static void start_monitor(int argc, char ** argv, int optind)
       ::free(real_path);
     }
 
-    fsw_log("Adding path: ");
+    fsw_log(_("Adding path: "));
     fsw_log(path.c_str());
     fsw_log("\n");
 
@@ -634,13 +634,13 @@ int main(int argc, char ** argv)
   // validate options
   if (optind == argc)
   {
-    cerr << "Invalid number of arguments." << endl;
+    cerr << _("Invalid number of arguments.") << endl;
     ::exit(FSW_EXIT_UNK_OPT);
   }
 
   if (mflag && !fsw::monitor_factory::exists_type(monitor_name))
   {
-    cerr << "Invalid monitor name." << endl;
+    cerr << _("Invalid monitor name.") << endl;
     ::exit(FSW_EXIT_MONITOR_NAME);
   }
 
@@ -656,14 +656,14 @@ int main(int argc, char ** argv)
   }
   catch (exception & conf)
   {
-    cerr << "An error occurred and the program will be terminated.\n";
+    cerr << _("An error occurred and the program will be terminated.\n");
     cerr << conf.what() << endl;
 
     return FSW_EXIT_ERROR;
   }
   catch (...)
   {
-    cerr << "An unknown error occurred and the program will be terminated." << endl;
+    cerr << _("An unknown error occurred and the program will be terminated.") << endl;
 
     return FSW_EXIT_ERROR;
   }
