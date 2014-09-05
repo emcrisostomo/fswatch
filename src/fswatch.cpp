@@ -125,7 +125,6 @@ static void usage(ostream& stream)
   stream << " -m, --monitor=NAME    " << _("Use the specified monitor.\n");
   stream << " -n, --numeric         " << _("Print a numeric event mask.\n");
   stream << " -o, --one-per-batch   " << _("Print a single message with the number of change events.\n");
-  stream << "                       " << _("in the current batch.\n");
   stream << " -r, --recursive       " << _("Recurse subdirectories.\n");
   stream << " -t, --timestamp       " << _("Print the event timestamp.\n");
   stream << " -u, --utc-time        " << _("Print the event time as UTC time.\n");
