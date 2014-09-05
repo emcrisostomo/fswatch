@@ -14,6 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+# Prepare gettext-related symbols used by programs
+datadir = @datadir@
+datarootdir = @datarootdir@
+localedir = @localedir@
+DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
+LIBS = @LTLIBINTL@ @LIBS@
+
 bin_PROGRAMS = fswatch
 fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
 
