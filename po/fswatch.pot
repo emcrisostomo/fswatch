@@ -1,19 +1,20 @@
-# fswatch.
-# Copyright (C) 2014, Enrico M. Crisostomo
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Enrico M. Crisostomo
 # This file is distributed under the same license as the PACKAGE package.
-# Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.4.3\n"
+"Project-Id-Version: fswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2014-09-05 16:32+0200\n"
-"PO-Revision-Date: 2014-09-05 16:07+0200\n"
-"Last-Translator: Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>\n"
-"Language-Team: en <en@li.org>\n"
-"Language: en \n"
+"POT-Creation-Date: 2014-09-06 00:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/fswatch.cpp:82
