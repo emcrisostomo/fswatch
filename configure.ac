@@ -57,9 +57,9 @@ AM_GNU_GETTEXT_VERSION([0.19.2])
 
 # Configure language
 AC_LANG(C++)
+AC_PROG_CXX([clang++ g++])
 
 # Checks for programs.
-AC_PROG_CXX([clang++ g++])
 AC_PROG_LN_S
 AC_PATH_PROG([ZSH_PROG], [zsh], [no])
 AC_PATH_PROG([BASH_PROG], [bash], [no])
