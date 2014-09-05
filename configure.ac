@@ -27,6 +27,7 @@ AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile po/Makefile.in])
 AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
+AC_CONFIG_FILES([build-aux/create-pot-template.sh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -111,6 +112,14 @@ MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
 AC_SUBST([MAN_DATE])
 AC_SUBST([FSWATCH])
 AC_SUBST([MAN_BUG_REPORT])
+
+# Variables used in gettext management scripts
+PO_BUG_REPORT=${PACKAGE_BUGREPORT}
+PO_PACKAGE_NAME=${PACKAGE_NAME}
+PO_PACKAGE_VERSION=${PACKAGE_VERSION}
+AC_SUBST([PO_BUG_REPORT])
+AC_SUBST([PO_PACKAGE_NAME])
+AC_SUBST([PO_PACKAGE_VERSION])
 
 AC_CONFIG_FILES([man/fswatch.7])
 

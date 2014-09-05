@@ -1,0 +1,9 @@
+#!/bin/sh
+
+xgettext \
+  -d @PO_PACKAGE_NAME@ \
+  -k_ \
+  --package-name=@PO_PACKAGE_NAME@ \
+  --package-version=@PO_PACKAGE_VERSION@ \
+  --msgid-bugs-address=@PO_BUG_REPORT@ \
+  ./src/fswatch.cpp
