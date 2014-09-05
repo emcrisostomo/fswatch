@@ -51,13 +51,13 @@ LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
-# Initialize gettext
-AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.19.2])
-
 # Configure language
 AC_LANG(C++)
 AC_PROG_CXX([clang++ g++])
+
+# Initialize gettext
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.2])
 
 # Checks for programs.
 AC_PROG_LN_S
