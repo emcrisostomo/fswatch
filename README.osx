@@ -105,6 +105,30 @@ install location, use the --prefix configure option.
   For further instruction on building the GNU Build System from scratch, please
 check the README.gnu-build-system file.
 
+Localization and gettext
+========================
+
+fswatch is localizable and to build with locale support it requires gettext
+to be available at build time.  OS X does not ship gettext you will need to
+build it yourself or use a package manager such as MacPorts or Homebrew to
+install it.
+
+  Depending on gettext installation path, configure may not be able to find
+<libintl.h> or libintl.  In this case, you will need to instruct configure
+about their location (this example assumes you use MacPorts' default
+installation path /opt/local):
+
+  $ CPPFLAGS="-I/opt/local/include" LDFLAGS="-L/opt/local/lib" ./configure
+
+  If configure detects that gettext is available, you will find a message such
+as:
+
+  checking whether to use NLS... yes
+
+or, which is equivalent, config.h will contain the following definition:
+
+  #define ENABLE_NLS 1
+
 -----
 
 Copyright (C) 2014 Enrico M. Crisostomo
