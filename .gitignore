@@ -71,6 +71,11 @@ libfswatch_config.h.in
 **/m4/wint_t.m4
 **/m4/xsize.m4
 
+# Automatically generated PO and GMO files
+po/en@boldquot.po
+po/en@quot.po
+po/*.gmo
+
 # texinfo
 stamp-vti
 version.texi
