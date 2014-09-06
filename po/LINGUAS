@@ -2,4 +2,4 @@
 # en@quot and en@boldquot are variant of the English message catalogs
 # which are generated automatically (see [`LINGUAS' in `po/'], Section 13.4.2,
 # GNU gettext tools, version 0.18.2).
-en@quot en@boldquot it
+en@quot en@boldquot it es
