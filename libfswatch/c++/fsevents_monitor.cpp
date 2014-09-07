@@ -125,7 +125,7 @@ namespace fsw
     context->release = nullptr;
     context->copyDescription = nullptr;
 
-    libfsw_log("Creating FSEvent stream...\n");
+    libfsw_log(_("Creating FSEvent stream...\n"));
     stream = FSEventStreamCreate(NULL,
                                  &fsevents_monitor::fsevents_callback,
                                  context,
@@ -136,18 +136,18 @@ namespace fsw
 
     if (!stream)
     {
-      throw libfsw_exception("Event stream could not be created.");
+      throw libfsw_exception(_("Event stream could not be created."));
     }
 
-    libfsw_log("Scheduling stream with run loop...\n");
+    libfsw_log(_("Scheduling stream with run loop...\n"));
     FSEventStreamScheduleWithRunLoop(stream,
                                      CFRunLoopGetCurrent(),
                                      kCFRunLoopDefaultMode);
 
-    libfsw_log("Starting event stream...\n");
+    libfsw_log(_("Starting event stream...\n"));
     FSEventStreamStart(stream);
 
-    libfsw_log("Starting run loop...\n");
+    libfsw_log(_("Starting run loop...\n"));
     CFRunLoopRun();
   }
 
@@ -178,7 +178,7 @@ namespace fsw
 
     if (!fse_monitor)
     {
-      throw libfsw_exception("The callback info cannot be cast to fsevents_monitor.");
+      throw libfsw_exception(_("The callback info cannot be cast to fsevents_monitor."));
     }
 
     vector<event> events;
