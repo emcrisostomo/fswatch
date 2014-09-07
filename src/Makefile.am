@@ -19,11 +19,11 @@ fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
 fswatch_SOURCES += gettext.h
 
 # Set include path for libfswatch
-AM_CPPFLAGS  = -I$(top_srcdir)
+AM_CPPFLAGS  = -I$(top_srcdir)/libfswatch/src
 # Prepare gettext-related symbols used by programs
 AM_CPPFLAGS += -DLOCALEDIR=\"$(localedir)\"
 
 # Link fswatch against dependent libraries
-fswatch_LDADD  = $(top_builddir)/libfswatch/libfswatch.la
+fswatch_LDADD  = $(top_builddir)/libfswatch/src/libfswatch/libfswatch.la
 # Link fswatch against libintl if gettext is being used
 fswatch_LDADD += @LTLIBINTL@
