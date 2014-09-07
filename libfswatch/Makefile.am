@@ -26,6 +26,7 @@ libtool: $(LIBTOOL_DEPS)
 lib_LTLIBRARIES = libfswatch.la
 
 libfswatch_la_SOURCES  = c/libfswatch.cpp
+libfswatch_la_SOURCES += gettext.h gettext_defs.h
 libfswatch_la_SOURCES += c/libfswatch_log.cpp c/libfswatch_log.h
 libfswatch_la_SOURCES += c++/libfswatch_map.h c++/libfswatch_set.h
 libfswatch_la_SOURCES += c++/libfswatch_exception.cpp
