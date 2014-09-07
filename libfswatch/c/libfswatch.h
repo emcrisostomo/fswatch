@@ -82,6 +82,14 @@ extern "C"
    */
 
   /*
+   * This function initializes the libfswatch library and must be invoked
+   * before any other calls to the C or C++ API.  If the function succeeds, it
+   * returns FSW_OK, otherwise the initialization routine failed and the library
+   * should not be usable.
+   */
+  int fsw_init_library();
+
+  /*
    * This function creates a new monitor session using the specified monitor
    * and returns an handle to it.  This function is the libfswatch API entry
    * point.
@@ -104,26 +112,26 @@ extern "C"
    */
   FSW_STATUS fsw_set_callback(const FSW_HANDLE handle,
                               const FSW_CEVENT_CALLBACK callback);
-  
+
   /*
    * Sets the latency of the monitor.  By default, the latency is set to 1 s.
    */
   FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency);
-  
+
   /*
    * Determines whether the monitor recursively scans each watched path or not.
    * Recursive scanning is an optional feature which could not be implemented
    * by all the monitors.  By default, recursive scanning is disabled.
    */
   FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive);
-  
+
   /*
    * Determines whether a symbolic link is followed or not.  By default, a
    * symbolic link are not followed.
    */
   FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
                                      const bool follow_symlinks);
-  
+
   /*
    * Adds a filter to the current session.  A filter is a regular expression
    * that, depending on whether the filter type is exclusion or not, must or
@@ -133,18 +141,18 @@ extern "C"
    */
   FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
                             const fsw_cmonitor_filter filter);
-  
+
   /*
    * Starts the monitor if it is properly configured.  Depending on the type of
    * monitor this call might return when a monitor is stopped or not.
    */
   FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle);
-  
+
   /*
    * Destroys an existing session and invalidates its handle.
    */
   FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle);
-    
+
   /*
    * Gets the last error code.
    */
