@@ -21,13 +21,17 @@ msgstr ""
 msgid ""
 "Available monitors in this platform:\n"
 "\n"
-msgstr "Monitors disponibles en esta plataforma:\n\n"
+msgstr ""
+"Monitors disponibles en esta plataforma:\n"
+"\n"
 
 #: src/fswatch.cpp:94
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
 "html>.\n"
-msgstr "Licencia GPLv3+: GNU GPL versión 3 o sucesiva <http://gnu.org/licenses/gpl.html>.\n"
+msgstr ""
+"Licencia GPLv3+: GNU GPL versión 3 o sucesiva <http://gnu.org/licenses/gpl."
+"html>.\n"
 
 #: src/fswatch.cpp:95
 msgid "This is free software: you are free to change and redistribute it.\n"
@@ -75,7 +79,8 @@ msgstr "Usa expresiones regulares extendidas.\n"
 
 #: src/fswatch.cpp:117
 msgid "Print the event time using the specified format.\n"
-msgstr "Muestra el marcador de tiempo del evento usando el formato especificado.\n"
+msgstr ""
+"Muestra el marcador de tiempo del evento usando el formato especificado.\n"
 
 #: src/fswatch.cpp:118
 msgid "Show this message.\n"
@@ -142,7 +147,10 @@ msgid ""
 "\n"
 "See the man page for more information.\n"
 "\n"
-msgstr "\nConsulta a la página man para más informaciones.\n\n"
+msgstr ""
+"\n"
+"Consulta a la página man para más informaciones.\n"
+"\n"
 
 #: src/fswatch.cpp:183
 msgid "Report bugs to <"
