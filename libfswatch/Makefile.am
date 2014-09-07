@@ -77,3 +77,7 @@ dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
 	chmod u+w $(distdir)/ChangeLog
 	git log --oneline --decorate >> $(distdir)/ChangeLog
+
+SUBDIRS = po
+
+EXTRA_DIST = config/config.rpath
