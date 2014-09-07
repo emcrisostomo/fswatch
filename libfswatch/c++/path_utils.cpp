@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "gettext_defs.h"
 #include "path_utils.h"
 #include "c/libfswatch_log.h"
 #include <dirent.h>
@@ -68,7 +69,7 @@ namespace fsw
   {
     if (::lstat(path.c_str(), &fd_stat) != 0)
     {
-      string err = string("Cannot stat() ") + path;
+      string err = string(_("Cannot stat() ")) + path;
       libfsw_perror(err.c_str());
 
       return false;

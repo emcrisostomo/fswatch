@@ -18,6 +18,7 @@
 #  include "libfswatch_config.h"
 #endif
 
+#include "gettext_defs.h"
 #include <iostream>
 #ifdef HAVE_CXX_MUTEX
 #  include <mutex>
@@ -79,6 +80,20 @@ static FSW_SESSION * get_session(const FSW_HANDLE handle);
 
 static int create_monitor(FSW_HANDLE handle, const fsw_monitor_type type);
 static FSW_STATUS fsw_set_last_error(const int error);
+
+/*
+ * Library initialization routine.  Currently, libfswatch only initializes
+ * gettext.
+ */
+int fsw_init_library()
+{
+  // Trigger gettext operations
+#ifdef ENABLE_NLS
+  bindtextdomain(PACKAGE, LOCALEDIR);
+#endif
+
+  return FSW_OK;
+}
 
 typedef struct fsw_callback_context
 {

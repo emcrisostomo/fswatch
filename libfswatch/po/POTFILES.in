@@ -1,0 +1,8 @@
+# List of source files which contain translatable strings.
+c++/fsevents_monitor.cpp
+c++/inotify_monitor.cpp
+c++/kqueue_monitor.cpp
+c++/libfswatch_exception.cpp
+c++/monitor.cpp
+c++/path_utils.cpp
+c++/poll_monitor.cpp

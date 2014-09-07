@@ -17,6 +17,7 @@
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
 #endif
+#include "gettext_defs.h"
 #include "monitor.h"
 #include "libfswatch_exception.h"
 #include <cstdlib>
@@ -60,7 +61,7 @@ namespace fsw
   {
     if (callback == nullptr)
     {
-      throw libfsw_exception("Callback cannot be null.", FSW_ERR_CALLBACK_NOT_SET);
+      throw libfsw_exception(_("Callback cannot be null."), FSW_ERR_CALLBACK_NOT_SET);
     }
   }
 
@@ -68,7 +69,7 @@ namespace fsw
   {
     if (latency < 0)
     {
-      throw libfsw_exception("Latency cannot be negative.", FSW_ERR_INVALID_LATENCY);
+      throw libfsw_exception(_("Latency cannot be negative."), FSW_ERR_INVALID_LATENCY);
     }
 
     this->latency = latency;
@@ -89,7 +90,7 @@ namespace fsw
 
     if (::regcomp(&regex, filter.text.c_str(), flags))
     {
-      string err = "An error occurred during the compilation of " + filter.text;
+      string err = _("An error occurred during the compilation of ") + filter.text;
       throw libfsw_exception(err, FSW_ERR_INVALID_REGEX);
     }
 

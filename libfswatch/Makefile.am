@@ -23,9 +23,13 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) $(top_builddir)/config.status libtool
 
+# Prepare gettext-related symbols used by programs
+AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\"
+
 lib_LTLIBRARIES = libfswatch.la
 
 libfswatch_la_SOURCES  = c/libfswatch.cpp
+libfswatch_la_SOURCES += gettext.h gettext_defs.h
 libfswatch_la_SOURCES += c/libfswatch_log.cpp c/libfswatch_log.h
 libfswatch_la_SOURCES += c++/libfswatch_map.h c++/libfswatch_set.h
 libfswatch_la_SOURCES += c++/libfswatch_exception.cpp
@@ -77,3 +81,7 @@ dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
 	chmod u+w $(distdir)/ChangeLog
 	git log --oneline --decorate >> $(distdir)/ChangeLog
+
+SUBDIRS = po
+
+EXTRA_DIST = config/config.rpath

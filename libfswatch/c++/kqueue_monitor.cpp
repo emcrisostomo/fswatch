@@ -20,6 +20,7 @@
 
 #ifdef HAVE_SYS_EVENT_H
 
+#  include "gettext_defs.h"
 #  include "kqueue_monitor.h"
 #  include "libfswatch_map.h"
 #  include "libfswatch_set.h"
@@ -143,7 +144,7 @@ namespace fsw
 
     if (fd == -1)
     {
-      string err = string("Cannot open ") + path;
+      string err = string(_("Cannot open ")) + path;
       libfsw_perror(err.c_str());
 
       return false;
@@ -252,7 +253,7 @@ namespace fsw
 
       if (!scan(path))
       {
-        string err = "Notice: " + path + " cannot be found. Will retry later.\n";
+        string err = _("Notice: ") + path + _(" cannot be found. Will retry later.\n");
         libfsw_log(err.c_str());
       }
     }
@@ -260,14 +261,14 @@ namespace fsw
 
   void kqueue_monitor::initialize_kqueue()
   {
-    if (kq != -1) throw libfsw_exception("kqueue already running.");
+    if (kq != -1) throw libfsw_exception(_("kqueue already running."));
 
     kq = ::kqueue();
 
     if (kq == -1)
     {
       perror("::kqueue()");
-      throw libfsw_exception("kqueue failed.");
+      throw libfsw_exception(_("kqueue failed."));
     }
   }
 
@@ -285,8 +286,8 @@ namespace fsw
 
     if (event_num == -1)
     {
-      perror("::kevent returned -1");
-      throw libfsw_exception("Invalid event number.");
+      ::perror("::kevent");
+      throw libfsw_exception(_("::kevent returned -1, invalid event number."));
     }
 
     return event_num;
@@ -306,7 +307,7 @@ namespace fsw
 
       if (e.flags & EV_ERROR)
       {
-        perror("Event with EV_ERROR");
+        ::perror(_("Event with EV_ERROR"));
         continue;
       }
 

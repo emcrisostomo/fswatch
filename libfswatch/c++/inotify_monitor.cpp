@@ -18,6 +18,7 @@
 #  include "libfswatch_config.h"
 #endif
 
+#include "gettext_defs.h"
 #include "inotify_monitor.h"
 #include <limits.h>
 #include <unistd.h>
@@ -81,7 +82,7 @@ namespace fsw
     if (impl->inotify_monitor_handle == -1)
     {
       ::perror("inotify_init");
-      throw libfsw_exception("Cannot initialize inotify.");
+      throw libfsw_exception(_("Cannot initialize inotify."));
     }
   }
 
@@ -91,7 +92,7 @@ namespace fsw
     for (auto inotify_desc_pair : impl->watched_descriptors)
     {
       ostringstream log;
-      log << "Removing: " << inotify_desc_pair << "\n";
+      log << _("Removing: ") << inotify_desc_pair << "\n";
       libfsw_log(log.str().c_str());
 
       if (::inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair))
@@ -128,7 +129,7 @@ namespace fsw
       impl->path_to_wd[path] = inotify_desc;
 
       ostringstream log;
-      log << "ADDED " << path << "\n";
+      log << _("Added: ") << path << "\n";
       libfsw_log(log.str().c_str());
     }
 
@@ -192,7 +193,6 @@ namespace fsw
     vector<fsw_event_flag> flags;
 
     if (event->mask & IN_ISDIR) flags.push_back(fsw_event_flag::IsDir);
-    //if (event->mask & IN_DELETE_SELF) flags.push_back(fsw_event_flag::Removed);
     if (event->mask & IN_MOVE_SELF) flags.push_back(fsw_event_flag::Updated);
     if (event->mask & IN_UNMOUNT) flags.push_back(fsw_event_flag::PlatformSpecific);
 
@@ -242,7 +242,7 @@ namespace fsw
 
     {
       ostringstream log;
-      log << "GENERIC: " << event->wd << "::" << filename_stream.str() << "\n";
+      log << _("Generic event: ") << event->wd << "::" << filename_stream.str() << "\n";
       libfsw_log(log.str().c_str());
     }
 
@@ -304,7 +304,7 @@ namespace fsw
   {
     if (event->mask & IN_Q_OVERFLOW)
     {
-      throw libfsw_exception("Event queue overflowed.");
+      throw libfsw_exception(_("Event queue overflowed."));
     }
 
     preprocess_dir_event(event);
@@ -316,7 +316,7 @@ namespace fsw
     if (impl->events.size())
     {
       ostringstream log;
-      log << "Notifying events #: " << impl->events.size() << "\n";
+      log << _("Notifying events #: ") << impl->events.size() << "\n";
       libfsw_log(log.str().c_str());
 
       callback(impl->events, context);
@@ -347,7 +347,7 @@ namespace fsw
       else
       {
         ostringstream log;
-        log << "REMOVED " << *wtd << "\n";
+        log << _("Removed: ") << *wtd << "\n";
         libfsw_log(log.str().c_str());
       }
 
@@ -359,8 +359,6 @@ namespace fsw
 
     while (fd != impl->descriptors_to_remove.end())
     {
-      // remove_watch(*fd);
-
       const string & curr_path = impl->wd_to_path[*fd];
       impl->path_to_wd.erase(curr_path);
       impl->wd_to_path.erase(*fd);
@@ -408,7 +406,7 @@ namespace fsw
 
       if (rv == -1)
       {
-        throw libfsw_exception("::select() on inotify descriptor encountered an error.");
+        throw libfsw_exception(_("::select() on inotify descriptor encountered an error."));
       }
 
       // In case of read timeout just repeat the loop.
@@ -423,19 +421,19 @@ namespace fsw
 
       {
         ostringstream log;
-        log << "RECORD_NUM: " << record_num << "\n";
+        log << _("Number of records: ") << record_num << "\n";
         libfsw_log(log.str().c_str());
       }
 
       if (!record_num)
       {
-        throw libfsw_exception("::read() on inotify descriptor read 0 records.");
+        throw libfsw_exception(_("::read() on inotify descriptor read 0 records."));
       }
 
       if (record_num == -1)
       {
         ::perror("read()");
-        throw libfsw_exception("::read() on inotify descriptor returned -1.");
+        throw libfsw_exception(_("::read() on inotify descriptor returned -1."));
       }
 
       time(&impl->curr_time);

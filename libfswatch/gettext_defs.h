@@ -14,35 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch_exception.h"
-#include "gettext_defs.h"
+#ifndef FSW_GETTEXT_DEFS_H
+#  define FSW_GETTEXT_DEFS_H
 
-using namespace std;
+#include "gettext.h"
 
-namespace fsw
+#  ifdef __cplusplus
+extern "C"
 {
+#  endif
 
-  libfsw_exception::libfsw_exception(string cause, int code) :
-    cause(cause), code(code)
-  {
-  }
+#define _(String) gettext(String)
 
-  const char * libfsw_exception::what() const noexcept
-  {
-    return (string(_("Error: ")) + this->cause).c_str();
-  }
-
-  int libfsw_exception::error_code() const noexcept
-  {
-    return code;
-  }
-
-  libfsw_exception::operator int() const noexcept
-  {
-    return code;
-  }
-
-  libfsw_exception::~libfsw_exception() noexcept
-  {
-  }
+#  ifdef __cplusplus
 }
+#  endif
+
+#endif  /* FSW_GETTEXT_DEFS_H */
+
