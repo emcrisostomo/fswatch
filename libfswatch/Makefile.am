@@ -23,6 +23,9 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) $(top_builddir)/config.status libtool
 
+# Prepare gettext-related symbols used by programs
+AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\"
+
 lib_LTLIBRARIES = libfswatch.la
 
 libfswatch_la_SOURCES  = c/libfswatch.cpp
