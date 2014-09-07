@@ -19,7 +19,7 @@
 #endif
 
 #include "fsevents_monitor.h"
-
+#include "gettext_defs.h"
 #include "libfswatch_exception.h"
 #include "c/libfswatch_log.h"
 #include <iostream>
@@ -78,13 +78,13 @@ namespace fsw
   {
     if (stream)
     {
-      libfsw_log("Stopping event stream...\n");
+      libfsw_log(_("Stopping event stream...\n"));
       FSEventStreamStop(stream);
 
-      libfsw_log("Invalidating event stream...\n");
+      libfsw_log(_("Invalidating event stream...\n"));
       FSEventStreamInvalidate(stream);
 
-      libfsw_log("Releasing event stream...\n");
+      libfsw_log(_("Releasing event stream...\n"));
       FSEventStreamRelease(stream);
     }
 

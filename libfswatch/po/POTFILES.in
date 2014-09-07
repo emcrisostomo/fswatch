@@ -1,1 +1,2 @@
 # List of source files which contain translatable strings.
+c++/fsevents_monitor.cpp
