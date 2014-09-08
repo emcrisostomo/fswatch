@@ -37,10 +37,10 @@ dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
 
 install-exec-hook: fswatch-remove-links
 if HAVE_ZSH
-	$(LN_S) $(DESTDIR)$(bindir)/fswatch-run-zsh $(DESTDIR)$(bindir)/fswatch-run
+	$(LN_S) $(bindir)/fswatch-run-zsh $(DESTDIR)$(bindir)/fswatch-run
 else
 if HAVE_BASH
-	$(LN_S) $(DESTDIR)$(bindir)/fswatch-run-bash $(DESTDIR)$(bindir)/fswatch-run
+	$(LN_S) $(bindir)/fswatch-run-bash $(DESTDIR)$(bindir)/fswatch-run
 else
 	@echo "No compatible shell was found for fswatch-run."
 endif
