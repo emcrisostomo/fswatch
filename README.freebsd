@@ -25,12 +25,13 @@ compiler suite which builds this package correctly.  The GCC compiler collection
 shipped with FreeBSD, however, is not C++11 compliant and cannot build this
 package.
 
-The configure script will look for clang++ and use it if availabe.  However,
-should the user want to use another compiler, the following command can be used:
+The configure script enforces an ordered compiler search list and clang++ will
+be used first if available.  If you do not like this choice and wish to use
+another compiler set the value of the CXX environment variable to the name of
+your compiler binary.  If, for example, you wish to use the g++ compiler, then
+use this command to configure the build:
 
-  $ ./configure CXX=compiler
-
-where the name of the desired compiler is assigner to the CXX variable.
+    $ ./configure CXX=g++
 
 -----
 
