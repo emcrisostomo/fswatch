@@ -1,6 +1,21 @@
 NEWS
 ****
 
+New in 1.4.4:
+
+  * Localize fswatch and libfswatch using GNU gettext.
+  * Add Italian (it) localization.
+  * Add Spanish (es) localization.
+
+New in 1.4.3.2:
+
+  * Fix Makefile.am because of broken link when DESTDIR installs are performed.
+
+New in 1.4.3.1:
+
+  * Fix bug in fswatch-run wrapper script for ZSH which caused last argument
+    not to be split when passed to xargs.
+
 New in 1.4.3:
 
   * Add batch marker feature to delimit the boundaries of a batch of events.
