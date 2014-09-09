@@ -151,8 +151,8 @@ how to install the C++ toolchain and the C++ runtime.
 No other software packages or dependencies are required to configure and
 install `fswatch` but the aforementioned APIs used by the file system monitors.
 
-Internationalization
---------------------
+Localization
+------------
 
 `fswatch` is localizable and internally uses GNU `gettext` to decouple
 localizable string from their translation.  The currently available locales

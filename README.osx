@@ -108,10 +108,9 @@ check the README.gnu-build-system file.
 Localization and gettext
 ========================
 
-fswatch is localizable and to build with locale support it requires gettext
-to be available at build time.  OS X does not ship gettext you will need to
-build it yourself or use a package manager such as MacPorts or Homebrew to
-install it.
+fswatch is localizable and locale support requires GNU gettext to be available
+at build time.  OS X does not ship gettext you will need to build it yourself
+or use a package manager such as MacPorts or Homebrew to install it.
 
   Depending on gettext installation path, configure may not be able to find
 <libintl.h> or libintl.  In this case, you will need to instruct configure
