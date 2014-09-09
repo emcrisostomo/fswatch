@@ -8,7 +8,7 @@ This file describes the steps required to build this bundle on a supported
 FreeBSD system.  See README for more information about the tested
 configurations.
 
-  The kqueue-based monitor should be compatible with any *BSD release with
+The kqueue-based monitor should be compatible with any *BSD release with
 support for kqueue.  So far, however, the author has only tested this release
 on FreeBSD v. >= 10.0.  Feedback on different *BSD systems is much appreciated
 and will benefit other users as well.
@@ -19,15 +19,14 @@ Installation
 See the INSTALL file for detailed information about how to configure and
 install fswatch.
 
-  fswatch is a C++ program and a C++ compiler compliant with the C++11 standard
+fswatch is a C++ program and a C++ compiler compliant with the C++11 standard
 is required to compile it.  FreeBSD v. >= 10.0 ships by default with the CLang
-compiler suite which builds this package correctly.  The GCC compiler
-collection shipped with FreeBSD, however, is not C++11 compliant and cannot
-build this package.
+compiler suite which builds this package correctly.  The GCC compiler collection
+shipped with FreeBSD, however, is not C++11 compliant and cannot build this
+package.
 
-  The configure script will look for clang++ and use it if availabe.  However,
-should the user want to use another compiler, the following command can be
-used:
+The configure script will look for clang++ and use it if availabe.  However,
+should the user want to use another compiler, the following command can be used:
 
   $ ./configure CXX=compiler
 
