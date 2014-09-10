@@ -66,8 +66,7 @@ static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
 static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
-static bool format_flag = false;
-static string format = "%p%n";
+static string format;
 
 /*
  * OPT_* variables are used as getopt_long values for long options that do not
@@ -328,7 +327,7 @@ static void print_event_timestamp(const time_t &evt_time)
              tformat.c_str(),
              tm_time) ? string(time_format_buffer) : string(_("<date format error>"));
 
-  cout << date << " ";
+  cout << date;
 }
 
 static void print_event_flags(const vector<fsw_event_flag> &flags)
@@ -341,20 +340,22 @@ static void print_event_flags(const vector<fsw_event_flag> &flags)
       mask += static_cast<int> (flag);
     }
 
-    cout << " " << mask;
+    cout << mask;
   }
   else
   {
     vector<string> flag_names = decode_event_flag_names(flags);
 
-    for (string &name : flag_names)
+    for (int i = 0; i < flag_names.size(); ++i)
     {
-      cout << " " << name;
+      const string &name = flag_names[i];
+      cout << name;
+
+      // Event flag separator is currently hard-coded.
+      if (i != flag_names.size() - 1) cout << " ";
     }
   }
 }
-
-// TODO remove
 
 static void end_event_record()
 {
@@ -606,7 +607,6 @@ static void parse_opts(int argc, char ** argv)
       break;
 
     case OPT_FORMAT:
-      format_flag = true;
       format = optarg;
       break;
 
@@ -622,9 +622,26 @@ static void parse_opts(int argc, char ** argv)
     ::exit(FSW_EXIT_OK);
   }
 
-  if (format_flag)
+  // Build event format
+  if (tflag)
   {
-    // TODO test format
+    format = "%t ";
+  }
+
+  format += "%p";
+
+  if (xflag)
+  {
+    format += " %f";
+  }
+
+  if (_0flag)
+  {
+    format += "%0";
+  }
+  else
+  {
+    format += "%n";
   }
 }
 
