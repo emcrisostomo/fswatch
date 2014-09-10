@@ -354,6 +354,8 @@ static void print_event_flags(const vector<fsw_event_flag> &flags)
   }
 }
 
+// TODO remove
+
 static void end_event_record()
 {
   if (_0flag)
@@ -388,18 +390,6 @@ static void write_events(const vector<event> &events)
 {
   for (const event &evt : events)
   {
-    if (tflag) print_event_timestamp(evt.get_time());
-
-    cout << evt.get_path();
-
-    if (xflag)
-    {
-      print_event_flags(evt.get_flags());
-    }
-
-    end_event_record();
-
-    // TODO Temporary location
     printf_event(evt);
   }
 
