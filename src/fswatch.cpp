@@ -39,7 +39,34 @@
 using namespace std;
 
 static string decode_event_flag_name(fsw_event_flag flag);
-static void printf_event(const event & evt);
+
+/*
+ * Event formatting types and routines.
+ */
+static void print_event_flags(const event & evt);
+static void print_event_path(const event & evt);
+static void print_event_timestamp(const event & evt);
+
+static int printf_event_validate_format(const string & fmt);
+
+struct printf_event_callbacks
+{
+  void (*format_f)(const event & evt);
+  void (*format_p)(const event & evt);
+  void (*format_t)(const event & evt);
+};
+
+struct printf_event_callbacks event_format_callbacks
+{
+  print_event_flags,
+  print_event_path,
+  print_event_timestamp
+};
+
+static int printf_event(const string & fmt,
+                        const event & evt,
+                        const struct printf_event_callbacks & callback,
+                        ostream & os = cout);
 
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
@@ -316,14 +343,20 @@ static vector<string> decode_event_flag_names(vector<fsw_event_flag> flags)
   return names;
 }
 
-static void print_event_timestamp(const time_t &evt_time)
+static void print_event_path(const event & evt)
 {
+  cout << evt.get_path();
+}
+
+static void print_event_timestamp(const event & evt)
+{
+  const time_t & evt_time = evt.get_time();
+
   char time_format_buffer[TIME_FORMAT_BUFF_SIZE];
   struct tm * tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
 
   string date =
-    strftime(
-             time_format_buffer,
+    strftime(time_format_buffer,
              TIME_FORMAT_BUFF_SIZE,
              tformat.c_str(),
              tm_time) ? string(time_format_buffer) : string(_("<date format error>"));
@@ -331,8 +364,10 @@ static void print_event_timestamp(const time_t &evt_time)
   cout << date;
 }
 
-static void print_event_flags(const vector<fsw_event_flag> &flags)
+static void print_event_flags(const event & evt)
 {
+  const vector<fsw_event_flag> & flags = evt.get_flags();
+
   if (nflag)
   {
     int mask = 0;
@@ -392,7 +427,7 @@ static void write_events(const vector<event> &events)
 {
   for (const event &evt : events)
   {
-    printf_event(evt);
+    printf_event(format, evt, event_format_callbacks);
     print_end_of_event_record();
   }
 
@@ -643,7 +678,16 @@ static void parse_opts(int argc, char ** argv)
   //   * -x adds " %f" at the end of the format.
   //   * '\n' is used as record separator unless -0 is used, in which case '\0'
   //     is used instead.
-  if (!format_flag)
+  if (format_flag)
+  {
+    // Test the user format
+    if (printf_event_validate_format(format) < 0)
+    {
+      cerr << _("Invalid format.") << endl;
+      ::exit(FSW_EXIT_FORMAT);
+    }
+  }
+  else
   {
     // Build event format.
     if (tflag)
@@ -660,7 +704,31 @@ static void parse_opts(int argc, char ** argv)
   }
 }
 
-static void printf_event(const event & evt)
+static void format_noop(const event & evt)
+{
+}
+
+static int printf_event_validate_format(const string & fmt)
+{
+
+  struct printf_event_callbacks noop_callbacks
+  {
+    format_noop,
+    format_noop,
+    format_noop
+  };
+
+  const vector<fsw_event_flag> flags;
+  const event empty("", 0, flags);
+  ostream noop_stream(nullptr);
+
+  return printf_event(fmt, empty, noop_callbacks, noop_stream);
+}
+
+static int printf_event(const string & fmt,
+                        const event & evt,
+                        const struct printf_event_callbacks & callback,
+                        ostream & os)
 {
   /*
    * %t - time (further formatted using -f and strftime.
@@ -669,46 +737,48 @@ static void printf_event(const event & evt)
    */
   for (auto i = 0; i < format.length(); ++i)
   {
+    // If the character does not start a format directive, copy it as it is.
     if (format[i] != '%')
     {
-      // put char
-      cout << format[i];
+      os << format[i];
       continue;
     }
 
     // If this is the end of the string, dump an error.
     if (i == format.length() - 1)
-      // Dump error
-      ;
+    {
+      return -1;
+    }
 
     // Advance to next format and check which directive it is.
-    char c = format[++i];
+    const char c = format[++i];
 
     switch (c)
     {
     case '%':
-      cout << '%';
+      os << '%';
       break;
     case '0':
-      cout << '\0';
+      os << '\0';
       break;
     case 'n':
-      cout << '\n';
+      os << '\n';
       break;
     case 'f':
-      print_event_flags(evt.get_flags());
+      callback.format_f(evt);
       break;
     case 'p':
-      cout << evt.get_path();
+      callback.format_p(evt);
       break;
     case 't':
-      print_event_timestamp(evt.get_time());
+      callback.format_t(evt);
       break;
     default:
-      // Print error
-      ;
+      return -1;
     }
   }
+
+  return 0;
 }
 
 int main(int argc, char ** argv)

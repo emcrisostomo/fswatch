@@ -23,13 +23,13 @@
 #  define FSW_EXIT_OK              0
 #  define FSW_EXIT_UNK_OPT         1
 #  define FSW_EXIT_USAGE           2
-#  define FSW_EXIT_LATENCY         4
-#  define FSW_EXIT_STREAM          8
-#  define FSW_EXIT_ERROR          16
-#  define FSW_EXIT_ENFILE         32
-#  define FSW_EXIT_OPT            64
-#  define FSW_EXIT_MONITOR_NAME  128
-#  define FSW_EXIT_FORMAT        256
+#  define FSW_EXIT_LATENCY         3
+#  define FSW_EXIT_STREAM          4
+#  define FSW_EXIT_ERROR           5
+#  define FSW_EXIT_ENFILE          6
+#  define FSW_EXIT_OPT             7
+#  define FSW_EXIT_MONITOR_NAME    8
+#  define FSW_EXIT_FORMAT          9
 
 bool is_verbose();
 
