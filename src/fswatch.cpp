@@ -358,7 +358,7 @@ static void print_event_flags(const vector<fsw_event_flag> &flags)
   }
 }
 
-static void end_event_record()
+static void print_end_of_event_record()
 {
   if (_0flag)
   {
@@ -376,14 +376,14 @@ static void write_batch_marker()
   if (batch_marker_flag)
   {
     cout << batch_marker;
-    end_event_record();
+    print_end_of_event_record();
   }
 }
 
 static void write_one_batch_event(const vector<event> &events)
 {
   cout << events.size();
-  end_event_record();
+  print_end_of_event_record();
 
   write_batch_marker();
 }
@@ -636,27 +636,36 @@ static void parse_opts(int argc, char ** argv)
     cerr << _("--format is incompatible with -o.") << endl;
     ::exit(FSW_EXIT_FORMAT);
   }
-  
-  // Build event format.
-  if (tflag)
-  {
-    format = "%t ";
-  }
 
-  format += "%p";
+  // If no format was specified use:
+  //   * %p as the default.
+  //   * -t adds "%t " at the beginning of the format.
+  //   * -x adds " %f" at the end of the format.
+  //   * '\n' is used as record separator unless -0 is used, in which case '\0'
+  //     is used instead.
+  if (!format_flag)
+  {
+    // Build event format.
+    if (tflag)
+    {
+      format = "%t ";
+    }
 
-  if (xflag)
-  {
-    format += " %f";
-  }
+    format += "%p";
 
-  if (_0flag)
-  {
-    format += "%0";
-  }
-  else
-  {
-    format += "%n";
+    if (xflag)
+    {
+      format += " %f";
+    }
+
+    if (_0flag)
+    {
+      format += "%0";
+    }
+    else
+    {
+      format += "%n";
+    }
   }
 }
 
