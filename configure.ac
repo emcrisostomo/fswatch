@@ -31,6 +31,9 @@ AC_CONFIG_FILES([build-aux/create-pot-template.sh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
+# Add configure dependencies to trigger automatic Makefile rebuilds
+AC_SUBST([CONFIG_STATUS_DEPENDENCIES], ['$(top_srcdir)/build-aux/git-generate-version.sh $(top_srcdir)/build-aux/git-generate-revision.sh'])
+
 # Compute the canonical target-system type variables
 AC_CANONICAL_TARGET
 TARGET_VENDOR=$target_vendor
