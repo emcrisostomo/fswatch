@@ -393,6 +393,7 @@ static void write_events(const vector<event> &events)
   for (const event &evt : events)
   {
     printf_event(evt);
+    print_end_of_event_record();
   }
 
   write_batch_marker();
@@ -446,7 +447,6 @@ static void start_monitor(int argc, char ** argv, int optind)
    * filter but fswatch does not.  For the time being, we apply the same flags
    * to every filter.
    */
-
   for (auto & filter : filters)
   {
     filter.case_sensitive = !Iflag;
@@ -625,9 +625,9 @@ static void parse_opts(int argc, char ** argv)
   }
 
   // --format is incompatible with any other format option.
-  if (format_flag && (tflag || xflag || _0flag))
+  if (format_flag && (tflag || xflag))
   {
-    cerr << _("--format is incompatible with any other format option such as -0, -t and -x.") << endl;
+    cerr << _("--format is incompatible with any other format option such as -t and -x.") << endl;
     ::exit(FSW_EXIT_FORMAT);
   }
 
@@ -656,15 +656,6 @@ static void parse_opts(int argc, char ** argv)
     if (xflag)
     {
       format += " %f";
-    }
-
-    if (_0flag)
-    {
-      format += "%0";
-    }
-    else
-    {
-      format += "%n";
     }
   }
 }
@@ -718,8 +709,6 @@ static void printf_event(const event & evt)
       ;
     }
   }
-
-  cout.flush();
 }
 
 int main(int argc, char ** argv)
