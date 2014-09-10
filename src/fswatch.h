@@ -29,6 +29,7 @@
 #  define FSW_EXIT_ENFILE         32
 #  define FSW_EXIT_OPT            64
 #  define FSW_EXIT_MONITOR_NAME  128
+#  define FSW_EXIT_FORMAT        256
 
 bool is_verbose();
 

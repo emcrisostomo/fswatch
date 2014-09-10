@@ -66,6 +66,7 @@ static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
 static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
+static int format_flag = false;
 static string format;
 
 /*
@@ -607,6 +608,7 @@ static void parse_opts(int argc, char ** argv)
       break;
 
     case OPT_FORMAT:
+      format_flag = true;
       format = optarg;
       break;
 
@@ -622,7 +624,20 @@ static void parse_opts(int argc, char ** argv)
     ::exit(FSW_EXIT_OK);
   }
 
-  // Build event format
+  // --format is incompatible with any other format option.
+  if (format_flag && (tflag || xflag || _0flag))
+  {
+    cerr << _("--format is incompatible with any other format option such as -0, -t and -x.") << endl;
+    ::exit(FSW_EXIT_FORMAT);
+  }
+
+  if (format_flag && oflag)
+  {
+    cerr << _("--format is incompatible with -o.") << endl;
+    ::exit(FSW_EXIT_FORMAT);
+  }
+  
+  // Build event format.
   if (tflag)
   {
     format = "%t ";
