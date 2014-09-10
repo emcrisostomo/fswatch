@@ -39,6 +39,7 @@
 using namespace std;
 
 static string decode_event_flag_name(fsw_event_flag flag);
+static void printf_event(const event & evt);
 
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
@@ -65,12 +66,15 @@ static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
 static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
+static bool format_flag = false;
+static string format = "%p%n";
 
 /*
  * OPT_* variables are used as getopt_long values for long options that do not
  * have a short option equivalent.
  */
 static const int OPT_BATCH_MARKER = 128;
+static const int OPT_FORMAT = 129;
 
 bool is_verbose()
 {
@@ -114,6 +118,7 @@ static void usage(ostream& stream)
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
 #  endif
+  stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
   stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
   stream << " -h, --help            " << _("Show this message.\n");
 #  ifdef HAVE_REGCOMP
@@ -393,6 +398,9 @@ static void write_events(const vector<event> &events)
     }
 
     end_event_record();
+
+    // TODO Temporary location
+    printf_event(evt);
   }
 
   write_batch_marker();
@@ -482,6 +490,7 @@ static void parse_opts(int argc, char ** argv)
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
 #  endif
+    { "format", required_argument, nullptr, OPT_FORMAT},
     { "format-time", required_argument, nullptr, 'f'},
     { "help", no_argument, nullptr, 'h'},
 #  ifdef HAVE_REGCOMP
@@ -606,6 +615,11 @@ static void parse_opts(int argc, char ** argv)
       batch_marker_flag = true;
       break;
 
+    case OPT_FORMAT:
+      format_flag = true;
+      format = optarg;
+      break;
+
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
@@ -617,6 +631,64 @@ static void parse_opts(int argc, char ** argv)
     print_version(cout);
     ::exit(FSW_EXIT_OK);
   }
+
+  if (format_flag)
+  {
+    // TODO test format
+  }
+}
+
+static void printf_event(const event & evt)
+{
+  /*
+   * %t - time (further formatted using -f and strftime.
+   * %p - event path
+   * %f - event flags (event separator will be formatted with a separate option)
+   */
+  for (auto i = 0; i < format.length(); ++i)
+  {
+    if (format[i] != '%')
+    {
+      // put char
+      cout << format[i];
+      continue;
+    }
+
+    // If this is the end of the string, dump an error.
+    if (i == format.length() - 1)
+      // Dump error
+      ;
+
+    // Advance to next format and check which directive it is.
+    char c = format[++i];
+
+    switch (c)
+    {
+    case '%':
+      cout << '%';
+      break;
+    case '0':
+      cout << '\0';
+      break;
+    case 'n':
+      cout << '\n';
+      break;
+    case 'f':
+      print_event_flags(evt.get_flags());
+      break;
+    case 'p':
+      cout << evt.get_path();
+      break;
+    case 't':
+      print_event_timestamp(evt.get_time());
+      break;
+    default:
+      // Print error
+      ;
+    }
+  }
+
+  cout.flush();
 }
 
 int main(int argc, char ** argv)
