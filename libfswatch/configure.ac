@@ -19,15 +19,18 @@
 #
 dnl Copyright (C) 2014, Enrico M. Crisostomo
 AC_PREREQ([2.69])
-AC_INIT([libfswatch], m4_esyscmd([../build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+AC_INIT([libfswatch], m4_esyscmd([./build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: m4_esyscmd([../build-aux/git-generate-version.sh])-m4_esyscmd([../build-aux/git-generate-revision.sh]) $])
+AC_REVISION([$Revision: m4_esyscmd([./build-aux/git-generate-version.sh])-m4_esyscmd([./build-aux/git-generate-revision.sh]) $])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
 AC_CONFIG_FILES([Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
+
+# Add configure dependencies to trigger automatic Makefile rebuilds
+AC_SUBST([CONFIG_STATUS_DEPENDENCIES], ['$(top_srcdir)/build-aux/git-generate-version.sh $(top_srcdir)/build-aux/git-generate-revision.sh'])
 
 # Initialize Automake
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
