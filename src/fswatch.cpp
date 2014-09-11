@@ -95,6 +95,7 @@ static string tformat = "%c";
 static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
 static int format_flag = false;
 static string format;
+static string event_flag_separator = " ";
 
 /*
  * OPT_* variables are used as getopt_long values for long options that do not
@@ -102,6 +103,7 @@ static string format;
  */
 static const int OPT_BATCH_MARKER = 128;
 static const int OPT_FORMAT = 129;
+static const int OPT_EVENT_FLAG_SEPARATOR = 130;
 
 bool is_verbose()
 {
@@ -163,6 +165,8 @@ static void usage(ostream& stream)
   stream << " -v, --verbose         " << _("Print verbose output.\n");
   stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
   stream << " -x, --event-flags     " << _("Print the event flags.\n");
+  stream << "     --event-flag-separator=STRING\n";
+  stream << "                       " << _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
   string option_string = "[";
@@ -388,7 +392,7 @@ static void print_event_flags(const event & evt)
       cout << name;
 
       // Event flag separator is currently hard-coded.
-      if (i != flag_names.size() - 1) cout << " ";
+      if (i != flag_names.size() - 1) cout << event_flag_separator;
     }
   }
 }
@@ -535,6 +539,7 @@ static void parse_opts(int argc, char ** argv)
     { "verbose", no_argument, nullptr, 'v'},
     { "version", no_argument, &version_flag, true},
     { "event-flags", no_argument, nullptr, 'x'},
+    { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
     { nullptr, 0, nullptr, 0}
   };
 
@@ -647,6 +652,10 @@ static void parse_opts(int argc, char ** argv)
       format = optarg;
       break;
 
+    case OPT_EVENT_FLAG_SEPARATOR:
+      event_flag_separator = optarg;
+      break;
+      
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
