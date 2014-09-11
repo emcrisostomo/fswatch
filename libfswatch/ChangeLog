@@ -1,3 +1,7 @@
 ChangeLog
 *********
 
+This file has been automatically generated using the followin command:
+
+    $ git log --oneline --decorate
+

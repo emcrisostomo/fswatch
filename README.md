@@ -108,11 +108,10 @@ $ brew install fswatch
 Check your favourite package manager and let us know if `fswatch` is missing
 there.
 
-A user who whishes to build `fswatch` should get a
-[release tarball][release].  A release tarball contains everything a user needs
-to build `fswatch` on his system, following the instructions detailed in the 
-Installation section below and the INSTALL
-file.
+A user who whishes to build `fswatch` should get a [release tarball][release].
+A release tarball contains everything a user needs to build `fswatch` on his
+system, following the instructions detailed in the Installation section below
+and the INSTALL file.
 
 A developer who wishes to modify `fswatch` should get the sources (either from
 a source tarball or cloning the repository) and have the GNU Build System
@@ -151,8 +150,8 @@ how to install the C++ toolchain and the C++ runtime.
 No other software packages or dependencies are required to configure and
 install `fswatch` but the aforementioned APIs used by the file system monitors.
 
-Internationalization
---------------------
+Localization
+------------
 
 `fswatch` is localizable and internally uses GNU `gettext` to decouple
 localizable string from their translation.  The currently available locales

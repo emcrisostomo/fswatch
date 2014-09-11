@@ -25,7 +25,7 @@ SUBDIRS = libfswatch doc src po
 
 dist_man_MANS = man/fswatch.7
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
-dist_doc_DATA += README.osx AUTHORS COPYING LICENSE NEWS
+dist_doc_DATA += README.linux README.osx AUTHORS COPYING LICENSE NEWS
 
 dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
 
