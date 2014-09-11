@@ -809,7 +809,9 @@ Inserts a @emph{newline} character.
 
 @item %f
 @cpindex @command{%f}, format directive
-Inserts the list of event flags, separated by space characters (@samp{ }).
+Inserts the list of event flags, separated by default by the space character
+(@samp{ }) or by the separator specified with the
+@option{--event-flag-separator} option (@pxref{Event Flag Separator}).
 
 @item %p
 @cpindex @command{%p}, format directive
@@ -836,6 +838,23 @@ Its value can only be chosen between @samp{\n} and @samp{NUL} (@samp{\0}).
 @item
 It cannot be suppressed.
 @end itemize
+
+@subsection Event Flag Separator
+@anchor{Event Flag Separator}
+@cpindex event flag, separator
+@cpindex format, event flag separator
+When the list of event flags is printed, textual items are separated by default
+by spaces (@samp{ }).
+The user can specify an alternate event flag separator using the
+@option{--event-flag-separator} and passing the desired separator string as
+argument.
+
+For instance, if the user wants event flags to be separated by a comma,
+the following command can be used:
+
+@example
+$ fswatch --event-flag-separator=, -x [OPTIONS] [PATHS]
+@end example
 
 @subsection Builtin Formats
 @cpindex format, builtin
@@ -1137,7 +1156,7 @@ custom record format (@pxref{Custom Record Formats}) is recommended when
 @command{fswatch} output must be processed.
 @end quotation
 
-@section Numeric Event Flags
+@subsection Numeric Event Flags
 @anchor{Numeric Event Flags}
 @cpindex event flag, numeric
 @opindex numeric@r{, detail}
