@@ -219,8 +219,6 @@ static void usage(ostream& stream)
   stream << _("Report bugs to <") << PACKAGE_BUGREPORT << ">.\n";
   stream << PACKAGE << _(" home page: <") << PACKAGE_URL << ">.";
   stream << endl;
-
-  exit(FSW_EXIT_USAGE);
 }
 
 static void close_stream()
@@ -581,7 +579,7 @@ static void parse_opts(int argc, char ** argv)
 
     case 'h':
       usage(cout);
-      exit(FSW_EXIT_USAGE);
+      ::exit(FSW_EXIT_OK);
 
 #ifdef HAVE_REGCOMP
     case 'i':
