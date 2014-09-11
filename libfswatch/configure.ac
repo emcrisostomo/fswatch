@@ -19,9 +19,9 @@
 #
 dnl Copyright (C) 2014, Enrico M. Crisostomo
 AC_PREREQ([2.69])
-AC_INIT([libfswatch], m4_esyscmd([../build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+AC_INIT([libfswatch], m4_esyscmd_s([../build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: m4_esyscmd([../build-aux/git-generate-version.sh])-m4_esyscmd([../build-aux/git-generate-revision.sh]) $])
+AC_REVISION([$Revision: m4_esyscmd_s([../build-aux/git-generate-version.sh])-m4_esyscmd_s([../build-aux/git-generate-revision.sh]) $])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
