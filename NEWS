@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in current:
+
+  * Add custom record formats.
+
 New in 1.4.3:
 
   * Add batch marker feature to delimit the boundaries of a batch of events.
