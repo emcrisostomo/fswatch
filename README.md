@@ -108,11 +108,10 @@ $ brew install fswatch
 Check your favourite package manager and let us know if `fswatch` is missing
 there.
 
-A user who whishes to build `fswatch` should get a
-[release tarball][release].  A release tarball contains everything a user needs
-to build `fswatch` on his system, following the instructions detailed in the 
-Installation section below and the INSTALL
-file.
+A user who whishes to build `fswatch` should get a [release tarball][release].
+A release tarball contains everything a user needs to build `fswatch` on his
+system, following the instructions detailed in the Installation section below
+and the INSTALL file.
 
 A developer who wishes to modify `fswatch` should get the sources (either from
 a source tarball or cloning the repository) and have the GNU Build System
@@ -150,6 +149,26 @@ how to install the C++ toolchain and the C++ runtime.
 
 No other software packages or dependencies are required to configure and
 install `fswatch` but the aforementioned APIs used by the file system monitors.
+
+Localization
+------------
+
+`fswatch` is localizable and internally uses GNU `gettext` to decouple
+localizable string from their translation.  The currently available locales
+are:
+
+  * English (`en`).
+  * Italian (`it`).
+
+To build `fswatch` with localization support, you need to have `gettext`
+installed on your system.  If `configure` cannot find `<libintl.h>` or the
+linker cannot find `libintl`, then you may need to manually provide their
+location to `configure`, usually using the `CPPFLAGS` and the `LDFLAGS`
+variables.  See `README.osx` for an example.
+
+If `gettext` is not available on your system, `fswatch` shall build correctly,
+but it will lack localization support and the only available locale will be
+English.
 
 Documentation
 -------------

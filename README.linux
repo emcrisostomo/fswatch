@@ -1,17 +1,25 @@
-README.freebsd
-**************
+README.linux
+************
 
 Introduction
 ============
 
-This file describes the steps required to build this bundle on a supported
-FreeBSD system.  See README for more information about the tested
-configurations.
+This file describes the steps required to build fswatch on a supported GNU/Linux
+system.
 
-The kqueue-based monitor should be compatible with any *BSD release with
-support for kqueue.  So far, however, the author has only tested this release
-on FreeBSD v. >= 10.0.  Feedback on different *BSD systems is much appreciated
-and will benefit other users as well.
+The supported monitors on GNU/Linux systems are:
+
+  * The inotify monitor (on Linux kernels > 2.6.13).
+  * The poll monitor.
+
+The availability of the inotify API is checked by configure and it will be built
+into fswatch when found.  When available, the inotify monitor is the default
+choice on GNU/Linux systems.
+
+The list of monitors built into libfswatch can be read in the help message of
+fswatch:
+
+    $ fswatch --help
 
 Installation
 ============
@@ -20,10 +28,14 @@ See the INSTALL file for detailed information about how to configure and
 install fswatch.
 
 fswatch is a C++ program and a C++ compiler compliant with the C++11 standard
-is required to compile it.  FreeBSD v. >= 10.0 ships by default with the CLang
-compiler suite which builds this package correctly.  The GCC compiler collection
-shipped with FreeBSD, however, is not C++11 compliant and cannot build this
-package.
+is required to compile it.  Reasonably recent GNU/Linux distributions usually
+ship at least two such compilers:
+
+  * GCC.
+  * Clang.
+
+Please, check your distribution documentation to find an appropriate C++
+compiler and how to install it.
 
 The configure script enforces an ordered compiler search list and clang++ will
 be used first if available.  If you do not like this choice and wish to use
@@ -35,7 +47,7 @@ use this command to configure the build:
 
 -----
 
-Copyright (C) 2014 Enrico M. Crisostomo
+Copyright (C) 2014, Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

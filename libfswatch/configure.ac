@@ -19,13 +19,13 @@
 #
 dnl Copyright (C) 2014, Enrico M. Crisostomo
 AC_PREREQ([2.69])
-AC_INIT([libfswatch], m4_esyscmd([../build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+AC_INIT([libfswatch], m4_esyscmd_s([../build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: m4_esyscmd([../build-aux/git-generate-version.sh])-m4_esyscmd([../build-aux/git-generate-revision.sh]) $])
-AC_CONFIG_SRCDIR([c/libfswatch.cpp])
+AC_REVISION([$Revision: m4_esyscmd_s([../build-aux/git-generate-version.sh])-m4_esyscmd_s([../build-aux/git-generate-revision.sh]) $])
+AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -44,9 +44,13 @@ AC_SUBST([LIBFSWATCH_VERSION], [1:0:0])
 
 # Configure language
 AC_LANG(C++)
+AC_PROG_CXX([clang++ g++])
 
 # Checks for programs.
-AC_PROG_CXX([clang++ g++])
+
+# Initialize gettext
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.2])
 
 # Configure C++ compiler
 AX_CXX_COMPILE_STDCXX_11(noext)

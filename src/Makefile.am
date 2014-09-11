@@ -14,21 +14,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-ACLOCAL_AMFLAGS = -I m4
+bin_PROGRAMS = fswatch
+fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
+fswatch_SOURCES += gettext.h
 
-# Refresh configuration if libtool dependencies change
-LIBTOOL_DEPS = @LIBTOOL_DEPS@
-libtool: $(LIBTOOL_DEPS)
-	$(SHELL) $(top_builddir)/config.status libtool
+# Set include path for libfswatch
+AM_CPPFLAGS  = -I$(top_srcdir)/libfswatch/src
+# Prepare gettext-related symbols used by programs
+AM_CPPFLAGS += -DLOCALEDIR=\"$(localedir)\"
 
-SUBDIRS = src po
-
-dist_doc_DATA  = README.md
-dist_doc_DATA += AUTHORS COPYING LICENSE NEWS
-
-dist-hook:
-# The recipe cannot assume a file in $(distdir) is writable.
-	chmod u+w $(distdir)/ChangeLog
-	git log --oneline --decorate >> $(distdir)/ChangeLog
-
-EXTRA_DIST = config/config.rpath
+# Link fswatch against dependent libraries
+fswatch_LDADD  = $(top_builddir)/libfswatch/src/libfswatch/libfswatch.la
+# Link fswatch against libintl if gettext is being used
+fswatch_LDADD += @LTLIBINTL@

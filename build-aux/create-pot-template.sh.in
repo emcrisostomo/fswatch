@@ -1,0 +1,10 @@
+#!/bin/sh
+# -*- coding: utf-8; mode: sh; indent-tabs-mode: nil; tab-width: 2; sh-basic-offset: 2; sh-indentation: 2; fill-column: 75; -*-
+
+xgettext \
+  -d @PO_PACKAGE_NAME@ \
+  -k_ \
+  --package-name=@PO_PACKAGE_NAME@ \
+  --package-version=@PO_PACKAGE_VERSION@ \
+  --msgid-bugs-address=@PO_BUG_REPORT@ \
+  ./src/fswatch.cpp

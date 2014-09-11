@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "libfswatch_exception.h"
+#include "gettext_defs.h"
 
 using namespace std;
 
@@ -28,7 +29,7 @@ namespace fsw
 
   const char * libfsw_exception::what() const noexcept
   {
-    return (string("Error: ") + this->cause).c_str();
+    return (string(_("Error: ")) + this->cause).c_str();
   }
 
   int libfsw_exception::error_code() const noexcept

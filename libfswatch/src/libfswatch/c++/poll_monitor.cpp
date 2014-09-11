@@ -18,6 +18,7 @@
 #  include "libfswatch_config.h"
 #endif
 
+#include "gettext_defs.h"
 #include "poll_monitor.h"
 #include <unistd.h>
 #include <cstdlib>
@@ -214,7 +215,7 @@ namespace fsw
     while (true)
     {
 #ifdef DEBUG
-      libfsw_log("Done scanning.\n");
+      libfsw_log(_("Done scanning.\n"));
 #endif
 
       ::sleep(latency < MIN_POLL_LATENCY ? MIN_POLL_LATENCY : latency);

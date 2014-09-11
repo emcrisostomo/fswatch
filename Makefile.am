@@ -19,19 +19,13 @@ ACLOCAL_AMFLAGS = -I m4
 # Refresh configuration if libtool dependencies change
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
-	$(SHELL) ./config.status libtool
+	$(SHELL) $(top_builddir)/config.status libtool
 
-SUBDIRS = libfswatch doc
-
-bin_PROGRAMS = fswatch
-fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
-
-# Link fswatch against dependent libraries
-fswatch_LDADD = libfswatch/libfswatch.la
+SUBDIRS = libfswatch doc src po
 
 dist_man_MANS = man/fswatch.7
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
-dist_doc_DATA += README.osx AUTHORS COPYING LICENSE NEWS
+dist_doc_DATA += README.linux README.osx AUTHORS COPYING LICENSE NEWS
 
 dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
 
@@ -55,3 +49,5 @@ dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
 	chmod u+w $(distdir)/ChangeLog
 	git log --oneline --decorate >> $(distdir)/ChangeLog
+
+EXTRA_DIST = config/config.rpath

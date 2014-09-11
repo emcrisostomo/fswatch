@@ -19,14 +19,15 @@
 #
 dnl Copyright (C) 2014, Enrico M. Crisostomo
 AC_PREREQ([2.69])
-AC_INIT([fswatch], m4_esyscmd([./build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+AC_INIT([fswatch], m4_esyscmd_s([./build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: m4_esyscmd([./build-aux/git-generate-version.sh])-m4_esyscmd([./build-aux/git-generate-revision.sh])$])
-AC_CONFIG_SRCDIR([fswatch.cpp])
+AC_REVISION([$Revision: m4_esyscmd_s([./build-aux/git-generate-version.sh])-m4_esyscmd_s([./build-aux/git-generate-revision.sh])$])
+AC_CONFIG_SRCDIR([src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile po/Makefile.in])
 AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
+AC_CONFIG_FILES([build-aux/create-pot-template.sh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -52,9 +53,13 @@ AC_SUBST([LIBTOOL_DEPS])
 
 # Configure language
 AC_LANG(C++)
+AC_PROG_CXX([clang++ g++])
+
+# Initialize gettext
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.2])
 
 # Checks for programs.
-AC_PROG_CXX([clang++ g++])
 AC_PROG_LN_S
 AC_PATH_PROG([ZSH_PROG], [zsh], [no])
 AC_PATH_PROG([BASH_PROG], [bash], [no])
@@ -107,6 +112,14 @@ MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
 AC_SUBST([MAN_DATE])
 AC_SUBST([FSWATCH])
 AC_SUBST([MAN_BUG_REPORT])
+
+# Variables used in gettext management scripts
+PO_BUG_REPORT=${PACKAGE_BUGREPORT}
+PO_PACKAGE_NAME=${PACKAGE_NAME}
+PO_PACKAGE_VERSION=${PACKAGE_VERSION}
+AC_SUBST([PO_BUG_REPORT])
+AC_SUBST([PO_PACKAGE_NAME])
+AC_SUBST([PO_PACKAGE_VERSION])
 
 AC_CONFIG_FILES([man/fswatch.7])
 
