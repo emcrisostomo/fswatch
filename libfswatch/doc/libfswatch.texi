@@ -13,8 +13,6 @@
 
 @smallbook
 
-@include value.texi
-
 @defcodeindex op
 
 @paragraphindent 2
@@ -197,10 +195,12 @@ A warning such as the following will appear in @command{configure}'s output
 to inform the user:
 
 @example
-configure: WARNING: libfswatch is missing some functions
-because the current combination of compiler and libraries
-do not support the thread_local storage specifier.
+configure: WARNING: libfswatch is not thread-safe because
+the current combination of compiler and libraries do not
+support the thread_local storage specifier.
 @end example
+
+@ref{Thread-Safety of the C @acronym{API}} for further information.
 
 @section Reporting Bugs and Suggestions
 @anchor{Reporting Bugs and Suggestions}
@@ -223,6 +223,9 @@ order to reproduce it.
 
 @node The C API
 @chapter The C @acronym{API}
+
+@section Thread-Safety of the C @acronym{API}
+@anchor{Thread-Safety of the C @acronym{API}}
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
