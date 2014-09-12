@@ -1,0 +1,244 @@
+\input texinfo   @c -*-texinfo-*-
+
+@c %**start of header
+@setfilename libfswatch.info
+
+@c Automake automatically updates version.texi to @set VERSION and
+@c @set UPDATED to appropriate values.
+@include version.texi
+
+@settitle libfswatch @value{VERSION}
+
+@c @finalout
+
+@smallbook
+
+@include value.texi
+
+@defcodeindex op
+
+@paragraphindent 2
+@c %**end of header
+
+@copying
+This manual is for @command{libfswatch}
+(version @value{VERSION}, @value{UPDATED}),
+a C/C++ library that encapsulates all the functionality of @command{fswatch},
+a cross-platform file change monitor with multiple backends,
+including Apple OS X File System Events @acronym{API}, *BSD kqueue, Linux
+inotify and a @command{stat}-based backend.
+
+Copyright @copyright{} 2013-2014, Enrico M. Crisostomo
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled ``GNU
+Free Documentation License''.
+@end quotation
+@end copying
+
+@setchapternewpage odd
+
+@shorttitlepage libfswatch
+@titlepage
+@title libfswatch
+@subtitle Cross-platform file change monitor C/C++ library with multiple backends
+@subtitle for @command{libfswatch} version @value{VERSION}, @value{UPDATED}
+
+@author Enrico M. Crisostomo
+
+@c Include the Distribution inside the titlepage so
+@c that headings are turned off.
+
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+
+@end titlepage
+
+@c Output the table of contents at the beginning.
+@summarycontents
+@contents
+
+@ifnottex
+@node Top
+@top fswatch
+@insertcopying
+@end ifnottex
+
+@menu
+* Introduction::
+* The C++ API::
+* The C API::
+* GNU Free Documentation License::
+* Index of Command Line Options::
+* Index::
+@end menu
+
+@node Introduction
+@chapter Introduction
+@command{fswatch} is a cross-platform file change monitor currently supporting
+the following monitors:
+
+@itemize
+@item
+A monitor based on the @emph{FSEvents} @acronym{API} of Apple OS X.
+
+@item
+A monitor based on @emph{kqueue}, an event notification interface introduced in
+FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+
+@item
+A monitor based on @emph{inotify}, a Linux kernel subsystem that reports file
+system changes to applications.
+
+@item
+A monitor which periodically stats the file
+system, saves file modification times in memory and manually calculates file
+system changes, which can work on any operating system where @command{stat} can
+be used.
+@end itemize
+
+The first releases of @command{fswatch} were monolithic, self-contained 
+binaries whose output was typically piped to other application for processing.
+Given the nature of the features provided by @command{fswatch}, however,
+a need was recognized to expose this functionality through a library and the
+@command{libfswatch} package was born.
+
+Currently, all the core functionality of @command{fswatch} is exposed by the
+@command{libfswatch} library and @command{fswatch} itself is now built upon it.
+
+@section Available Bindings
+@command{libfswatch} is a C++ library with C bindings which makes it available
+to a wide range of programming languages.
+If a programming language has C bindings, then @command{libfswatch} will be
+usable.
+The C binding provides all the functionality provided by the C++ implementation
+and it is to be used unless when linking from a C++ program.
+
+@section Relation between @command{fswatch} and @command{libfswatch}
+Although @command{fswatch} uses functionality provided by @command{libfswatch}
+and depends on it, @command{libfswatch} is currently a package nested into
+@command{fswatch}.
+If either component is updated, the whole package is, as well as version numbers
+are.
+
+Currently, from the GNU Build System point of view, @command{libfswatch} version
+is always kept in sync with @command{fswatch}.
+The library @acronym{API} version, however, @emph{is not}, and it is the only
+piece of information that should be kept into account when linking against
+@command{libfswatch}.
+
+@section The C and the C++ @acronym{API}
+Given the differences between the two languages, the C and the C++
+@acronym{API} are different, although functionally equivalent.
+
+The C++ @acronym{API} centres on the concept of @emph{monitor}, a class of
+objects modelling the functionality of the file monitoring @acronym{API}.
+Different monitor types are modelled as different classes inheriting from the
+@command{fsw::monitor} abstract class, that is the type that defines
+the core monitoring @acronym{API}.
+@acronym{API} clients can pick the current platform's default monitor, or choose a
+specific implementation amongst the available ones, configure it and @emph{run} it.
+When running, a monitor gathers file system change events and communicates them
+back to the caller using a @emph{callback}.
+
+The C @acronym{API}, on the other hand, centres on the concept of
+@emph{monitoring session}.
+A session internally wraps a monitor instance and represents an opaque
+C bridge to the monitor @acronym{API} through the functions of the library
+which take a session handle.
+There is an evident similarity between the C library functions operating on a
+monitoring session and the methods of the @command{monitor} class.
+
+@section Thread Safety
+The C++ @acronym{API} does not deal with thread safety explicitely.
+Rather, it leaves the responsibility of implementing a thread-safe use of the
+library to the callers.
+The C++ implementation has been designed in order to:
+
+@itemize
+@item
+Encapsulate all the state of a monitor into its class fields.
+
+@item
+Perform no concurrent access control in methods or class fields.
+
+@item
+Guarantee that functions and @emph{static} methods are thread safe.
+@end itemize
+
+As a consequence, it is @emph{not} thread-safe to access a monitor's member,
+be it a method or a field, from different threads concurrently.
+The easiest way to implement thread-safety when using @command{libfswatch},
+therefore, is segregating access to each monitor instance from a different
+thread.
+
+The C @acronym{API}, a layer above the C++ @acronym{API}, has been designed in
+order to provide the same basic guarantee:
+
+@itemize
+@item
+Concurrently manipulating different monitoring sessions is thread safe.
+
+@item
+Concurrently manipulating the same monitoring session is @emph{not} thread safe.
+@end itemize
+
+There is an additional limitation which affects the C library only:
+the C binding implementation internally uses @acronym{C++11} classes and
+keywords to provide the aforementioned guarantees.
+If compiler or library support is not found when building @command{libfswatch}
+the library will still build, but those guarantees will @emph{not} be honoured.
+A warning such as the following will appear in @command{configure}'s output
+to inform the user:
+
+@example
+configure: WARNING: libfswatch is missing some functions
+because the current combination of compiler and libraries
+do not support the thread_local storage specifier.
+@end example
+
+@section Reporting Bugs and Suggestions
+@anchor{Reporting Bugs and Suggestions}
+@cpindex bug
+@cpindex bug report
+@cpindex GitHub repository
+@cpindex @command{fswatch}, repository
+@cpindex @command{fswatch}, sources
+If you find problems or have suggestions about this program or this manual,
+please report them as new issues in the official GitHub repository of
+@command{fswatch} at @uref{https://github.com/emcrisostomo/fswatch}.
+If you with you may contact the authors at the addresses listed in the
+@file{AUTHORS} file.
+
+When reporting a bug, please be sure to include as much detail as possible, in
+order to reproduce it.
+
+@node The C++ API
+@chapter The C++ @acronym{API}
+
+@node The C API
+@chapter The C @acronym{API}
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+
+@include fdl.texi
+
+@c Print option index
+@node Index of Command Line Options
+@appendix Index of Command Line Options
+This appendix contains an index of all @command{fswatch} long command line options.
+The options are listed without the preceding double-dash.
+
+@printindex op
+
+@node Index
+@unnumbered Index
+@printindex cp
+
+@bye
