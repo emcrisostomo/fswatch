@@ -6,10 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.4.4\n"
+"Project-Id-Version: fswatch 1.4.5\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2014-09-11 19:29+0200\n"
-"PO-Revision-Date: 2014-09-11 19:30+0200\n"
+"POT-Creation-Date: 2014-09-12 12:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -160,79 +160,79 @@ msgstr ""
 msgid " home page: <"
 msgstr ""
 
-#: src/fswatch.cpp:240
+#: src/fswatch.cpp:238
 msgid "Done.\n"
 msgstr ""
 
-#: src/fswatch.cpp:248
+#: src/fswatch.cpp:246
 msgid "Invalid value: "
 msgstr ""
 
-#: src/fswatch.cpp:254
+#: src/fswatch.cpp:252
 msgid "Value out of range: "
 msgstr ""
 
-#: src/fswatch.cpp:260
+#: src/fswatch.cpp:258
 msgid "Latency set to: "
 msgstr ""
 
-#: src/fswatch.cpp:275
+#: src/fswatch.cpp:273
 msgid "SIGTERM handler registered.\n"
 msgstr ""
 
-#: src/fswatch.cpp:279
+#: src/fswatch.cpp:277
 msgid "SIGTERM handler registration failed."
 msgstr ""
 
-#: src/fswatch.cpp:284
+#: src/fswatch.cpp:282
 msgid "SIGABRT handler registered.\n"
 msgstr ""
 
-#: src/fswatch.cpp:288
+#: src/fswatch.cpp:286
 msgid "SIGABRT handler registration failed."
 msgstr ""
 
-#: src/fswatch.cpp:293
+#: src/fswatch.cpp:291
 msgid "SIGINT handler registered.\n"
 msgstr ""
 
-#: src/fswatch.cpp:297
+#: src/fswatch.cpp:295
 msgid "SIGINT handler registration failed"
 msgstr ""
 
-#: src/fswatch.cpp:366
+#: src/fswatch.cpp:364
 msgid "<date format error>"
 msgstr ""
 
-#: src/fswatch.cpp:469
+#: src/fswatch.cpp:467
 msgid "Adding path: "
 msgstr ""
 
-#: src/fswatch.cpp:674
+#: src/fswatch.cpp:672
 msgid ""
 "--format is incompatible with any other format option such as -t and -x."
 msgstr ""
 
-#: src/fswatch.cpp:680
+#: src/fswatch.cpp:678
 msgid "--format is incompatible with -o."
 msgstr ""
 
-#: src/fswatch.cpp:695
+#: src/fswatch.cpp:693
 msgid "Invalid format."
 msgstr ""
 
-#: src/fswatch.cpp:807
+#: src/fswatch.cpp:805
 msgid "Invalid number of arguments."
 msgstr ""
 
-#: src/fswatch.cpp:813
+#: src/fswatch.cpp:811
 msgid "Invalid monitor name."
 msgstr ""
 
-#: src/fswatch.cpp:829
+#: src/fswatch.cpp:827
 msgid "An error occurred and the program will be terminated.\n"
 msgstr ""
 
-#: src/fswatch.cpp:836
+#: src/fswatch.cpp:834
 msgid "An unknown error occurred and the program will be terminated."
 msgstr ""

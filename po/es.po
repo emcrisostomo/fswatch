@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2014-09-11 19:29+0200\n"
+"POT-Creation-Date: 2014-09-12 12:56+0200\n"
 "PO-Revision-Date: 2014-09-11 19:30+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -148,7 +148,8 @@ msgstr "Muestra a los flags de evento.\n"
 
 #: src/fswatch.cpp:169
 msgid "Print event flags using the specified separator."
-msgstr "Muestra el marcador de tiempo del evento usando el formato especificado."
+msgstr ""
+"Muestra el marcador de tiempo del evento usando el formato especificado."
 
 #: src/fswatch.cpp:217
 msgid ""
@@ -168,80 +169,80 @@ msgstr "Envía bugs a <"
 msgid " home page: <"
 msgstr " home page: <"
 
-#: src/fswatch.cpp:240
+#: src/fswatch.cpp:238
 msgid "Done.\n"
 msgstr "Hecho.\n"
 
-#: src/fswatch.cpp:248
+#: src/fswatch.cpp:246
 msgid "Invalid value: "
 msgstr "Valor inválido: "
 
-#: src/fswatch.cpp:254
+#: src/fswatch.cpp:252
 msgid "Value out of range: "
 msgstr "Valor fuera de rango: "
 
-#: src/fswatch.cpp:260
+#: src/fswatch.cpp:258
 msgid "Latency set to: "
 msgstr "Establece la latencia a: "
 
-#: src/fswatch.cpp:275
+#: src/fswatch.cpp:273
 msgid "SIGTERM handler registered.\n"
 msgstr "Gestor de SIGTERM registrado.\n"
 
-#: src/fswatch.cpp:279
+#: src/fswatch.cpp:277
 msgid "SIGTERM handler registration failed."
 msgstr "Registración del gestor de SIGTERM fallada."
 
-#: src/fswatch.cpp:284
+#: src/fswatch.cpp:282
 msgid "SIGABRT handler registered.\n"
 msgstr "Gestor de SIGABRT registrado.\n"
 
-#: src/fswatch.cpp:288
+#: src/fswatch.cpp:286
 msgid "SIGABRT handler registration failed."
 msgstr "Registración del gestor de SIGABRT fallada."
 
-#: src/fswatch.cpp:293
+#: src/fswatch.cpp:291
 msgid "SIGINT handler registered.\n"
 msgstr "Gestor de SIGINT registrado.\n"
 
-#: src/fswatch.cpp:297
+#: src/fswatch.cpp:295
 msgid "SIGINT handler registration failed"
 msgstr "Registración del gestor de SIGINT fallada"
 
-#: src/fswatch.cpp:366
+#: src/fswatch.cpp:364
 msgid "<date format error>"
 msgstr "<formato de data erróneo>"
 
-#: src/fswatch.cpp:469
+#: src/fswatch.cpp:467
 msgid "Adding path: "
 msgstr "Añadiendo ruta: "
 
-#: src/fswatch.cpp:674
+#: src/fswatch.cpp:672
 msgid ""
 "--format is incompatible with any other format option such as -t and -x."
 msgstr ""
 "--format no es compatible con otras opciones de formato tales como -t y -x."
 
-#: src/fswatch.cpp:680
+#: src/fswatch.cpp:678
 msgid "--format is incompatible with -o."
 msgstr "--format no es compatible con -o."
 
-#: src/fswatch.cpp:695
+#: src/fswatch.cpp:693
 msgid "Invalid format."
 msgstr "Nombre de monitor inválido."
 
-#: src/fswatch.cpp:807
+#: src/fswatch.cpp:805
 msgid "Invalid number of arguments."
 msgstr "Número de argumentos inválidos."
 
-#: src/fswatch.cpp:813
+#: src/fswatch.cpp:811
 msgid "Invalid monitor name."
 msgstr "Nombre de monitor inválido."
 
-#: src/fswatch.cpp:829
+#: src/fswatch.cpp:827
 msgid "An error occurred and the program will be terminated.\n"
 msgstr "Ha ocurrido un error y el programa terminará.\n"
 
-#: src/fswatch.cpp:836
+#: src/fswatch.cpp:834
 msgid "An unknown error occurred and the program will be terminated."
 msgstr "Ha ocurrido un error desconocido y el programa terminará."
