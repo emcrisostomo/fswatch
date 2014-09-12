@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-LIBFSWATCH_VERSION = @LIBFSWATCH_VERSION@
+LIBFSWATCH_API_VERSION = @AM_LIBFSWATCH_API_VERSION@
 
 # Prepare gettext-related symbols used by programs
 AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\"
@@ -40,7 +40,7 @@ if USE_INOTIFY
 endif
 libfswatch_la_SOURCES += c++/path_utils.cpp c++/path_utils.h
 
-libfswatch_la_LDFLAGS = -version-info $(LIBFSWATCH_VERSION)
+libfswatch_la_LDFLAGS = -version-info $(LIBFSWATCH_API_VERSION)
 
 if USE_FSEVENTS
   libfswatch_la_LDFLAGS += -framework CoreServices
