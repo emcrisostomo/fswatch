@@ -19,18 +19,16 @@
 #
 dnl Copyright (C) 2014, Enrico M. Crisostomo
 AC_PREREQ([2.69])
-AC_INIT([libfswatch], m4_esyscmd([./build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+m4_include([m4/libfswatch_version.m4])
+AC_INIT([libfswatch], LIBFSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: m4_esyscmd([./build-aux/git-generate-version.sh])-m4_esyscmd([./build-aux/git-generate-revision.sh]) $])
+AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
 AC_CONFIG_FILES([Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
-
-# Add configure dependencies to trigger automatic Makefile rebuilds
-AC_SUBST([CONFIG_STATUS_DEPENDENCIES], ['$(top_srcdir)/build-aux/git-generate-version.sh $(top_srcdir)/build-aux/git-generate-revision.sh'])
 
 # Initialize Automake
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
@@ -43,7 +41,7 @@ LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
 # Set library interface version
-AC_SUBST([LIBFSWATCH_VERSION], [1:0:0])
+AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
 
 # Configure language
 AC_LANG(C++)

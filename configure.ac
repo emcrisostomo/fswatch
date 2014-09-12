@@ -19,9 +19,10 @@
 #
 dnl Copyright (C) 2014, Enrico M. Crisostomo
 AC_PREREQ([2.69])
-AC_INIT([fswatch], m4_esyscmd_s([./build-aux/git-generate-version.sh]), [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
+m4_include([m4/fswatch_version.m4])
+AC_INIT([fswatch], FSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
 AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
-AC_REVISION([$Revision: m4_esyscmd_s([./build-aux/git-generate-version.sh])-m4_esyscmd_s([./build-aux/git-generate-revision.sh])$])
+AC_REVISION([$Revision: FSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
@@ -30,9 +31,6 @@ AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
 AC_CONFIG_FILES([build-aux/create-pot-template.sh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
-
-# Add configure dependencies to trigger automatic Makefile rebuilds
-AC_SUBST([CONFIG_STATUS_DEPENDENCIES], ['$(top_srcdir)/build-aux/git-generate-version.sh $(top_srcdir)/build-aux/git-generate-revision.sh'])
 
 # Compute the canonical target-system type variables
 AC_CANONICAL_TARGET
