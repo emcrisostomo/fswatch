@@ -201,7 +201,7 @@ support the thread_local storage specifier.
 @end example
 
 @noindent
-@c @xref{Thread-Safety of the C @acronym{API}}.
+@xref{Thread-Safety of the C @acronym{API}}.
 
 @section Reporting Bugs and Suggestions
 @anchor{Reporting Bugs and Suggestions}
@@ -252,12 +252,34 @@ The monitor is @emph{run} and change events are waited for
 
 @section Monitor Registration and Discovery
 @anchor{Monitor Registration and Discovery}
-Monitors encapsulate
-
+Since there exist multiple monitor implementations and the caller may
+potentially ignore which monitors will be available at run time,
+there must exist a way to query the @acronym{API} the list of available
+implementations and request a particular instance.
 The @command{monitor_factory} is an utility class that provides basic
 monitor @emph{registration} and @emph{discovery} functionality:
 @acronym{API} clients can query the monitor registry, get a list of available
 monitors and get an instance of one of them.
+
+The @command{monitor_factory} class provides the following methods:
+
+@table @command
+@item static monitor * create_monitor_by_name
+Creates the monitor with the given @var{name} and constructor parameters
+(@pxref{Monitors}).
+If the named monitor is not available, then return @command{nullptr}.
+
+@item static std::vector<std::string> get_types()
+Get the list of available monitor types.
+The type name can then be used to get a monitor instance by name using
+@command{create_monitor_by_name}.
+
+@item static bool exists_type(const std::string& name)
+Query whether the specified monitor exists.
+
+@item static void register_type(const std::string& name, fsw_monitor_type type)
+Register a monitor type in the list of available implementations.
+@end table
 
 @section Monitors
 @anchor{Monitors}

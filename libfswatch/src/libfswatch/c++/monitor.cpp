@@ -184,21 +184,21 @@ namespace fsw
       return new fsevents_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case kqueue_monitor_type:
 #if defined(HAVE_SYS_EVENT_H)
       return new kqueue_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case inotify_monitor_type:
 #if defined(HAVE_SYS_INOTIFY_H)
       return new inotify_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case poll_monitor_type:
       return new poll_monitor(paths, callback, context);
