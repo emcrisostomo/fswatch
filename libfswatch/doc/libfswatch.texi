@@ -100,7 +100,7 @@ system changes, which can work on any operating system where @command{stat} can
 be used.
 @end itemize
 
-The first releases of @command{fswatch} were monolithic, self-contained 
+The first releases of @command{fswatch} were monolithic, self-contained
 binaries whose output was typically piped to other application for processing.
 Given the nature of the features provided by @command{fswatch}, however,
 a need was recognized to expose this functionality through a library and the
@@ -200,7 +200,8 @@ the current combination of compiler and libraries do not
 support the thread_local storage specifier.
 @end example
 
-@ref{Thread-Safety of the C @acronym{API}} for further information.
+@noindent
+@c @xref{Thread-Safety of the C @acronym{API}}.
 
 @section Reporting Bugs and Suggestions
 @anchor{Reporting Bugs and Suggestions}
@@ -220,6 +221,52 @@ order to reproduce it.
 
 @node The C++ API
 @chapter The C++ @acronym{API}
+The C++ @acronym{API} provides users an easy to use, object-oriented,
+common and intuitive interface to a wide range of file monitoring @acronym{API}s.
+This @acronym{API} provides a common facade to a set of heterogeneous
+@acronym{API}s that not only greatly simplifies their usage, but provides an
+indirection layer that makes applications more portable: as far as there is an
+available monitor in another platform, an existing application will @emph{just}
+work.
+
+In reality, there still are some monitor's peculiarities that complicate the
+task of writing an application completely agnostic about the file monitoring
+@acronym{API} it is actually using.
+However, monitors try to ``compensate'' for any behavioural difference across
+implementations and they are expected to converge further when newer versions
+are released.
+
+The typical @acronym{API} usage is similar to the following:
+
+@itemize
+@item
+An instance of a @command{monitor} is either created directly or through
+the factory (@pxref{Monitor Registration and Discovery}).
+
+@item
+The monitor is configured according to the user needs (@pxref{Monitors}).
+
+@item
+The monitor is @emph{run} and change events are waited for
+@end itemize
+
+@section Monitor Registration and Discovery
+@anchor{Monitor Registration and Discovery}
+Monitors encapsulate
+
+The @command{monitor_factory} is an utility class that provides basic
+monitor @emph{registration} and @emph{discovery} functionality:
+@acronym{API} clients can query the monitor registry, get a list of available
+monitors and get an instance of one of them.
+
+@section Monitors
+@anchor{Monitors}
+To do.
+
+The @command{monitor} class is central in the C++ @acronym{API}: it defines
+the ``contract'' of every monitor and provides the means to create them.
+A monitor is a @emph{backend} which implements file monitoring using a specific
+@acronym{API} or technique.
 
 @node The C API
 @chapter The C @acronym{API}
