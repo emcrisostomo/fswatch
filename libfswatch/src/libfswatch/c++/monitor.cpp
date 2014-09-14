@@ -223,17 +223,24 @@ namespace fsw
     return type_by_string_map;
   };
 
+  map<std::string, FSW_FN_MONITOR_CREATOR> & monitor_factory::creators_by_string()
+  {
+    static map<std::string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
+
+    return creator_by_string_map;
+  }
+
   monitor * monitor_factory::create_monitor_by_name(const std::string& name,
                                                     std::vector<std::string> paths,
                                                     FSW_EVENT_CALLBACK * callback,
                                                     void * context)
   {
-    auto i = type_by_string().find(name);
+    auto i = creators_by_string().find(name);
 
-    if (i == type_by_string().end())
+    if (i == creators_by_string().end())
       return nullptr;
     else
-      return monitor::create_monitor(i->second, paths, callback, context);
+      return i->second(paths, callback, context);
   }
 
   bool monitor_factory::exists_type(const std::string& name)
@@ -243,9 +250,16 @@ namespace fsw
     return (i != type_by_string().end());
   }
 
-  void monitor_factory::register_type(const std::string& name, fsw_monitor_type type)
+  void monitor_factory::register_type(const std::string& name,
+                                      fsw_monitor_type type)
   {
     type_by_string()[name] = type;
+  }
+
+  void monitor_factory::register_creator(const string & name,
+                                         FSW_FN_MONITOR_CREATOR creator)
+  {
+    creators_by_string()[name] = creator;
   }
 
   vector<string> monitor_factory::get_types()
@@ -258,10 +272,5 @@ namespace fsw
     }
 
     return types;
-  }
-
-  monitor_registrant::monitor_registrant(const std::string & name, fsw_monitor_type type)
-  {
-    monitor_factory::register_type(name, type);
   }
 }
