@@ -119,17 +119,20 @@ namespace fsw
 
   bool monitor::accept_path(const char *path)
   {
+    bool ret = true;
+
 #ifdef HAVE_REGCOMP
-    for (auto &filter : filters)
+    for (const auto & filter : filters)
     {
       if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
-        return filter.type == fsw_filter_type::filter_include;
+        ret = (filter.type == fsw_filter_type::filter_include);
+        if (ret) return ret;
       }
     }
 #endif
 
-    return true;
+    return ret;
   }
 
   void * monitor::get_context()
