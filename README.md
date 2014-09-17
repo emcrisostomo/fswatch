@@ -159,6 +159,7 @@ are:
 
   * English (`en`).
   * Italian (`it`).
+  * Spanish (`es`).
 
 To build `fswatch` with localization support, you need to have `gettext`
 installed on your system.  If `configure` cannot find `<libintl.h>` or the
