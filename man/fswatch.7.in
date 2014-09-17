@@ -103,7 +103,7 @@ Supported formats are specified by
 .Xr strftime 3 .
 .It Fl h, -help
 Show the help message.
-.It Fl i, -exclude Ar regexp
+.It Fl i, -include Ar regexp
 Include paths matching
 .Ar regexp .
 Multiple include filters can be specified using this option multiple times. 
