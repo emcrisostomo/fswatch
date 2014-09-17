@@ -54,7 +54,7 @@ namespace fsw
 #endif
   };
 
-  monitor::monitor(std::vector<std::string> paths,
+  monitor::monitor(vector<string> paths,
                    FSW_EVENT_CALLBACK * callback,
                    void * context) :
     paths(paths), callback(callback), context(context)
@@ -97,7 +97,7 @@ namespace fsw
     this->filters.push_back({regex, filter.type});
   }
 
-  void monitor::set_filters(const std::vector<monitor_filter> &filters)
+  void monitor::set_filters(const vector<monitor_filter> &filters)
   {
 #ifdef HAVE_REGCOMP
     for (const monitor_filter &filter : filters)
@@ -154,7 +154,7 @@ namespace fsw
 #endif
   }
 
-  monitor * monitor::create_default_monitor(std::vector<std::string> paths,
+  monitor * monitor::create_default_monitor(vector<string> paths,
                                             FSW_EVENT_CALLBACK * callback,
                                             void * context)
   {
@@ -170,7 +170,7 @@ namespace fsw
   }
 
   monitor * monitor::create_monitor(fsw_monitor_type type,
-                                    std::vector<std::string> paths,
+                                    vector<string> paths,
                                     FSW_EVENT_CALLBACK * callback,
                                     void * context)
   {
@@ -184,21 +184,21 @@ namespace fsw
       return new fsevents_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case kqueue_monitor_type:
 #if defined(HAVE_SYS_EVENT_H)
       return new kqueue_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case inotify_monitor_type:
 #if defined(HAVE_SYS_INOTIFY_H)
       return new inotify_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case poll_monitor_type:
       return new poll_monitor(paths, callback, context);
@@ -223,15 +223,15 @@ namespace fsw
     return type_by_string_map;
   };
 
-  map<std::string, FSW_FN_MONITOR_CREATOR> & monitor_factory::creators_by_string()
+  map<string, FSW_FN_MONITOR_CREATOR> & monitor_factory::creators_by_string()
   {
-    static map<std::string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
+    static map<string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
 
     return creator_by_string_map;
   }
 
-  monitor * monitor_factory::create_monitor_by_name(const std::string& name,
-                                                    std::vector<std::string> paths,
+  monitor * monitor_factory::create_monitor_by_name(const string & name,
+                                                    vector<string> paths,
                                                     FSW_EVENT_CALLBACK * callback,
                                                     void * context)
   {
@@ -243,14 +243,14 @@ namespace fsw
       return i->second(paths, callback, context);
   }
 
-  bool monitor_factory::exists_type(const std::string& name)
+  bool monitor_factory::exists_type(const string & name)
   {
     auto i = type_by_string().find(name);
 
     return (i != type_by_string().end());
   }
 
-  void monitor_factory::register_type(const std::string& name,
+  void monitor_factory::register_type(const string & name,
                                       fsw_monitor_type type)
   {
     type_by_string()[name] = type;
