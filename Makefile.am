@@ -27,7 +27,13 @@ dist_man_MANS = man/fswatch.7
 dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
 dist_doc_DATA += README.linux README.osx AUTHORS COPYING LICENSE NEWS
 
-dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
+dist_bin_SCRIPTS = 
+if HAVE_ZSH
+  dist_bin_SCRIPTS += scripts/fswatch-run-zsh
+endif
+if HAVE_BASH
+  dist_bin_SCRIPTS += scripts/fswatch-run-bash
+endif
 
 install-exec-hook: fswatch-remove-links
 if HAVE_ZSH

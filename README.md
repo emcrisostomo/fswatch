@@ -45,6 +45,16 @@ its documentation updated to redirect users to `fswatch`.
 [enrico]: http://thegreyblog.blogspot.com
 [fswatchrepo]: https://github.com/emcrisostomo/fswatch
 
+Features
+--------
+
+`fswatch` main features are:
+
+  * Support for many OS-specific APIs such as kevent, inotify and FSEvents.
+  * Recursive directory monitoring.
+  * Path filtering using including and excluding regular expressions.
+  * Customizable record format.
+
 Limitations
 -----------
 
@@ -159,6 +169,7 @@ are:
 
   * English (`en`).
   * Italian (`it`).
+  * Spanish (`es`).
 
 To build `fswatch` with localization support, you need to have `gettext`
 installed on your system.  If `configure` cannot find `<libintl.h>` or the

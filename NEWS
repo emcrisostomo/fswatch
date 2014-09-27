@@ -1,7 +1,14 @@
 NEWS
 ****
 
-New in current:
+New in 1.4.6-current:
+
+New in 1.4.5.1:
+
+  * Do not distribute wrapper scripts for shells which are not installed (the
+    FreeBSD port system checks shebangs and complains).
+
+New in 1.4.5:
 
   * Add custom record formats.
 
