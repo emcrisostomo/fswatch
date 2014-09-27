@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.4.5:
+
+  * Add custom record formats.
+
 New in 1.4.4:
 
   * Localize fswatch and libfswatch using GNU gettext.

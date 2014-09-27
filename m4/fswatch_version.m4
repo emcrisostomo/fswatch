@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2014, Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify
@@ -13,18 +12,5 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-AUTOMAKE_OPTIONS = std-options
-bin_PROGRAMS = fswatch
-fswatch_SOURCES  = fswatch.cpp fswatch.h fswatch_log.cpp fswatch_log.h
-fswatch_SOURCES += gettext.h
-
-# Set include path for libfswatch
-AM_CPPFLAGS  = -I$(top_srcdir)/libfswatch/src
-# Prepare gettext-related symbols used by programs
-AM_CPPFLAGS += -DLOCALEDIR=\"$(localedir)\"
-
-# Link fswatch against dependent libraries
-fswatch_LDADD  = $(top_builddir)/libfswatch/src/libfswatch/libfswatch.la
-# Link fswatch against libintl if gettext is being used
-fswatch_LDADD += @LTLIBINTL@
+m4_define([FSWATCH_VERSION], [1.4.5])
+m4_define([FSWATCH_REVISION], [1])

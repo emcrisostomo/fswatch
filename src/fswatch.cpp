@@ -40,6 +40,34 @@ using namespace std;
 
 static string decode_event_flag_name(fsw_event_flag flag);
 
+/*
+ * Event formatting types and routines.
+ */
+static void print_event_flags(const event & evt);
+static void print_event_path(const event & evt);
+static void print_event_timestamp(const event & evt);
+
+static int printf_event_validate_format(const string & fmt);
+
+struct printf_event_callbacks
+{
+  void (*format_f)(const event & evt);
+  void (*format_p)(const event & evt);
+  void (*format_t)(const event & evt);
+};
+
+struct printf_event_callbacks event_format_callbacks
+{
+  print_event_flags,
+  print_event_path,
+  print_event_timestamp
+};
+
+static int printf_event(const string & fmt,
+                        const event & evt,
+                        const struct printf_event_callbacks & callback,
+                        ostream & os = cout);
+
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
 static fsw::monitor *active_monitor = nullptr;
@@ -65,12 +93,17 @@ static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
 static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
+static int format_flag = false;
+static string format;
+static string event_flag_separator = " ";
 
 /*
  * OPT_* variables are used as getopt_long values for long options that do not
  * have a short option equivalent.
  */
 static const int OPT_BATCH_MARKER = 128;
+static const int OPT_FORMAT = 129;
+static const int OPT_EVENT_FLAG_SEPARATOR = 130;
 
 bool is_verbose()
 {
@@ -114,6 +147,7 @@ static void usage(ostream& stream)
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
 #  endif
+  stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
   stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
   stream << " -h, --help            " << _("Show this message.\n");
 #  ifdef HAVE_REGCOMP
@@ -131,6 +165,8 @@ static void usage(ostream& stream)
   stream << " -v, --verbose         " << _("Print verbose output.\n");
   stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
   stream << " -x, --event-flags     " << _("Print the event flags.\n");
+  stream << "     --event-flag-separator=STRING\n";
+  stream << "                       " << _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
   string option_string = "[";
@@ -183,8 +219,6 @@ static void usage(ostream& stream)
   stream << _("Report bugs to <") << PACKAGE_BUGREPORT << ">.\n";
   stream << PACKAGE << _(" home page: <") << PACKAGE_URL << ">.";
   stream << endl;
-
-  exit(FSW_EXIT_USAGE);
 }
 
 static void close_stream()
@@ -311,23 +345,31 @@ static vector<string> decode_event_flag_names(vector<fsw_event_flag> flags)
   return names;
 }
 
-static void print_event_timestamp(const time_t &evt_time)
+static void print_event_path(const event & evt)
 {
+  cout << evt.get_path();
+}
+
+static void print_event_timestamp(const event & evt)
+{
+  const time_t & evt_time = evt.get_time();
+
   char time_format_buffer[TIME_FORMAT_BUFF_SIZE];
   struct tm * tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
 
   string date =
-    strftime(
-             time_format_buffer,
+    strftime(time_format_buffer,
              TIME_FORMAT_BUFF_SIZE,
              tformat.c_str(),
              tm_time) ? string(time_format_buffer) : string(_("<date format error>"));
 
-  cout << date << " ";
+  cout << date;
 }
 
-static void print_event_flags(const vector<fsw_event_flag> &flags)
+static void print_event_flags(const event & evt)
 {
+  const vector<fsw_event_flag> & flags = evt.get_flags();
+
   if (nflag)
   {
     int mask = 0;
@@ -336,20 +378,24 @@ static void print_event_flags(const vector<fsw_event_flag> &flags)
       mask += static_cast<int> (flag);
     }
 
-    cout << " " << mask;
+    cout << mask;
   }
   else
   {
     vector<string> flag_names = decode_event_flag_names(flags);
 
-    for (string &name : flag_names)
+    for (int i = 0; i < flag_names.size(); ++i)
     {
-      cout << " " << name;
+      const string &name = flag_names[i];
+      cout << name;
+
+      // Event flag separator is currently hard-coded.
+      if (i != flag_names.size() - 1) cout << event_flag_separator;
     }
   }
 }
 
-static void end_event_record()
+static void print_end_of_event_record()
 {
   if (_0flag)
   {
@@ -367,14 +413,14 @@ static void write_batch_marker()
   if (batch_marker_flag)
   {
     cout << batch_marker;
-    end_event_record();
+    print_end_of_event_record();
   }
 }
 
 static void write_one_batch_event(const vector<event> &events)
 {
   cout << events.size();
-  end_event_record();
+  print_end_of_event_record();
 
   write_batch_marker();
 }
@@ -383,16 +429,8 @@ static void write_events(const vector<event> &events)
 {
   for (const event &evt : events)
   {
-    if (tflag) print_event_timestamp(evt.get_time());
-
-    cout << evt.get_path();
-
-    if (xflag)
-    {
-      print_event_flags(evt.get_flags());
-    }
-
-    end_event_record();
+    printf_event(format, evt, event_format_callbacks);
+    print_end_of_event_record();
   }
 
   write_batch_marker();
@@ -446,7 +484,6 @@ static void start_monitor(int argc, char ** argv, int optind)
    * filter but fswatch does not.  For the time being, we apply the same flags
    * to every filter.
    */
-
   for (auto & filter : filters)
   {
     filter.case_sensitive = !Iflag;
@@ -482,6 +519,7 @@ static void parse_opts(int argc, char ** argv)
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
 #  endif
+    { "format", required_argument, nullptr, OPT_FORMAT},
     { "format-time", required_argument, nullptr, 'f'},
     { "help", no_argument, nullptr, 'h'},
 #  ifdef HAVE_REGCOMP
@@ -499,6 +537,7 @@ static void parse_opts(int argc, char ** argv)
     { "verbose", no_argument, nullptr, 'v'},
     { "version", no_argument, &version_flag, true},
     { "event-flags", no_argument, nullptr, 'x'},
+    { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
     { nullptr, 0, nullptr, 0}
   };
 
@@ -540,7 +579,7 @@ static void parse_opts(int argc, char ** argv)
 
     case 'h':
       usage(cout);
-      exit(FSW_EXIT_USAGE);
+      ::exit(FSW_EXIT_OK);
 
 #ifdef HAVE_REGCOMP
     case 'i':
@@ -606,6 +645,15 @@ static void parse_opts(int argc, char ** argv)
       batch_marker_flag = true;
       break;
 
+    case OPT_FORMAT:
+      format_flag = true;
+      format = optarg;
+      break;
+
+    case OPT_EVENT_FLAG_SEPARATOR:
+      event_flag_separator = optarg;
+      break;
+      
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
@@ -617,6 +665,127 @@ static void parse_opts(int argc, char ** argv)
     print_version(cout);
     ::exit(FSW_EXIT_OK);
   }
+
+  // --format is incompatible with any other format option.
+  if (format_flag && (tflag || xflag))
+  {
+    cerr << _("--format is incompatible with any other format option such as -t and -x.") << endl;
+    ::exit(FSW_EXIT_FORMAT);
+  }
+
+  if (format_flag && oflag)
+  {
+    cerr << _("--format is incompatible with -o.") << endl;
+    ::exit(FSW_EXIT_FORMAT);
+  }
+
+  // If no format was specified use:
+  //   * %p as the default.
+  //   * -t adds "%t " at the beginning of the format.
+  //   * -x adds " %f" at the end of the format.
+  //   * '\n' is used as record separator unless -0 is used, in which case '\0'
+  //     is used instead.
+  if (format_flag)
+  {
+    // Test the user format
+    if (printf_event_validate_format(format) < 0)
+    {
+      cerr << _("Invalid format.") << endl;
+      ::exit(FSW_EXIT_FORMAT);
+    }
+  }
+  else
+  {
+    // Build event format.
+    if (tflag)
+    {
+      format = "%t ";
+    }
+
+    format += "%p";
+
+    if (xflag)
+    {
+      format += " %f";
+    }
+  }
+}
+
+static void format_noop(const event & evt)
+{
+}
+
+static int printf_event_validate_format(const string & fmt)
+{
+
+  struct printf_event_callbacks noop_callbacks
+  {
+    format_noop,
+    format_noop,
+    format_noop
+  };
+
+  const vector<fsw_event_flag> flags;
+  const event empty("", 0, flags);
+  ostream noop_stream(nullptr);
+
+  return printf_event(fmt, empty, noop_callbacks, noop_stream);
+}
+
+static int printf_event(const string & fmt,
+                        const event & evt,
+                        const struct printf_event_callbacks & callback,
+                        ostream & os)
+{
+  /*
+   * %t - time (further formatted using -f and strftime.
+   * %p - event path
+   * %f - event flags (event separator will be formatted with a separate option)
+   */
+  for (auto i = 0; i < format.length(); ++i)
+  {
+    // If the character does not start a format directive, copy it as it is.
+    if (format[i] != '%')
+    {
+      os << format[i];
+      continue;
+    }
+
+    // If this is the end of the string, dump an error.
+    if (i == format.length() - 1)
+    {
+      return -1;
+    }
+
+    // Advance to next format and check which directive it is.
+    const char c = format[++i];
+
+    switch (c)
+    {
+    case '%':
+      os << '%';
+      break;
+    case '0':
+      os << '\0';
+      break;
+    case 'n':
+      os << '\n';
+      break;
+    case 'f':
+      callback.format_f(evt);
+      break;
+    case 'p':
+      callback.format_p(evt);
+      break;
+    case 't':
+      callback.format_t(evt);
+      break;
+    default:
+      return -1;
+    }
+  }
+
+  return 0;
 }
 
 int main(int argc, char ** argv)
