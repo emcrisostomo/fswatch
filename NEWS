@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 1.4.5.3:
+
+  * Fix issue 67: 100% CPU usage while using libfswatch.  This issue only
+    affects the inotify monitor, available only on Linux.
+
 New in 1.4.5.2:
 
   * Fix issue 66: Exclude items with poll_monitor not considered.
