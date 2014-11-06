@@ -448,7 +448,6 @@ namespace fsw
       }
 
       notify_events();
-      ::sleep(latency);
     }
   }
 }
