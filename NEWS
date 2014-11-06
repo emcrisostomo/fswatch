@@ -1,7 +1,9 @@
 NEWS
 ****
 
-New in 1.4.6-current:
+New in 1.4.5.2:
+
+  * Fix issue 66: Exclude items with poll_monitor not considered.
 
 New in 1.4.5.1:
 
