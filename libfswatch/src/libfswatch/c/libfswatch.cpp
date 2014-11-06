@@ -424,7 +424,8 @@ int fsw_start_monitor(const FSW_HANDLE handle)
 
     session->monitor->set_filters(session->filters);
     session->monitor->set_follow_symlinks(session->follow_symlinks);
-    session->monitor->set_latency(session->latency);
+    if (session->latency)
+        session->monitor->set_latency(session->latency);
     session->monitor->set_recursive(session->recursive);
 
 #ifdef HAVE_CXX_MUTEX
