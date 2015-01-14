@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.4.6:
+
+  * Fix issue 74: Assertion failed on fsw_destroy_session.
+
 New in 1.4.0:
 
   * Move monitors to separate library.
