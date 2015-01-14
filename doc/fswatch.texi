@@ -1012,7 +1012,7 @@ as described in
 Base Definitions volume of @acronym{IEEE} Std 1003.1-2001@comma{} Chapter 9@comma{} Regular Expressions}.
 
 @cpindex filter, case sensitivity
-The (@option{--insensitive}, @option{-i}) option instructs @command{fswatch} to use
+The (@option{--insensitive}, @option{-I}) option instructs @command{fswatch} to use
 case insensitive regular expressions.
 The following example adds an exclusion filter so that @command{fswatch} ignores
 any file system object whose name ends with @kbd{.log}, no matter the case.
