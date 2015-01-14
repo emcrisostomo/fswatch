@@ -424,7 +424,7 @@ int fsw_start_monitor(const FSW_HANDLE handle)
 
     session->monitor->set_filters(session->filters);
     session->monitor->set_follow_symlinks(session->follow_symlinks);
-    session->monitor->set_latency(session->latency);
+    if (session->latency) session->monitor->set_latency(session->latency);
     session->monitor->set_recursive(session->recursive);
 
 #ifdef HAVE_CXX_MUTEX
@@ -444,6 +444,8 @@ int fsw_start_monitor(const FSW_HANDLE handle)
 
 int fsw_destroy_session(const FSW_HANDLE handle)
 {
+  int ret = FSW_OK;
+
   try
   {
 #ifdef HAVE_CXX_MUTEX
@@ -470,19 +472,19 @@ int fsw_destroy_session(const FSW_HANDLE handle)
         session->monitor->set_context(nullptr);
         delete static_cast<fsw_callback_context *> (context);
       }
-
       delete session->monitor;
     }
 
     sessions.erase(handle);
-#ifdef HAVE_CXX_MUTEX
-    session_mutexes.erase(handle);
-#endif
   }
   catch (int error)
   {
-    return fsw_set_last_error(error);
+    ret = error;
   }
+
+  #ifdef HAVE_CXX_MUTEX
+    session_mutexes.erase(handle);
+  #endif
 
   return fsw_set_last_error(FSW_OK);
 }
