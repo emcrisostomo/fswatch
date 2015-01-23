@@ -120,12 +120,24 @@ namespace fsw
   bool monitor::accept_path(const char *path)
   {
 #ifdef HAVE_REGCOMP
+    bool matched_exclude = false;
     for (auto &filter : filters)
     {
       if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
-        return filter.type == fsw_filter_type::filter_include;
+        if (filter.type == fsw_filter_type::filter_include)
+        {
+          return true;
+        }
+        else
+        {
+          matched_exclude = true;
+        }
       }
+    }
+    if (matched_exclude)
+    {
+      return false;
     }
 #endif
 
