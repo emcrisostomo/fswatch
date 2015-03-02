@@ -486,9 +486,9 @@ int fsw_destroy_session(const FSW_HANDLE handle)
     ret = error;
   }
 
-  #ifdef HAVE_CXX_MUTEX
-    session_mutexes.erase(handle);
-  #endif
+#ifdef HAVE_CXX_MUTEX
+  session_mutexes.erase(handle);
+#endif
 
   return fsw_set_last_error(FSW_OK);
 }
