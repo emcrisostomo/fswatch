@@ -2,7 +2,7 @@ README
 ======
 
 `fswatch` is a file change monitor that receives notifications when the contents
-of the specified files or directories are modified.  `fswatch` implements four 
+of the specified files or directories are modified.  `fswatch` implements four
 kinds of monitors:
 
   * A monitor based on the _File System Events API_ of Apple OS X.
@@ -20,12 +20,12 @@ aforementioned APIs.
 History
 -------
 
-**2009:** [Alan Dipert][alan] wrote the first implementation of `fswatch`.  This 
+**2009:** [Alan Dipert][alan] wrote the first implementation of `fswatch`.  This
 version ran exclusively on OS X and relied on the [FSEvents][fse] API to get
 change events from the OS.
 
-**Late 2013:** [Enrico M. Crisostomo][enrico] wrote `fsw`, aiming at a drop-in 
-replacement for `fswatch`. But it went further, offering a common front-end from 
+**Late 2013:** [Enrico M. Crisostomo][enrico] wrote `fsw`, aiming at a drop-in
+replacement for `fswatch`. But it went further, offering a common front-end from
 multiple file system change events APIs, including:
 
   * OS X FSEvents.
@@ -36,8 +36,8 @@ multiple file system change events APIs, including:
 `fswatch` and `fsw`, agreed on merging the two programs together.  At the same
 time, Enrico was taking over `fswatch` as a maintainer.
 
-**Presently:** Development of `fswatch` will continue on its 
-[main repository][fswatchrepo]. Meanwhile, the `fsw` repository will likely be 
+**Presently:** Development of `fswatch` will continue on its
+[main repository][fswatchrepo]. Meanwhile, the `fsw` repository will likely be
 frozen, and its documentation updated to redirect users to `fswatch`.
 
 [alan]: http://alandipert.tumblr.com
@@ -65,7 +65,7 @@ The limitations of `fswatch` depend largely on the monitor being used:
   * The **kqueue** monitor, available on any \*BSD system featuring kqueue, requires
     a file descriptor to be opened for every file being watched.  As a result,
     this monitor scales badly with the number of files being observed, and may
-    begin to misbehave as soon as the `fswatch` process runs out of file 
+    begin to misbehave as soon as the `fswatch` process runs out of file
     descriptors.  In this case, `fswatch` dumps one error on standard error for
     every file that cannot be opened.
   * The **inotify** monitor, available on Linux since kernel 2.6.13, may suffer a
@@ -76,7 +76,7 @@ The limitations of `fswatch` depend largely on the monitor being used:
     will handle the overflow by emitting proper notifications.
   * The **poll** monitor, available on any platform, only relies on available CPU
     and memory to perform its task.  The performance of this monitor degrades
-    linearly with the number of files being watched.  
+    linearly with the number of files being watched.
 
 Usage recommendations are as follows:
 
@@ -92,10 +92,10 @@ Usage recommendations are as follows:
     the receiving side of the events to deal with directories may sensibly
     reduce the monitor resource consumption.
   * If none of the above applies, use the poll monitor.  The authors' experience
-    indicates that `fswatch` requires approximately 150 MB of RAM memory to 
+    indicates that `fswatch` requires approximately 150 MB of RAM memory to
     observe a hierarchy of 500.000 files with a minimum path length of 32
     characters.  A common bottleneck of the poll monitor is disk access, since
-    `stat()`-ing a great number of files may take a huge amount of time.  In 
+    `stat()`-ing a great number of files may take a huge amount of time.  In
     this case, the latency should be set to a sufficiently large value in order
     to reduce the performance degradation that may result from frequent disk
     access.
@@ -147,7 +147,7 @@ some platforms you may need to perform additional tasks before you can use
   * Make sure the installation directory of dynamic libraries (`$PREFIX/lib`) is
     included in the lookup paths of the dynamic linker of your operating
     system.  The default path, `/usr/local/lib`, will work in nearly every
-    operating system. 
+    operating system.
   * Refreshing the links and cache to the dynamic libraries may be required.
     In GNU/Linux systems you may need to run `ldconfig`:
 
