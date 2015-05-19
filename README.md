@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat)](https://github.com/emcrisostomo/fswatch/blob/master/LICENSE)
+
 README
 ======
 
@@ -313,7 +315,7 @@ Bug reports can be sent directly to the authors.
 
 -----
 
-Copyright (C) 2014 Enrico M. Crisostomo
+Copyright (C) 2014-2015 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
