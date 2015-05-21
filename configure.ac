@@ -58,7 +58,7 @@ AC_PROG_CXX([clang++ g++])
 
 # Initialize gettext
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.18.3])
+AM_GNU_GETTEXT_VERSION([0.18.1])
 
 # Checks for programs.
 AC_PROG_LN_S
