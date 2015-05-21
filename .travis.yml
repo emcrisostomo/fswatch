@@ -1,12 +1,10 @@
 language: cpp
+
 compiler:
   - clang
 
-os:
-  - osx
-
 before_install:
-  - brew update
-  - brew install gettext
+  - sudo apt-get update -qq
+  - sudo apt-get install -y gettext
 
 script: ./autogen.sh && ./configure && make && make test
