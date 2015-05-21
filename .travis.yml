@@ -1,0 +1,6 @@
+language: cpp
+compiler:
+  - clang
+
+os:
+  - osx
