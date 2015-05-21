@@ -47,7 +47,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
-# Initialize libtool 
+# Initialize libtool
 LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
@@ -58,7 +58,7 @@ AC_PROG_CXX([clang++ g++])
 
 # Initialize gettext
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.19.2])
+AM_GNU_GETTEXT_VERSION([0.18.3])
 
 # Checks for programs.
 AC_PROG_LN_S
