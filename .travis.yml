@@ -2,6 +2,10 @@ language: cpp
 compiler:
   - clang
 
+before_install:
+  - brew update
+  - brew install gettext
+
 script: ./autogen.sh && ./configure && make && make test
 
 os:
