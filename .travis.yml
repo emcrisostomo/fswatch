@@ -8,4 +8,4 @@ before_install:
   - sudo apt-get install -y gettext
   - sudo apt-get install -y autopoint
 
-script: ./autogen.sh && ./configure && make && make test
+script: ./autogen.sh && ./configure && make
