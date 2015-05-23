@@ -5,6 +5,7 @@ New in 1.4.7:
 
   * Fix bug in exclusion filter ordering (merged PR 75).
   * README.md improvements.
+  * Improve documentation.
 
 New in 1.4.6:
 
