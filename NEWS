@@ -3,9 +3,9 @@ NEWS
 
 New in 1.4.7:
 
-  * Fix bug in exclusion filter ordering (merged PR 75).
+  * Fix bug in exclusion filter ordering (PR 75).
   * README.md improvements.
-  * Improve documentation.
+  * Documentation improvements.
 
 New in 1.4.6:
 
