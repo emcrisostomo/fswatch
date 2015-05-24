@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.4.7:
+
+  * Provide a way to pass context data to the C API monitor callback.
+
 New in 1.4.6:
 
   * Fix issue 74: Assertion failed on fsw_destroy_session.
