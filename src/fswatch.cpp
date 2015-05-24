@@ -653,7 +653,7 @@ static void parse_opts(int argc, char ** argv)
     case OPT_EVENT_FLAG_SEPARATOR:
       event_flag_separator = optarg;
       break;
-      
+
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);

@@ -48,6 +48,7 @@ typedef struct FSW_SESSION
   bool recursive;
   bool follow_symlinks;
   vector<monitor_filter> filters;
+  void * data;
 #ifdef HAVE_CXX_MUTEX
   atomic<bool> running;
 #endif
@@ -99,6 +100,7 @@ typedef struct fsw_callback_context
 {
   FSW_HANDLE handle;
   FSW_CEVENT_CALLBACK callback;
+  void * data;
 } fsw_callback_context;
 
 void libfsw_cpp_callback_proxy(const std::vector<event> & events,
@@ -149,7 +151,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
   }
 
   // TODO manage C++ exceptions from C code
-  (*(context->callback))(cevents, events.size());
+  (*(context->callback))(cevents, events.size(), context->data);
 
   // Deallocate memory allocated by events.
   for (unsigned int i = 0; i < events.size(); ++i)
@@ -225,6 +227,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     fsw_callback_context * context_ptr = new fsw_callback_context;
     context_ptr->callback = session->callback;
     context_ptr->handle = session->handle;
+    context_ptr->data = session->data;
 
     monitor * current_monitor = monitor::create_monitor(type,
                                                         session->paths,
@@ -266,7 +269,7 @@ int fsw_add_path(const FSW_HANDLE handle, const char * path)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback)
+int fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
 {
   if (!callback)
     return fsw_set_last_error(int(FSW_ERR_INVALID_CALLBACK));
@@ -279,6 +282,7 @@ int fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback
     FSW_SESSION * session = get_session(handle);
 
     session->callback = callback;
+    session->data = data;
   }
   catch (int error)
   {
@@ -482,9 +486,9 @@ int fsw_destroy_session(const FSW_HANDLE handle)
     ret = error;
   }
 
-  #ifdef HAVE_CXX_MUTEX
-    session_mutexes.erase(handle);
-  #endif
+#ifdef HAVE_CXX_MUTEX
+  session_mutexes.erase(handle);
+#endif
 
   return fsw_set_last_error(FSW_OK);
 }
