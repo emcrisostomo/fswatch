@@ -108,7 +108,7 @@ changes to applications.
 
 @item
 @cpindex monitor, poll
-@fnindex stat
+@fnindex @command{stat}
 A monitor which periodically stats the file system, saves file modification
 times in memory and manually calculates file system changes, which can work on
 any operating system where stat (2) can be used.
@@ -310,6 +310,7 @@ $ fswatch -xr @var{/path/to/observe}
 ...
 @end example
 
+@noindent
 In this case, a space-separated list of change flags are printed after the path
 of the changed object.  The record structure is thus:
 
@@ -1295,22 +1296,18 @@ improved, please fill a bug report (@pxref{Reporting Bugs and Suggestions}).
 @node Monitors
 @chapter Monitors
 @cpindex monitor, available
-@command{fswatch} is a file system monitoring utility that
-achieves portability and cross-platform functionality by
-decoupling the front-end logic (the @command{fswatch} command
-users directly invoke) from back-end logic.
-Back-end logic is encapsulated in multiple, system-specific
-@emph{monitors}, interacting with different monitoring APIs.
-Since each operating system may ship a different set of
-APIs@footnote{In fact, only OS X supports more than one such API:
-BSD's @emph{kqueue} and its own @emph{FSEvents}.},
-each operating system will support the corresponding set of
-monitors.
+@command{fswatch} is a file system monitoring utility that achieves portability
+across multiple platform by decoupling the front-end (the @command{fswatch}
+itself) from back-end logic.  Back-end logic is encapsulated in multiple,
+system-specific @emph{monitors}, interacting with different monitoring
+@acronym{API}s.  Since each operating system may ship a different set of
+@acronym{API}s@footnote{In fact, only OS X supports more than one such
+@acronym{API}: BSD's @emph{kqueue} and @emph{FSEvents}.}, each operating system
+will support the corresponding set of monitors.
 
 The list of available monitors is decided at build time by the
-@command{configure} script.
-Monitors cannot be currently plugged-in but recompiling the
-@command{libfswatch} library (shipped with @command{fswath}).
+@command{configure} script.  Monitors cannot be currently plugged-in but
+recompiling the @command{libfswatch} library (shipped with @command{fswath}).
 The list of available monitors can be obtained in the help message:
 
 @example
@@ -1330,8 +1327,8 @@ Currently, the available monitors are:
 
 @itemize
 @item
-The @emph{FSEvents} monitor, a monitor based on the File System Events API of
-Apple OS X (@pxref{The FSEvents Monitor}).
+The @emph{FSEvents} monitor, a monitor based on the File System Events
+@acronym{API} of Apple OS X (@pxref{The FSEvents Monitor}).
 
 @item
 The @emph{kqueue} monitor, a monitor based on @emph{kqueue}, an event
@@ -1343,58 +1340,57 @@ The @emph{inotify} monitor, a Linux kernel subsystem that reports file system
 changes to applications (@pxref{The inotify Monitor}).
 
 @item
-The @emph{poll} monitor, a monitor which periodically stats the file system,
+The @emph{poll} monitor, a monitor that periodically stats the file system,
 saves file modification times in memory and manually calculates file system
 changes, which can work on any operating system where @command{stat} can be used
 (@pxref{The Poll Monitor}).
 @end itemize
 
-Each monitor has its own strengths, weakness and peculiarities.
-Although @command{fswatch} strives to provide a uniform experience no matter
-which monitor is used, it is still important for users to know which monitor
-they are using and to be aware of existing bugs, limitations, corner cases or
+Each monitor has its own strengths, weakness and peculiarities.  Although
+@command{fswatch} strives to provide a uniform experience no matter which
+monitor is used, it is still important for users to know which monitor they are
+using and to be aware of existing bugs, limitations, corner cases or
 pathological behaviour.
 
 @section The FSEvents Monitor
 @anchor{The FSEvents Monitor}
 @cpindex FSEvents monitor
 @cpindex monitor, FSEvents
-The FSEvents monitor, available only on Apple OS X, has no known limitations
-and scales very well with the number of files being observed.
-In fact, I observed no performance degradation when testing @command{fswatch}
-observing changes on a filesystem of 500 GB over long periods of time.
-On OS X, this is the default monitor.
+The FSEvents monitor, available only on Apple OS X, has no known limitations and
+scales very well with the number of files being observed.  In fact, I observed
+no performance degradation when testing @command{fswatch} observing changes on a
+filesystem of 500 @acronym{GB} over long periods of time.  On OS X, this is the
+default monitor.
 
 @subsection Peculiarities
 @cpindex monitor, FSEvents, peculiarities
-The FSEvents monitor ``ignores'' the (@option{--recursive}, @option{-r}) option
-since the FSEvents API already monitors a directory's children by default.
-There is no overhead nor resource-consumption issue with this behaviour, but
-users processing the output must be aware that for each directory @emph{multiple}
-events may be generated by its children.
+The (@option{--recursive}, @option{-r}) option has no effect when used with the
+FSEvents monitor since the FSEvents @acronym{API} already monitors a directory's
+children by default.  There is no overhead nor resource-consumption issue with
+this behaviour, but users processing the output must be aware that for each
+directory @emph{multiple} events may be generated by its children.
 
 @section The kqueue Monitor
 @anchor{The kqueue Monitor}
 @cpindex kqueue monitor
 @cpindex monitor, kqueue
-The kqueue monitor, available on any *BSD system featuring the
-@command{kevent} function, is very similar in principle to
-other similar APIs (such as FSEvents and inotify) but has important
-drawback and limitations.
+@fnindex @command{kevent}
+The kqueue monitor, available on any *BSD system featuring the @command{kevent}
+function, is very similar in principle to other similar @acronym{API}s (such as
+FSEvents and inotify) but has important drawback and limitations.
 
 @subsection Peculiarities
 @cpindex monitor, kqueue, peculiarities
-The kqueue monitor
-@emph{requires a file descriptor to be opened for every file being watched}.
-As a result, this monitor scales @emph{badly} with the number of files being
-observed and may begin to misbehave as soon as the @command{fswatch} process
-runs out of file descriptors.
-In this case, @command{fswatch} dumps one error on standard error for every
-file that cannot be opened so that users are notified and can take action,
-including terminating the @command{fswatch} session.
-Beware that on some systems the maximum number of file descriptors that can be
-opened by a process is set to a @emph{very low value} (values as low as 256 are
-not uncommon), even if the operating system may allow a much larger value.
+The kqueue monitor @emph{requires a file descriptor to be opened for every file
+being watched}.  As a result, this monitor scales @emph{badly} with the number
+of files being observed and may begin to misbehave as soon as the
+@command{fswatch} process runs out of file descriptors.  In this case,
+@command{fswatch} dumps one error on standard error for every file that cannot
+be opened so that users are notified and can take action, including terminating
+the @command{fswatch} session.  Beware that on some systems the maximum number
+of file descriptors that can be opened by a process is set to a @emph{very low
+value} (values as low as 256 are not uncommon), even if the operating system may
+allow a much larger value.
 
 If you are running out of file descriptors when using this monitor and you
 cannot reduce the number of observed items, either:
@@ -1412,13 +1408,15 @@ Consider using another monitor.
 @anchor{The inotify Monitor}
 @cpindex inotify monitor
 @cpindex monitor, inotify
-The inotify monitor uses is backed by the inotify API and the @command{inotify_*}
-set of functions, introduced on Linux since kernel 2.6.13.
-Similarly to the FSEvents API, inotify is very efficient, suffers from
+@fnindex @command{inotify_init}
+@fnindex @command{inotify_rm_watch}
+@fnindex @command{inotify_add_watch}
+The inotify monitor uses is backed by the inotify @acronym{API} and the
+@command{inotify_*} set of functions, introduced on Linux since kernel 2.6.13.
+Similarly to the FSEvents @acronym{API}, inotify is very efficient, suffers from
 no known resource-exhaustion problems and scales very well with the number of
-files being watched.
-This monitor is the default monitor on systems running inotify-enabled
-Linux kernels.
+files being watched.  This monitor is the default monitor on systems running
+inotify-enabled Linux kernels.
 
 @subsection Peculiarities
 @cpindex monitor, inotify, peculiarities
@@ -1426,24 +1424,22 @@ Linux kernels.
 @cpindex monitor, inotify, queue overflow
 @cpindex queue overflow
 The inotify monitor, may suffer a queue overflow if events are generated faster
-than they are read from the queue.
-In any case, the application is guaranteed to receive an overflow notification
-which can be handled to gracefully recover.
+than they are read from the queue.  In any case, the application is guaranteed
+to receive an overflow notification which can be handled to gracefully recover.
 Currently, the @command{fswatch} process is terminated after the notification is
-sent by throwing an exception.
-Future versions will handle the overflow by emitting a notification in form of a
-specially-crafted change event.
-However, the odds of observing a queue overflow on a default configured
-mainstream GNU/Linux distribution is @emph{very low}.
+sent by throwing an exception.  Future versions will handle the overflow by
+emitting a notification in form of a specially-crafted change event.  However,
+the odds of observing a queue overflow on a default configured mainstream
+@acronym{GNU}/Linux distribution is @emph{very low}.
 
 @subsubsection Duplicate Events
 @cpindex monitor, inotify, duplicate events
-The inotify API sends events for the @emph{direct} child elements of a watched
-directory and it scales pretty well with the number of watched items.
+The inotify @acronym{API} sends events for the @emph{direct} child elements of a
+watched directory and it scales pretty well with the number of watched items.
 For this reason, depending on the number of files to watch, it may sometimes be
-preferable to non-recursively watch a common parent directory and filter received
-events rather than adding a huge number of file watches.
-If recursive watches are used, then duplicate change events will be received:
+preferable to non-recursively watch a common parent directory and filter
+received events rather than adding a huge number of file watches.  If recursive
+watches are used, then duplicate change events will be received:
 
 @itemize
 @item
@@ -1462,7 +1458,8 @@ monitor could be used, including:
 
 @itemize
 @item
-Operating system without any sort of file events API.
+Operating system without any sort of file events @acronym{API}.
+
 @item
 Situations where the limitations of the available monitors cannot be
 overcome@footnote{E.g.: observing a number of files greater than the available
@@ -1474,29 +1471,30 @@ The poll monitor, available on any platform, only relies on available
 
 @subsection Peculiarities
 @cpindex monitor, poll, peculiarities
+
 @subsubsection Performance Problems
 @cpindex monitor, poll, performanc
 The resource consumption of this monitor increases increases @emph{linearly}
 with the number of files being watched (the resulting system performance will
 probably degrade @emph{linearly} or quicker).
 
+@fnindex @command{stat}
 The authors' experience indicates that @command{fswatch} requires approximately
-150 MB of @acronym{RAM} memory to observe a hierarchy of 500.000 files with a
-minimum path length of 32 characters.
-A common bottleneck of the poll monitor is disk access, since @command{stat()}-ing
-a great number of files may take a @emph{huge} amount of time.
-In this case, the latency (@pxref{Latency}) should be set to a sufficiently
-large value in order to reduce the performance degradation that may result
-from frequent disk access;
-the inotify monitor, in fact, will re-scan @emph{all} the monitored object
-hierarchy looking for differences @emph{every} time its ``monitoring loop''
-is repeated.
+150 @acronym{MB} of @acronym{RAM} memory to observe a hierarchy of 500,000 files
+with a minimum path length of 32 characters.  A common bottleneck of the poll
+monitor is disk access, since @command{stat()}-ing a great number of files may
+take a @emph{huge} amount of time.  In this case, the latency (@pxref{Latency})
+should be set to a sufficiently large value in order to reduce the performance
+degradation that may result from frequent disk access; the inotify monitor, in
+fact, will re-scan @emph{all} the monitored object hierarchy looking for
+differences @emph{every} time its `monitoring loop' is repeated.
 
 @quotation Note
 Using a disk drive with lower latencies may certainly help, although the authors
-suspect that switching to an operating system with proper file monitoring APIs
-is a better solution when performance problems with the poll monitors are
-experienced or when @command{fswatch} should drive mission-critical processes.
+suspect that switching to an operating system with proper file monitoring
+@acronym{API}s is a better solution when performance problems with the poll
+monitors are experienced or when @command{fswatch} should drive mission-critical
+processes.
 @end quotation
 
 @subsubsection Missing Events and Missing Event Flags
@@ -1505,13 +1503,11 @@ experienced or when @command{fswatch} should drive mission-critical processes.
 Since this monitor periodically checks the state of monitored objects looking
 for differences, it may miss events happened between one scan and another.
 Let's suppose, for example, that a file @file{file} exists at time @math{t_0}
-when a scan occurs.
-The poll monitors detects @file{file} and saves the relevant attributes in memory.
-@file{file} is then updated, moved to another place and recreated with the same
-name.
-The chain of events@footnote{The actual chain of events may in fact vary
-depending on the monitor being used.}
-occurred to @file{file} are:
+when a scan occurs.  The poll monitors detects @file{file} and saves the
+relevant attributes in memory.  @file{file} is then updated, moved to another
+place and recreated with the same name.  The chain of events@footnote{The actual
+chain of events may in fact vary depending on the monitor being used.}  occurred
+to @file{file} are:
 
 @itemize
 @item
@@ -1528,22 +1524,20 @@ occurred to @file{file} are:
 @end itemize
 
 At time @math{t_1}, another scan runs and the poll monitor detects that the
-modification date has changed.
-The poll monitor can only infer that a ``change'' has occurred and raises an
-@command{Updated} event;
-other events that would be noticed and raised by other APIs are effectively
-@emph{lost} since they go unnoticed.
+modification date has changed.  The poll monitor can only infer that a `change'
+has occurred and raises an @command{Updated} event; other events that would be
+noticed and raised by other @acronym{API}s are effectively @emph{lost} since
+they go unnoticed.
 
 The odds of incurring such a loss is inversely proportional to the latency
-@math{l}: reducing the latency helps alleviating this problem, although on
-the other hands it also results in linearly increasing resource usage.
+@math{l}: reducing the latency helps alleviating this problem, although on the
+other hands it also results in linearly increasing resource usage.
 
 @section How to Choose a Monitor
-@command{fswatch} already chooses the ``best'' monitor for your platform if you
-do not specify any.
-However, a specific monitor may be better suited to specific use cases.
-Please, see @ref{Monitors} to get a description of all the available
-monitors and their limitations.
+@command{fswatch} already chooses the `best' monitor for your platform if you
+do not specify any.  However, a specific monitor may be better suited to
+specific use cases.  Please, see @ref{Monitors} to get a description of all the
+available monitors and their limitations.
 
 Usage recommendations are as follows:
 
@@ -1559,24 +1553,24 @@ On Linux, use the inotify monitor (which is the default behaviour).
 If the number of files to observe is sufficiently small, use the kqueue monitor.
 Beware that on some systems the maximum number of file descriptors that can be
 opened by a process is set to a very @emph{low} value (values as low as 256 are
-not uncommon), even if the operating system may allow a much larger value.
-In this case, check your OS documentation to raise this limit on either a per
+not uncommon), even if the operating system may allow a much larger value.  In
+this case, check your OS documentation to raise this limit on either a per
 process or a system-wide basis.
 
 @item
-If feasible, watch directories instead of watching files.
-Properly crafting the receiving side of the events to deal with directories
-may sensibly reduce the monitor resource consumption.
+If feasible, watch directories instead of watching files.  Properly crafting the
+receiving side of the events to deal with directories may sensibly reduce the
+monitor resource consumption.
 
 @item
-If none of the above applies, use the poll monitor.
-The authors' experience indicates that fswatch requires approximately 150 MB of
-@acronym{RAM} memory to observe a hierarchy of 500.000 files with a minimum path
-length of 32 characters.
-A common bottleneck of the poll monitor is disk access, since @command{stat()}-ing
-a great number of files may take a huge amount of time.
-In this case, the latency should be set to a sufficiently large value in order
-to reduce the performance degradation that may result from frequent disk access.
+@fnindex @command{stat}
+If none of the above applies, use the poll monitor.  The authors' experience
+indicates that fswatch requires approximately 150 @acronym{MB} of @acronym{RAM}
+memory to observe a hierarchy of 500,000 files with a minimum path length of 32
+characters.  A common bottleneck of the poll monitor is disk access, since
+@command{stat()}-ing a great number of files may take a huge amount of time.  In
+this case, the latency should be set to a sufficiently large value in order to
+reduce the performance degradation that may result from frequent disk access.
 @end itemize
 
 @node GNU Free Documentation License
