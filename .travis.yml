@@ -1,0 +1,11 @@
+language: cpp
+
+compiler:
+  - clang
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y gettext
+  - sudo apt-get install -y autopoint
+
+script: ./autogen.sh && ./configure && make

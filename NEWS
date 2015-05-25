@@ -1,7 +1,24 @@
 NEWS
 ****
 
-New in 1.4.6-current:
+New in 1.4.7:
+
+  * Fix bug in exclusion filter ordering (PR 75).
+  * README.md improvements.
+  * Documentation improvements.
+
+New in 1.4.6:
+
+  * Fix issue 74: Assertion failed on fsw_destroy_session.
+
+New in 1.4.5.3:
+
+  * Fix issue 67: 100% CPU usage while using libfswatch.  This issue only
+    affects the inotify monitor, available only on Linux.
+
+New in 1.4.5.2:
+
+  * Fix issue 66: Exclude items with poll_monitor not considered.
 
 New in 1.4.5.1:
 

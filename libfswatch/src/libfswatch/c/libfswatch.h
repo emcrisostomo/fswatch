@@ -75,7 +75,8 @@ extern "C"
    * following signature:
    * 
    *     void c_process_events(fsw_cevent const * const events,
-   *                           const unsigned int event_num);
+   *                           const unsigned int event_num,
+   *                           void * data);
    * 
    * When a monitor receives change events satisfying all the session criteria,
    * the callback is invoked and passed a copy of the events.
@@ -111,7 +112,8 @@ extern "C"
    * See cevent.h for the definition of FSW_CEVENT_CALLBACK.
    */
   FSW_STATUS fsw_set_callback(const FSW_HANDLE handle,
-                              const FSW_CEVENT_CALLBACK callback);
+                              const FSW_CEVENT_CALLBACK callback,
+                              void * data);
 
   /*
    * Sets the latency of the monitor.  By default, the latency is set to 1 s.
