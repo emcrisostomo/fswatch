@@ -68,13 +68,14 @@ extern "C"
    * passed the following arguments:
    *   - events, a const pointer to an array of events of type const fsw_cevent.
    *   - event_num, the size of the *events array.
+   *   - data, optional persisted data for a callback.
    * 
    * The memory used by the fsw_cevent objects will be freed at the end of the
    * callback invocation.  A callback should copy such data instead of storing
    * a pointer to it.
    */
   typedef void (*FSW_CEVENT_CALLBACK)(fsw_cevent const * const events,
-    const unsigned int event_num);
+    const unsigned int event_num, void * data);
 
 #  ifdef __cplusplus
 }

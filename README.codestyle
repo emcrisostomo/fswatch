@@ -1,0 +1,110 @@
+README.codestyle
+================
+
+The indent style used by `fswatch` is a custom Allman (BSD) style.  The code is
+formatted using NetBeans with the following format settings:
+
+    Indents
+    Indent Size = 2
+    Expand Tabs to Spaces = true
+    Tab Size = 2
+    Statement Continuation = 2
+    Constructor Continuation = 2
+    Preprocessor Directive = Preprocessor
+    # at Start Line = true
+    Indent Namespaces = true
+    Indent Case Statements = false
+    Absolute Label Indentation = true
+    Indent Visibility = None
+    Keep Extra Spaces = false
+
+    Braces Placement
+    Namespace Declaration = New Line
+    Class Declaration = New Line
+    Function Declaration = New Line
+    Ignore Empty Function = false
+    Lambda = New Line
+    "switch" statement = New Line
+    Other = New Line
+
+    Multiline Alignment
+    Function Parameters = true
+    Function Call Arguments = true
+    Array Initializer = false
+    "for" Statement = true
+    "if" Condition = true
+    "while" Condition = true
+    Other Parenthesis = false
+
+    New Line
+    Function Name = false
+    "catch" = true
+    "else" = true
+    "while" = true
+
+    Spaces Before Keywords
+    "catch" = true
+    "else" = true
+    "while" = true
+
+    Spaces Before Parentheses
+    Function Declaration = false
+    Function Call = false
+    "catch" = true
+    "for" = true
+    "if" = true
+    "switch" = true
+    "while" = true
+    Other Keywords = true
+
+    Spaces Around Operators
+    Assignment Operators = true
+    Binary Operators = true
+    Ternary Operators = true
+    Unary Operators = false
+
+    Spaces Before Left Braces
+    Class Declaration = true
+    Function Declaration = true
+    Lambda = true
+    Array Initializer = false
+    "catch" = true
+    "do" = true
+    "else" = true
+    "for" = true
+    "if" = true
+    "switch" = true
+    "try" = true
+    "while" = true
+
+    Spaces Within Parentheses
+    Function Declaration = false
+    Function Call = false
+    Braces = false
+    Parentheses = false
+    "catch" = false
+    "for" = false
+    "if" = false
+    "switch" = false
+    Type Cast = false
+    "while" = false
+
+    Other Spaces
+    Before Comma = false
+    After Comma = true
+    Before Semicolon = false
+    After Semicolon = true
+    Before Colon = true
+    After Colon = true
+    After Type Cast = true
+    After operator Keyword = false
+
+    Blank Lines
+    Before Class = 1
+    After Class Header = 0
+    Before Function = 1
+
+    Other
+    Add Leading Star in = true
+    Toggle block comment = false
+    Insert 'inline' keyword = false

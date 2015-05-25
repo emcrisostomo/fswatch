@@ -24,10 +24,17 @@ libtool: $(LIBTOOL_DEPS)
 SUBDIRS = libfswatch src po doc
 
 dist_man_MANS = man/fswatch.7
-dist_doc_DATA  = README.bsd README.freebsd README.gnu-build-system README.md
-dist_doc_DATA += README.linux README.osx AUTHORS COPYING LICENSE NEWS
+dist_doc_DATA  = README.bsd README.codestyle README.freebsd
+dist_doc_DATA += README.gnu-build-system README.md README.linux README.osx
+dist_doc_DATA += ABOUT-NLS AUTHORS COPYING LICENSE NEWS
 
-dist_bin_SCRIPTS = scripts/fswatch-run-bash scripts/fswatch-run-zsh
+dist_bin_SCRIPTS =
+if HAVE_ZSH
+  dist_bin_SCRIPTS += scripts/fswatch-run-zsh
+endif
+if HAVE_BASH
+  dist_bin_SCRIPTS += scripts/fswatch-run-bash
+endif
 
 install-exec-hook: fswatch-remove-links
 if HAVE_ZSH

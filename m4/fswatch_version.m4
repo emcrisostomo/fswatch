@@ -1,4 +1,4 @@
-# Copyright (C) 2014, Enrico M. Crisostomo
+# Copyright (C) 2014-2015 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,5 +12,5 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-m4_define([FSWATCH_VERSION], [1.4.5-current])
+m4_define([FSWATCH_VERSION], [1.4.7])
 m4_define([FSWATCH_REVISION], [1])

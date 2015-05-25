@@ -100,7 +100,7 @@ namespace fsw
         flags.push_back(fsw_event_flag::AttributeModified);
       }
 
-      if (flags.size() > 0)
+      if (flags.size() > 0 && accept_path(path))
       {
         events.push_back({path, curr_time, flags});
       }
@@ -112,7 +112,10 @@ namespace fsw
       vector<fsw_event_flag> flags;
       flags.push_back(fsw_event_flag::Created);
 
-      events.push_back({path, curr_time, flags});
+      if (accept_path(path))
+      {
+        events.push_back({path, curr_time, flags});
+      }
     }
 
     return true;

@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (C) 2014, Enrico M. Crisostomo
+# Copyright (C) 2014-2015 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,11 +17,11 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
-dnl Copyright (C) 2014, Enrico M. Crisostomo
+dnl Copyright (C) 2014-2015 Enrico M. Crisostomo
 AC_PREREQ([2.69])
 m4_include([m4/fswatch_version.m4])
 AC_INIT([fswatch], FSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
-AC_COPYRIGHT([2014 (C) Enrico M. Crisostomo])
+AC_COPYRIGHT([2015 (C) Enrico M. Crisostomo])
 AC_REVISION([$Revision: FSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
@@ -43,11 +43,11 @@ AC_SUBST([TARGET_OS])
 AC_CONFIG_SUBDIRS([libfswatch])
 
 # Initialize Automake
-AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects no-dist-gzip dist-zip])
+AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
-# Initialize libtool 
+# Initialize libtool
 LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
@@ -58,7 +58,7 @@ AC_PROG_CXX([clang++ g++])
 
 # Initialize gettext
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.19.2])
+AM_GNU_GETTEXT_VERSION([0.19.4])
 
 # Checks for programs.
 AC_PROG_LN_S
