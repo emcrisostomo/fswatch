@@ -32,7 +32,7 @@ Permission is granted to copy, distribute and/or modify this document under the
 terms of the GNU Free Documentation License, Version 1.3 or any later version
 published by the Free Software Foundation; with no Invariant Sections, with no
 Front-Cover Texts, and with no Back-Cover Texts.  A copy of the license is
-included in the section entitled ``GNU Free Documentation License''.
+included in the section entitled `GNU Free Documentation License'.
 @end quotation
 @end copying
 
@@ -219,7 +219,7 @@ in another platform, an existing application will @emph{just} work.
 
 In reality, there still are some monitor's peculiarities that complicate the
 task of writing an application completely agnostic about the file monitoring
-@acronym{API} it is actually using.  However, monitors try to ``compensate'' for
+@acronym{API} it is actually using.  However, monitors try to `compensate' for
 any behavioural difference across implementations and they are expected to
 converge further when newer versions are released.
 
@@ -271,9 +271,9 @@ Register a monitor type in the list of available implementations.
 To do.
 
 The @command{monitor} class is central in the C++ @acronym{API}: it defines the
-``contract'' of every monitor and provides the means to create them.  A monitor
-is a @emph{backend} which implements file monitoring using a specific
-@acronym{API} or technique.
+`contract' of every monitor and provides the means to create them.  A monitor is
+a @emph{backend} which implements file monitoring using a specific @acronym{API}
+or technique.
 
 @node The C API
 @chapter The C @acronym{API}
