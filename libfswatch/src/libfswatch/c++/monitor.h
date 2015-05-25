@@ -125,16 +125,16 @@ namespace fsw
 
     monitor_registrant(const std::string & name, fsw_monitor_type type)
     {
+      FSW_FN_MONITOR_CREATOR default_creator =
+        [](std::vector<std::string> paths,
+        FSW_EVENT_CALLBACK * callback,
+        void * context = nullptr) -> monitor *
+        {
+          return new M(paths, callback, context);
+        };
+
       monitor_factory::register_type(name, type);
-      monitor_factory::register_creator(name,
-                                        [](std::vector<std::string> paths,
-                                        FSW_EVENT_CALLBACK * callback,
-                                        void * context = nullptr) -> monitor *
-                                        {
-                                          return new M(paths,
-                                                       callback,
-                                                       context);
-                                        });
+      monitor_factory::register_creator(name, default_creator);
     }
   };
 
