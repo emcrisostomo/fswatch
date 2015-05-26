@@ -102,14 +102,12 @@ namespace fsw
                                             void * context = nullptr);
     static std::vector<std::string> get_types();
     static bool exists_type(const std::string& name);
-    static void register_type(const std::string& name, fsw_monitor_type type);
     static void register_creator(const std::string & name,
                                  FSW_FN_MONITOR_CREATOR creator);
     monitor_factory() = delete;
     monitor_factory(const monitor_factory& orig) = delete;
     monitor_factory& operator=(const monitor_factory & that) = delete;
   private:
-    static std::map<std::string, fsw_monitor_type> & type_by_string();
     static std::map<std::string, FSW_FN_MONITOR_CREATOR> & creators_by_string();
   };
 
@@ -133,7 +131,6 @@ namespace fsw
           return new M(paths, callback, context);
         };
 
-      monitor_factory::register_type(name, type);
       monitor_factory::register_creator(name, default_creator);
     }
   };

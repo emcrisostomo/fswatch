@@ -222,13 +222,6 @@ namespace fsw
     this->run();
   }
 
-  map<string, fsw_monitor_type> & monitor_factory::type_by_string()
-  {
-    static map<string, fsw_monitor_type> type_by_string_map;
-
-    return type_by_string_map;
-  };
-
   map<string, FSW_FN_MONITOR_CREATOR> & monitor_factory::creators_by_string()
   {
     static map<string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
@@ -251,15 +244,9 @@ namespace fsw
 
   bool monitor_factory::exists_type(const string & name)
   {
-    auto i = type_by_string().find(name);
+    auto i = creators_by_string().find(name);
 
-    return (i != type_by_string().end());
-  }
-
-  void monitor_factory::register_type(const string & name,
-                                      fsw_monitor_type type)
-  {
-    type_by_string()[name] = type;
+    return (i != creators_by_string().end());
   }
 
   void monitor_factory::register_creator(const string & name,
@@ -272,7 +259,7 @@ namespace fsw
   {
     vector<string> types;
 
-    for (auto & i : type_by_string())
+    for (auto & i : creators_by_string())
     {
       types.push_back(i.first);
     }
