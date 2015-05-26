@@ -48,7 +48,7 @@ namespace fsw
     void add_filter(const monitor_filter &filter);
     void set_filters(const std::vector<monitor_filter> &filters);
     void set_follow_symlinks(bool follow);
-    void * get_context();
+    void * get_context() const;
     void set_context(void * context);
     void start();
 
@@ -62,8 +62,8 @@ namespace fsw
                                     void * context = nullptr);
 
   protected:
-    bool accept_path(const std::string &path);
-    bool accept_path(const char *path);
+    bool accept_path(const std::string &path) const;
+    bool accept_path(const char *path) const;
 
     virtual void run() = 0;
 

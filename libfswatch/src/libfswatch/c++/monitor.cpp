@@ -112,12 +112,12 @@ namespace fsw
     follow_symlinks = follow;
   }
 
-  bool monitor::accept_path(const string &path)
+  bool monitor::accept_path(const string &path) const
   {
     return accept_path(path.c_str());
   }
 
-  bool monitor::accept_path(const char *path)
+  bool monitor::accept_path(const char *path) const
   {
 #ifdef HAVE_REGCOMP
     bool is_excluded = false;
@@ -138,7 +138,7 @@ namespace fsw
     return true;
   }
 
-  void * monitor::get_context()
+  void * monitor::get_context() const
   {
     return context;
   }
