@@ -48,7 +48,7 @@ namespace fsw
     void add_filter(const monitor_filter &filter);
     void set_filters(const std::vector<monitor_filter> &filters);
     void set_follow_symlinks(bool follow);
-    void * get_context();
+    void * get_context() const;
     void set_context(void * context);
     void start();
 
@@ -62,8 +62,8 @@ namespace fsw
                                     void * context = nullptr);
 
   protected:
-    bool accept_path(const std::string &path);
-    bool accept_path(const char *path);
+    bool accept_path(const std::string &path) const;
+    bool accept_path(const char *path) const;
 
     virtual void run() = 0;
 
@@ -82,6 +82,10 @@ namespace fsw
     std::vector<compiled_monitor_filter> filters;
   };
 
+  typedef monitor * (*FSW_FN_MONITOR_CREATOR)(std::vector<std::string> paths,
+    FSW_EVENT_CALLBACK * callback,
+    void * context);
+
   /*
    * This class maintains a register of the available monitors and let users
    * create monitors by name.  Monitors classes are required to register
@@ -98,12 +102,13 @@ namespace fsw
                                             void * context = nullptr);
     static std::vector<std::string> get_types();
     static bool exists_type(const std::string& name);
-    static void register_type(const std::string& name, fsw_monitor_type type);
+    static void register_creator(const std::string & name,
+                                 FSW_FN_MONITOR_CREATOR creator);
     monitor_factory() = delete;
     monitor_factory(const monitor_factory& orig) = delete;
     monitor_factory& operator=(const monitor_factory & that) = delete;
   private:
-    static std::map<std::string, fsw_monitor_type> & type_by_string();
+    static std::map<std::string, FSW_FN_MONITOR_CREATOR> & creators_by_string();
   };
 
   /*
@@ -111,10 +116,23 @@ namespace fsw
    * (name, type) pair in the monitor_factory registry.  This class is used by
    * the REGISTER_MONITOR and REGISTER_MONITOR_IMPL macros.
    */
+  template<class M>
   class monitor_registrant
   {
   public:
-    monitor_registrant(const std::string & name, fsw_monitor_type type);
+
+    monitor_registrant(const std::string & name, fsw_monitor_type type)
+    {
+      FSW_FN_MONITOR_CREATOR default_creator =
+        [](std::vector<std::string> paths,
+        FSW_EVENT_CALLBACK * callback,
+        void * context = nullptr) -> monitor *
+        {
+          return new M(paths, callback, context);
+        };
+
+      monitor_factory::register_creator(name, default_creator);
+    }
   };
 
   /*
@@ -143,7 +161,7 @@ namespace fsw
    */
 #  define REGISTER_MONITOR(classname, monitor_type) \
 private: \
-static const monitor_registrant monitor_factory_registrant;
+static const monitor_registrant<classname> monitor_factory_registrant;
 
   /*
    * This macro is used to simplify the registration process of a monitor
@@ -163,7 +181,7 @@ static const monitor_registrant monitor_factory_registrant;
    * REGISTER_MONITOR_IMPL(my_monitor, my_monitor_type);
    */
 #  define REGISTER_MONITOR_IMPL(classname, monitor_type) \
-const monitor_registrant classname::monitor_factory_registrant(#classname, monitor_type);
+const monitor_registrant<classname> classname::monitor_factory_registrant(#classname, monitor_type);
 }
 
 #endif  /* FSW__MONITOR_H */
