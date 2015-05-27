@@ -91,7 +91,6 @@ namespace fsw
                                     std::vector<std::string> paths,
                                     FSW_EVENT_CALLBACK * callback,
                                     void * context = nullptr);
-
     static monitor * create_monitor(const std::string & name,
                                     std::vector<std::string> paths,
                                     FSW_EVENT_CALLBACK * callback,

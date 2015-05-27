@@ -264,7 +264,7 @@ The monitor is configured according to the user needs (@pxref{Monitors}).
 The monitor is @emph{run} and change events are waited for.
 @end itemize
 
-@section Monitor Registration and Discovery
+@section Monitor Discovery
 @anchor{Monitor Registration and Discovery} Since multiple monitor
 implementations exist and the caller potentially ignores which monitors will be
 available at run time, there must exist a way to query the @acronym{API} for the
@@ -272,19 +272,17 @@ list of available monitor and request a particular instance.  The
 @command{monitor_factory} is an object factory class that provides basic monitor
 @emph{registration} and @emph{discovery} functionality: @acronym{API} clients
 can query the monitor registry to get a list of available monitors and get an
-instance of one by @emph{type} or @emph{name}.
+instance of a monitor by @emph{type} or @emph{name}.
 
 The @command{monitor_factory} class provides the following methods:
 
 @table @command
-@item static monitor * create_default_monitor
-Creates a monitor of the default monitor type for the current platform with the
-specified constructor parameters (@pxref{Monitors}).
 
 @item static monitor * create_monitor
 Creates a monitor of the specified type with the specified constructor
-parameters (@pxref{Monitors}).  If the named monitor is not available, then
-return @command{nullptr}.
+parameters (@pxref{Monitors}).  A monitor of the platform default type can be
+created if @command{fsw_monitor_type::system_default_monitor_type}.  If the
+named monitor is not available, then return @command{nullptr}.
 
 @item static monitor * create_monitor_by_name
 Creates a monitor of the specified type (by @var{name}) and constructor
@@ -302,14 +300,80 @@ Query whether the specified monitor exists.
 Register a monitor type in the list of available implementations.
 @end table
 
-@section Monitors
-@anchor{Monitors}
-To do.
+@section Monitor Registration
+In order for monitor types to be visible to the factory they have to be
+registered.  Currently they can be registered using two helper macros, defined
+in @file{monitor.h}:
 
-The @command{monitor} class is central in the C++ @acronym{API}: it defines the
-`contract' of every monitor and provides the means to create them.  A monitor is
-a @emph{backend} which implements file monitoring using a specific @acronym{API}
-or technique.
+@table @command
+@item REGISTER_MONITOR(classname, monitor_type)
+This macro must be invoked into a class' header file and must be passed the
+class name and the monitor type.
+
+@item REGISTER_MONITOR_IMPL(classname, monitor_type)
+This macro must be invoked into a class' source file and must be passed the
+class name and the monitor type.
+@end table
+
+The same monitor type cannot be used to register multiple monitor
+implementations.  No checks are in place to detect this situation and the
+registration will succeed; however, the registration process of multiple monitor
+implementations for the same monitor type is not deterministic.
+
+@section Monitors
+@anchor{Monitors} The @command{monitor} class is the fundamental type of the C++
+@acronym{API}: it defines the interface of every monitor and provides common
+functionality to inheritors of this class.
+
+The public interface of a monitor is the following:
+
+@example
+class monitor
+@{
+public:
+  monitor(std::vector<std::string> paths,
+          FSW_EVENT_CALLBACK * callback,
+          void * context = nullptr);
+  monitor(const monitor& orig) = delete;
+  monitor& operator=(const monitor & that) = delete;
+
+  virtual ~monitor();
+
+  void set_latency(double latency);
+  void set_recursive(bool recursive);
+  void add_filter(const monitor_filter &filter);
+  void set_filters(const std::vector<monitor_filter> &filters);
+  void set_follow_symlinks(bool follow);
+  void * get_context() const;
+  void set_context(void * context);
+  void start();
+@}
+@end example
+
+A monitor is an abstract type with the following characteristics:
+@itemize
+@item
+It cannot be copied.
+
+@item
+It cannot be assigned.
+
+@item
+It is an abstract type because it declared the following pure virtual function:
+@example
+protected:
+virtual void run() = 0;
+@end example
+
+@end itemize
+
+@subsection Business Interface
+To do
+
+@table @command
+@item To do.
+To do.
+@end table
 
 @node The C API
 @chapter The C @acronym{API}
