@@ -430,6 +430,72 @@ function.
 
 @end table
 
+@noindent
+Since it contains a pure virtual function, @command{run()}, the
+@command{monitor} class is abstract.  Inheritors are required to provide an
+implementation of the @command{run()} function containing the monitor
+logic and its `event loop'.
+
+@subsubsection The Anatomy of a Typical Monitor
+The anatomy of monitors is typically very similar and it can be illustrated with
+the following algorithm (written in pseudo-code):
+
+@example
+void run()
+@{
+  initialize_api();
+
+  while (true)
+  @{
+    scan_paths();
+    wait_for_events(latency);
+    vector<change_events> evts = get_changes();
+    vector<event> events;
+
+    for (auto & evt : evts)
+    @{
+      if (accept(evt.get_path))
+      @{
+        events.push_back(@{event from evt@});
+      @}
+    @}
+
+    if (events.size())
+    @{
+      callback(events, context);
+    @}
+  @}
+@}
+@end example
+
+Despite being a minimal implementation, this algorithm exemplifies the common
+tasks performed by a monitor:
+
+@itemize
+@item
+It initializes the @acronym{API} it uses to detect file system change events.
+
+@item
+It enters a loop, often infinite, where change events are waited for.
+
+@item
+It scans the paths that must be observed: this step might be necessary for
+example because some path may not have existed during the loop's previous
+iteration, or because some @acronym{API} may require the user to re-register a
+watch on a path after events are retrieved.
+
+@item
+Events are waited for and the wait should last approximately the @var{latency}
+configured into the monitor.
+
+@item
+Events are filtered to exclude those that refer to paths that do not satisfy the
+filters of the monitor.
+
+@item
+The callback is invoked to notify the caller.
+@end itemize
+
 @node The C API
 @chapter The C @acronym{API}
 
