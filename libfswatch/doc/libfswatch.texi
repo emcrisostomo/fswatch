@@ -72,6 +72,7 @@ included in the section entitled `GNU Free Documentation License'.
 * GNU Free Documentation License::
 * Index of Command Line Options::
 * Index::
+
 @end menu
 
 @node Introduction
@@ -99,34 +100,58 @@ any operating system where @command{stat} can be used.
 
 The first releases of @command{fswatch} were monolithic, self-contained binaries
 whose output was typically piped to other application for processing.  Given the
-nature of the features provided by @command{fswatch}, however, a need was
-recognized to expose this functionality through a library and the
-@command{libfswatch} package was born.
+nature of the features provided by @command{fswatch}, however, we recognized the
+need to expose this functionality through a library and the @command{libfswatch}
+package was born.
 
-Currently, all the core functionality of @command{fswatch} is exposed by the
-@command{libfswatch} library and @command{fswatch} itself is now built upon it.
+@command{fswatch} is now built upon it and all its functionality is provided by
+the @command{libfswatch} library, with the exception perhaps of some formatting
+routines printing results to the standard output.
 
 @section Available Bindings
 @command{libfswatch} is a C++ library with C bindings which makes it available
 to a wide range of programming languages.  If a programming language has C
-bindings, then @command{libfswatch} will be usable.  The C binding provides all
-the functionality provided by the C++ implementation and it is to be used unless
-when linking from a C++ program.
+bindings, then @command{libfswatch} can be used from it.  The C binding provides
+all the functionality provided by the C++ implementation and it can be used as a
+fallback solution when the C++ @acronym{API} cannot be used.
 
 @section Relation between @command{fswatch} and @command{libfswatch}
 Although @command{fswatch} uses functionality provided by @command{libfswatch}
 and depends on it, @command{libfswatch} is currently a package nested into
 @command{fswatch}.  If either component is updated, the whole package is, as
-well as version numbers are.
+well as their version numbers are.  From the @acronym{GNU} Build System point of
+view, the package version of @command{libfswatch} is always kept in sync with
+@command{fswatch}'s.
 
-Currently, from the GNU Build System point of view, @command{libfswatch} version
-is always kept in sync with @command{fswatch}.  The library @acronym{API}
-version, however, @emph{is not}, and it is the only piece of information that
-should be kept into account when linking against @command{libfswatch}.
+The library @acronym{API} version, however, @emph{is not}, and it is the only
+piece of information that should be kept into account when linking against
+@command{libfswatch}.  Since we use @command{libtool} to build
+@command{libfswatch}, we adopt @command{libtool}'s versioning scheme for library
+interface versions.
+
+@subsection @command{libtool}'s versioning scheme
+@command{libtool}'s versioning scheme is described by three integers
+@example
+current:revision:age
+@end example
+where:
+@itemize
+@item
+@command{current} is the most recent interface number implemented by the
+library.
+
+@item
+@command{revision} is the implementation number of the current interface.
+
+@item
+@command{age} is the difference between the newest and the oldest interface that
+the library implements.
+@end itemize
 
 @section The C and the C++ @acronym{API}
-Given the differences between the two languages, the C and the C++ @acronym{API}
-are different, although functionally equivalent.
+The C @acronym{API} is built on top of the C++ @acronym{API} but the two are
+very different and the main difference reflect the differences between the two
+languages.
 
 The C++ @acronym{API} centres on the concept of @emph{monitor}, a class of
 objects modelling the functionality of the file monitoring @acronym{API}.
@@ -139,8 +164,9 @@ change events and communicates them back to the caller using a @emph{callback}.
 
 The C @acronym{API}, on the other hand, centres on the concept of
 @emph{monitoring session}.  A session internally wraps a monitor instance and
-represents an opaque C bridge to the monitor @acronym{API} through the functions
-of the library which take a session handle.  There is an evident similarity
+represents an opaque C bridge to the C++ monitor @acronym{API}.  Sessions are
+identified by a @emph{session handle} and they can be thought as a sort of C
+`fa@,{c}ade' of the C++ monitor class.  In fact there is an evident similarity
 between the C library functions operating on a monitoring session and the
 methods of the @command{monitor} class.
 
@@ -183,11 +209,11 @@ found when building @command{libfswatch} the library will still build, but those
 guarantees will @emph{not} be honoured.  A warning such as the following will
 appear in @command{configure}'s output to inform the user:
 
-@example
+@smallexample
 configure: WARNING: libfswatch is not thread-safe because the current
-combination of compiler and libraries do not support the thread_local storage
-specifier.
-@end example
+combination of compiler and libraries do not support the thread_local
+storage specifier.
+@end smallexample
 
 @noindent
 @xref{Thread-Safety of the C @acronym{API}}.
@@ -205,8 +231,8 @@ please report them as new issues in the official GitHub repository of
 with you may contact the authors at the addresses listed in the @file{AUTHORS}
 file.
 
-When reporting a bug, please be sure to include as much detail as possible, in
-order to reproduce it.
+When reporting a bug, please be sure to include as much detail as possible and
+sufficient information to reproduce it.
 
 @node The C++ API
 @chapter The C++ @acronym{API}
@@ -217,13 +243,14 @@ that not only greatly simplifies their usage, but provides an indirection layer
 that makes applications more portable: as far as there is an available monitor
 in another platform, an existing application will @emph{just} work.
 
-In reality, there still are some monitor's peculiarities that complicate the
-task of writing an application completely agnostic about the file monitoring
-@acronym{API} it is actually using.  However, monitors try to `compensate' for
-any behavioural difference across implementations and they are expected to
-converge further when newer versions are released.
+In reality, a monitor may have platform-specific behaviours that should be taken
+into account when writing portable applications using this library.  This
+differences complicate the task of writing portable applications that are truly
+independent of the file monitoring @acronym{API} they may be using.  However,
+monitors try to `compensate' for any behavioural difference across
+implementations.
 
-The typical @acronym{API} usage is similar to the following:
+The typical @acronym{API} usage pattern is similar to the following:
 
 @itemize
 @item
@@ -234,26 +261,35 @@ factory (@pxref{Monitor Registration and Discovery}).
 The monitor is configured according to the user needs (@pxref{Monitors}).
 
 @item
-The monitor is @emph{run} and change events are waited for
+The monitor is @emph{run} and change events are waited for.
 @end itemize
 
 @section Monitor Registration and Discovery
-@anchor{Monitor Registration and Discovery} Since there exist multiple monitor
-implementations and the caller may potentially ignore which monitors will be
-available at run time, there must exist a way to query the @acronym{API} the
-list of available implementations and request a particular instance.  The
-@command{monitor_factory} is an utility class that provides basic monitor
+@anchor{Monitor Registration and Discovery} Since multiple monitor
+implementations exist and the caller potentially ignores which monitors will be
+available at run time, there must exist a way to query the @acronym{API} for the
+list of available monitor and request a particular instance.  The
+@command{monitor_factory} is an object factory class that provides basic monitor
 @emph{registration} and @emph{discovery} functionality: @acronym{API} clients
-can query the monitor registry, get a list of available monitors and get an
-instance of one of them.
+can query the monitor registry to get a list of available monitors and get an
+instance of one by @emph{type} or @emph{name}.
 
 The @command{monitor_factory} class provides the following methods:
 
 @table @command
+@item static monitor * create_default_monitor
+Creates a monitor of the default monitor type for the current platform with the
+specified constructor parameters (@pxref{Monitors}).
+
+@item static monitor * create_monitor
+Creates a monitor of the specified type with the specified constructor
+parameters (@pxref{Monitors}).  If the named monitor is not available, then
+return @command{nullptr}.
+
 @item static monitor * create_monitor_by_name
-Creates the monitor with the given @var{name} and constructor parameters
-(@pxref{Monitors}).  If the named monitor is not available, then return
-@command{nullptr}.
+Creates a monitor of the specified type (by @var{name}) and constructor
+parameters (@pxref{Monitors}).  If the named monitor is not available, then
+return @command{nullptr}.
 
 @item static std::vector<std::string> get_types()
 Get the list of available monitor types.  The type name can then be used to get
