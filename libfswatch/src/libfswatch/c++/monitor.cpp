@@ -121,17 +121,17 @@ namespace fsw
   {
 #ifdef HAVE_REGCOMP
     bool is_excluded = false;
-    
+
     for (auto &filter : filters)
     {
       if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
         if (filter.type == fsw_filter_type::filter_include) return true;
-        
+
         is_excluded = (filter.type == fsw_filter_type::filter_exclude);
       }
     }
-    
+
     if (is_excluded) return false;
 #endif
 
@@ -161,8 +161,8 @@ namespace fsw
   }
 
   monitor * monitor_factory::create_default_monitor(vector<string> paths,
-                                            FSW_EVENT_CALLBACK * callback,
-                                            void * context)
+                                                    FSW_EVENT_CALLBACK * callback,
+                                                    void * context)
   {
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
     return new fsevents_monitor(paths, callback, context);
@@ -176,9 +176,9 @@ namespace fsw
   }
 
   monitor * monitor_factory::create_monitor(fsw_monitor_type type,
-                                    vector<string> paths,
-                                    FSW_EVENT_CALLBACK * callback,
-                                    void * context)
+                                            vector<string> paths,
+                                            FSW_EVENT_CALLBACK * callback,
+                                            void * context)
   {
     switch (type)
     {
@@ -229,10 +229,10 @@ namespace fsw
     return creator_by_string_map;
   }
 
-  monitor * monitor_factory::create_monitor_by_name(const string & name,
-                                                    vector<string> paths,
-                                                    FSW_EVENT_CALLBACK * callback,
-                                                    void * context)
+  monitor * monitor_factory::create_monitor(const string & name,
+                                            vector<string> paths,
+                                            FSW_EVENT_CALLBACK * callback,
+                                            void * context)
   {
     auto i = creators_by_string().find(name);
 

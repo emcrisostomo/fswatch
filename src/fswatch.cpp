@@ -473,9 +473,9 @@ static void start_monitor(int argc, char ** argv, int optind)
   }
 
   if (mflag)
-    active_monitor = fsw::monitor_factory::create_monitor_by_name(monitor_name,
-                                                                  paths,
-                                                                  process_events);
+    active_monitor = fsw::monitor_factory::create_monitor(monitor_name,
+                                                          paths,
+                                                          process_events);
   else
     active_monitor = fsw::monitor_factory::create_default_monitor(paths,
                                                                   process_events);
@@ -610,7 +610,7 @@ static void parse_opts(int argc, char ** argv)
     case 'M':
       list_monitor_types(cout);
       ::exit(FSW_EXIT_OK);
-      
+
     case 'm':
       mflag = true;
       monitor_name = string(optarg);

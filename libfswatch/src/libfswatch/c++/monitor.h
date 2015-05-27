@@ -96,10 +96,10 @@ namespace fsw
                                     FSW_EVENT_CALLBACK * callback,
                                     void * context = nullptr);
 
-    static monitor * create_monitor_by_name(const std::string & name,
-                                            std::vector<std::string> paths,
-                                            FSW_EVENT_CALLBACK * callback,
-                                            void * context = nullptr);
+    static monitor * create_monitor(const std::string & name,
+                                    std::vector<std::string> paths,
+                                    FSW_EVENT_CALLBACK * callback,
+                                    void * context = nullptr);
     static std::vector<std::string> get_types();
     static bool exists_type(const std::string& name);
     static void register_creator(const std::string & name,
