@@ -160,9 +160,9 @@ namespace fsw
 #endif
   }
 
-  monitor * monitor_factory::create_default_monitor(vector<string> paths,
-                                                    FSW_EVENT_CALLBACK * callback,
-                                                    void * context)
+  static monitor * create_default_monitor(vector<string> paths,
+                                          FSW_EVENT_CALLBACK * callback,
+                                          void * context)
   {
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
     return new fsevents_monitor(paths, callback, context);
@@ -183,7 +183,7 @@ namespace fsw
     switch (type)
     {
     case system_default_monitor_type:
-      return monitor_factory::create_default_monitor(paths, callback, context);
+      return create_default_monitor(paths, callback, context);
 
     case fsevents_monitor_type:
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)

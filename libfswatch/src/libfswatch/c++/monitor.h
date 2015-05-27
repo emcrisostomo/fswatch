@@ -87,10 +87,6 @@ namespace fsw
   class monitor_factory
   {
   public:
-    static monitor * create_default_monitor(std::vector<std::string> paths,
-                                            FSW_EVENT_CALLBACK * callback,
-                                            void * context = nullptr);
-
     static monitor * create_monitor(fsw_monitor_type type,
                                     std::vector<std::string> paths,
                                     FSW_EVENT_CALLBACK * callback,

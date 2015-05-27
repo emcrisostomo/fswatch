@@ -477,8 +477,9 @@ static void start_monitor(int argc, char ** argv, int optind)
                                                           paths,
                                                           process_events);
   else
-    active_monitor = fsw::monitor_factory::create_default_monitor(paths,
-                                                                  process_events);
+    active_monitor = fsw::monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
+                                                          paths,
+                                                          process_events);
 
   /* 
    * libfswatch supports case sensitivity and extended flags to be set on any
