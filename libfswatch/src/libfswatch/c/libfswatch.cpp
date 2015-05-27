@@ -229,10 +229,10 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     context_ptr->handle = session->handle;
     context_ptr->data = session->data;
 
-    monitor * current_monitor = monitor::create_monitor(type,
-                                                        session->paths,
-                                                        libfsw_cpp_callback_proxy,
-                                                        context_ptr);
+    monitor * current_monitor = monitor_factory::create_monitor(type,
+                                                                session->paths,
+                                                                libfsw_cpp_callback_proxy,
+                                                                context_ptr);
     session->monitor = current_monitor;
   }
   catch (libfsw_exception ex)

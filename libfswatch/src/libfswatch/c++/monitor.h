@@ -52,15 +52,6 @@ namespace fsw
     void set_context(void * context);
     void start();
 
-    static monitor * create_default_monitor(std::vector<std::string> paths,
-                                            FSW_EVENT_CALLBACK * callback,
-                                            void * context = nullptr);
-
-    static monitor * create_monitor(fsw_monitor_type type,
-                                    std::vector<std::string> paths,
-                                    FSW_EVENT_CALLBACK * callback,
-                                    void * context = nullptr);
-
   protected:
     bool accept_path(const std::string &path) const;
     bool accept_path(const char *path) const;
@@ -96,6 +87,15 @@ namespace fsw
   class monitor_factory
   {
   public:
+    static monitor * create_default_monitor(std::vector<std::string> paths,
+                                            FSW_EVENT_CALLBACK * callback,
+                                            void * context = nullptr);
+
+    static monitor * create_monitor(fsw_monitor_type type,
+                                    std::vector<std::string> paths,
+                                    FSW_EVENT_CALLBACK * callback,
+                                    void * context = nullptr);
+
     static monitor * create_monitor_by_name(const std::string & name,
                                             std::vector<std::string> paths,
                                             FSW_EVENT_CALLBACK * callback,
