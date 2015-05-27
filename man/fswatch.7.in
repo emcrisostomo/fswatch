@@ -160,6 +160,9 @@ Print the version of
 and exits.
 .It Fl x, -event-flags
 Prints the event flags.
+.It Fl -event-flag-separator Ar separator
+Print event flags using the specified
+.Ar separator .
 .El
 .Sh MONITORS
 .Nm
