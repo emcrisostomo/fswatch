@@ -350,7 +350,8 @@ public:
 @}
 @end example
 
-A monitor is an abstract type with the following characteristics:
+@noindent
+A monitor is thus a type with the following characteristics:
 @itemize
 @item
 It cannot be copied.
@@ -359,20 +360,74 @@ It cannot be copied.
 It cannot be assigned.
 
 @item
-It is an abstract type because it declared the following pure virtual function:
-@example
-protected:
-virtual void run() = 0;
-@end example
-
+It is disegned for extension.
 @end itemize
 
 @subsection Business Interface
-To do
+The business interface of the @command{monitor} class is the following:
 
 @table @command
-@item To do.
-To do.
+@item void set_latency(double latency);
+
+This function sets the latency of the monitor in seconds.  This method only sets
+the latency value.  The exact meaning of latency and how it is enforced depends
+on a monitor implementation.
+
+@item void set_recursive(bool recursive);
+
+This function sets the @command{recursive} flag of the monitor to indicate whether
+the monitor should recursively observe the contents of directories.
+
+@item void add_filter(const monitor_filter &filter);
+
+This function adds a @command{monitor_filter} instance to the filter list of the
+current monitor.
+
+@item void set_filters(const std::vector<monitor_filter> &filters);
+
+This function sets the filter list of the current monitor, substituting existing
+filter if any.
+
+@item void set_follow_symlinks(bool follow);
+
+This function sets the @command{follow_symlinks} flag of the monitor to indicate
+whether the monitor should follow observed symbolic links or observe the links
+themselves.
+
+@item void * get_context() const;
+
+This function gest the pointer to the context data that is passed to the
+callback by the monitor.
+
+@item void set_context(void * context);
+
+This function sets the pointer to the context data that is passed to the
+callback by the monitor.
+
+@item void start();
+
+This function starts the monitor so that it begins listening to file system
+change events.
+
+@end table
+
+@subsection Implementing Monitors
+@command{monitor} is a class that declares the following protected functions:
+
+@table @command
+@item bool accept_path(const std::string &path) const
+This function checks whether the specified @command{path} can be accepted
+according to the list of filters of the monitor.
+
+@item bool accept_path(const char *path) const
+This function checks whether the specified @command{path} can be accepted
+according to the list of filters of the monitor.
+
+@item virtual void run() = 0
+This pure virtual function shall contain the logic of a monitor implementation.
+This function will be invoked by the monitor's @command{start} @acronym{API}
+function.
+
 @end table
 
 @node The C API
