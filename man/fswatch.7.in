@@ -31,7 +31,7 @@ This man page is a stub.  Please, consult the official TeXinfo documentation
 shipped with @FSWATCH@.
 .Sh SYNOPSIS
 .Nm @FSWATCH@
-.Op Fl 0EhILmnortuvx
+.Op Fl 01EhILMmnortuvx
 .Op Fl e Ar regexp
 .Op Fl f Ar format-time
 .Op Fl i Ar regexp
@@ -86,6 +86,12 @@ Use the ASCII NUL character (\e0) as line separator.  Since file names can
 potentially contain any character but NUL, this option assures that the output
 of @FSWATCH@ can be safely parsed using NUL as delimiter, such as using xargs -0
 and the shell builtin read -d ''.
+.It Fl 1, -one-event
+Exit fswatch after the first set of events is received.
+.It Fl -batch-marker Ar marker
+Print a marker at the end of every batch.  An optional marker
+.Ar marker
+can be specified to override its default value `NoOp'.
 .It Fl e, -exclude Ar regexp
 Exclude paths matching
 .Ar regexp .
