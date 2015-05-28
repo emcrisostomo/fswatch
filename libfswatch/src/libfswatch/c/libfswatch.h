@@ -34,6 +34,8 @@ extern "C"
 
 #  if defined(HAVE_CXX_THREAD_LOCAL)
 #    define FSW_THREAD_LOCAL thread_local
+#  else
+#    define FSW_THREAD_LOCAL  
 #  endif
 
   /*
@@ -88,7 +90,7 @@ extern "C"
    * returns FSW_OK, otherwise the initialization routine failed and the library
    * should not be usable.
    */
-  int fsw_init_library();
+  FSW_STATUS fsw_init_library();
 
   /*
    * This function creates a new monitor session using the specified monitor
@@ -159,7 +161,10 @@ extern "C"
    * Gets the last error code.
    */
   FSW_STATUS fsw_last_error();
-  // TODO: implement function to signal a monitor to stop.
+
+  /*
+   * Check whether the verbose mode is active.
+   */
   bool fsw_is_verbose();
 
 #  ifdef __cplusplus

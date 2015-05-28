@@ -71,9 +71,7 @@ static fsw_hash_map<FSW_HANDLE, mutex *> session_mutexes;
 static std::mutex session_mutex;
 #endif
 
-#if defined(HAVE_CXX_THREAD_LOCAL)
 static FSW_THREAD_LOCAL unsigned int last_error;
-#endif
 
 // Default library callback.
 static FSW_EVENT_CALLBACK libfsw_cpp_callback_proxy;
@@ -86,7 +84,7 @@ static FSW_STATUS fsw_set_last_error(const int error);
  * Library initialization routine.  Currently, libfswatch only initializes
  * gettext.
  */
-int fsw_init_library()
+FSW_STATUS fsw_init_library()
 {
   // Trigger gettext operations
 #ifdef ENABLE_NLS
@@ -507,20 +505,14 @@ FSW_SESSION * get_session(const FSW_HANDLE handle)
 
 int fsw_set_last_error(const int error)
 {
-#if defined(HAVE_CXX_THREAD_LOCAL)
   last_error = error;
-#endif
 
-  return error;
+  return last_error;
 }
 
 int fsw_last_error()
 {
-#if defined(HAVE_CXX_THREAD_LOCAL)
   return last_error;
-#else
-  return fsw_set_last_error(FSW_ERR_UNSUPPORTED_OPERATION);
-#endif
 }
 
 bool fsw_is_verbose()
