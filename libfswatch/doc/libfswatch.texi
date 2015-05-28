@@ -61,7 +61,7 @@ included in the section entitled `GNU Free Documentation License'.
 
 @ifnottex
 @node Top
-@top fswatch
+@top libfswatch
 @insertcopying
 @end ifnottex
 
@@ -214,9 +214,6 @@ configure: WARNING: libfswatch is not thread-safe because the current
 combination of compiler and libraries do not support the thread_local
 storage specifier.
 @end smallexample
-
-@noindent
-@xref{Thread-Safety of the C @acronym{API}}.
 
 @section Reporting Bugs and Suggestions
 @anchor{Reporting Bugs and Suggestions}
@@ -449,6 +446,7 @@ void run()
   @{
     scan_paths();
     wait_for_events(latency);
+
     vector<change_events> evts = get_changes();
     vector<event> events;
 
@@ -496,11 +494,203 @@ filters of the monitor.
 The callback is invoked to notify the caller.
 @end itemize
 
+@section Events
+Events are modeled by the @command{fsw::event} class:
+
+@example
+class event
+@{
+public:
+  event(std::string path,
+        time_t evt_time,
+        std::vector<fsw_event_flag> flags);
+  virtual ~event();
+  std::string get_path() const;
+  time_t get_time() const;
+  std::vector<fsw_event_flag> get_flags() const;
+
+private:
+  std::string path;
+  time_t evt_time;
+  std::vector<fsw_event_flag> evt_flags;
+@};
+@end example
+
+@noindent
+The @command{event} class provides a simple and uniform representation of an
+event to all the @acronym{API}.  An event has got the following characteristics:
+
+@itemize
+@item
+The @var{path} it relates to.
+
+@item
+The timestamp @var{evt_time} of the moment the event was raised.
+
+@item
+The list event @var{flags} (@pxref{Event Flags}).
+
+@end itemize
+
+@noindent
+Currently the @acronym{API} provides no way for monitor implementors to provide
+additional, monitor-dependent fields to an event.  Since the @acronym{API}
+stores events by value into collections (such as @command{vector}), an extended
+event would be @emph{sliced} and additional fields would be lost.
+
+@section Filters
+Filters are regular expression used to accept or reject file change events based
+on the value of their path.  A filter is represented by the
+@command{fsw::monitor_filter} type:
+
+@example
+typedef struct monitor_filter
+@{
+  std::string text;
+  fsw_filter_type type;
+  bool case_sensitive;
+  bool extended;
+@} monitor_filter;
+@end example
+
+
+@noindent
+and has the following characteristics:
+
+@table @command
+@item text
+The regular expression used to match paths.
+
+@item type
+The filter type can either be an @emph{inclusion} or @emph{exclusion} filter.
+
+@item case_sensitive
+A flag indicating the filter case sensitivitiy.
+
+@item extended
+A flag indicating whether @command{text} is an extended regular expression.
+@end table
+
+@subsection Filter Types
+A filter type determine whether the filter regular expression is used to include
+and exclude paths from the list of the events processed by the
+library.  @command{libfswatch} processes filters this way:
+
+@itemize
+@item
+If a path matches an including filter, the path is accepted no matter any other filter.
+
+@item
+If a path matches an excluding filter, the path is rejected.
+
+@item
+If a path matches no filters, the path is accepted.
+@end itemize
+
+@noindent
+Said another way:
+
+@itemize
+@item
+All paths are accepted by default, unless an exclusion filter says other- wise.
+
+@item
+Inclusion filters may override any other exclusion filter.
+
+@item
+The order in the definition of filters has no effect.
+@end itemize
+
+The @command{fswatch} Info documentation has a user-oriented discussion of how
+filters are used.
+
 @node The C API
 @chapter The C @acronym{API}
 
-@section Thread-Safety of the C @acronym{API}
-@anchor{Thread-Safety of the C @acronym{API}}
+@section Event Flags
+@anchor{Event Flags} Events flags are @command{enum} values shared by both the
+C++ and the C @acronym{API}.  The values of event flags are power of 2, that is
+numbers @math{f} in the form @math{f = 2^n} where @math{n} is an integer.  This
+representation makes it easy to combine flags into a bit mask and encode
+multiple events flags into a single integer.  The @command{fsw_event_flag}
+enumeration currently includes the following values:
+
+@table @command
+@item NoOp
+@itemx 0
+This event flag is used as a marker.
+
+@item PlatformSpecific
+@itemx 1 << 0
+This event flag represents a platform-specific flag that is not encoded as any
+other event flag by the @acronym{API}.
+
+@item Created
+@itemx 1 << 1
+This event flag represents a file creation creation event.
+
+@item Updated
+@itemx 1 << 2
+This event flag represents a file update update event.
+
+@item Removed
+@itemx 1 << 3
+This event flag represents a file removal event.
+
+@item Renamed
+@itemx 1 << 4
+This event flag represents a file rename event.
+
+@item OwnerModified
+@itemx 1 << 5
+This event flag represents a file owner modification event.
+
+@item AttributeModified
+@itemx 1 << 6
+This event flag represents a file attribute modification event.
+
+@item MovedFrom
+@itemx 1 << 7
+This event flag represents a file rename event.
+
+@item MovedTo
+@itemx 1 << 8
+This event flag represents a file rename event.
+
+@item IsFile
+@itemx 1 << 9
+This event flag indicates that the modified object is a regular file.
+
+@item IsDir
+@itemx 1 << 10
+This event flag indicates that the modified object is a directory.
+
+@item IsSymLink
+@itemx 1 << 11
+This event flag indicates that the modified object is a symbolic link.
+
+@item Link
+@itemx 1 << 12
+This event flag represents a file link event.
+@end table
+
+A monitor implementation is required to map implementation-specific flags into
+@acronym{API} flags.  Sometimes, though, a perfect match is not possible and
+the following situation may arise:
+
+@itemize
+@item
+One platform-specific flag must be mapped into multiple @acronym{API} flags.
+
+@item
+Multiple platform-specific flags must be mapped into a single @acronym{API}
+flag.
+
+@item
+A mapping is not possible for some flags, in which case they should be mapped to
+the @command{PlatformSpecific} @acronym{API} flags.  The @acronym{API} currently
+offers no way to retain a platform-specific event flag value in this case.
+@end itemize
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
