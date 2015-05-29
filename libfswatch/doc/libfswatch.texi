@@ -255,7 +255,7 @@ The typical @acronym{API} usage pattern is similar to the following:
 @itemize
 @item
 An instance of a @code{monitor} is either created directly or through the
-factory (@pxref{Monitor Registration and Discovery}).
+factory (@pxref{Monitor Discovery}).
 
 @item
 The monitor is configured according to the user needs (@pxref{Monitors}).
@@ -265,7 +265,7 @@ The monitor is @emph{run} and change events are waited for.
 @end itemize
 
 @section Monitor Discovery
-@anchor{Monitor Registration and Discovery} Since multiple monitor
+@anchor{Monitor Discovery} Since multiple monitor
 implementations exist and the caller potentially ignores which monitors will be
 available at run time, there must exist a way to query the @acronym{API} for the
 list of available monitor and request a particular instance.  The
@@ -497,7 +497,7 @@ The callback is invoked to notify the caller.
 @end itemize
 
 @section Events
-Events are modeled by the @code{fsw::event} class:
+@anchor{Events} Events are modeled by the @code{fsw::event} class:
 
 @example
 class event
@@ -541,8 +541,8 @@ stores events by value into collections (such as @code{vector}), an extended
 event would be @emph{sliced} and additional fields would be lost.
 
 @section Filters
-Filters are regular expression used to accept or reject file change events based
-on the value of their path.  A filter is represented by the
+@anchor{Filters} Filters are regular expression used to accept or reject file
+change events based on the value of their path.  A filter is represented by the
 @code{fsw::monitor_filter} type:
 
 @example
@@ -620,10 +620,32 @@ effect the next time a monitor is started with @code{fsw_start_monitor}.
 Currently not all monitors supports being stopped, in which case
 @code{fsw_start_monitor} is a non-returning @acronym{API} call.
 
-@section Thread Safety
+@subsection Translating the C++ @acronym{API}
+The conventions used to translate C++ types into C types are rather common:
+
+@itemize
+@item
+@code{std::string} is represented as a @samp{NUL}-terminated @code{char *}.
+
+@item
+Lists are represented as arrays whose length is specified in a separate field:
+@code{flags_num} indicates how many elements are stored in the array pointed by
+@code{flags}.
+
+@item
+More complex types are usually translated as a @code{struct} containing data
+fields and a set of functions to operate on it.
+
+@end itemize
+
+@subsection Thread Safety
 If the compiler and the C++ library used to build @file{libfswatch} support the
 @code{thread_local} storage specified then this @acronym{API} is thread safe and
 a different state is maintained on a per-thread basis (@pxref{Thread Safety}).
+
+Even when @code{thread_local} is not available, manipulating different
+monitoring sessions in different threads concurrently is thread safe, since they
+share no data.
 
 @section Library Initialization
 Before calling any library method, the library must be initialized by calling
@@ -640,6 +662,7 @@ if (ret != FSW_OK)
 @end example
 
 @section Status Codes and Errors
+@anchor{Status Codes and Errors}
 Most @acronym{API} functions return a status code of type @code{FSW_STATUS}
 which can take any value specified in the @file{error.h} header.  A successful
 @acronym{API} call returns @code{FSW_OK} and the last error can be obtained
@@ -721,56 +744,82 @@ Unused.
 @end table
 
 @section Functions
-The library provides the following functions:
+The library provides the functions listed in the following table.  As seen in
+@xref{Status Codes and Errors}, functions return @code{FSW_OK} if they succeed,
+otherwise they return an error code.  Functions that modify an existing
+monitoring sessions accept the session handle of type @code{FSW_HANDLE}.
 
 @table @code
-@item FSW_STATUS fsw_init_library()
-a
+@item FSW_STATUS
+@itemx fsw_init_library()
+This function initializes the libfswatch library and must be invoked before any
+other calls to the C or C++ @acronym{API}.  If the function succeeds, it returns
+@code{FSW_OK}, otherwise the initialization routine failed and the library will
+not be usable.
 
-@item FSW_HANDLE fsw_init_session(const fsw_monitor_type type = system_default_monitor_type)
-b
+@item FSW_HANDLE
+@itemx fsw_init_session(const fsw_monitor_type type = system_default_monitor_type)
+This function creates a new monitor session using the specified monitor and
+returns an handle to it.  This function is the libfswatch @acronym{API} entry
+point.
 
-@item FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path)
-a
+@item FSW_STATUS
+@itemx fsw_add_path(const FSW_HANDLE handle, const char * path)
+Adds a path to watch to the specified session.  At least one path must be added
+to the current session in order for it to be valid.
 
-@item FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
-a
+@item FSW_STATUS
+@itemx fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
+Sets the callback the monitor invokes when some events are received
+(@pxref{Callbacks}) and an optional pointer to context data (@pxref{Context
+Data}).  The callback must be set in the current session in order for it to be
+valid.
 
-@item FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency);
-a
+@item FSW_STATUS
+@itemx fsw_set_latency(const FSW_HANDLE handle, const double latency);
+Sets the latency of the monitor.  By default, the latency is set to 1 second.
 
-@item FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool
-                              recursive)
-a
+@item FSW_STATUS
+@itemx fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
+Determines whether the monitor recursively scans each watched path or not.
+Recursive scanning is an optional feature which could not be implemented by all
+the monitors.  By default, recursive scanning is disabled.
 
-@item FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
-                                     const bool follow_symlinks)
-a
+@item FSW_STATUS
+@itemx fsw_set_follow_symlinks(const FSW_HANDLE handle, const bool follow_symlinks)
+Determines whether a symbolic link is followed or not.  By default, symbolic
+links are not followed.
 
-@item FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
-                            const fsw_cmonitor_filter filter)
-a
+@item FSW_STATUS
+@itemx fsw_add_filter(const FSW_HANDLE handle,const fsw_cmonitor_filter filter)
+Adds a filter to the current session.  A filter (@pxref{Filters}) is a regular
+expression that, depending on whether the filter type is exclusion or not, must
+or must not be matched for an event path for the event to be accepted.
 
-@item FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
-a
+@item FSW_STATUS
+@itemx fsw_start_monitor(const FSW_HANDLE handle)
+Starts the monitor if it is properly configured.  Depending on the type of
+monitor this call might return when a monitor is stopped or not.
 
-@item FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
-a
+@item FSW_STATUS
+@itemx fsw_destroy_session(const FSW_HANDLE handle)
+Destroys an existing session and invalidates its handle.
 
-@item FSW_STATUS fsw_last_error()
-a
+@item FSW_STATUS
+@itemx fsw_last_error()
+Gets the last error code.
 
-@item bool fsw_is_verbose()
-a
+@item bool
+@itemx fsw_is_verbose()
+Check whether the verbose mode is active.
 
 @end table
 
-
 @section Callbacks
-When a monitor receives change events satisfying all the session criteria, a
-callback provided by the user is invoked and passed a copy of the events; a
-function pointer of type @code{FSW_CEVENT_CALLBACK} is used by the @acronym{API}
-as a callback:
+@anchor{Callbacks} When a monitor receives change events satisfying all the
+session criteria, a callback provided by the user is invoked and passed a copy
+of the events; a function pointer of type @code{FSW_CEVENT_CALLBACK} is used by
+the @acronym{API} as a callback:
 
 @example
 typedef void (*FSW_CEVENT_CALLBACK)(
@@ -796,6 +845,39 @@ The callback is passed the following arguments:
 The memory used by the @code{fsw_cevent} objects will be freed at the end of the
 callback invocation.  A callback should copy such data instead of storing a
 pointer to it.
+
+@subsection Context Data
+@anchor{Context Data} A @emph{context} may be passed to the callback when events
+are received.  Context data may be useful to easily associate a `state' to each
+monitoring session.  A monitoring session does @emph{not} acquire ownership of
+the context data pointer; therefore, the following are responsibilities of the
+caller:
+
+@itemize
+@item
+To keep the pointer valid throughout the life of a monitoring session that
+shares this pointer.
+
+@item
+To free the pointed memory @emph{after} when the pointer is not shared with any
+monitoring session any longer.
+@end itemize
+
+@section Events in the C @acronym{API}
+@anchor{Events in the C @acronym{API}} The C @acronym{API} represents events as
+instances of the @code{fsw_cevent} structure which is an exact translation of
+the @code{fsw:event} type (@pxref{Events}) where C++ types and collections are
+represented by C friendly equivalent types:
+
+@example
+typedef struct fsw_cevent
+@{
+  char * path;
+  time_t evt_time;
+  fsw_event_flag * flags;
+  unsigned int flags_num;
+@} fsw_cevent;
+@end example
 
 @section Event Flags
 @anchor{Event Flags} Events flags are @code{enum} values shared by both the C++
@@ -882,8 +964,52 @@ the @code{PlatformSpecific} @acronym{API} flags.  The @acronym{API} currently
 offers no way to retain a platform-specific event flag value in this case.
 @end itemize
 
+@section Filters in the C @acronym{API}
+@anchor{Filters in the C @acronym{API}} The C @acronym{API} represents filters
+(@pxref{Filters}) as instances of the @code{fsw_cmonitor_filter} structure.
+This structure is a translation of the @code{monitor_filter} class using C
+equivalent types:
+
+@example
+enum fsw_filter_type
+@{
+  filter_include,
+  filter_exclude
+@};
+
+typedef struct fsw_cmonitor_filter
+@{
+  char * text;
+  fsw_filter_type type;
+  bool case_sensitive;
+  bool extended;
+@} fsw_cmonitor_filter;
+@end example
+
+@section Monitor Types
+The @code{fsw_monitor_type} enumeration contains a list of monitor types built
+into the @command{libfswatch} library:
+
+@example
+enum fsw_monitor_type
+@{
+  system_default_monitor_type = 0,
+  fsevents_monitor_type,
+  kqueue_monitor_type,
+  inotify_monitor_type,
+  poll_monitor_type
+@};
+@end example
+
+@noindent
+Members of this enumeration may be used with factory methods (@pxref{Monitor
+Discovery} provided by the @acronym{API} to request a monitor of a specific
+type.  The members of this enumeration must be known at compile time.
+
 @section Example
-To be valid, a  session needs at least the following information:
+This is a basic example of how a monitor session can be constructed and run
+using the C @acronym{API}.  To be valid, a session needs at least the following
+information:
 
 @itemize
 @item
@@ -894,8 +1020,8 @@ A @var{callback} to process the events sent by the monitor.
 @end itemize
 
 @noindent
-The next example shows how to create and start a basic monitoring session (error
-checking code was omitted):
+The next code fragment shows how to create and start a basic monitoring session
+(error checking code was omitted):
 
 @example
 // Initialize the library
@@ -903,9 +1029,9 @@ fsw_init_library();
 
 // Use the default monitor.
 const FSW_HANDLE handle = fsw_init_session();
-
 fsw_add_path(handle, "my/path");
 fsw_set_callback(handle, my_callback);
+
 fsw_start_monitor(handle);
 @end example
 
