@@ -173,9 +173,10 @@ between the C library functions operating on a monitoring session and the
 methods of the @code{monitor} class.
 
 @section Thread Safety
-The C++ @acronym{API} does not deal with thread safety explicitely.  Rather, it
-leaves the responsibility of implementing a thread-safe use of the library to
-the callers.  The C++ implementation has been designed in order to:
+@anchor{Thread Safety} The C++ @acronym{API} does not deal with thread safety
+explicitely.  Rather, it leaves the responsibility of implementing a thread-safe
+use of the library to the callers.  The C++ implementation has been designed in
+order to:
 
 @itemize
 @item
@@ -622,7 +623,7 @@ Currently not all monitors supports being stopped, in which case
 @section Thread Safety
 If the compiler and the C++ library used to build @file{libfswatch} support the
 @code{thread_local} storage specified then this @acronym{API} is thread safe and
-a different state is maintained on a per-thread basis.
+a different state is maintained on a per-thread basis (@pxref{Thread Safety}).
 
 @section Library Initialization
 Before calling any library method, the library must be initialized by calling
@@ -719,6 +720,52 @@ Unused.
 Unused.
 @end table
 
+@section Functions
+The library provides the following functions:
+
+@table @code
+@item FSW_STATUS fsw_init_library()
+a
+
+@item FSW_HANDLE fsw_init_session(const fsw_monitor_type type = system_default_monitor_type)
+b
+
+@item FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path)
+a
+
+@item FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
+a
+
+@item FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency);
+a
+
+@item FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool
+                              recursive)
+a
+
+@item FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
+                                     const bool follow_symlinks)
+a
+
+@item FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
+                            const fsw_cmonitor_filter filter)
+a
+
+@item FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
+a
+
+@item FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
+a
+
+@item FSW_STATUS fsw_last_error()
+a
+
+@item bool fsw_is_verbose()
+a
+
+@end table
+
+
 @section Callbacks
 When a monitor receives change events satisfying all the session criteria, a
 callback provided by the user is invoked and passed a copy of the events; a
@@ -749,33 +796,6 @@ The callback is passed the following arguments:
 The memory used by the @code{fsw_cevent} objects will be freed at the end of the
 callback invocation.  A callback should copy such data instead of storing a
 pointer to it.
-
-@subsection Example
-To be valid, a  session needs at least the following information:
-
-@itemize
-@item
-A @var{path} to watch.
-
-@item
-A @var{callback} to process the events sent by the monitor.
-@end itemize
-
-@noindent
-The next example shows how to create and start a basic monitoring session (error
-checking code was omitted):
-
-@example
-// Initialize the library
-fsw_init_library();
-
-// Use the default monitor.
-const FSW_HANDLE handle = fsw_init_session();
-
-fsw_add_path(handle, "my/path");
-fsw_set_callback(handle, my_callback);
-fsw_start_monitor(handle);
-@end example
 
 @section Event Flags
 @anchor{Event Flags} Events flags are @code{enum} values shared by both the C++
@@ -861,6 +881,33 @@ A mapping is not possible for some flags, in which case they should be mapped to
 the @code{PlatformSpecific} @acronym{API} flags.  The @acronym{API} currently
 offers no way to retain a platform-specific event flag value in this case.
 @end itemize
+
+@section Example
+To be valid, a  session needs at least the following information:
+
+@itemize
+@item
+A @var{path} to watch.
+
+@item
+A @var{callback} to process the events sent by the monitor.
+@end itemize
+
+@noindent
+The next example shows how to create and start a basic monitoring session (error
+checking code was omitted):
+
+@example
+// Initialize the library
+fsw_init_library();
+
+// Use the default monitor.
+const FSW_HANDLE handle = fsw_init_session();
+
+fsw_add_path(handle, "my/path");
+fsw_set_callback(handle, my_callback);
+fsw_start_monitor(handle);
+@end example
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
