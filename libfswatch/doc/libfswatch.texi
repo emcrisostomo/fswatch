@@ -20,10 +20,9 @@
 
 @copying
 This manual is for @file{libfswatch} (version @value{VERSION}, @value{UPDATED}),
-a C/C++ library that encapsulates all the functionality of @command{fswatch}, a
-cross-platform file change monitor with multiple backends, including Apple OS X
-File System Events @acronym{API}, *BSD kqueue, Linux inotify and a
-@code{stat}-based backend.
+a cross-platform file change monitor C/C++ library with multiple backends,
+including Apple OS X File System Events @acronym{API}, *BSD kqueue, Linux
+inotify and a @code{stat}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
@@ -81,7 +80,7 @@ included in the section entitled `GNU Free Documentation License'.
 @chapter Introduction
 @pgindex @command{fswatch}
 @command{fswatch} is a cross-platform file change monitor currently supporting
-the following monitors:
+the following backends:
 
 @itemize
 @item
@@ -116,10 +115,10 @@ any operating system where @code{stat} can be used.
 @cpindex @file{libfswatch}
 @cpindex @command{fswatch}
 The first releases of @command{fswatch} were monolithic, self-contained binaries
-whose output was typically piped to other application for processing.  Given the
-nature of the features provided by @command{fswatch}, however, we recognized the
-need to expose this functionality through a library and the @file{libfswatch}
-package was born.
+whose output was typically piped to other applications for processing.  Given
+the nature of the features provided by @command{fswatch}, however, we recognized
+the need to expose this functionality through a library and the
+@file{libfswatch} package was born.
 
 @command{fswatch} is now built upon it and all its functionality is provided by
 the @file{libfswatch} library, with the exception perhaps of some formatting
