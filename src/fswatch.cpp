@@ -112,8 +112,6 @@ bool is_verbose()
 
 static void list_monitor_types(ostream& stream)
 {
-  stream << _("Available monitors in this platform:\n\n");
-
   for (const auto & type : fsw::monitor_factory::get_types())
   {
     stream << "  " << type << "\n";
@@ -123,7 +121,7 @@ static void list_monitor_types(ostream& stream)
 static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2014, 2015, Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << "Copyright (C) 2014-2015 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
   stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
   stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
@@ -156,6 +154,7 @@ static void usage(ostream& stream)
 #  endif
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
+  stream << " -M, --list-monitors   " << _("List the available monitors.\n");
   stream << " -m, --monitor=NAME    " << _("Use the specified monitor.\n");
   stream << " -n, --numeric         " << _("Print a numeric event mask.\n");
   stream << " -o, --one-per-batch   " << _("Print a single message with the number of change events.\n");
@@ -178,7 +177,7 @@ static void usage(ostream& stream)
 #  ifdef HAVE_REGCOMP
   option_string += "i";
 #  endif
-  option_string += "lLmnortuvx";
+  option_string += "lLMmnortuvx";
   option_string += "]";
 
   stream << PACKAGE_STRING << "\n\n";
@@ -199,6 +198,7 @@ static void usage(ostream& stream)
   stream << " -i  Include paths matching REGEX.\n";
 #  endif
   stream << " -l  Set the latency.\n";
+  stream << " -M  List the available monitors.\n";
   stream << " -m  Use the specified monitor.\n";
   stream << " -L  Follow symbolic links.\n";
   stream << " -n  Print a numeric event masks.\n";
@@ -212,6 +212,7 @@ static void usage(ostream& stream)
   stream << "\n";
 #endif
 
+  stream << _("Available monitors in this platform:\n\n");
   list_monitor_types(stream);
 
   stream << _("\nSee the man page for more information.\n\n");
@@ -472,11 +473,12 @@ static void start_monitor(int argc, char ** argv, int optind)
   }
 
   if (mflag)
-    active_monitor = fsw::monitor_factory::create_monitor_by_name(monitor_name,
-                                                                  paths,
-                                                                  process_events);
+    active_monitor = fsw::monitor_factory::create_monitor(monitor_name,
+                                                          paths,
+                                                          process_events);
   else
-    active_monitor = fsw::monitor::create_default_monitor(paths,
+    active_monitor = fsw::monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
+                                                          paths,
                                                           process_events);
 
   /* 
@@ -503,11 +505,10 @@ static void parse_opts(int argc, char ** argv)
   int ch;
   ostringstream short_options;
 
-  short_options << "01f:hl:Lm:nortuvx";
+  short_options << "01f:hl:LMm:nortuvx";
 #ifdef HAVE_REGCOMP
   short_options << "e:Ei:I";
 #endif
-  short_options << "k";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
@@ -515,10 +516,13 @@ static void parse_opts(int argc, char ** argv)
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
+    { "event-flags", no_argument, nullptr, 'x'},
+    { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
 #  ifdef HAVE_REGCOMP
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
 #  endif
+    { "follow-links", no_argument, nullptr, 'L'},
     { "format", required_argument, nullptr, OPT_FORMAT},
     { "format-time", required_argument, nullptr, 'f'},
     { "help", no_argument, nullptr, 'h'},
@@ -527,7 +531,7 @@ static void parse_opts(int argc, char ** argv)
     { "insensitive", no_argument, nullptr, 'I'},
 #  endif
     { "latency", required_argument, nullptr, 'l'},
-    { "follow-links", no_argument, nullptr, 'L'},
+    { "list-monitors", no_argument, nullptr, 'M'},
     { "monitor", required_argument, nullptr, 'm'},
     { "numeric", no_argument, nullptr, 'n'},
     { "one-per-batch", no_argument, nullptr, 'o'},
@@ -536,8 +540,6 @@ static void parse_opts(int argc, char ** argv)
     { "utc-time", no_argument, nullptr, 'u'},
     { "verbose", no_argument, nullptr, 'v'},
     { "version", no_argument, &version_flag, true},
-    { "event-flags", no_argument, nullptr, 'x'},
-    { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
     { nullptr, 0, nullptr, 0}
   };
 
@@ -605,6 +607,10 @@ static void parse_opts(int argc, char ** argv)
     case 'L':
       Lflag = true;
       break;
+
+    case 'M':
+      list_monitor_types(cout);
+      ::exit(FSW_EXIT_OK);
 
     case 'm':
       mflag = true;

@@ -26,7 +26,7 @@ AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
-AC_CONFIG_FILES([Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
+AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -140,7 +140,7 @@ AC_CHECK_DECLS(
 AX_CXX_HAVE_THREAD_LOCAL
 
 if ! test "x${ax_cv_cxx_have_thread_local}" = "xyes" ; then
-  AC_WARN(AC_PACKAGE_NAME [is missing some functions because the current combination of compiler and libraries do not support the thread_local storage specifier].)
+  AC_WARN(AC_PACKAGE_NAME [is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier].)
 fi
 
 AC_OUTPUT

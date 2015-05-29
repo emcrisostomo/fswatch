@@ -693,6 +693,12 @@ Set the latency using the specified @command{@var{value}}.
 
 Follow symbolic links.
 
+@opsummary{list-monitors}
+@item --list-monitors
+@itemx -M
+
+List the available monitors.
+
 @opsummary{monitor}
 @item --monitor
 @itemx -m
@@ -1241,8 +1247,16 @@ on any system providing the @command{stat} function.
 
 Although @command{fswatch} chooses the `best' monitor between the available
 ones, a user may wish to use another.  A specific monitor can be chosen using
-the (@option{--monitor}, @option{-m}) option.  A list of available monitors is
-available at the end of the help message:
+the (@option{--monitor}, @option{-m}) option.  The list of available monitors
+can be obtained using the (@option{--list-monitors}, @option{-M}) option or at
+the end of the help message:
+
+@example
+$ fswatch --list-monitors
+  fsevents_monitor
+  kqueue_monitor
+  poll_monitor
+@end example
 
 @example
 $ fswatch --help

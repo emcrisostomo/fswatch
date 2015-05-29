@@ -21,7 +21,7 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) $(top_builddir)/config.status libtool
 
-SUBDIRS = src po
+SUBDIRS = src po doc
 
 dist_doc_DATA  = README.md
 dist_doc_DATA += AUTHORS COPYING LICENSE NEWS
