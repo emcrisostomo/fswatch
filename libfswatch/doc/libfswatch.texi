@@ -118,11 +118,26 @@ The first releases of @command{fswatch} were monolithic, self-contained binaries
 whose output was typically piped to other applications for processing.  Given
 the nature of the features provided by @command{fswatch}, however, we recognized
 the need to expose this functionality through a library and the
-@file{libfswatch} package was born.
+@file{libfswatch} package was born.  @command{fswatch} is now built upon it and
+all its functionality is provided by the @file{libfswatch} library, with the
+exception perhaps of some formatting routines printing results to the standard
+output.
 
-@command{fswatch} is now built upon it and all its functionality is provided by
-the @file{libfswatch} library, with the exception perhaps of some formatting
-routines printing results to the standard output.
+The biggest issue we have faced while developing @command{fswatch} was
+abstracting the behaviour of different backends behind a common interface and
+@file{libfswatch} is the result of that effort.  Instead of using different
+@acronym{API}s, a programmer can use just one: @file{libfswatch}'s.  The
+advantages of using @code{libfswatch} are many:
+
+@itemize
+@item
+Portability: @code{libfswatch} supports many backends, effectively giving
+support to a great number of operating systems, including Linux and *BSD Unix.
+
+@item
+Ease of use: using @code{libfswatch} should be easier than using any of the
+@acronym{API}s it supports.
+@end itemize
 
 @section Available Bindings
 @file{libfswatch} is a C++ library with C bindings which makes it available to a
