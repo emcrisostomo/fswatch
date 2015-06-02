@@ -8,19 +8,19 @@ This file describes the steps required to build this bundle on a supported
 FreeBSD system.  See README for more information about the tested
 configurations.
 
-The kqueue-based monitor should be compatible with any *BSD release with
-support for kqueue.  So far, however, the author has only tested this release
-on FreeBSD v. >= 10.0.  Feedback on different *BSD systems is much appreciated
-and will benefit other users as well.
+The kqueue-based monitor should be compatible with any *BSD release with support
+for kqueue.  So far, however, the author has only tested this release on FreeBSD
+v. >= 10.0.  Feedback on different *BSD systems is much appreciated and will
+benefit other users as well.
 
 Installation
 ============
 
-See the INSTALL file for detailed information about how to configure and
-install fswatch.
+See the INSTALL file for detailed information about how to configure and install
+fswatch.
 
-fswatch is a C++ program and a C++ compiler compliant with the C++11 standard
-is required to compile it.  FreeBSD v. >= 10.0 ships by default with the CLang
+fswatch is a C++ program and a C++ compiler compliant with the C++11 standard is
+required to compile it.  FreeBSD v. >= 10.0 ships by default with the CLang
 compiler suite which builds this package correctly.  The GCC compiler collection
 shipped with FreeBSD, however, is not C++11 compliant and cannot build this
 package.
@@ -35,17 +35,15 @@ use this command to configure the build:
 
 -----
 
-Copyright (C) 2014 Enrico M. Crisostomo
+Copyright (c) 2014-2015 Enrico M. Crisostomo
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3, or (at your option)
-any later version.
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.

@@ -8,8 +8,8 @@ of the specified files or directories are modified.  `fswatch` implements four
 kinds of monitors:
 
   * A monitor based on the _File System Events API_ of Apple OS X.
-  * A monitor based on _kqueue_, a notification interface introduced in
-    FreeBSD 4.1 (and supported on most *BSD systems, including OS X).
+  * A monitor based on _kqueue_, a notification interface introduced in FreeBSD
+    4.1 (and supported on most *BSD systems, including OS X).
   * A monitor based on _inotify_, a Linux kernel subsystem that reports file
     system changes to applications.
   * A monitor which periodically stats the file system, saves file modification
@@ -27,8 +27,8 @@ version ran exclusively on OS X and relied on the [FSEvents][fse] API to get
 change events from the OS.
 
 **Late 2013:** [Enrico M. Crisostomo][enrico] wrote `fsw`, aiming at a drop-in
-replacement for `fswatch`. But it went further, offering a common front-end from
-multiple file system change events APIs, including:
+replacement for `fswatch`.  But it went further, offering a common front-end
+from multiple file system change events APIs, including:
 
   * OS X FSEvents.
   * \*BSD kqueue.
@@ -39,7 +39,7 @@ multiple file system change events APIs, including:
 time, Enrico was taking over `fswatch` as a maintainer.
 
 **Presently:** Development of `fswatch` will continue on its
-[main repository][fswatchrepo]. Meanwhile, the `fsw` repository will likely be
+[main repository][fswatchrepo].  Meanwhile, the `fsw` repository will likely be
 frozen, and its documentation updated to redirect users to `fswatch`.
 
 [alan]: http://alandipert.tumblr.com
@@ -62,23 +62,23 @@ Limitations
 
 The limitations of `fswatch` depend largely on the monitor being used:
 
-  * The **FSEvents** monitor, available only on OS X, has no known
-    limitations, and scales very well with the number of files being observed.
-  * The **kqueue** monitor, available on any \*BSD system featuring kqueue, requires
-    a file descriptor to be opened for every file being watched.  As a result,
-    this monitor scales badly with the number of files being observed, and may
-    begin to misbehave as soon as the `fswatch` process runs out of file
+  * The **FSEvents** monitor, available only on OS X, has no known limitations,
+    and scales very well with the number of files being observed.
+  * The **kqueue** monitor, available on any \*BSD system featuring kqueue,
+    requires a file descriptor to be opened for every file being watched.  As a
+    result, this monitor scales badly with the number of files being observed,
+    and may begin to misbehave as soon as the `fswatch` process runs out of file
     descriptors.  In this case, `fswatch` dumps one error on standard error for
     every file that cannot be opened.
-  * The **inotify** monitor, available on Linux since kernel 2.6.13, may suffer a
-    queue overflow if events are generated faster than they are read from the
+  * The **inotify** monitor, available on Linux since kernel 2.6.13, may suffer
+    a queue overflow if events are generated faster than they are read from the
     queue.  In any case, the application is guaranteed to receive an overflow
     notification which can be handled to gracefully recover.  `fswatch`
     currently throws an exception if a queue overflow occurs.  Future versions
     will handle the overflow by emitting proper notifications.
-  * The **poll** monitor, available on any platform, only relies on available CPU
-    and memory to perform its task.  The performance of this monitor degrades
-    linearly with the number of files being watched.
+  * The **poll** monitor, available on any platform, only relies on available
+    CPU and memory to perform its task.  The performance of this monitor
+    degrades linearly with the number of files being watched.
 
 Usage recommendations are as follows:
 
@@ -86,13 +86,13 @@ Usage recommendations are as follows:
   * On Linux, use the `inotify` monitor (which is the default behaviour).
   * If the number of files to observe is sufficiently small, use the `kqueue`
     monitor.  Beware that on some systems the maximum number of file descriptors
-    that can be opened by a process is set to a very low value (values as low
-    as 256 are not uncommon), even if the operating system may allow a much
-    larger value.  In this case, check your OS documentation to raise this limit
-    on either a per process or a system-wide basis.
-  * If feasible, watch directories instead of files.  Properly crafting
-    the receiving side of the events to deal with directories may sensibly
-    reduce the monitor resource consumption.
+    that can be opened by a process is set to a very low value (values as low as
+    256 are not uncommon), even if the operating system may allow a much larger
+    value.  In this case, check your OS documentation to raise this limit on
+    either a per process or a system-wide basis.
+  * If feasible, watch directories instead of files.  Properly crafting the
+    receiving side of the events to deal with directories may sensibly reduce
+    the monitor resource consumption.
   * If none of the above applies, use the poll monitor.  The authors' experience
     indicates that `fswatch` requires approximately 150 MB of RAM memory to
     observe a hierarchy of 500.000 files with a minimum path length of 32
@@ -125,8 +125,8 @@ A release tarball contains everything a user needs to build `fswatch` on his
 system, following the instructions detailed in the Installation section below
 and the `INSTALL` file.
 
-A developer who wishes to modify `fswatch` should get the sources (either from
-a source tarball or cloning the repository) and have the GNU Build System
+A developer who wishes to modify `fswatch` should get the sources (either from a
+source tarball or cloning the repository) and have the GNU Build System
 installed on his machine.  Please read `README.gnu-build-system` to get further
 details about how to bootstrap `fswatch` from sources on your machine.
 
@@ -147,11 +147,11 @@ some platforms you may need to perform additional tasks before you can use
 `fswatch`:
 
   * Make sure the installation directory of dynamic libraries (`$PREFIX/lib`) is
-    included in the lookup paths of the dynamic linker of your operating
-    system.  The default path, `/usr/local/lib`, will work in nearly every
-    operating system.
-  * Refreshing the links and cache to the dynamic libraries may be required.
-    In GNU/Linux systems you may need to run `ldconfig`:
+    included in the lookup paths of the dynamic linker of your operating system.
+    The default path, `/usr/local/lib`, will work in nearly every operating
+    system.
+  * Refreshing the links and cache to the dynamic libraries may be required.  In
+    GNU/Linux systems you may need to run `ldconfig`:
 
         $ ldconfig
 
@@ -159,15 +159,14 @@ some platforms you may need to perform additional tasks before you can use
 is required to compile it.  Check your OS documentation for information about
 how to install the C++ toolchain and the C++ runtime.
 
-No other software packages or dependencies are required to configure and
-install `fswatch` but the aforementioned APIs used by the file system monitors.
+No other software packages or dependencies are required to configure and install
+`fswatch` but the aforementioned APIs used by the file system monitors.
 
 Localization
 ------------
 
 `fswatch` is localizable and internally uses GNU `gettext` to decouple
-localizable string from their translation.  The currently available locales
-are:
+localizable string from their translation.  The currently available locales are:
 
   * English (`en`).
   * Italian (`it`).
@@ -192,10 +191,10 @@ Documentation
   * A [wiki] page.
   * A man page.
 
-`fswatch` official documentation is provided in Texinfo format.
-This is the most comprehensive source of information about `fswatch`.
-The man page, in particular, is a stub meant for quick reference from the
-command line and is not guaranteed to be kept up to date.
+`fswatch` official documentation is provided in Texinfo format.  This is the
+most comprehensive source of information about `fswatch`.  The man page, in
+particular, is a stub meant for quick reference from the command line and is not
+guaranteed to be kept up to date.
 
 By default, only Info and DVI formats are generated when `fswatch` is built,
 according to the default rules of the GNU Build Systems.  However, a PDF manual
@@ -239,9 +238,9 @@ rationale behind this decision includes:
   * No information about the change events is passed to the forked process.
 
 To solve the aforementioned issues and keep `fswatch` consistent with common
-UNIX practices, the behaviour has changed and `fswatch` now prints event
-records to the standard output that users can process further by piping the
-output of `fswatch` to other programs.
+UNIX practices, the behaviour has changed and `fswatch` now prints event records
+to the standard output that users can process further by piping the output of
+`fswatch` to other programs.
 
 To fully support the old use, the `-o/--one-per-batch` option was added in
 v. 1.3.3.  When specified, `fswatch` will only dump 1 event to standard output
@@ -297,10 +296,9 @@ The behaviour is consistent with earlier versions of `fswatch` (v. 0.x).
 Please, read the _Compatibility Issues with fswatch v. 0.x_ section for further
 information.
 
-By default `fswatch` chooses the best monitor available on the current
-platform, in terms of performance and resource consumption.  If the user wishes
-to specify a different monitor, the `-m` option can be used to specify the
-monitor by name:
+By default `fswatch` chooses the best monitor available on the current platform,
+in terms of performance and resource consumption.  If the user wishes to specify
+a different monitor, the `-m` option can be used to specify the monitor by name:
 
     $ fswatch -m kqueue_monitor path
 
@@ -315,17 +313,15 @@ Bug reports can be sent directly to the authors.
 
 -----
 
-Copyright (C) 2014-2015 Enrico M. Crisostomo
+Copyright (c) 2014-2015 Enrico M. Crisostomo
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3, or (at your option)
-any later version.
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.

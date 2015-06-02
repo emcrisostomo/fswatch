@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
@@ -55,7 +54,7 @@ namespace fsw
      * descriptors a cache maintaining a relationship between a watch
      * descriptor and the path used to get it is required to be able to map an
      * event to the path it refers to.  From man inotify:
-     * 
+     *
      *   The inotify API identifies events via watch descriptors.  It is the
      *   application's responsibility to cache a mapping (if one is needed)
      *   between watch descriptors and pathnames.  Be aware that directory
@@ -264,7 +263,7 @@ namespace fsw
      * the same filesystem and keeps watching it.  Since its path has changed,
      * we remove the watch so that recreation is attempted at the next
      * iteration.
-     * 
+     *
      * Beware that a race condition exists which may result in events go
      * unnoticed when a watched file x is removed and a new file named x is
      * created thereafter.  In this case, fswatch could be blocked on ::read
@@ -328,7 +327,7 @@ namespace fsw
   {
     /*
      * No need to remove the inotify watch because it is removed automatically
-     * when a watched element is deleted. 
+     * when a watched element is deleted.
      */
     impl->wd_to_path.erase(wd);
   }
