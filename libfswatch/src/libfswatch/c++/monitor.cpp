@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (C) 2014-2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ namespace fsw
 
   struct compiled_monitor_filter
   {
-#ifdef HAVE_REGCOMP    
+#ifdef HAVE_REGCOMP
     regex_t regex;
     fsw_filter_type type;
 #endif
@@ -122,7 +122,7 @@ namespace fsw
 #ifdef HAVE_REGCOMP
     bool is_excluded = false;
 
-    for (auto &filter : filters)
+    for (const auto &filter : filters)
     {
       if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
