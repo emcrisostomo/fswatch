@@ -154,7 +154,7 @@ namespace fsw
   {
     vector<fsw_event_flag> evt_flags;
 
-    for (FSEventFlagType type : event_flag_type)
+    for (const FSEventFlagType & type : event_flag_type)
     {
       if (flag & type.flag)
       {

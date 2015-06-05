@@ -43,7 +43,7 @@ namespace fsw
     inotify_monitor& operator=(const inotify_monitor & that) = delete;
 
     void scan_root_paths();
-    bool is_watched(const std::string & path);
+    bool is_watched(const std::string & path) const;
     void notify_events();
     void preprocess_dir_event(struct inotify_event * event);
     void preprocess_event(struct inotify_event * event);

@@ -113,7 +113,7 @@ namespace fsw
     return ts;
   }
 
-  bool kqueue_monitor::is_path_watched(const string & path)
+  bool kqueue_monitor::is_path_watched(const string & path) const
   {
     return load->descriptors_by_file_name.find(path) != load->descriptors_by_file_name.end();
   }

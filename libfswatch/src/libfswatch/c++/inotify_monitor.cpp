@@ -174,7 +174,7 @@ namespace fsw
     }
   }
 
-  bool inotify_monitor::is_watched(const string & path)
+  bool inotify_monitor::is_watched(const string & path) const
   {
     return (impl->path_to_wd.find(path) != impl->path_to_wd.end());
   }
