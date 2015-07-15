@@ -86,7 +86,7 @@ if test "x${ac_cv_header_mutex}" = "xyes" ; then
         1,
         [Define if <mutex> is available.])
 else
-    AC_WARN(AC_PACKAGE_NAME [is not thread-safe because required C++11 library classes are not available.].)
+    AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -139,7 +139,7 @@ AC_CHECK_DECLS(
 AX_CXX_HAVE_THREAD_LOCAL
 
 if ! test "x${ax_cv_cxx_have_thread_local}" = "xyes" ; then
-  AC_WARN(AC_PACKAGE_NAME [is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier].)
+  AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier].)
 fi
 
 AC_OUTPUT
