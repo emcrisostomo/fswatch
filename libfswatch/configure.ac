@@ -59,8 +59,11 @@ AX_CXXFLAGS_WARN_ALL
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h unistd.h fcntl.h])
-AC_CHECK_HEADERS([sys/event.h sys/inotify.h])
+AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([unistd.h])
+AC_CHECK_HEADERS([fcntl.h])
+AC_CHECK_HEADERS([sys/event.h])
+AC_CHECK_HEADERS([sys/inotify.h])
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
 AC_CHECK_HEADERS([unordered_map unordered_set])
 
@@ -83,10 +86,10 @@ AC_CHECK_HEADER([mutex])
 
 if test "x${ac_cv_header_mutex}" = "xyes" ; then
   AC_DEFINE(HAVE_CXX_MUTEX,
-        1,
-        [Define if <mutex> is available.])
+    1,
+    [Define if <mutex> is available.])
 else
-    AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
+  AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -96,25 +99,25 @@ AC_TYPE_UINT32_T
 AC_TYPE_MODE_T
 
 AC_CHECK_MEMBERS([struct stat.st_mtime],
-   [],
-   [],
-   [
-     AC_INCLUDES_DEFAULT
-     #include <sys/stat.h>
-   ])
+  [],
+  [],
+  [
+    AC_INCLUDES_DEFAULT
+    #include <sys/stat.h>
+  ])
 
 AC_CHECK_MEMBERS([struct stat.st_mtimespec],
-   [],
-   [],
-   [
-     AC_INCLUDES_DEFAULT
-     #include <sys/stat.h>
-   ])
+  [],
+  [],
+  [
+    AC_INCLUDES_DEFAULT
+    #include <sys/stat.h>
+  ])
 
 AC_CHECK_TYPE([std::unique_ptr<std::string>],
   [AC_DEFINE(HAVE_CXX_UNIQUE_PTR,
-        1,
-        [Define if std::unique_ptr in <memory> is available.])],
+    1,
+    [Define if std::unique_ptr in <memory> is available.])],
   [],
   [[#include <memory>]])
 

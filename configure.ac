@@ -93,7 +93,8 @@ AX_CXXFLAGS_WARN_ALL
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h getopt.h])
+AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([getopt.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
