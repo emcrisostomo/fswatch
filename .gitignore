@@ -11,12 +11,15 @@ autom4te.cache/
 nbproject/
 
 # GNU Build System
+.deps
+Makefile
 Makefile.in
-configure
 aclocal.m4
 config/
 config.*
-libfswatch_config.h.in
+configure
+libtool
+stamp-h1
 
 # libtool
 **/m4/libtool.m4
@@ -44,6 +47,7 @@ libfswatch_config.h.in
 **/po/insert-header.sin
 **/po/quot.sed
 **/po/remove-potcdate.sin
+POTFILES
 
 # M4 macros required by gettext and added by autopoint
 **/m4/codeset.m4
@@ -80,3 +84,13 @@ libfswatch_config.h.in
 stamp-vti
 version.texi
 *.info
+
+# Template files
+build-aux/create-pot-template.sh
+libfswatch/libfswatch_config.h
+libfswatch/libfswatch_config.h.in
+scripts/fswatch-run-bash
+scripts/fswatch-run-zsh
+
+# Output files
+man/fswatch.7
