@@ -487,7 +487,7 @@ int fsw_destroy_session(const FSW_HANDLE handle)
   session_mutexes.erase(handle);
 #endif
 
-  return fsw_set_last_error(FSW_OK);
+  return fsw_set_last_error(ret);
 }
 
 FSW_SESSION * get_session(const FSW_HANDLE handle)
