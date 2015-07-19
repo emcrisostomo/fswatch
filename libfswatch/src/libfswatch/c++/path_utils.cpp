@@ -16,10 +16,11 @@
 #include "gettext_defs.h"
 #include "path_utils.h"
 #include "c/libfswatch_log.h"
-#include <dirent.h>
 #include <cstdlib>
-#include <errno.h>
+#include <cstdio>
 #include <iostream>
+#include <dirent.h>
+#include <errno.h>
 
 using namespace std;
 
@@ -55,7 +56,7 @@ namespace fsw
 
   bool read_link_path(const string &path, string &link_path)
   {
-    char *real_path = ::realpath(path.c_str(), nullptr);
+    char *real_path = realpath(path.c_str(), nullptr);
     link_path = (real_path ? real_path : path);
 
     bool ret = (real_path != nullptr);
