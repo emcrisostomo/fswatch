@@ -53,7 +53,7 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.19.4])
 
 # Configure C++ compiler
-AX_CXX_COMPILE_STDCXX_11(noext)
+AX_CXX_COMPILE_STDCXX_11
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
