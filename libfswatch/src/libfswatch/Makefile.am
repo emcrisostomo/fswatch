@@ -39,7 +39,12 @@ if USE_INOTIFY
 endif
 libfswatch_la_SOURCES += c++/path_utils.cpp c++/path_utils.h
 
-libfswatch_la_LDFLAGS = -version-info $(LIBFSWATCH_API_VERSION)
+libfswatch_la_LDFLAGS  = -version-info $(LIBFSWATCH_API_VERSION)
+libfswatch_la_LDFLAGS += @LTLIBINTL@
+
+if OS_CYGWIN
+  libfswatch_la_LDFLAGS += -no-undefined
+endif
 
 if USE_FSEVENTS
   libfswatch_la_LDFLAGS += -framework CoreServices
@@ -55,7 +60,7 @@ libfswatch_c_HEADERS = c/libfswatch.h c/cevent.h c/cfilter.h c/cmonitor.h c/erro
 # Distribute C++ headers conditionally adding available backends.
 libfswatch_cpp_HEADERS  = c++/monitor.h
 if USE_FSEVENTS
-  libfswatch_cpp_HEADERS += c++/fsevents_monitor.h 
+  libfswatch_cpp_HEADERS += c++/fsevents_monitor.h
 endif
 if USE_KQUEUE
   libfswatch_cpp_HEADERS += c++/kqueue_monitor.h

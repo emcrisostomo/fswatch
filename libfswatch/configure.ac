@@ -29,6 +29,13 @@ AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile src/libfswatch/Makefile po/M
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
+# Compute the canonical target-system type variables
+AC_CANONICAL_TARGET
+TARGET_VENDOR=$target_vendor
+TARGET_OS=$target_os
+AC_SUBST([TARGET_VENDOR])
+AC_SUBST([TARGET_OS])
+
 # Initialize Automake
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
 AM_SILENT_RULES([yes])
@@ -38,6 +45,9 @@ AM_PROG_AR
 LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
+
+# OS-specific treatment
+AM_CONDITIONAL([OS_CYGWIN], [test "${target_os}" = "cygwin"])
 
 # Set library interface version
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
