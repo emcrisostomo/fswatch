@@ -38,6 +38,7 @@
 #define _(String) gettext(String)
 
 using namespace std;
+using namespace fsw;
 
 static string decode_event_flag_name(fsw_event_flag flag);
 

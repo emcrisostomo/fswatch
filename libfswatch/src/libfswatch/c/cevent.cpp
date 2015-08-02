@@ -21,6 +21,7 @@
 #include "../c++/event.h"
 
 using namespace std;
+using namespace fsw;
 
 fsw_event_flag fsw_get_event_flag_by_name(const char * name)
 {

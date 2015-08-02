@@ -58,7 +58,7 @@ namespace fsw
     bool accept_path(const std::string &path) const;
     bool accept_path(const char *path) const;
     void notify_events(const std::vector<event> &events) const;
-    std::vector<fsw_event_flag> filter_flags(const event &evt) const; 
+    std::vector<fsw_event_flag> filter_flags(const event &evt) const;
 
     virtual void run() = 0;
 
