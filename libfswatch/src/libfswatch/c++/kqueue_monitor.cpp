@@ -38,7 +38,6 @@ using namespace std;
 
 namespace fsw
 {
-
   struct kqueue_monitor_load
   {
     fsw_hash_map<std::string, int> descriptors_by_file_name;

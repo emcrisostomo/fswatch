@@ -24,7 +24,6 @@
 
 namespace fsw
 {
-
   class event
   {
   public:

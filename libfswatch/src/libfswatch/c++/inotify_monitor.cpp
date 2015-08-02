@@ -36,7 +36,6 @@ using namespace std;
 
 namespace fsw
 {
-
   struct inotify_monitor_impl
   {
     int inotify_monitor_handle = -1;

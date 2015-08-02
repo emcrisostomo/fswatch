@@ -25,7 +25,6 @@ using namespace std;
 
 namespace fsw
 {
-
   void get_directory_children(const string &path, vector<string> &children)
   {
     DIR *dir = ::opendir(path.c_str());

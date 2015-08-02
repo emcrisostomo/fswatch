@@ -44,7 +44,6 @@ using namespace std;
 
 namespace fsw
 {
-
   struct compiled_monitor_filter
   {
 #ifdef HAVE_REGCOMP

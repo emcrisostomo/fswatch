@@ -26,7 +26,6 @@
 #  include "event.h"
 #  include "../c/cmonitor.h"
 
-
 namespace fsw
 {
   typedef void FSW_EVENT_CALLBACK(const std::vector<event> &, void *);

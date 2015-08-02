@@ -28,7 +28,6 @@ using namespace std;
 
 namespace fsw
 {
-
   typedef struct FSEventFlagType
   {
     FSEventStreamEventFlags flag;

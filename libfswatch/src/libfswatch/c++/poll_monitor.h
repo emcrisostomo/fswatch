@@ -22,7 +22,6 @@
 
 namespace fsw
 {
-
   class poll_monitor : public monitor
   {
     REGISTER_MONITOR(poll_monitor, poll_monitor_type);

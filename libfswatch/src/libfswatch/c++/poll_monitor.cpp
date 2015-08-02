@@ -39,7 +39,6 @@ using namespace std;
 
 namespace fsw
 {
-
   typedef struct poll_monitor::poll_monitor_data
   {
     fsw_hash_map<std::string, poll_monitor::watched_file_info> tracked_files;

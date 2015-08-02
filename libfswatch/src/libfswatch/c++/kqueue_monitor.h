@@ -24,7 +24,6 @@
 
 namespace fsw
 {
-
   struct kqueue_monitor_load;
 
   class kqueue_monitor : public monitor
