@@ -40,8 +40,6 @@
 using namespace std;
 using namespace fsw;
 
-static string decode_event_flag_name(fsw_event_flag flag);
-
 /*
  * Event formatting types and routines.
  */
@@ -95,7 +93,7 @@ static bool xflag = false;
 static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
-static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
+static string batch_marker = fsw::event::get_event_flag_name(fsw_event_flag::NoOp);
 static int format_flag = false;
 static string format;
 static string event_flag_separator = " ";
@@ -316,55 +314,6 @@ static void register_signal_handlers()
   }
 }
 
-static string decode_event_flag_name(fsw_event_flag flag)
-{
-  switch (flag)
-  {
-  case fsw_event_flag::NoOp:
-    return "NoOp";
-  case fsw_event_flag::PlatformSpecific:
-    return "PlatformSpecific";
-  case fsw_event_flag::Created:
-    return "Created";
-  case fsw_event_flag::Updated:
-    return "Updated";
-  case fsw_event_flag::Removed:
-    return "Removed";
-  case fsw_event_flag::Renamed:
-    return "Renamed";
-  case fsw_event_flag::OwnerModified:
-    return "OwnerModified";
-  case fsw_event_flag::AttributeModified:
-    return "AttributeModified";
-  case fsw_event_flag::MovedFrom:
-    return "MovedFrom";
-  case fsw_event_flag::MovedTo:
-    return "MovedTo";
-  case fsw_event_flag::IsFile:
-    return "IsFile";
-  case fsw_event_flag::IsDir:
-    return "IsDir";
-  case fsw_event_flag::IsSymLink:
-    return "IsSymLink";
-  case fsw_event_flag::Link:
-    return "Link";
-  default:
-    return "<Unknown>";
-  }
-}
-
-static vector<string> decode_event_flag_names(vector<fsw_event_flag> flags)
-{
-  vector<string> names;
-
-  for (fsw_event_flag flag : flags)
-  {
-    names.push_back(decode_event_flag_name(flag));
-  }
-
-  return names;
-}
-
 static void print_event_path(const event & evt)
 {
   cout << evt.get_path();
@@ -402,15 +351,12 @@ static void print_event_flags(const event & evt)
   }
   else
   {
-    vector<string> flag_names = decode_event_flag_names(flags);
-
-    for (int i = 0; i < flag_names.size(); ++i)
+    for (int i = 0; i < flags.size(); ++i)
     {
-      const string &name = flag_names[i];
-      cout << name;
+      cout << flags[i];
 
       // Event flag separator is currently hard-coded.
-      if (i != flag_names.size() - 1) cout << event_flag_separator;
+      if (i != flags.size() - 1) cout << event_flag_separator;
     }
   }
 }
