@@ -336,18 +336,15 @@ namespace fsw
       // received with a non empty filter flag.
       if (e.fflags)
       {
-        if (accept_path(load->file_names_by_descriptor[e.ident]))
-        {
-          events.push_back({load->file_names_by_descriptor[e.ident],
-                           curr_time,
-                           decode_flags(e.fflags)});
-        }
+        events.push_back({load->file_names_by_descriptor[e.ident],
+                         curr_time,
+                         decode_flags(e.fflags)});
       }
     }
 
     if (events.size())
     {
-      callback(events, context);
+      notify_events(events);
     }
   }
 

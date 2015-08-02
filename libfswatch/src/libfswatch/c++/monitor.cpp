@@ -19,11 +19,13 @@
 #include "gettext_defs.h"
 #include "monitor.h"
 #include "libfswatch_exception.h"
+#include "../c/libfswatch_log.h"
 #include <cstdlib>
 #ifdef HAVE_REGCOMP
 #  include <regex.h>
 #endif
 #include <iostream>
+#include <sstream>
 /*
  * Conditionally include monitor headers for default construction.
  */
@@ -281,6 +283,10 @@ namespace fsw
 
     if (filtered_events.size() > 0)
     {
+      ostringstream log;
+      log << _("Notifying events #: ") << filtered_events.size() << "\n";
+      libfsw_log(log.str().c_str());
+
       callback(filtered_events, context);
     }
   }

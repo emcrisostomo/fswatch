@@ -310,19 +310,6 @@ namespace fsw
     preprocess_node_event(event);
   }
 
-  void inotify_monitor::notify_events()
-  {
-    if (impl->events.size())
-    {
-      ostringstream log;
-      log << _("Notifying events #: ") << impl->events.size() << "\n";
-      libfsw_log(log.str().c_str());
-
-      callback(impl->events, context);
-      impl->events.clear();
-    }
-  }
-
   void inotify_monitor::remove_watch(int wd)
   {
     /*
@@ -446,7 +433,13 @@ namespace fsw
         p += (sizeof (struct inotify_event)) + event->len;
       }
 
-      notify_events();
+      if (impl->events.size())
+      {
+        notify_events(impl->events);
+
+        impl->events.clear();
+      }
+
       ::sleep(latency);
     }
   }

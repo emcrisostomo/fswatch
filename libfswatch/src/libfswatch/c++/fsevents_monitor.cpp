@@ -187,16 +187,12 @@ namespace fsw
 
     for (size_t i = 0; i < numEvents; ++i)
     {
-      const char * path = ((char **) eventPaths)[i];
-
-      if (!fse_monitor->accept_path(path)) continue;
-
-      events.push_back({path, curr_time, decode_flags(eventFlags[i])});
+      events.push_back({((char **) eventPaths)[i], curr_time, decode_flags(eventFlags[i])});
     }
 
     if (events.size() > 0)
     {
-      fse_monitor->callback(events, fse_monitor->context);
+      fse_monitor->notify_events(events);
     }
   }
 }
