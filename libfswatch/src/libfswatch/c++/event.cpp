@@ -106,27 +106,6 @@ namespace fsw
 
   std::ostream& operator<<(std::ostream& out, const fsw_event_flag flag)
   {
-    const char* s = 0;
-#define FSW_PROCESS_ENUM_VAL(p) case(p): s = #p; break;
-    switch (flag)
-    {
-      FSW_PROCESS_ENUM_VAL(NoOp);
-      FSW_PROCESS_ENUM_VAL(PlatformSpecific);
-      FSW_PROCESS_ENUM_VAL(Created);
-      FSW_PROCESS_ENUM_VAL(Updated);
-      FSW_PROCESS_ENUM_VAL(Removed);
-      FSW_PROCESS_ENUM_VAL(Renamed);
-      FSW_PROCESS_ENUM_VAL(OwnerModified);
-      FSW_PROCESS_ENUM_VAL(AttributeModified);
-      FSW_PROCESS_ENUM_VAL(MovedFrom);
-      FSW_PROCESS_ENUM_VAL(MovedTo);
-      FSW_PROCESS_ENUM_VAL(IsFile);
-      FSW_PROCESS_ENUM_VAL(IsDir);
-      FSW_PROCESS_ENUM_VAL(IsSymLink);
-      FSW_PROCESS_ENUM_VAL(Link);
-    }
-#undef FSW_PROCESS_ENUM_VAL
-
-    return out << s;
+    return out << event::get_event_flag_name(flag);
   }
 }
