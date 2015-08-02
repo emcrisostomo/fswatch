@@ -46,6 +46,9 @@ extern "C"
     Link = (1 << 12)
   };
 
+  fsw_event_flag fsw_get_event_flag_by_name(const char * name);
+  char * fsw_get_event_flag_name(const fsw_event_flag flag);
+
   /*
    * An file change event is represented as an instance of this struct where:
    *   - path is the path where the event was triggered.

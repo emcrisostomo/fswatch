@@ -20,7 +20,7 @@ AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\"
 
 lib_LTLIBRARIES = libfswatch.la
 
-libfswatch_la_SOURCES  = c/libfswatch.cpp
+libfswatch_la_SOURCES  = c/cevent.cpp c/libfswatch.cpp
 libfswatch_la_SOURCES += gettext.h gettext_defs.h
 libfswatch_la_SOURCES += c/libfswatch_log.cpp c/libfswatch_log.h
 libfswatch_la_SOURCES += c++/libfswatch_map.h c++/libfswatch_set.h
