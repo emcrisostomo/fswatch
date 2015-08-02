@@ -50,8 +50,11 @@ namespace fsw
     void * get_context() const;
     void set_context(void * context);
     void start();
+    void add_event_type_filter(const fsw_event_type_filter &filter);
+    void set_event_type_filters(const std::vector<fsw_event_type_filter> &filters);
 
   protected:
+    bool accept_event_type(fsw_event_flag event_type) const;
     bool accept_path(const std::string &path) const;
     bool accept_path(const char *path) const;
 
@@ -70,6 +73,7 @@ namespace fsw
     std::mutex run_mutex;
 #  endif
     std::vector<compiled_monitor_filter> filters;
+    std::vector<fsw_event_type_filter> event_type_filters;
   };
 
   typedef monitor * (*FSW_FN_MONITOR_CREATOR)(std::vector<std::string> paths,

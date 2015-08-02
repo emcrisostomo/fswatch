@@ -23,7 +23,7 @@
 #ifdef HAVE_REGCOMP
 #  include <regex.h>
 #endif
-
+#include <iostream>
 /*
  * Conditionally include monitor headers for default construction.
  */
@@ -37,8 +37,6 @@
 #  include "inotify_monitor.h"
 #endif
 #include "poll_monitor.h"
-
-#include <iostream>
 
 using namespace std;
 
@@ -79,6 +77,18 @@ namespace fsw
     this->recursive = recursive;
   }
 
+  void monitor::add_event_type_filter(const fsw_event_type_filter &filter)
+  {
+    this->event_type_filters.push_back(filter);
+  }
+
+  void monitor::set_event_type_filters(const std::vector<fsw_event_type_filter> &filters)
+  {
+    event_type_filters.clear();
+    
+    for (const auto & filter : filters) add_event_type_filter(filter);
+  }
+  
   void monitor::add_filter(const monitor_filter &filter)
   {
     regex_t regex;
@@ -109,6 +119,24 @@ namespace fsw
   void monitor::set_follow_symlinks(bool follow)
   {
     follow_symlinks = follow;
+  }
+
+  bool monitor::accept_event_type(fsw_event_flag event_type) const
+  {
+    // If no filters are set, then accept the event.
+    if (event_type_filters.size() == 0) return true;
+
+    // If filters are set, accept the event only if present amongst the filters.
+    for (const auto & filter : event_type_filters)
+    {
+      if (filter.flag == event_type)
+      {
+        return true;
+      }
+    }
+
+    // If no filters match, then reject the event.
+    return false;
   }
 
   bool monitor::accept_path(const string &path) const
