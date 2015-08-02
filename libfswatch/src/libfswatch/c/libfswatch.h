@@ -136,6 +136,14 @@ extern "C"
                                      const bool follow_symlinks);
 
   /*
+   * Adds an event type filter to the current session.
+   * 
+   * See cfilter.h for the definition of fsw_event_type_filter.
+   */
+  FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
+                                       const fsw_event_type_filter event_type);
+
+  /*
    * Adds a filter to the current session.  A filter is a regular expression
    * that, depending on whether the filter type is exclusion or not, must or
    * must not be matched for an event path for the event to be accepted.
