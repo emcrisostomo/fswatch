@@ -28,6 +28,8 @@
 #include <cerrno>
 #include <vector>
 #include "libfswatch/c++/monitor.h"
+#include "libfswatch/c/error.h"
+#include "libfswatch/c++/libfswatch_exception.h"
 
 #ifdef HAVE_GETOPT_LONG
 #  include <getopt.h>
@@ -71,6 +73,7 @@ static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
 static fsw::monitor *active_monitor = nullptr;
 static vector<monitor_filter> filters;
+static vector<fsw_event_type_filter> event_filters;
 static bool _0flag = false;
 static bool _1flag = false;
 static int batch_marker_flag = false;
@@ -103,6 +106,7 @@ static string event_flag_separator = " ";
 static const int OPT_BATCH_MARKER = 128;
 static const int OPT_FORMAT = 129;
 static const int OPT_EVENT_FLAG_SEPARATOR = 130;
+static const int OPT_EVENT_TYPE = 131;
 
 bool is_verbose()
 {
@@ -140,6 +144,7 @@ static void usage(ostream& stream)
   stream << " -0, --print0          " << _("Use the ASCII NUL character (0) as line separator.\n");
   stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
+  stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
 #  ifdef HAVE_REGCOMP
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
@@ -237,6 +242,20 @@ static void close_handler(int signal)
 
   fsw_log(_("Done.\n"));
   exit(FSW_EXIT_OK);
+}
+
+static bool parse_event_filter(const char * optarg)
+{
+  try
+  {
+    event_filters.push_back({event::get_event_flag_by_name(optarg)});
+    return true;
+  }
+  catch (fsw::libfsw_exception & ex)
+  {
+    cerr << ex.what() << endl;
+    return false;
+  }
 }
 
 static bool validate_latency(double latency, ostream &ost, ostream &est)
@@ -493,6 +512,7 @@ static void start_monitor(int argc, char ** argv, int optind)
 
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
+  active_monitor->set_event_type_filters(event_filters);
   active_monitor->set_filters(filters);
   active_monitor->set_follow_symlinks(Lflag);
 
@@ -515,6 +535,7 @@ static void parse_opts(int argc, char ** argv)
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
+    { "event", required_argument, nullptr, OPT_EVENT_TYPE},
     { "event-flags", no_argument, nullptr, 'x'},
     { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
 #  ifdef HAVE_REGCOMP
@@ -659,6 +680,13 @@ static void parse_opts(int argc, char ** argv)
       event_flag_separator = optarg;
       break;
 
+    case OPT_EVENT_TYPE:
+      if (!parse_event_filter(optarg))
+      {
+        ::exit(FSW_ERR_UNKNOWN_VALUE);
+      }
+      break;
+      
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
