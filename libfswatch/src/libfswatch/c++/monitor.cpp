@@ -85,10 +85,10 @@ namespace fsw
   void monitor::set_event_type_filters(const std::vector<fsw_event_type_filter> &filters)
   {
     event_type_filters.clear();
-    
+
     for (const auto & filter : filters) add_event_type_filter(filter);
   }
-  
+
   void monitor::add_filter(const monitor_filter &filter)
   {
     regex_t regex;
@@ -247,6 +247,42 @@ namespace fsw
     lock_guard<mutex> run_guard(run_mutex);
 #endif
     this->run();
+  }
+
+  vector<fsw_event_flag> monitor::filter_flags(const event &evt) const
+  {
+    // If there is nothing to filter, just return the original vector.
+    if (event_type_filters.size() == 0) return evt.get_flags();
+    
+    vector<fsw_event_flag> filtered_flags;
+
+    for (auto const & flag : evt.get_flags())
+    {
+      if (accept_event_type(flag)) filtered_flags.push_back(flag);
+    }
+
+    return filtered_flags;
+  }
+
+  void monitor::notify_events(const vector<event> &events) const
+  {
+    vector<event> filtered_events;
+
+    for (auto const & event : events)
+    {
+      // Filter flags
+      vector<fsw_event_flag> filtered_flags = filter_flags(event);
+      if (filtered_flags.size() == 0) continue;
+
+      if (!accept_path(event.get_path())) continue;
+
+      filtered_events.push_back({event.get_path(), event.get_time(), filtered_flags});
+    }
+
+    if (filtered_events.size() > 0)
+    {
+      callback(filtered_events, context);
+    }
   }
 
   map<string, FSW_FN_MONITOR_CREATOR> & monitor_factory::creators_by_string()
