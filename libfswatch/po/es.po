@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-05-27 12:35+0200\n"
+"POT-Creation-Date: 2015-08-02 21:24+0200\n"
 "PO-Revision-Date: 2014-09-07 18:13+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -17,134 +17,134 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:81
+#: src/libfswatch/c++/fsevents_monitor.cpp:79
 msgid "Stopping event stream...\n"
 msgstr "Parando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:84
+#: src/libfswatch/c++/fsevents_monitor.cpp:82
 msgid "Invalidating event stream...\n"
 msgstr "Invalidando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:87
+#: src/libfswatch/c++/fsevents_monitor.cpp:85
 msgid "Releasing event stream...\n"
 msgstr "Liberando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:128
+#: src/libfswatch/c++/fsevents_monitor.cpp:126
 msgid "Creating FSEvent stream...\n"
 msgstr "Creando el flujo FSEvent...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:139
+#: src/libfswatch/c++/fsevents_monitor.cpp:137
 msgid "Event stream could not be created."
 msgstr "El flujo de eventos no se puede crear."
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:142
+#: src/libfswatch/c++/fsevents_monitor.cpp:140
 msgid "Scheduling stream with run loop...\n"
 msgstr "Planificando el flujo de eventos con el bucle de ejecución...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:147
+#: src/libfswatch/c++/fsevents_monitor.cpp:145
 msgid "Starting event stream...\n"
 msgstr "Arrancando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:150
+#: src/libfswatch/c++/fsevents_monitor.cpp:148
 msgid "Starting run loop...\n"
 msgstr "Arrancando el bucle de ejecución...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:181
+#: src/libfswatch/c++/fsevents_monitor.cpp:179
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "El context de callback no puede convertirse a fsevents_monitor."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:85
+#: src/libfswatch/c++/inotify_monitor.cpp:83
 msgid "Cannot initialize inotify."
 msgstr "inotify no puede ser inicializado."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:95
+#: src/libfswatch/c++/inotify_monitor.cpp:93
 msgid "Removing: "
 msgstr "Eliminando: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:132
+#: src/libfswatch/c++/inotify_monitor.cpp:130
 msgid "Added: "
 msgstr "Añadiendo: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:245
+#: src/libfswatch/c++/inotify_monitor.cpp:243
 msgid "Generic event: "
 msgstr "Evento genérico: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:307
+#: src/libfswatch/c++/inotify_monitor.cpp:305
 msgid "Event queue overflowed."
 msgstr "Cola de eventos saturada."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:319
-msgid "Notifying events #: "
-msgstr "Notificando eventos #: "
-
-#: src/libfswatch/c++/inotify_monitor.cpp:350
+#: src/libfswatch/c++/inotify_monitor.cpp:335
 msgid "Removed: "
 msgstr "Eliminado: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:409
+#: src/libfswatch/c++/inotify_monitor.cpp:394
 msgid "::select() on inotify descriptor encountered an error."
 msgstr "::select() sobre el descriptor inotify encontró un error."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:424
+#: src/libfswatch/c++/inotify_monitor.cpp:409
 msgid "Number of records: "
 msgstr "Numero de registros: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:430
+#: src/libfswatch/c++/inotify_monitor.cpp:415
 msgid "::read() on inotify descriptor read 0 records."
 msgstr "::read() sobre el descriptor inotify leyó 0 registros."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:436
+#: src/libfswatch/c++/inotify_monitor.cpp:421
 msgid "::read() on inotify descriptor returned -1."
 msgstr "::read() sobre le descriptor inotify devolvió -1."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:147
+#: src/libfswatch/c++/kqueue_monitor.cpp:145
 msgid "Cannot open "
 msgstr "No se puede abrir "
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:256
+#: src/libfswatch/c++/kqueue_monitor.cpp:254
 msgid "Notice: "
 msgstr "Aviso: "
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:256
+#: src/libfswatch/c++/kqueue_monitor.cpp:254
 msgid " cannot be found. Will retry later.\n"
 msgstr " no puede encontrarse. Se reintentará más tarde.\n"
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:264
+#: src/libfswatch/c++/kqueue_monitor.cpp:262
 msgid "kqueue already running."
 msgstr "kqueue ya está ejecutándose."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:271
+#: src/libfswatch/c++/kqueue_monitor.cpp:269
 msgid "kqueue failed."
 msgstr "kqueue falló."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:290
+#: src/libfswatch/c++/kqueue_monitor.cpp:288
 msgid "::kevent returned -1, invalid event number."
 msgstr "::kevent devolvió -1, numero de evento inválido."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:310
+#: src/libfswatch/c++/kqueue_monitor.cpp:308
 msgid "Event with EV_ERROR"
 msgstr "Evento con EV_ERROR"
 
-#: src/libfswatch/c++/libfswatch_exception.cpp:32
+#: src/libfswatch/c++/libfswatch_exception.cpp:30
 msgid "Error: "
 msgstr "Error: "
 
-#: src/libfswatch/c++/monitor.cpp:64
+#: src/libfswatch/c++/monitor.cpp:62
 msgid "Callback cannot be null."
 msgstr "El callback no puede ser null."
 
-#: src/libfswatch/c++/monitor.cpp:72
+#: src/libfswatch/c++/monitor.cpp:70
 msgid "Latency cannot be negative."
 msgstr "La latencia no puede ser negativa."
 
-#: src/libfswatch/c++/monitor.cpp:93
+#: src/libfswatch/c++/monitor.cpp:103
 msgid "An error occurred during the compilation of "
 msgstr "Un error ocurrió durante la compilación de "
 
-#: src/libfswatch/c++/path_utils.cpp:72
+#: src/libfswatch/c++/monitor.cpp:286
+msgid "Notifying events #: "
+msgstr "Notificando eventos #: "
+
+#: src/libfswatch/c++/path_utils.cpp:70
 msgid "Cannot stat() "
 msgstr "No se puede hacer stat() "
 
-#: src/libfswatch/c++/poll_monitor.cpp:221
+#: src/libfswatch/c++/poll_monitor.cpp:203
 msgid "Done scanning.\n"
 msgstr "Escaneo terminado.\n"
