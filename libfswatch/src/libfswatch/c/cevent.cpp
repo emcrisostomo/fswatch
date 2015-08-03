@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,34 +13,26 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch_exception.h"
-#include "gettext_defs.h"
+#ifdef HAVE_CONFIG_H
+#  include "libfswatch_config.h"
+#endif
+
+#include "cevent.h"
+#include "../c++/event.h"
 
 using namespace std;
+using namespace fsw;
 
-namespace fsw
+fsw_event_flag fsw_get_event_flag_by_name(const char * name)
 {
-  libfsw_exception::libfsw_exception(string cause, int code) :
-    cause(cause), code(code)
-  {
-  }
+  return event::get_event_flag_by_name(name);
+}
 
-  const char * libfsw_exception::what() const noexcept
-  {
-    return (string(_("Error: ")) + this->cause).c_str();
-  }
-
-  int libfsw_exception::error_code() const noexcept
-  {
-    return code;
-  }
-
-  libfsw_exception::operator int() const noexcept
-  {
-    return code;
-  }
-
-  libfsw_exception::~libfsw_exception() noexcept
-  {
-  }
+char * fsw_get_event_flag_name(const fsw_event_flag flag)
+{
+  string name = event::get_event_flag_name(flag);
+  char * cstr = new char[name.size() + 1];
+  strcpy(cstr, name.c_str());
+  
+  return cstr;
 }

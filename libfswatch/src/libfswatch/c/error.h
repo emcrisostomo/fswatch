@@ -40,6 +40,7 @@ extern "C"
 #  define FSW_ERR_STALE_MONITOR_THREAD      (1 << 14)
 #  define FSW_ERR_THREAD_FAULT              (1 << 15)
 #  define FSW_ERR_UNSUPPORTED_OPERATION     (1 << 16)
+#  define FSW_ERR_UNKNOWN_VALUE             (1 << 17)
 
 #  ifdef __cplusplus
 }

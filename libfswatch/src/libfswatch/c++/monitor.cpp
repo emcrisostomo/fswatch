@@ -19,11 +19,13 @@
 #include "gettext_defs.h"
 #include "monitor.h"
 #include "libfswatch_exception.h"
+#include "../c/libfswatch_log.h"
 #include <cstdlib>
 #ifdef HAVE_REGCOMP
 #  include <regex.h>
 #endif
-
+#include <iostream>
+#include <sstream>
 /*
  * Conditionally include monitor headers for default construction.
  */
@@ -38,13 +40,10 @@
 #endif
 #include "poll_monitor.h"
 
-#include <iostream>
-
 using namespace std;
 
 namespace fsw
 {
-
   struct compiled_monitor_filter
   {
 #ifdef HAVE_REGCOMP
@@ -79,6 +78,18 @@ namespace fsw
     this->recursive = recursive;
   }
 
+  void monitor::add_event_type_filter(const fsw_event_type_filter &filter)
+  {
+    this->event_type_filters.push_back(filter);
+  }
+
+  void monitor::set_event_type_filters(const std::vector<fsw_event_type_filter> &filters)
+  {
+    event_type_filters.clear();
+
+    for (const auto & filter : filters) add_event_type_filter(filter);
+  }
+
   void monitor::add_filter(const monitor_filter &filter)
   {
     regex_t regex;
@@ -109,6 +120,24 @@ namespace fsw
   void monitor::set_follow_symlinks(bool follow)
   {
     follow_symlinks = follow;
+  }
+
+  bool monitor::accept_event_type(fsw_event_flag event_type) const
+  {
+    // If no filters are set, then accept the event.
+    if (event_type_filters.size() == 0) return true;
+
+    // If filters are set, accept the event only if present amongst the filters.
+    for (const auto & filter : event_type_filters)
+    {
+      if (filter.flag == event_type)
+      {
+        return true;
+      }
+    }
+
+    // If no filters match, then reject the event.
+    return false;
   }
 
   bool monitor::accept_path(const string &path) const
@@ -219,6 +248,46 @@ namespace fsw
     lock_guard<mutex> run_guard(run_mutex);
 #endif
     this->run();
+  }
+
+  vector<fsw_event_flag> monitor::filter_flags(const event &evt) const
+  {
+    // If there is nothing to filter, just return the original vector.
+    if (event_type_filters.size() == 0) return evt.get_flags();
+    
+    vector<fsw_event_flag> filtered_flags;
+
+    for (auto const & flag : evt.get_flags())
+    {
+      if (accept_event_type(flag)) filtered_flags.push_back(flag);
+    }
+
+    return filtered_flags;
+  }
+
+  void monitor::notify_events(const vector<event> &events) const
+  {
+    vector<event> filtered_events;
+
+    for (auto const & event : events)
+    {
+      // Filter flags
+      vector<fsw_event_flag> filtered_flags = filter_flags(event);
+      if (filtered_flags.size() == 0) continue;
+
+      if (!accept_path(event.get_path())) continue;
+
+      filtered_events.push_back({event.get_path(), event.get_time(), filtered_flags});
+    }
+
+    if (filtered_events.size() > 0)
+    {
+      ostringstream log;
+      log << _("Notifying events #: ") << filtered_events.size() << "\n";
+      libfsw_log(log.str().c_str());
+
+      callback(filtered_events, context);
+    }
   }
 
   map<string, FSW_FN_MONITOR_CREATOR> & monitor_factory::creators_by_string()

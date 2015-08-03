@@ -22,7 +22,6 @@
 
 namespace fsw
 {
-
   class libfsw_exception : public std::exception
   {
   public:
