@@ -17,6 +17,7 @@
 #  include "libfswatch_config.h"
 #endif
 
+#include "libfswatch_mem.h"
 #include "cevent.h"
 #include "../c++/event.h"
 
@@ -31,7 +32,10 @@ fsw_event_flag fsw_get_event_flag_by_name(const char * name)
 char * fsw_get_event_flag_name(const fsw_event_flag flag)
 {
   string name = event::get_event_flag_name(flag);
-  char * cstr = new char[name.size() + 1];
+  char * cstr = static_cast<char *>(fsw_alloc(name.size() + 1));
+  
+  if (cstr == nullptr) return nullptr;
+  
   strcpy(cstr, name.c_str());
   
   return cstr;
