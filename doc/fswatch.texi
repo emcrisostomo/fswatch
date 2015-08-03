@@ -21,19 +21,20 @@
 @c %**end of header
 
 @copying
-This manual is for @command{fswatch} (version @value{VERSION}, @value{UPDATED}),
-a cross-platform file change monitor with multiple backends, including Apple OS
-X File System Events API, *BSD kqueue, Linux inotify and a @command{stat}-based
-backend.
+This manual is for @command{fswatch} (version @value{VERSION},
+@value{UPDATED}), a cross-platform file change monitor with multiple
+backends, including Apple OS X File System Events API, *BSD kqueue,
+Linux inotify and a @command{stat}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
 @quotation
-Permission is granted to copy, distribute and/or modify this document under the
-terms of the GNU Free Documentation License, Version 1.3 or any later version
-published by the Free Software Foundation; with no Invariant Sections, with no
-Front-Cover Texts, and with no Back-Cover Texts.  A copy of the license is
-included in the section entitled `GNU Free Documentation License'.
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'.
 @end quotation
 @end copying
 
@@ -67,22 +68,34 @@ included in the section entitled `GNU Free Documentation License'.
 @end ifnottex
 
 @menu
+* History::
 * Introduction::
 * Tutorial Introduction to @command{fswatch}::
 * Invoking @command{fswatch}::
 * Monitors::
-* GNU Free Documentation License:: Copying and sharing this manual
+* GNU Free Documentation License::
 * Index of Functions::
 * Index of Programs::
 * Index of Command Line Options::
 * Index::
 @end menu
 
+@node History
+@chapter History
+@section 1.5.0
+The changes introduced in @code{fswatch} 1.5.0 are the following:
+
+@itemize
+@item
+@opindex event@r{, inception}
+Added the @option{--event} option to allow filtering by event type.
+@end itemize
+
 @node Introduction
 @chapter Introduction
-@command{fswatch} is a file change monitor that receives notifications when the
-contents of the specified files or directories are modified.  @command{fswatch}
-implements four kinds of monitors:
+@command{fswatch} is a file change monitor that receives notifications
+when the contents of the specified files or directories are modified.
+@command{fswatch} implements four kinds of monitors:
 
 @itemize
 @item
@@ -96,43 +109,45 @@ A monitor based on the File System Events API of Apple OS X.
 @cpindex BSD
 @cpindex kqueue
 @cpindex monitor, kqueue
-A monitor based on kqueue, an event notification interface introduced in FreeBSD
-4.1 and supported on most *BSD systems (including OS X).
+A monitor based on kqueue, an event notification interface introduced
+in FreeBSD 4.1 and supported on most *BSD systems (including OS X).
 
 @item
 @cpindex inotify
 @cpindex Linux
 @cpindex monitor, inotify
-A monitor based on inotify, a Linux kernel subsystem that reports file system
-changes to applications.
+A monitor based on inotify, a Linux kernel subsystem that reports file
+system changes to applications.
 
 @item
 @cpindex monitor, poll
 @fnindex @command{stat}
-A monitor which periodically stats the file system, saves file modification
-times in memory and manually calculates file system changes, which can work on
-any operating system where stat (2) can be used.
+A monitor which periodically stats the file system, saves file
+modification times in memory and manually calculates file system
+changes, which can work on any operating system where stat (2) can be
+used.
 @end itemize
 
-@command{fswatch} should build and work correctly on any system shipping either
-of the aforementioned APIs.
+@command{fswatch} should build and work correctly on any system
+shipping either of the aforementioned APIs.
 
 @section History and @command{fswatch} Authors
 @cpindex authors
 @pgindex @command{fswatch}
 @cpindex @command{fswatch}, initial version
 @cpindex FSEvents
-Alan @sc{Dipert} wrote the first implementation of @command{fswatch} in 2009.
-This version ran exclusively on OS X and relied on the @emph{FSEvents} API to
-get change events from the OS.
+Alan @sc{Dipert} wrote the first implementation of @command{fswatch}
+in 2009.  This version ran exclusively on OS X and relied on the
+@emph{FSEvents} API to get change events from the OS.
 
 @pgindex @command{fsw}
 @cpindex FSEvents
 @cpindex kqueue
 @cpindex inotify
-At the end of 2013 Enrico M. @sc{Crisostomo} wrote @command{fsw} aiming at
-providing not only a drop-in replacement for @command{fswatch}, but also a
-common front-end from multiple file system change events APIs, including:
+At the end of 2013 Enrico M. @sc{Crisostomo} wrote @command{fsw}
+aiming at providing not only a drop-in replacement for
+@command{fswatch}, but also a common front-end from multiple file
+system change events APIs, including:
 @itemize
 @item
 OS X FSEvents.
@@ -147,13 +162,14 @@ Linux inotify.
 @cpindex @command{fsw}, merging with @command{fswatch}
 @cpindex @command{fswatch}, merging with @command{fsw}
 In April 2014 Alan and Enrico, in the best interest of users of either
-@command{fswatch} and @command{fsw}, agreed on merging the two programs
-together.  At the same time, Enrico was taking over @command{fswatch} as a
-maintainer.
+@command{fswatch} and @command{fsw}, agreed on merging the two
+programs together.  At the same time, Enrico was taking over
+@command{fswatch} as a maintainer.
 
-As a consequence, development of @command{fswatch} will continue on its main
-repository while the @command{fsw} repository will likely be frozen and its
-documentation updated to redirect users to @command{fswatch}.
+As a consequence, development of @command{fswatch} will continue on
+its main repository while the @command{fsw} repository will likely be
+frozen and its documentation updated to redirect users to
+@command{fswatch}.
 
 @section Reporting Bugs and Suggestions
 @anchor{Reporting Bugs and Suggestions}
@@ -162,19 +178,21 @@ documentation updated to redirect users to @command{fswatch}.
 @cpindex GitHub
 @cpindex @command{fswatch}, repository
 @cpindex @command{fswatch}, source code
-If you find problems or have suggestions about this program or this manual,
-please report them as new issues in the official GitHub repository of
-@command{fswatch} at @uref{https://github.com/emcrisostomo/fswatch}.  If you
-wish, you may contact the authors at the addresses listed in the @file{AUTHORS}
+If you find problems or have suggestions about this program or this
+manual, please report them as new issues in the official GitHub
+repository of @command{fswatch} at
+@uref{https://github.com/emcrisostomo/fswatch}.  If you wish, you may
+contact the authors at the addresses listed in the @file{AUTHORS}
 file.
 
-When reporting a bug, please be sure to include as much detail as possible.
+When reporting a bug, please be sure to include as much detail as
+possible.
 
 @node Tutorial Introduction to @command{fswatch}
 @chapter Tutorial Introduction to @command{fswatch}
 @cpindex tutorial
-This chapter is a tutorial walk-through on the most common use cases where
-@command{fswatch} is useful:
+This chapter is a tutorial walk-through on the most common use cases
+where @command{fswatch} is useful:
 
 @itemize
 @item Detecting file system changes.
@@ -184,23 +202,25 @@ This chapter is a tutorial walk-through on the most common use cases where
 
 @section Detecting File System Changes
 @cpindex changes, detecting
-A common use case is @emph{detecting} file system changes in a set of file
-system objects@footnote{In the context of this manual (unless specified
-otherwise), @emph{file system object} refers undistinctively to @emph{files} and
-@emph{directories}.} where @emph{details} of a change are irrelevant.
 @cpindex @command{fswatch}, bulk mode
-This mode of operation is called @emph{bulk mode} and @command{fswatch} will
-only dump a single event record per batch@footnote{A @emph{batch} is an
-iteration of @command{fswatch} scanning logic, whose frequency is @math{\nu =
-l^{-1}}, where @math{l} is the @emph{latency}.}  containing the number of
-affected file system objects.  No other details are avaible in the event record.
+A common use case is @emph{detecting} file system changes in a set of
+file system objects@footnote{In the context of this manual (unless
+specified otherwise), @emph{file system object} refers undistinctively
+to @emph{files} and @emph{directories}.} where @emph{details} of a
+change are irrelevant.  This mode of operation is called @emph{bulk
+mode} and @command{fswatch} will only dump a single event record per
+batch@footnote{A @emph{batch} is an iteration of @command{fswatch}
+scanning logic, whose frequency is @math{\nu = l^{-1}}, where @math{l}
+is the @emph{latency}.}  containing the number of affected file system
+objects.  No other details are avaible in the event record.
 
 @pgindex @command{rsync}
-The most common application of this mode of operation is performing a bulk
-action on all the observed file system objects, such as a synchronization with
-@command{rsync}, which will serve us as an example.  In this case, the detection
-of a change triggers the execution of a synchronization script, no matter its
-kind nor the specific object the event affects.
+The most common application of this mode of operation is performing a
+bulk action on all the observed file system objects, such as a
+synchronization with @command{rsync}, which will serve us as an
+example.  In this case, the detection of a change triggers the
+execution of a synchronization script, no matter its kind nor the
+specific object the event affects.
 
 To run @command{fswatch} in batch mode, the (@option{-o},
 @option{--one-per-batch}) must be used:
@@ -212,8 +232,8 @@ $ fswatch -o @var{path} ...
 @end example
 
 @noindent
-The (@option{-l}, @option{--latency}) option can be used to set the latency
-according to the requirements:
+The (@option{-l}, @option{--latency}) option can be used to set the
+latency according to the requirements:
 
 @example
 $ fswatch -o -l 5 @var{path} ...
@@ -222,13 +242,13 @@ $ fswatch -o -l 5 @var{path} ...
 @end example
 
 @noindent
-This way, you can respond to change events in a way which is (or can easily be)
-path-independent (because you are not receiving any event detail) and you prefer
-to `bubble' events together to reduce the overhead of the command being
-executed.
+This way, you can respond to change events in a way which is (or can
+easily be) path-independent (because you are not receiving any event
+detail) and you prefer to `bubble' events together to reduce the
+overhead of the command being executed.
 
-In bulk mode the output of @command{fswatch} is guaranteed to have the following
-structure:
+In bulk mode the output of @command{fswatch} is guaranteed to have the
+following structure:
 
 @example
 @var{number}\n
@@ -237,9 +257,9 @@ structure:
 @noindent
 @fnindex @command{read}
 @pgindex @command{xargs}
-where @samp{number} is an integer value and @samp{\n} is the new line character.
-A line with this structure is very easy to read with either @command{xargs} or
-the @command{read} builtin:
+where @samp{number} is an integer value and @samp{\n} is the new line
+character.  A line with this structure is very easy to read with
+either @command{xargs} or the @command{read} builtin:
 
 @example
 $ fswatch -o @var{path} | while read num ; \
@@ -248,26 +268,28 @@ $ fswatch -o @var{path} | while read num ; \
   done
 @end example
 
-In many scripts of this kind, the @var{num} variable can even be ignored.
+In many scripts of this kind, the @var{num} variable can even be
+ignored.
 
 @section Observing File System Changes
 @anchor{Observing File System Changes}
 @cpindex changes, observing
 @cpindex @command{fswatch}, main mode
-Besides the batch mode, @command{fswatch} provides a @emph{main} mode providing
-full details of the kind of events detected and the file system objects they
-refer to.  The main mode is @command{fswatch}'s default mode of operation and
-needs no specific flags to be activated.
+Besides the batch mode, @command{fswatch} provides a @emph{main} mode
+providing full details of the kind of events detected and the file
+system objects they refer to.  The main mode is @command{fswatch}'s
+default mode of operation and needs no specific flags to be activated.
 
-In this mode, @command{fswatch} outputs change events to the standard output.
-By default, only the affected file name is printed and the change event record
-structure has the following structure:
+In this mode, @command{fswatch} outputs change events to the standard
+output.  By default, only the affected file name is printed and the
+change event record structure has the following structure:
 
 @example
 /full/path/to/changed/object\n
 @end example
 
-However, many options are available to format the event record, including:
+However, many options are available to format the event record,
+including:
 
 @itemize
 @item
@@ -276,33 +298,36 @@ The possibility of adding the event timestamp.
 
 @item
 @cpindex event mask, add
-The possibility of adding the event mask in both textual and numerical form.
+The possibility of adding the event mask in both textual and numerical
+form.
 
 @item
 @cpindex record, format
-The possibility of customizing the event record using a @command{printf}-like
-format string.
+The possibility of customizing the event record using a
+@command{printf}-like format string.
 @end itemize
 
-Since a Unix file name may contain any character but the path separator @samp{/}
-and @samp{NUL}@footnote{Depending on the file system being used, other
-restrictions may apply.  However, for file system portability reasons, you
-should consider @samp{NUL} as the only forbidden character.}  the choice of
-using @samp{\n} as record separator may lead to unexpected results (since a file
-name can legally contain @samp{\n}).
+Since a Unix file name may contain any character but the path
+separator @samp{/} and @samp{NUL}@footnote{Depending on the file
+system being used, other restrictions may apply.  However, for file
+system portability reasons, you should consider @samp{NUL} as the only
+forbidden character.}  the choice of using @samp{\n} as record
+separator may lead to unexpected results (since a file name can
+legally contain @samp{\n}).
 @pgindex @command{find}
 @pgindex @command{xargs}
-For this reason, along the line of what other tools such as @command{find} and
-@command{xargs} already do, the @samp{NUL} character (@samp{\0}) can
-alternatively be used:
+For this reason, along the line of what other tools such as
+@command{find} and @command{xargs} already do, the @samp{NUL}
+character (@samp{\0}) can alternatively be used:
 
 @example
 /full/path/to/changed/object\0
 @end example
 
 @subsection Event details
-Beside the full path of the change object, details on the kind of change event
-can be obtained using the (@option{-x}, @option{--event-flags}) option:
+Beside the full path of the change object, details on the kind of
+change event can be obtained using the (@option{-x},
+@option{--event-flags}) option:
 
 @example
 $ fswatch -xr @var{/path/to/observe}
@@ -311,37 +336,40 @@ $ fswatch -xr @var{/path/to/observe}
 @end example
 
 @noindent
-In this case, a space-separated list of change flags are printed after the path
-of the changed object.  The record structure is thus:
+In this case, a space-separated list of change flags are printed after
+the path of the changed object.  The record structure is thus:
 
 @example
 /full/path/to/changed/object flag ([ ][flag])*
 @end example
 
 @noindent
-where @samp{flag} is an event flag.  At least one event flag is always present,
-and additional ones are `bubbled' into the same record and separated by space.
-For more information on event flags @pxref{Event Flags}.
+where @samp{flag} is an event flag.  At least one event flag is always
+present, and additional ones are `bubbled' into the same record and
+separated by space.  For more information on event flags @pxref{Event
+Flags}.
 
 @subsection Parseability Issues
 @cpindex parseability
 @cpindex record, parsing
-Since a file name may contain spaces, this record structure is not unambigually
-parseable if more than one event flag is present: in this case, any subset
-@math{[0, x], x < n - 1} of the @math{n} event flags may be part or the file
-name and hence any parse result would be indeterminate.  This issue can be
-solved using a custom record format (@pxref{Custom Record Formats}).
+Since a file name may contain spaces, this record structure is not
+unambigually parseable if more than one event flag is present: in this
+case, any subset @math{[0, x], x < n - 1} of the @math{n} event flags
+may be part or the file name and hence any parse result would be
+indeterminate.  This issue can be solved using a custom record format
+(@pxref{Custom Record Formats}).
 
 @subsection Numeric Event Flags
 @cpindex event, flags
 @cpindex event, flags, numeric
-Instead of using user-friendly event flag names, as seen in the previous
-section, @emph{numeric} event flags can be used instead.  Currently, the real
-advantage this method offers, despite possibly cleaner flag-decoding logic, is
-the availability of a non-ambigous event record representation.
+Instead of using user-friendly event flag names, as seen in the
+previous section, @emph{numeric} event flags can be used instead.
+Currently, the real advantage this method offers, despite possibly
+cleaner flag-decoding logic, is the availability of a non-ambigous
+event record representation.
 
-To instruct @command{fswatch} to print numeric event flags, the (@option{-n},
-@option{--numeric}) option must be used:
+To instruct @command{fswatch} to print numeric event flags, the
+(@option{-n}, @option{--numeric}) option must be used:
 
 @example
 $ fswatch -xnr @var{/path/to/observe}
@@ -349,28 +377,30 @@ $ fswatch -xnr @var{/path/to/observe}
 @end example
 
 @noindent
-The numeric event flag value is the bitwise OR of the individual event flag
-values, that are powers of 2.  In the previous example, the flag @math{2058} is
-decomposed in powers of 2 as @math{2058 = 2048 + 8 + 2 = 2^{11} + 2^3 + 2}, that
-is, the eleventh, the third and the first event flags.
+The numeric event flag value is the bitwise OR of the individual event
+flag values, that are powers of 2.  In the previous example, the flag
+@math{2058} is decomposed in powers of 2 as @math{2058 = 2048 + 8 + 2
+= 2^{11} + 2^3 + 2}, that is, the eleventh, the third and the first
+event flags.
 
 @section Processing @command{fswatch} Output
 @cpindex record, parsing
 @cpindex record, piping
-Very often you wish to not only receive an event, but react to it.  The simplest
-way to do it is piping fswatch output to another process.  Since in Unix and
-Unix-like file system file names may potentially contain any character but
-@samp{NUL} (@samp{\0}) and the path separator (@samp{/}), @command{fswatch} has
-a specific mode of operation when its output must be piped to another process.
-When the (@option{-0}, @option{--print0}) option is used, @command{fswatch} will
-use the @samp{NUL} character as record separator, thus allowing any other
-character to appear in a path.
+Very often you wish to not only receive an event, but react to it.
+The simplest way to do it is piping fswatch output to another process.
+Since in Unix and Unix-like file system file names may potentially
+contain any character but @samp{NUL} (@samp{\0}) and the path
+separator (@samp{/}), @command{fswatch} has a specific mode of
+operation when its output must be piped to another process.  When the
+(@option{-0}, @option{--print0}) option is used, @command{fswatch}
+will use the @samp{NUL} character as record separator, thus allowing
+any other character to appear in a path.
 @fnindex @command{read}
 This is important because many commands and shell builtins (such as
-@command{read}) split words and lines by default using the characters in
-@env{$IFS}, which by default contains characters which may be present (although
-rarely) in a file name, resulting in a wrong event path being received and
-processed.
+@command{read}) split words and lines by default using the characters
+in @env{$IFS}, which by default contains characters which may be
+present (although rarely) in a file name, resulting in a wrong event
+path being received and processed.
 
 @pgindex @command{xargs}
 The simplest way to pipe @command{fswatch} to another program is using
@@ -385,32 +415,36 @@ The command in this example does the following:
 
 @itemize
 @item
-@command{fswatch -0} will split records using the @samp{NUL} character.
+@command{fswatch -0} will split records using the @samp{NUL}
+character.
 
 @item
-@command{xargs -0} will split records using the @samp{NUL} character.  This is
-required to correctly match impedance with @command{fswatch}.
+@command{xargs -0} will split records using the @samp{NUL} character.
+This is required to correctly match impedance with @command{fswatch}.
 
 @item
-@command{xargs -n 1} will invoke @command{@var{command}} every record.  If you
-want to do it every @code{@var{x}} records, then use @command{xargs -n @var{x}}.
+@command{xargs -n 1} will invoke @command{@var{command}} every record.
+If you want to do it every @code{@var{x}} records, then use
+@command{xargs -n @var{x}}.
 
 @item
-@command{xargs -I @{@}} will substitute occurrences of @command{@{@}} in command
-with the parsed argument.  If the command you are running does not need the
-event path name, just delete this option.  If you prefer using another
-replacement string, substitute @command{@{@}} with your choice.
+@command{xargs -I @{@}} will substitute occurrences of @command{@{@}}
+in command with the parsed argument.  If the command you are running
+does not need the event path name, just delete this option.  If you
+prefer using another replacement string, substitute @command{@{@}}
+with your choice.
 @end itemize
 
 @section Detecting the Boundaries of a Batch of Changes
 @cpindex batch marker
 @opindex batch-marker@r{, detail}
-If a process or script is piped to @command{fswatch} output, sometimes it would
-be desirable to detect the `boundaries' of a batch of changes.  This way, the
-process receiving the stream of changes would rely on the timings imposed by the
-latency settings of @command{fswatch} to start a phase of events
-@emph{processing} after a phase or events @emph{gathering}.  The
-@option{--batch-marker} option can be used to accomplish this task:
+If a process or script is piped to @command{fswatch} output, sometimes
+it would be desirable to detect the `boundaries' of a batch of
+changes.  This way, the process receiving the stream of changes would
+rely on the timings imposed by the latency settings of
+@command{fswatch} to start a phase of events @emph{processing} after a
+phase or events @emph{gathering}.  The @option{--batch-marker} option
+can be used to accomplish this task:
 
 @example
 $ fswatch --batch-marker -r ~
@@ -423,17 +457,18 @@ NoOp
 @end example
 
 @noindent
-In this example, the @samp{NoOp} records mark the end of the 1 second batches of
-events output by @command{fswatch}.  The batch marker can be customized.  For
-more information @ref{Batch Marker}.
+In this example, the @samp{NoOp} records mark the end of the 1 second
+batches of events output by @command{fswatch}.  The batch marker can
+be customized.  For more information @ref{Batch Marker}.
 
 @section Receiving a Single Event
 @cpindex single event
 @opindex one-event@r{, detail}
-Another requested feature is the possibility of receiving a single event and
-exit @command{fswatch}.  This is most useful when existing scripts processing
-events include the restart logic of @command{fswatch}.  This use case is
-implemented by the @option{-1}, @option{--one-event} option:
+Another requested feature is the possibility of receiving a single
+event and exit @command{fswatch}.  This is most useful when existing
+scripts processing events include the restart logic of
+@command{fswatch}.  This use case is implemented by the @option{-1},
+@option{--one-event} option:
 
 @example
 $ fswatch -1 /path/to/watch
@@ -446,8 +481,8 @@ $
 @node Invoking @command{fswatch}
 @chapter Invoking @command{fswatch}
 @cpindex syntax
-This chapter is about how @command{fswatch} is invoked.  There are many options
-and two styles for writing them.
+This chapter is about how @command{fswatch} is invoked.  There are
+many options and two styles for writing them.
 
 @section Synopsis of @command{fswatch}
 @command{fswatch} is invoked with:
@@ -458,29 +493,30 @@ fswatch [options] [paths]
 
 @noindent
 @fnindex @command{realpath}
-@command{fswatch} interprets file names as being relative to the working
-directory and canonicalizes them using @command{realpath}.
+@command{fswatch} interprets file names as being relative to the
+working directory and canonicalizes them using @command{realpath}.
 
-If a directory is used as an argument, the directory object is watched and,
-optionally and depending on the monitor being used, the directory is scanned
-recursively and all its children are watched as well.
+If a directory is used as an argument, the directory object is watched
+and, optionally and depending on the monitor being used, the directory
+is scanned recursively and all its children are watched as well.
 
-Depending on the monitor being used, recursively scanning huge directory
-hierarchies or big set of files may be resource consuming, @acronym{CPU}
-intensive or even impossible.  The characteristics of the available monitors in
-a system should be assessed in order to choose the best monitor according to the
-specific needs.
+Depending on the monitor being used, recursively scanning huge
+directory hierarchies or big set of files may be resource consuming,
+@acronym{CPU} intensive or even impossible.  The characteristics of
+the available monitors in a system should be assessed in order to
+choose the best monitor according to the specific needs.
 
-Besides successful exits@footnote{Depending on the monitor and options being
-used, @command{fswatch} may not exit unless @emph{stopped} with a signal such as
-@code{TERM} or @code{QUIT}.}, indicated with the exit code 0, @command{fswatch}
-may exit with an error.  @command{fswatch} will try to print a diagnostic
-description on @code{stderr} when an unexpected error occurs.
+Besides successful exits@footnote{Depending on the monitor and options
+being used, @command{fswatch} may not exit unless @emph{stopped} with
+a signal such as @code{TERM} or @code{QUIT}.}, indicated with the exit
+code 0, @command{fswatch} may exit with an error.  @command{fswatch}
+will try to print a diagnostic description on @code{stderr} when an
+unexpected error occurs.
 
 @cpindex exit codes
 @cpindex error codes
-The documented@footnote{Exit codes are documented in @file{c/error.h} of
-@command{libfswatch}.} exit codes of @command{fswatch} are the
+The documented@footnote{Exit codes are documented in @file{c/error.h}
+of @command{libfswatch}.} exit codes of @command{fswatch} are the
 following:
 
 @table @asis
@@ -517,27 +553,28 @@ following:
 @end table
 
 @section The Two Option Styles
-@command{fswatch} implements two option styles which are common in Unix and
-Unix-like operating systems and GNU software: @emph{short} and @emph{long}
-options.  The biggest difference between short and long options are argument
-placing (for options taking one).
+@command{fswatch} implements two option styles which are common in
+Unix and Unix-like operating systems and GNU software: @emph{short}
+and @emph{long} options.  The biggest difference between short and
+long options are argument placing (for options taking one).
 
 @fnindex @command{getopt_long}
-Whether long options are available in a system depend on the availability of the
-@command{getopt_long} function at build time.  For this reason, users should
-familiarise themselves with short options and use them when possible and do not
-rely on long options to be available on any @command{fswatch} installation.
+Whether long options are available in a system depend on the
+availability of the @command{getopt_long} function at build time.  For
+this reason, users should familiarise themselves with short options
+and use them when possible and do not rely on long options to be
+available on any @command{fswatch} installation.
 
 @subsection Long Options
 @cpindex options, long
 @cpindex long options
 @fnindex @command{getopt_long}
-In systems where @command{getopt_long} is available, each short option has a
-corresponding long option with a @emph{mnemonic} name starting with two dashes
-(e.g.: @option{--version}).
+In systems where @command{getopt_long} is available, each short option
+has a corresponding long option with a @emph{mnemonic} name starting
+with two dashes (e.g.: @option{--version}).
 
-Long options are meant to be easy to remember and to provide hints about what a
-command is going to perform.  The following command:
+Long options are meant to be easy to remember and to provide hints
+about what a command is going to perform.  The following command:
 
 @example
 $ fswatch --event-flags --numeric --recursive ~
@@ -550,21 +587,21 @@ is clearer than:
 $ fswatch -xnr ~
 @end example
 
-If a long option takes an argument, it can be specified in two ways, depending
-on whether the argument is optional or mandatory:
+If a long option takes an argument, it can be specified in two ways,
+depending on whether the argument is optional or mandatory:
 
 @itemize
 @item
-Separating the argument from the option name with an equal sign, if the argument
-is of either kind.
+Separating the argument from the option name with an equal sign, if
+the argument is of either kind.
 
 @example
 $ fswatch --latency=5 ~
 @end example
 
 @item
-Separating the argument from the option name with any amount of white space, if
-the argument is mandatory.
+Separating the argument from the option name with any amount of white
+space, if the argument is mandatory.
 
 @example
 $ fswatch --latency 5 ~
@@ -575,15 +612,17 @@ $ fswatch --latency 5 ~
 @subsection Short Options
 @cpindex options, short
 @cpindex short options
-Most options have a @emph{short} form consisting of a dash followed by a single
-character, such as @option{-l} (which is equivalent to @option{--latency}).
-When available, a short form is interchangeable with the long one.
+Most options have a @emph{short} form consisting of a dash followed by
+a single character, such as @option{-l} (which is equivalent to
+@option{--latency}).  When available, a short form is interchangeable
+with the long one.
 
 If a short option takes an argument, it can be specified in two ways:
 
 @itemize
 @item
-Separating the argument from the option name with any amount of white space:
+Separating the argument from the option name with any amount of white
+space:
 
 @example
 $ fswatch -l 5 ~
@@ -597,9 +636,9 @@ $ fswatch -l5 ~
 @end example
 @end itemize
 
-Short options can be stuck together provided all the options but the last one
-take no argument, in which case it can be specified as described above.  The
-command:
+Short options can be stuck together provided all the options but the
+last one take no argument, in which case it can be specified as
+described above.  The command:
 
 @example
 $ fswatch -xnrl 5 ~
@@ -618,8 +657,8 @@ where @samp{5} is the argument of @option{-l}.
 @section @command{fswatch} Options
 @cpindex options
 @cpindex options, list
-In the following table you can find the list, in alphabetical order, of
-@command{fswatch}'s options.
+In the following table you can find the list, in alphabetical order,
+of @command{fswatch}'s options.
 
 @table @option
 
@@ -715,7 +754,8 @@ Print a numeric event mask.
 @item --one-per-batch
 @itemx -o
 
-Print a single message with the number of change events in the current batch.
+Print a single message with the number of change events in the current
+batch.
 
 @opsummary{recursive}
 @item --recursive
@@ -764,39 +804,42 @@ Use the specified string as event flag separator.
 @cpindex whitespace
 @cpindex record, format
 As seen in @ref{Observing File System Changes}, file names may contain
-characters such as @samp{\n} which are commonly used as line separators.  Many
-commonly used Unix commands and shell builtins use characters in the @env{$IFS}
-environment variable@footnote{@acronym{IFS, Internal Field Separators}.}  as
+characters such as @samp{\n} which are commonly used as line
+separators.  Many commonly used Unix commands and shell builtins use
+characters in the @env{$IFS} environment
+variable@footnote{@acronym{IFS, Internal Field Separators}.}  as
 @emph{separators} to split words.  By default, @env{$IFS} contains the
 characters @samp{ } (@kbd{SPC}), @samp{\t}, @samp{\n} and @samp{\0}
 (@samp{NUL}).
 
-Therefore, if a file contains such a separator character (and all but @samp{NUL}
-are @emph{legal}), then a parsing ambiguity may arise when using certain record
-formats such as:
+Therefore, if a file contains such a separator character (and all but
+@samp{NUL} are @emph{legal}), then a parsing ambiguity may arise when
+using certain record formats such as:
 
 @example
 @var{path}[ @var{flag}]+
 @end example
 
 @noindent
-In this case, for example, if @math{n > 1} @var{flags} are present in the
-record, and hence more than one @samp{ } (@kbd{SPC}) is present, then it is not
-known whether any subset containing a number @math{x} of consecutive flags
-(@math{x < n}) is part of the path or not.
+In this case, for example, if @math{n > 1} @var{flags} are present in
+the record, and hence more than one @samp{ } (@kbd{SPC}) is present,
+then it is not known whether any subset containing a number @math{x}
+of consecutive flags (@math{x < n}) is part of the path or not.
 
-The same reasoning applies when splitting @emph{lines} instead of @emph{words}:
-since @samp{\n} may be a legal file name character, then it is now known whether
-@samp{\n} indicates a record's end or simply is part of a file name.
+The same reasoning applies when splitting @emph{lines} instead of
+@emph{words}: since @samp{\n} may be a legal file name character, then
+it is now known whether @samp{\n} indicates a record's end or simply
+is part of a file name.
 
-For this reason, in order to avoid parsing ambiguity, this options instructs
-@command{fswatch} to use @acronym{ASCII} @samp{NUL} as record separator.
+For this reason, in order to avoid parsing ambiguity, this options
+instructs @command{fswatch} to use @acronym{ASCII} @samp{NUL} as
+record separator.
 
 @quotation Warning
-The use of the @option{--print0} solves the @emph{line} splitting ambiguity but
-not the @emph{word} splitting ambiguity when using textual event flags.  A
-solution to this problem is provided by @emph{custom record formats}
-(@pxref{Custom Record Formats}).
+The use of the @option{--print0} solves the @emph{line} splitting
+ambiguity but not the @emph{word} splitting ambiguity when using
+textual event flags.  A solution to this problem is provided by
+@emph{custom record formats} (@pxref{Custom Record Formats}).
 
 Another way to get an unambiguous record format is using
 @emph{numeric} event flags (@pxref{Numeric Event Flags}).
@@ -805,24 +848,25 @@ Another way to get an unambiguous record format is using
 @section Custom Record Formats
 @anchor{Custom Record Formats}
 @cpindex record, format, custom
-To solve the problem of line splitting ambiguities and to provide users the
-possibilities of tailoring the record format to their needs, @command{fswatch}
-allows users to specify the event record @emph{format} using the
-@option{--format} option.
+To solve the problem of line splitting ambiguities and to provide
+users the possibilities of tailoring the record format to their needs,
+@command{fswatch} allows users to specify the event record
+@emph{format} using the @option{--format} option.
 
-This options requires a @command{printf}-like@footnote{Although the available
-directive are much less than what @command{printf} offers.}  @emph{format
-string} ordinary text containing zero or more @emph{directives}.  Characters not
-belonging to a format directive are copied unchanged to the output, while
-directives are interpreted and replaced with the result of their evaluation.
+This options requires a @command{printf}-like@footnote{Although the
+available directive are much less than what @command{printf} offers.}
+@emph{format string} ordinary text containing zero or more
+@emph{directives}.  Characters not belonging to a format directive are
+copied unchanged to the output, while directives are interpreted and
+replaced with the result of their evaluation.
 
 @subsection Format Directives
 @cpindex record, format, directives
 @cpindex record, format, escape character
-Directives start with @samp{%} which is always treated as a special character:
-either it marks the beginning of a directive or it is interpreted as an escape
-character@footnote{Which is the same as considering escaped characters the
-result of a directive.}.
+Directives start with @samp{%} which is always treated as a special
+character: either it marks the beginning of a directive or it is
+interpreted as an escape character@footnote{Which is the same as
+considering escaped characters the result of a directive.}.
 
 The available directives are:
 
@@ -841,8 +885,8 @@ Inserts a @emph{newline} character.
 
 @item %f
 @cpindex @command{%f}, format directive
-Inserts the list of event flags, separated by default by the space character
-(@samp{ }) or by the separator specified with the
+Inserts the list of event flags, separated by default by the space
+character (@samp{ }) or by the separator specified with the
 @option{--event-flag-separator} option (@pxref{Event Flag Separator}).
 
 @item %p
@@ -851,14 +895,14 @@ Inserts the path.
 
 @item %t
 @cpindex @command{%t}, format directive
-Inserts the timestamp, formatted with @command{strftime} using the format
-optionally specified with the @option{--format-time} option.
+Inserts the timestamp, formatted with @command{strftime} using the
+format optionally specified with the @option{--format-time} option.
 @end table
 
 @subsection Record Termination
-Each record is terminated by either a newline character (@samp{\n}) or an
-@acronym{ASCII} @samp{NUL} character when @option{-0} is specified.  The record
-termination character has the following characteristics:
+Each record is terminated by either a newline character (@samp{\n}) or
+an @acronym{ASCII} @samp{NUL} character when @option{-0} is specified.
+The record termination character has the following characteristics:
 
 @itemize
 @item
@@ -875,14 +919,13 @@ It cannot be suppressed.
 @anchor{Event Flag Separator}
 @cpindex event flag, separator
 @cpindex format, event flag separator
-When the list of event flags is printed, textual items are separated by default
-by spaces (@samp{ }).
-The user can specify an alternate event flag separator using the
-@option{--event-flag-separator} and passing the desired separator string as
-argument.
+When the list of event flags is printed, textual items are separated
+by default by spaces (@samp{ }).  The user can specify an alternate
+event flag separator using the @option{--event-flag-separator} and
+passing the desired separator string as argument.
 
-For instance, if the user wants event flags to be separated by a comma,
-the following command can be used:
+For instance, if the user wants event flags to be separated by a
+comma, the following command can be used:
 
 @example
 $ fswatch --event-flag-separator=, -x [OPTIONS] [PATHS]
@@ -890,38 +933,39 @@ $ fswatch --event-flag-separator=, -x [OPTIONS] [PATHS]
 
 @subsection Builtin Formats
 @cpindex format, builtin
-The format used by @command{fswatch} when a custom format is not specified is
-determined as follows@footnote{In the following example, the record termination
-character is not shown.}:
+The format used by @command{fswatch} when a custom format is not
+specified is determined as follows@footnote{In the following example,
+the record termination character is not shown.}:
 
 @itemize
 @item
-@samp{%t } is added at the beginning of the format string if @option{-t}
-is used.
+@samp{%t } is added at the beginning of the format string if
+@option{-t} is used.
 
 @item
 @samp{%p} is always appended to the format string.
 
 @item
-@samp{ %f} is added at the end of the format string if @option{-x} is used.
+@samp{ %f} is added at the end of the format string if @option{-x} is
+used.
 @end itemize
 
 @section Batch Marker
 @anchor{Batch Marker}
 @cpindex batch marker
 @opindex batch-marker@r{, detail}
-Since @command{fswatch} typically outputs an @emph{endless} event stream,
-processing parties parsing its output may be interested in `batch event
-processing': that is, processing batches of events instead of endlessly
-processing events one by one.
+Since @command{fswatch} typically outputs an @emph{endless} event
+stream, processing parties parsing its output may be interested in
+`batch event processing': that is, processing batches of events
+instead of endlessly processing events one by one.
 
-To support this use case, @command{fswatch} provides the @option{--batch-marker}
-option; when specified, @command{fswatch} will output a customizable `batch
-marker record' processing parties can use as batch @emph{delimiters}.  Batch
-demarcation is made naturally using the monitor's processing loop and its
-latency setting: every time the monitor loops (typically when latency is
-elapsed), then a batch marker is printed as final record, as shown in the next
-example:
+To support this use case, @command{fswatch} provides the
+@option{--batch-marker} option; when specified, @command{fswatch} will
+output a customizable `batch marker record' processing parties can use
+as batch @emph{delimiters}.  Batch demarcation is made naturally using
+the monitor's processing loop and its latency setting: every time the
+monitor loops (typically when latency is elapsed), then a batch marker
+is printed as final record, as shown in the next example:
 
 @example
 $ fswatch --batch-marker -r ~
@@ -940,9 +984,10 @@ NoOp[\n | \0]
 @end example
 
 @noindent
-terminated with either @samp{\n} or @samp{NUL} (@samp{\0}) depending on other
-@command{fswatch} settings.  However, the user can customize it by providing the
-desired marker string as optional argument to @option{--batch-marker}:
+terminated with either @samp{\n} or @samp{NUL} (@samp{\0}) depending
+on other @command{fswatch} settings.  However, the user can customize
+it by providing the desired marker string as optional argument to
+@option{--batch-marker}:
 
 @example
 % ./fswatch --batch-marker="*** BATCH END ***" -r ~
@@ -950,47 +995,52 @@ desired marker string as optional argument to @option{--batch-marker}:
 *** BATCH END ***
 @end example
 
-@section Inclusion and Exclusion Filters
-@cpindex filter
-@cpindex filter, inclusion
-@cpindex filter, exclusion
-Filters are @emph{regular expression} which are evaluated against the monitored
-object path to determine whether a path must be accepted or rejected.
-Sometimes, the exclusion of a path may result in the exclusion of an object from
-the list of monitored objects, while other times a path must be evaluated only
-when an event is detected and in this case the corresponding object cannot be
-removed from the monitored object list in advance@footnote{This behaviour is
+@section Filtering by Path
+@cpindex filter, by path
+@cpindex path filter
+@cpindex path filter, inclusion
+@cpindex path filter, exclusion
+Filters are @emph{regular expression} which are evaluated against the
+monitored object path to determine whether a path must be accepted or
+rejected.  Sometimes, the exclusion of a path may result in the
+exclusion of an object from the list of monitored objects, while other
+times a path must be evaluated only when an event is detected and in
+this case the corresponding object cannot be removed from the
+monitored object list in advance@footnote{This behaviour is
 monitor-specific.}.
 
-Event though event @emph{filtering} is commonly performed when processing
-@command{fswatch} output, the possibility of filtering paths `at the source'
-provides not only a greater amount of flexbility, but also:
+Event though event @emph{filtering} is commonly performed when
+processing @command{fswatch} output, the possibility of filtering
+paths `at the source' provides not only a greater amount of
+flexbility, but also:
 
 @itemize
 @item
-Improved performance, since @command{fswatch} will only monitor matching
-objects@footnote{Whether an object whose path is matched by an exclusion filter
-is monitored or not is a monitor-specific implementation detail.}.
+Improved performance, since @command{fswatch} will only monitor
+matching objects@footnote{Whether an object whose path is matched by
+an exclusion filter is monitored or not is a monitor-specific
+implementation detail.}.
 
 @item
-Less resource pressure, especially when resource-intensive monitors are used.
-This is especially important when using monitors that rely on the availability
-of open file descriptors for any monitored object.
+Less resource pressure, especially when resource-intensive monitors
+are used.  This is especially important when using monitors that rely
+on the availability of open file descriptors for any monitored object.
 
 @item
-Simpler processing logic, since part of the path filtering logic is performed by
-@command{fswatch}.
+Simpler processing logic, since part of the path filtering logic is
+performed by @command{fswatch}.
 @end itemize
 
 @fnindex @command{regcomp}
-Since filters are implemented using the @samp{regcomp} library, this feature is
-built into @command{fswatch} only on systems where this library is available.
+Since filters are implemented using the @samp{regcomp} library, this
+feature is built into @command{fswatch} only on systems where this
+library is available.
 
 @subsection Types of Filters and Order of Execution
-@cpindex filter, type
-@cpindex filter, exexution order
-@cpindex filter, inclusion
-@cpindex filter, exclusion
+@cpindex path filter, type
+@cpindex path filter, exexution order
+@cpindex path filter, inclusion
+@cpindex path filter, exclusion
 Two types of filters are available:
 
 @itemize
@@ -1001,14 +1051,14 @@ Two types of filters are available:
 @emph{Exclusion} filters.
 @end itemize
 
-As their name indicates, they are used to include and exclude paths from the
-monitored object list and from resulting events.  @command{fswatch} processes
-filters this way:
+As their name indicates, they are used to include and exclude paths
+from the monitored object list and from resulting events.
+@command{fswatch} processes filters this way:
 
 @itemize
 @item
-If a path matches an including filter, the path is accepted no matter any other
-filter.
+If a path matches an including filter, the path is accepted no matter
+any other filter.
 
 @item
 If a path matches an excluding filter, the path is rejected.
@@ -1033,91 +1083,111 @@ The order in the definition of filters in the command line has no effect.
 @end itemize
 
 @subsection Filter Modifiers
-@cpindex filter, modifier
+@cpindex path filter, modifier
 @fnindex @command{regcomp}
 Filters are regular expression executed using the
 @uref{http://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html,
-@command{regcomp} function} which is able to interpret case-sensitive and
-case-insensitive @emph{basic} and @emph{extended} regular expressions as
-described in
+@command{regcomp} function} which is able to interpret case-sensitive
+and case-insensitive @emph{basic} and @emph{extended} regular
+expressions as described in
 @uref{http://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html,
-Base Definitions volume of @acronym{IEEE} Std 1003.1-2001@comma{} Chapter
-9@comma{} Regular Expressions}.
+Base Definitions volume of @acronym{IEEE} Std 1003.1-2001@comma{}
+Chapter 9@comma{} Regular Expressions}.
 
-@cpindex filter, case sensitivity
-The (@option{--insensitive}, @option{-I}) option instructs @command{fswatch} to
-use case insensitive regular expressions.  The following example adds an
-exclusion filter so that @command{fswatch} ignores any file system object whose
-name ends with @kbd{.log}, no matter the case.
+@cpindex patch filter, case sensitivity
+The (@option{--insensitive}, @option{-I}) option instructs
+@command{fswatch} to use case insensitive regular expressions.  The
+following example adds an exclusion filter so that @command{fswatch}
+ignores any file system object whose name ends with @kbd{.log}, no
+matter the case.
 
 @example
 $ fswatch -Ie ".*\.log$" ~
 @end example
 
-@cpindex filter, regular expression
-@cpindex filter, extended regular expression
-The (@option{--extended}, @option{-E}) option instructs @command{fswatch} to use
-extended regular expressions, such as:
+@cpindex path filter, regular expression
+@cpindex path filter, extended regular expression
+The (@option{--extended}, @option{-E}) option instructs
+@command{fswatch} to use extended regular expressions, such as:
 
 @example
 $ fswatch -Ee "xl[st]+" ~
 @end example
 
-Treating the characteristics and the difference between different kinds of
-regular expressions is out of scope in this manual.
+Treating the characteristics and the difference between different
+kinds of regular expressions is out of scope in this manual.
+
+@section Filtering by Event Type
+@cpindex filter, by event type
+@cpindex event type filter
+Events can be filtered by event type passing @command{fswatch} a list
+of event type @emph{names} to accept using the @option{--event}
+option:
+
+@example
+$ fswatch -x --event Created --event Removed ~
+@end example
+
+If no event type filters are specified @command{fswatch} will accept
+events of any type; on the other hand, as soon as a filter is
+specified, only events with a matching type will be accepted.
 
 @section Latency
 @anchor{Latency}
 @cpindex latency
 @opindex latency@r{, detail}
-The @emph{latency} @math{l}, expressed in seconds, is the amount of time that
-passes between the moment @command{fswatch} outputs a set of detected changes
-and the next.
-What happens during the time in-between is a monitor-specific
-implementation detail.
+The @emph{latency} @math{l}, expressed in seconds, is the amount of
+time that passes between the moment @command{fswatch} outputs a set of
+detected changes and the next.  What happens during the time
+in-between is a monitor-specific implementation detail.
 
-Some @acronym{API}s, such as OS X's FSEvents, implement the concept of latency
-themselves and @command{fswatch} appears idle in between.  Only when the
-specified amount of time passes, change events are received, processed and
-written to standard output.  Others, such as Linux's inotify, do
-not@footnote{inotify publishes changes on a file identified by a descriptor
-which is @command{read} by @command{fswatch}.}; in this case, the inotify
-monitor @emph{waits} for events a maximum of @math{l} seconds; after that, the
-monitor logic loops again, performs house-keeping activities@footnote{Such as
-re-scanning objects which did not exist in the previous iteration.}  and starts
-waiting again.
+Some @acronym{API}s, such as OS X's FSEvents, implement the concept of
+latency themselves and @command{fswatch} appears idle in between.
+Only when the specified amount of time passes, change events are
+received, processed and written to standard output.  Others, such as
+Linux's inotify, do not@footnote{inotify publishes changes on a file
+identified by a descriptor which is @command{read} by
+@command{fswatch}.}; in this case, the inotify monitor @emph{waits}
+for events a maximum of @math{l} seconds; after that, the monitor
+logic loops again, performs house-keeping activities@footnote{Such as
+re-scanning objects which did not exist in the previous iteration.}
+and starts waiting again.
 
-The important thing to keep in mind is that latency and a monitor's behaviour
-are implementation-dependent: check the documentation of the monitor you are
-using to get further information about how latency is handled.
+The important thing to keep in mind is that latency and a monitor's
+behaviour are implementation-dependent: check the documentation of the
+monitor you are using to get further information about how latency is
+handled.
 
 @section Symbolic Links
 @cpindex symbolic link
 @opindex follow-links@r{, detail}
-Symbolic links are commonly used file system objects and, as it is customary for
-file system utilities, @command{fswatch} can either @emph{follow} them and
-monitor the linked object@footnote{When following links, the resolution is
-recursive: that is, if a link points to another symbolic link, this link is
-followed as well, and so on, until an object of a different kind is found.} or
-monitor the link itself.
+Symbolic links are commonly used file system objects and, as it is
+customary for file system utilities, @command{fswatch} can either
+@emph{follow} them and monitor the linked object@footnote{When
+following links, the resolution is recursive: that is, if a link
+points to another symbolic link, this link is followed as well, and so
+on, until an object of a different kind is found.} or monitor the link
+itself.
 
 @section Event Flags
 @anchor{Event Flags}
 @cpindex event flag
 @opindex event-flags@r{, detail}
-Event flags identify the kind of change a file system object has undergone.
-Many of them directly map to common file system operations (such as creation,
-deletion, update, etc.), others are less common (such as attribute
-modification), and others are monitor and platform specific.
+Event flags identify the kind of change a file system object has
+undergone.  Many of them directly map to common file system operations
+(such as creation, deletion, update, etc.), others are less common
+(such as attribute modification), and others are monitor and platform
+specific.
 
-Currently, @command{fswatch} maps monitor-specific event flags to `global' event
-flags acting as a sort of `greatest common denominator' of all the available
-monitor flags.  The list of all the available global event flags, defined in
-@file{c/cevent.h}, is the following:
+Currently, @command{fswatch} maps monitor-specific event flags to
+`global' event flags acting as a sort of `greatest common denominator'
+of all the available monitor flags.  The list of all the available
+global event flags, defined in @file{c/cevent.h}, is the following:
 
 @table @code
 @item PlatformSpecific
-This event maps a platform-specific event that has no corresponding flag.
+This event maps a platform-specific event that has no corresponding
+flag.
 
 @item Created
 The object has been created.
@@ -1138,12 +1208,12 @@ The object's owner has changed.
 An object's attribute has changed.
 
 @item MovedFrom
-The object has moved from this location to a new location of the same file
-system.
+The object has moved from this location to a new location of the same
+file system.
 
 @item MovedTo
-The object has moved from another location in the same file system into this
-location.
+The object has moved from another location in the same file system
+into this location.
 
 @item IsFile
 The object is a regular file.
@@ -1161,57 +1231,59 @@ The object link count has changed.
 @subsection Peculiarities and Pitfalls
 @cpindex event flag, peculiarities
 @cpindex event flag, pitfalls
-As you can see, the list of event flags contains element whose meaning is
-overlapping, at least partially.  @command{Link}, for instance, may be
-equivalent to @command{Create} or @command{Removed}, depending on the whether
-the new link count is 1 or 0.  @command{MovedFrom} and @command{MovedTo} may be
-equivalent to @command{Create} and @command{Removed} if the monitor is unable to
-discern a move operation has taken place (which is not always possible, as in
-the case of the poll monitor).
+As you can see, the list of event flags contains element whose meaning
+is overlapping, at least partially.  @command{Link}, for instance, may
+be equivalent to @command{Create} or @command{Removed}, depending on
+the whether the new link count is 1 or 0.  @command{MovedFrom} and
+@command{MovedTo} may be equivalent to @command{Create} and
+@command{Removed} if the monitor is unable to discern a move operation
+has taken place (which is not always possible, as in the case of the
+poll monitor).
 
-@command{fswatch} is unable to univocally map the specific flags of all the
-monitors consistently.  Forcefully, the mapping depends on the capabilities of
-the monitor which, in turn, depend on the capabilities of the @acronym{API}
-being used.
+@command{fswatch} is unable to univocally map the specific flags of
+all the monitors consistently.  Forcefully, the mapping depends on the
+capabilities of the monitor which, in turn, depend on the capabilities
+of the @acronym{API} being used.
 
-For this reason, when processing change events, either the behaviour of the
-underlying monitor is known and taken into account, or all the flags which could
-possibly be attached at the operation being looked for must be taken into
-account.
+For this reason, when processing change events, either the behaviour
+of the underlying monitor is known and taken into account, or all the
+flags which could possibly be attached at the operation being looked
+for must be taken into account.
 
 @quotation Warning
-As already explained (@pxref{Whitespace and Record Format}), the record format
-when using event flags in textual form is ambiguous.  For this reason, using
-numeric event flags (@pxref{Numeric Event Flags}) or a custom record format
-(@pxref{Custom Record Formats}) is recommended when @command{fswatch} output
-must be processed.
+As already explained (@pxref{Whitespace and Record Format}), the
+record format when using event flags in textual form is ambiguous.
+For this reason, using numeric event flags (@pxref{Numeric Event
+Flags}) or a custom record format (@pxref{Custom Record Formats}) is
+recommended when @command{fswatch} output must be processed.
 @end quotation
 
 @subsection Numeric Event Flags
 @anchor{Numeric Event Flags}
 @cpindex event flag, numeric
 @opindex numeric@r{, detail}
-When using the (@option{--numeric}, @option{-n}) @command{fswatch} will output
-event flags in @emph{numeric} format.  A change event record may have multiple
-event flags and the numeric value is calculated as the bitwise @command{or} of
-the numeric values of all the flags.  Since the value of an event flag is
-guaranteed to be unique and to be a number @math{n} in the form @math{n = 2^k}
-for a certain integer @math{k}, then the numeric value of a set of event flags
-is univocally determined.
+When using the (@option{--numeric}, @option{-n}) @command{fswatch}
+will output event flags in @emph{numeric} format.  A change event
+record may have multiple event flags and the numeric value is
+calculated as the bitwise @command{or} of the numeric values of all
+the flags.  Since the value of an event flag is guaranteed to be
+unique and to be a number @math{n} in the form @math{n = 2^k} for a
+certain integer @math{k}, then the numeric value of a set of event
+flags is univocally determined.
 
-To check whether a given event flag is present when processing @command{fswatch}
-output, iti s sufficient to check whether its bit is set to 1 in the event
-value.  Let's suppose we want to check whether the event flag whose value is
-@math{e} is present in a record whose flag numerical value is @math{n}.  If the
-result @math{r} of
+To check whether a given event flag is present when processing
+@command{fswatch} output, iti s sufficient to check whether its bit is
+set to 1 in the event value.  Let's suppose we want to check whether
+the event flag whose value is @math{e} is present in a record whose
+flag numerical value is @math{n}.  If the result @math{r} of
 
 @tex
 $$ r = e \wedge b $$
 @end tex
 
 @noindent
-where @math{\wedge} is the bitwise @command{and} operator, is @math{r > 0}, then
-the flag @math{e} is present in @math{n}.
+where @math{\wedge} is the bitwise @command{and} operator, is @math{r
+> 0}, then the flag @math{e} is present in @math{n}.
 
 The numeric value of all the event flags is the following:
 
@@ -1235,21 +1307,24 @@ The numeric value of all the event flags is the following:
 @anchor{Choosing a Monitor}
 @cpindex monitor, choosing
 @opindex monitor@r{, detail}
-@command{fswatch} is a front-end to multiple @emph{monitors}, each taking
-advantage of different monitoring @acronym{API}s that may be available in a
-system.  When building @command{fswatch}, @command{configure} scans the system
-to check which @acronym{API}s are available and builds support for all of them.
+@command{fswatch} is a front-end to multiple @emph{monitors}, each
+taking advantage of different monitoring @acronym{API}s that may be
+available in a system.  When building @command{fswatch},
+@command{configure} scans the system to check which @acronym{API}s are
+available and builds support for all of them.
 
-A `special' monitor, the @emph{poll} monitor, manually scans the file system
-looking for differences.  This is a fallback monitor for situations where other,
-more efficient @acronym{API}s are not available.  The poll monitor is available
-on any system providing the @command{stat} function.
+A `special' monitor, the @emph{poll} monitor, manually scans the file
+system looking for differences.  This is a fallback monitor for
+situations where other, more efficient @acronym{API}s are not
+available.  The poll monitor is available on any system providing the
+@command{stat} function.
 
-Although @command{fswatch} chooses the `best' monitor between the available
-ones, a user may wish to use another.  A specific monitor can be chosen using
-the (@option{--monitor}, @option{-m}) option.  The list of available monitors
-can be obtained using the (@option{--list-monitors}, @option{-M}) option or at
-the end of the help message:
+Although @command{fswatch} chooses the `best' monitor between the
+available ones, a user may wish to use another.  A specific monitor
+can be chosen using the (@option{--monitor}, @option{-m}) option.  The
+list of available monitors can be obtained using the
+(@option{--list-monitors}, @option{-M}) option or at the end of the
+help message:
 
 @example
 $ fswatch --list-monitors
@@ -1270,8 +1345,8 @@ Available monitors in this platform:
 @end example
 
 @noindent
-A monitor can then be chosen by passing the mandatory @samp{@var{name}} argument
-to the @option{-m} option:
+A monitor can then be chosen by passing the mandatory
+@samp{@var{name}} argument to the @option{-m} option:
 
 @example
 $ fswatch -m kqueue_monitor ~
@@ -1284,45 +1359,51 @@ In this case, the @samp{kqueue_monitor} is manually chosen.
 @cpindex recursive scanning
 @cpindex monitor, recursive scanning
 @opindex recursive@r{, detail}
-@command{fswatch}'s behaviour when scanning a directory may vary on a monitor by
-monitor basis.  The semantics of the (@option{--recursive}, @option{-r}) option
-is: recursively scan subdirectories.  However, implementations may silently add
-`@emph{if the monitor does not do so already}'.
+@command{fswatch}'s behaviour when scanning a directory may vary on a
+monitor by monitor basis.  The semantics of the (@option{--recursive},
+@option{-r}) option is: recursively scan subdirectories.  However,
+implementations may silently add `@emph{if the monitor does not do so
+already}'.
 
-Since each monitor uses a different @acronym{API}, its behaviour depends on that
-of the backing @acronym{API}, and it is monitor-specific.  The OS X FSEvents
-@acronym{API}, for example, will always recurse subdirectories when monitoring a
-directory.  In this case, even though @option{-r} is not specified, the monitor
-will monitor a directory's children nonetheless and there is no way to avoid
-it@footnote{But manually filtering out events based on paths, but
-@command{fswatch} does not do so @emph{by design}.}.
+Since each monitor uses a different @acronym{API}, its behaviour
+depends on that of the backing @acronym{API}, and it is
+monitor-specific.  The OS X FSEvents @acronym{API}, for example, will
+always recurse subdirectories when monitoring a directory.  In this
+case, even though @option{-r} is not specified, the monitor will
+monitor a directory's children nonetheless and there is no way to
+avoid it@footnote{But manually filtering out events based on paths,
+but @command{fswatch} does not do so @emph{by design}.}.
 
-In general, users should always use the @option{-r} option according to its
-semantics, no matter what the monitor does.  The only case when @option{-r} is
-`not' honoured is when a monitor @emph{adds} information by recursively
-monitoring children even when @option{-r} is not specified.  Please notice that
-when this happens, there may be no performance overhead since the backing
-@acronym{API} is specifically designed to behave like this.
+In general, users should always use the @option{-r} option according
+to its semantics, no matter what the monitor does.  The only case when
+@option{-r} is `not' honoured is when a monitor @emph{adds}
+information by recursively monitoring children even when @option{-r}
+is not specified.  Please notice that when this happens, there may be
+no performance overhead since the backing @acronym{API} is
+specifically designed to behave like this.
 
-The authors think this is not a problem.  If you think this behaviour can be
-improved, please fill a bug report (@pxref{Reporting Bugs and Suggestions}).
+The authors think this is not a problem.  If you think this behaviour
+can be improved, please fill a bug report (@pxref{Reporting Bugs and
+Suggestions}).
 
 @node Monitors
 @chapter Monitors
 @cpindex monitor, available
-@command{fswatch} is a file system monitoring utility that achieves portability
-across multiple platform by decoupling the front-end (the @command{fswatch}
-itself) from back-end logic.  Back-end logic is encapsulated in multiple,
-system-specific @emph{monitors}, interacting with different monitoring
-@acronym{API}s.  Since each operating system may ship a different set of
-@acronym{API}s@footnote{In fact, only OS X supports more than one such
-@acronym{API}: BSD's @emph{kqueue} and @emph{FSEvents}.}, each operating system
-will support the corresponding set of monitors.
+@command{fswatch} is a file system monitoring utility that achieves
+portability across multiple platform by decoupling the front-end (the
+@command{fswatch} itself) from back-end logic.  Back-end logic is
+encapsulated in multiple, system-specific @emph{monitors}, interacting
+with different monitoring @acronym{API}s.  Since each operating system
+may ship a different set of @acronym{API}s@footnote{In fact, only OS X
+supports more than one such @acronym{API}: BSD's @emph{kqueue} and
+@emph{FSEvents}.}, each operating system will support the
+corresponding set of monitors.
 
 The list of available monitors is decided at build time by the
-@command{configure} script.  Monitors cannot be currently plugged-in but
-recompiling the @command{libfswatch} library (shipped with @command{fswath}).
-The list of available monitors can be obtained in the help message:
+@command{configure} script.  Monitors cannot be currently plugged-in
+but recompiling the @command{libfswatch} library (shipped with
+@command{fswath}).  The list of available monitors can be obtained in
+the help message:
 
 @example
 $ fswatch --help
@@ -1346,73 +1427,77 @@ The @emph{FSEvents} monitor, a monitor based on the File System Events
 
 @item
 The @emph{kqueue} monitor, a monitor based on @emph{kqueue}, an event
-notification interface introduced in FreeBSD 4.1 and supported on most *BSD
-systems (including OS X) (@pxref{The kqueue Monitor}).
+notification interface introduced in FreeBSD 4.1 and supported on most
+*BSD systems (including OS X) (@pxref{The kqueue Monitor}).
 
 @item
-The @emph{inotify} monitor, a Linux kernel subsystem that reports file system
-changes to applications (@pxref{The inotify Monitor}).
+The @emph{inotify} monitor, a Linux kernel subsystem that reports file
+system changes to applications (@pxref{The inotify Monitor}).
 
 @item
-The @emph{poll} monitor, a monitor that periodically stats the file system,
-saves file modification times in memory and manually calculates file system
-changes, which can work on any operating system where @command{stat} can be used
-(@pxref{The Poll Monitor}).
+The @emph{poll} monitor, a monitor that periodically stats the file
+system, saves file modification times in memory and manually
+calculates file system changes, which can work on any operating system
+where @command{stat} can be used (@pxref{The Poll Monitor}).
 @end itemize
 
-Each monitor has its own strengths, weakness and peculiarities.  Although
-@command{fswatch} strives to provide a uniform experience no matter which
-monitor is used, it is still important for users to know which monitor they are
-using and to be aware of existing bugs, limitations, corner cases or
-pathological behaviour.
+Each monitor has its own strengths, weakness and peculiarities.
+Although @command{fswatch} strives to provide a uniform experience no
+matter which monitor is used, it is still important for users to know
+which monitor they are using and to be aware of existing bugs,
+limitations, corner cases or pathological behaviour.
 
 @section The FSEvents Monitor
 @anchor{The FSEvents Monitor}
 @cpindex FSEvents monitor
 @cpindex monitor, FSEvents
-The FSEvents monitor, available only on Apple OS X, has no known limitations and
-scales very well with the number of files being observed.  In fact, I observed
-no performance degradation when testing @command{fswatch} observing changes on a
-filesystem of 500 @acronym{GB} over long periods of time.  On OS X, this is the
-default monitor.
+The FSEvents monitor, available only on Apple OS X, has no known
+limitations and scales very well with the number of files being
+observed.  In fact, I observed no performance degradation when testing
+@command{fswatch} observing changes on a filesystem of 500
+@acronym{GB} over long periods of time.  On OS X, this is the default
+monitor.
 
 @subsection Peculiarities
 @cpindex monitor, FSEvents, peculiarities
-The (@option{--recursive}, @option{-r}) option has no effect when used with the
-FSEvents monitor since the FSEvents @acronym{API} already monitors a directory's
-children by default.  There is no overhead nor resource-consumption issue with
-this behaviour, but users processing the output must be aware that for each
-directory @emph{multiple} events may be generated by its children.
+The (@option{--recursive}, @option{-r}) option has no effect when used
+with the FSEvents monitor since the FSEvents @acronym{API} already
+monitors a directory's children by default.  There is no overhead nor
+resource-consumption issue with this behaviour, but users processing
+the output must be aware that for each directory @emph{multiple}
+events may be generated by its children.
 
 @section The kqueue Monitor
 @anchor{The kqueue Monitor}
 @cpindex kqueue monitor
 @cpindex monitor, kqueue
 @fnindex @command{kevent}
-The kqueue monitor, available on any *BSD system featuring the @command{kevent}
-function, is very similar in principle to other similar @acronym{API}s (such as
-FSEvents and inotify) but has important drawback and limitations.
+The kqueue monitor, available on any *BSD system featuring the
+@command{kevent} function, is very similar in principle to other
+similar @acronym{API}s (such as FSEvents and inotify) but has
+important drawback and limitations.
 
 @subsection Peculiarities
 @cpindex monitor, kqueue, peculiarities
-The kqueue monitor @emph{requires a file descriptor to be opened for every file
-being watched}.  As a result, this monitor scales @emph{badly} with the number
-of files being observed and may begin to misbehave as soon as the
-@command{fswatch} process runs out of file descriptors.  In this case,
-@command{fswatch} dumps one error on standard error for every file that cannot
-be opened so that users are notified and can take action, including terminating
-the @command{fswatch} session.  Beware that on some systems the maximum number
-of file descriptors that can be opened by a process is set to a @emph{very low
-value} (values as low as 256 are not uncommon), even if the operating system may
-allow a much larger value.
+The kqueue monitor @emph{requires a file descriptor to be opened for
+every file being watched}.  As a result, this monitor scales
+@emph{badly} with the number of files being observed and may begin to
+misbehave as soon as the @command{fswatch} process runs out of file
+descriptors.  In this case, @command{fswatch} dumps one error on
+standard error for every file that cannot be opened so that users are
+notified and can take action, including terminating the
+@command{fswatch} session.  Beware that on some systems the maximum
+number of file descriptors that can be opened by a process is set to a
+@emph{very low value} (values as low as 256 are not uncommon), even if
+the operating system may allow a much larger value.
 
-If you are running out of file descriptors when using this monitor and you
-cannot reduce the number of observed items, either:
+If you are running out of file descriptors when using this monitor and
+you cannot reduce the number of observed items, either:
 
 @itemize
 @item
-Consider raising the number of maximum open file descriptors (check your OS'
-documentation).
+Consider raising the number of maximum open file descriptors (check
+your OS' documentation).
 
 @item
 Consider using another monitor.
@@ -1425,35 +1510,39 @@ Consider using another monitor.
 @fnindex @command{inotify_init}
 @fnindex @command{inotify_rm_watch}
 @fnindex @command{inotify_add_watch}
-The inotify monitor uses is backed by the inotify @acronym{API} and the
-@command{inotify_*} set of functions, introduced on Linux since kernel 2.6.13.
-Similarly to the FSEvents @acronym{API}, inotify is very efficient, suffers from
-no known resource-exhaustion problems and scales very well with the number of
-files being watched.  This monitor is the default monitor on systems running
-inotify-enabled Linux kernels.
+The inotify monitor uses is backed by the inotify @acronym{API} and
+the @command{inotify_*} set of functions, introduced on Linux since
+kernel 2.6.13.  Similarly to the FSEvents @acronym{API}, inotify is
+very efficient, suffers from no known resource-exhaustion problems and
+scales very well with the number of files being watched.  This monitor
+is the default monitor on systems running inotify-enabled Linux
+kernels.
 
 @subsection Peculiarities
 @cpindex monitor, inotify, peculiarities
 @subsubsection Queue Overflow
 @cpindex monitor, inotify, queue overflow
 @cpindex queue overflow
-The inotify monitor, may suffer a queue overflow if events are generated faster
-than they are read from the queue.  In any case, the application is guaranteed
-to receive an overflow notification which can be handled to gracefully recover.
-Currently, the @command{fswatch} process is terminated after the notification is
-sent by throwing an exception.  Future versions will handle the overflow by
-emitting a notification in form of a specially-crafted change event.  However,
-the odds of observing a queue overflow on a default configured mainstream
-@acronym{GNU}/Linux distribution is @emph{very low}.
+The inotify monitor, may suffer a queue overflow if events are
+generated faster than they are read from the queue.  In any case, the
+application is guaranteed to receive an overflow notification which
+can be handled to gracefully recover.  Currently, the
+@command{fswatch} process is terminated after the notification is sent
+by throwing an exception.  Future versions will handle the overflow by
+emitting a notification in form of a specially-crafted change event.
+However, the odds of observing a queue overflow on a default
+configured mainstream @acronym{GNU}/Linux distribution is @emph{very
+low}.
 
 @subsubsection Duplicate Events
 @cpindex monitor, inotify, duplicate events
-The inotify @acronym{API} sends events for the @emph{direct} child elements of a
-watched directory and it scales pretty well with the number of watched items.
-For this reason, depending on the number of files to watch, it may sometimes be
-preferable to non-recursively watch a common parent directory and filter
-received events rather than adding a huge number of file watches.  If recursive
-watches are used, then duplicate change events will be received:
+The inotify @acronym{API} sends events for the @emph{direct} child
+elements of a watched directory and it scales pretty well with the
+number of watched items.  For this reason, depending on the number of
+files to watch, it may sometimes be preferable to non-recursively
+watch a common parent directory and filter received events rather than
+adding a huge number of file watches.  If recursive watches are used,
+then duplicate change events will be received:
 
 @itemize
 @item
@@ -1467,8 +1556,8 @@ One generated by the file that has changed.
 @anchor{The Poll Monitor}
 @cpindex Poll monitor
 @cpindex monitor, poll
-The poll monitor was added as a fallback mechanisms in the cases where no other
-monitor could be used, including:
+The poll monitor was added as a fallback mechanisms in the cases where
+no other monitor could be used, including:
 
 @itemize
 @item
@@ -1476,8 +1565,8 @@ Operating system without any sort of file events @acronym{API}.
 
 @item
 Situations where the limitations of the available monitors cannot be
-overcome@footnote{E.g.: observing a number of files greater than the available
-file descriptors on a system using the kqueue monitor.}.
+overcome@footnote{E.g.: observing a number of files greater than the
+available file descriptors on a system using the kqueue monitor.}.
 @end itemize
 
 The poll monitor, available on any platform, only relies on available
@@ -1488,40 +1577,43 @@ The poll monitor, available on any platform, only relies on available
 
 @subsubsection Performance Problems
 @cpindex monitor, poll, performanc
-The resource consumption of this monitor increases increases @emph{linearly}
-with the number of files being watched (the resulting system performance will
-probably degrade @emph{linearly} or quicker).
+The resource consumption of this monitor increases increases
+@emph{linearly} with the number of files being watched (the resulting
+system performance will probably degrade @emph{linearly} or quicker).
 
 @fnindex @command{stat}
-The authors' experience indicates that @command{fswatch} requires approximately
-150 @acronym{MB} of @acronym{RAM} memory to observe a hierarchy of 500,000 files
-with a minimum path length of 32 characters.  A common bottleneck of the poll
-monitor is disk access, since @command{stat()}-ing a great number of files may
-take a @emph{huge} amount of time.  In this case, the latency (@pxref{Latency})
-should be set to a sufficiently large value in order to reduce the performance
-degradation that may result from frequent disk access; the inotify monitor, in
-fact, will re-scan @emph{all} the monitored object hierarchy looking for
-differences @emph{every} time its `monitoring loop' is repeated.
+The authors' experience indicates that @command{fswatch} requires
+approximately 150 @acronym{MB} of @acronym{RAM} memory to observe a
+hierarchy of 500,000 files with a minimum path length of 32
+characters.  A common bottleneck of the poll monitor is disk access,
+since @command{stat()}-ing a great number of files may take a
+@emph{huge} amount of time.  In this case, the latency
+(@pxref{Latency}) should be set to a sufficiently large value in order
+to reduce the performance degradation that may result from frequent
+disk access; the inotify monitor, in fact, will re-scan @emph{all} the
+monitored object hierarchy looking for differences @emph{every} time
+its `monitoring loop' is repeated.
 
 @quotation Note
-Using a disk drive with lower latencies may certainly help, although the authors
-suspect that switching to an operating system with proper file monitoring
-@acronym{API}s is a better solution when performance problems with the poll
-monitors are experienced or when @command{fswatch} should drive mission-critical
-processes.
+Using a disk drive with lower latencies may certainly help, although
+the authors suspect that switching to an operating system with proper
+file monitoring @acronym{API}s is a better solution when performance
+problems with the poll monitors are experienced or when
+@command{fswatch} should drive mission-critical processes.
 @end quotation
 
 @subsubsection Missing Events and Missing Event Flags
 @cpindex monitor, poll, missing events
 @cpindex missing events
-Since this monitor periodically checks the state of monitored objects looking
-for differences, it may miss events happened between one scan and another.
-Let's suppose, for example, that a file @file{file} exists at time @math{t_0}
-when a scan occurs.  The poll monitors detects @file{file} and saves the
-relevant attributes in memory.  @file{file} is then updated, moved to another
-place and recreated with the same name.  The chain of events@footnote{The actual
-chain of events may in fact vary depending on the monitor being used.}  occurred
-to @file{file} are:
+Since this monitor periodically checks the state of monitored objects
+looking for differences, it may miss events happened between one scan
+and another.  Let's suppose, for example, that a file @file{file}
+exists at time @math{t_0} when a scan occurs.  The poll monitors
+detects @file{file} and saves the relevant attributes in memory.
+@file{file} is then updated, moved to another place and recreated with
+the same name.  The chain of events@footnote{The actual chain of
+events may in fact vary depending on the monitor being used.}
+occurred to @file{file} are:
 
 @itemize
 @item
@@ -1537,54 +1629,59 @@ to @file{file} are:
 @command{Link}
 @end itemize
 
-At time @math{t_1}, another scan runs and the poll monitor detects that the
-modification date has changed.  The poll monitor can only infer that a `change'
-has occurred and raises an @command{Updated} event; other events that would be
-noticed and raised by other @acronym{API}s are effectively @emph{lost} since
-they go unnoticed.
+At time @math{t_1}, another scan runs and the poll monitor detects
+that the modification date has changed.  The poll monitor can only
+infer that a `change' has occurred and raises an @command{Updated}
+event; other events that would be noticed and raised by other
+@acronym{API}s are effectively @emph{lost} since they go unnoticed.
 
-The odds of incurring such a loss is inversely proportional to the latency
-@math{l}: reducing the latency helps alleviating this problem, although on the
-other hands it also results in linearly increasing resource usage.
+The odds of incurring such a loss is inversely proportional to the
+latency @math{l}: reducing the latency helps alleviating this problem,
+although on the other hands it also results in linearly increasing
+resource usage.
 
 @section How to Choose a Monitor
-@command{fswatch} already chooses the `best' monitor for your platform if you
-do not specify any.  However, a specific monitor may be better suited to
-specific use cases.  Please, see @ref{Monitors} to get a description of all the
-available monitors and their limitations.
+@command{fswatch} already chooses the `best' monitor for your platform
+if you do not specify any.  However, a specific monitor may be better
+suited to specific use cases.  Please, see @ref{Monitors} to get a
+description of all the available monitors and their limitations.
 
 Usage recommendations are as follows:
 
 @itemize
 
 @item
-On OS X, use only the FSEvents monitor (which is the default behaviour).
+On OS X, use only the FSEvents monitor (which is the default
+behaviour).
 
 @item
 On Linux, use the inotify monitor (which is the default behaviour).
 
 @item
-If the number of files to observe is sufficiently small, use the kqueue monitor.
-Beware that on some systems the maximum number of file descriptors that can be
-opened by a process is set to a very @emph{low} value (values as low as 256 are
-not uncommon), even if the operating system may allow a much larger value.  In
-this case, check your OS documentation to raise this limit on either a per
-process or a system-wide basis.
+If the number of files to observe is sufficiently small, use the
+kqueue monitor.  Beware that on some systems the maximum number of
+file descriptors that can be opened by a process is set to a very
+@emph{low} value (values as low as 256 are not uncommon), even if the
+operating system may allow a much larger value.  In this case, check
+your OS documentation to raise this limit on either a per process or a
+system-wide basis.
 
 @item
-If feasible, watch directories instead of watching files.  Properly crafting the
-receiving side of the events to deal with directories may sensibly reduce the
-monitor resource consumption.
+If feasible, watch directories instead of watching files.  Properly
+crafting the receiving side of the events to deal with directories may
+sensibly reduce the monitor resource consumption.
 
 @item
 @fnindex @command{stat}
-If none of the above applies, use the poll monitor.  The authors' experience
-indicates that fswatch requires approximately 150 @acronym{MB} of @acronym{RAM}
-memory to observe a hierarchy of 500,000 files with a minimum path length of 32
-characters.  A common bottleneck of the poll monitor is disk access, since
-@command{stat()}-ing a great number of files may take a huge amount of time.  In
-this case, the latency should be set to a sufficiently large value in order to
-reduce the performance degradation that may result from frequent disk access.
+If none of the above applies, use the poll monitor.  The authors'
+experience indicates that fswatch requires approximately 150
+@acronym{MB} of @acronym{RAM} memory to observe a hierarchy of 500,000
+files with a minimum path length of 32 characters.  A common
+bottleneck of the poll monitor is disk access, since
+@command{stat()}-ing a great number of files may take a huge amount of
+time.  In this case, the latency should be set to a sufficiently large
+value in order to reduce the performance degradation that may result
+from frequent disk access.
 @end itemize
 
 @node GNU Free Documentation License
@@ -1607,8 +1704,9 @@ reduce the performance degradation that may result from frequent disk access.
 @c Print option index
 @node Index of Command Line Options
 @appendix Index of Command Line Options
-This appendix contains an index of all @command{fswatch} long command line options.
-The options are listed without the preceding double-dash.
+This appendix contains an index of all @command{fswatch} long command
+line options.  The options are listed without the preceding
+double-dash.
 
 @printindex op
 
