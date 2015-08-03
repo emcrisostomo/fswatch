@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.5.0.develop\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-08-02 21:24+0200\n"
+"POT-Creation-Date: 2015-08-03 11:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: src/libfswatch/c++/event.cpp:92
+msgid "Unknown event type: "
+msgstr ""
+
+#: src/libfswatch/c++/event.cpp:102
+msgid "Unknown event type."
+msgstr ""
 
 #: src/libfswatch/c++/fsevents_monitor.cpp:79
 msgid "Stopping event stream...\n"
