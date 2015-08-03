@@ -1,4 +1,5 @@
 # List of source files which contain translatable strings.
+src/libfswatch/c++/event.cpp
 src/libfswatch/c++/fsevents_monitor.cpp
 src/libfswatch/c++/inotify_monitor.cpp
 src/libfswatch/c++/kqueue_monitor.cpp
