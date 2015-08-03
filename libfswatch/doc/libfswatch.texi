@@ -67,6 +67,7 @@ Free Documentation License'.
 @end ifnottex
 
 @menu
+* History::
 * Introduction::
 * The C++ API::
 * The C API::
@@ -76,6 +77,91 @@ Free Documentation License'.
 * Index of Programs::
 * Index::
 @end menu
+
+@node History
+@chapter History
+@section 3:0:0
+@subsection Feature Changes
+The changes introduced in @code{3:0:0} are the following:
+@itemize
+@item
+@cpindex filter, by event type
+The possibility of filtering events by @emph{event type} was added.
+
+@item
+All the monitors were refactored and the callback invocation logic was
+moved to the base @code{monitor} class.
+
+@item
+All the monitors were refactored and the filtering logic (both by path
+and event type) was moved to the base @code{monitor} class.
+@end itemize
+
+@subsection Interface Changes
+The interface changes introduced in @code{3:0:0} are the following:
+@itemize
+@item
+@tpindex @code{fsw_event_type_filter}
+Added the @code{fsw_event_type_filter} structure to represent a event
+type filter.
+
+@item
+@fnindex @code{FSW_ERR_UNKNOWN_VALUE}
+Added the @code{FSW_ERR_UNKNOWN_VALUE} exit code.
+@end itemize
+
+@subsection C++ Interface Changes
+@itemize
+@item
+@fnindex @code{monitor::add_event_type_filter}
+Added the @code{monitor::add_event_type_filter} method to add an event
+type filter.
+
+@item
+@fnindex @code{monitor::set_event_type_filters}
+Added the @code{monitor::set_event_type_filters} method to set the
+event type filters.
+
+@item
+@fnindex @code{monitor::notify_events}
+Added the @code{monitor::notify_events} method to centralize event
+filtering and dispatching into the base monitor class.
+
+@item
+@fnindex @code{event::get_event_flag_by_name}
+Added the @code{event::get_event_flag_by_name} method to lookup an
+event type by name.
+
+@item
+@fnindex @code{event::get_event}
+Added the @code{event::get_event_flag_name} method to get the name of
+an event type.
+
+@item
+@fnindex @code{ostream& operator<<(ostream& out, const fsw_event_flag flag)}
+Added the overloaded @code{ostream& operator<<(ostream& out, const
+fsw_event_flag flag)} operator to simplify printing the name of an
+event type on a stream.
+
+@end itemize
+
+@subsection C Interface Changes
+@itemize
+@item
+@fnindex @code{fsw_add_event_type_filter}
+Added the @code{fsw_add_event_type_filter} function to add an event
+type filter.
+
+@item
+@fnindex @code{fsw_get_event_flag_by_name}
+Added the @code{fsw_get_event_flag_by_name} function to lookup an
+event type by name.
+
+@item
+@fnindex @code{fsw_get_event_flag_name}
+Added the @code{fsw_get_event_flag_name} function to get the name of
+an event type.
+@end itemize
 
 @node Introduction
 @chapter Introduction
@@ -505,6 +591,25 @@ the callback by the monitor.
 This function starts the monitor so that it begins listening to file
 system change events.
 
+@item void add_event_type_filter(const fsw_event_type_filter &filter);
+@fnindex @code{monitor::add_event_type_filter}
+
+This function adds a @code{fsw_event_type_filter} instance to the
+event type filter list of the current monitor.
+
+@item void set_event_type_filters(const std::vector<fsw_event_type_filter> &filters);
+@fnindex @code{monitor::set_event_type_filters}
+
+This function sets the event type filter list of the current monitor,
+substituting existing filters if any.
+
+@item void notify_events(const std::vector<event> &events) const;
+@fnindex @code{monitor::notify_events}
+
+This function applies all the filters configured in the current
+monitor to the specified list of events.  If the resulting filtered
+list is not empty it notifies it to the configured callback.
+
 @end table
 
 @subsection Implementing Monitors
@@ -568,7 +673,7 @@ void run()
 
     if (events.size())
     @{
-      callback(events, context);
+      notify_events(events);
     @}
   @}
 @}
@@ -602,7 +707,8 @@ Events are filtered to exclude those that refer to paths that do not
 satisfy the filters of the monitor.
 
 @item
-The callback is invoked to notify the caller.
+The @code{notify_events} method is called on the base class to filter
+the events and notify the caller.
 @end itemize
 
 @section Events
@@ -618,6 +724,8 @@ defined in the @code{event.h} header:
 @fnindex @code{event::get_path}
 @fnindex @code{event::get_time}
 @fnindex @code{event::get_flags}
+@fnindex @code{event::get_event_flag_by_name}
+@fnindex @code{event::get_event_flag_name}
 @example
 class event
 @{
@@ -629,6 +737,11 @@ public:
   std::string get_path() const;
   time_t get_time() const;
   std::vector<fsw_event_flag> get_flags() const;
+
+  static fsw_event_flag
+    get_event_flag_by_name(const std::string &name);
+  static std::string
+    get_event_flag_name(const fsw_event_flag &flag);
 
 private:
   std::string path;
@@ -662,14 +775,53 @@ the @acronym{API} stores events by value into collections (such as
 @code{vector}), an extended event would be @emph{sliced} and
 additional fields would be lost.
 
-@section Filters
-@cpindex filter
+@subsection Looking Up Event Types by Name
+@cpindex event type, lookup
+@pgindex @code{event.h}
+Event types can be looked up by @emph{name} using the following function:
+
+@table @code
+@item fsw_event_flag get_event_flag_by_name(const std::string &name);
+@fnindex @code{event::get_event_flag_by_name}
+
+@tpindex @code{libfsw_exception}
+Returns the @code{fsw_event_flag} instance whose name is @var{name}.
+If no instance is found with the specified @var{name}, this function
+will throw a @code{libfsw_exception}.
+
+@end table
+
+@subsection Getting the Name of an Event Type
+@cpindex event type, name
+@pgindex @code{event.h}
+The name of an event type can be obtained using the following function:
+
+@table @code
+@item static std::string get_event_flag_name(const fsw_event_flag &flag);
+@fnindex @code{event::get_event_flag_name}
+
+This function returns the name of the specified event type.
+@end table
+
+@noindent
+Most of the times, the name of an event type is used when writing user output: to ease this task, the @file{event.h} header defines the following operator overload:
+
+@table @code
+@item ostream& operator<<(ostream& out, const fsw_event_flag flag);
+@fnindex @code{ostream& operator<<(ostream& out, const fsw_event_flag flag)}
+
+This operator writes the name of the specified @code{fsw_event_flag} to the stream.
+@end table
+
+@section Path Filters
+@cpindex filter, by path
+@cpindex path filter
 @tpindex @code{monitor_filter}
 @pgindex @code{filter.h}
-@anchor{Filters} Filters are regular expression used to accept or
-reject file change events based on the value of their path.  A filter
-is represented by the @code{fsw::monitor_filter} type, defined in the
-@code{filter.h} header:
+@anchor{Filters} @emph{Path filters} are regular expression used to
+accept or reject file change events based on the value of their path.
+A filter is represented by the @code{fsw::monitor_filter} type,
+defined in the @code{filter.h} header:
 
 @tpindex @code{monitor_filter}
 @fnindex @code{monitor_filter::text}
@@ -710,10 +862,12 @@ expression.
 @end table
 
 @subsection Filter Types
-@cpindex filter, type
-@cpindex filter, inclusion
-@cpindex filter, exclusion
-@cpindex filter, algorithm
+@cpindex filter, by path
+@cpindex path filter, type
+@cpindex path filter, inclusion
+@cpindex path filter, exclusion
+@cpindex path filter, algorithm
+@pgindex @code{filter.h}
 A filter type determine whether the filter regular expression is used
 to include and exclude paths from the list of the events processed by
 the library.  @file{libfswatch} processes filters this way:
@@ -747,6 +901,25 @@ The order in the definition of filters has no effect.
 
 The @command{fswatch} Info documentation has a user-oriented
 discussion of how filters are used.
+
+@section Event Type Filters
+@cpindex filter
+@cpindex filter, by event type
+@tpindex @code{fsw_event_type_filter}
+@pgindex @code{cfilter.h}
+@anchor{Event Type Filters} @emph{Event type filters} let callers
+filter the events using a specified set of event types.  An event type
+filter is represented by the @code{fsw_event_type_filter} type,
+defined in the @code{cfilter.h} header:
+
+@tpindex @code{fsw_event_type_filter}
+@tpindex @code{fsw_event_type_filter::flag}
+@example
+typedef struct fsw_event_type_filter
+@{
+  fsw_event_flag flag;
+@} fsw_event_type_filter;
+@end example
 
 @node The C API
 @chapter The C @acronym{API}
@@ -922,16 +1095,24 @@ Unused.
 @itemx (1 << 16)
 @fnindex @code{FSW_ERR_UNSUPPORTED_OPERATION}
 Unused.
+
+@item FSW_ERR_UNKNOWN_VALUE
+@itemx (1 << 17)
+@fnindex @code{FSW_ERR_UNKNOWN_VALUE}
+Unused.
+
 @end table
 
 @section Functions
 @cpindex monitoring session, handle
 @tpindex @code{FSW_HANDLE}
-The library provides the functions listed in the following table.  As
-seen in @xref{Status Codes and Errors}, functions return @code{FSW_OK}
-if they succeed, otherwise they return an error code.  Functions that
-modify an existing monitoring sessions accept the session handle of
-type @code{FSW_HANDLE}.
+@pgindex @file{libfswatch.h}
+The library @file{libfswatch.h} header file defines the functions
+listed in the following table.  As seen in @xref{Status Codes and
+Errors}, functions return @code{FSW_OK} if they succeed, otherwise
+they return an error code.  Functions that modify an existing
+monitoring sessions accept the session handle of type
+@code{FSW_HANDLE}.
 
 @table @code
 @item FSW_STATUS
@@ -990,6 +1171,14 @@ Adds a filter to the current session.  A filter (@pxref{Filters}) is a
 regular expression that, depending on whether the filter type is
 exclusion or not, must or must not be matched for an event path for
 the event to be accepted.
+
+@item FSW_STATUS
+@itemx fsw_add_event_type_filter(const FSW_HANDLE handle, const fsw_event_type_filter event_type)
+@fnindex @code{fsw_add_event_type_filter}
+Adds an event type filter to the current session.  A filter
+(@pxref{Event Type Filters}) contains the @emph{name} of the event
+type to include into the output.  A session may contain multiple event
+type filters.
 
 @item FSW_STATUS
 @itemx fsw_start_monitor(const FSW_HANDLE handle)
@@ -1072,6 +1261,31 @@ To free the pointed memory @emph{after} when the pointer is not shared
 with any monitoring session any longer.
 @end itemize
 
+@section Memory Management Functions
+@cpindex memory management
+@cpindex memory management, functions
+@pgindex @file{libfswatch_mem.h}
+@anchor{Memory Management Functions} The C @acronym{API} published by
+the @code{libfswatch} library contains some memory management
+routines.  These functions, defined in the @file{libfswatch_mem.h}
+header file, are the following:
+
+@table @code
+@item @code{void * fsw_alloc(size_t size)}
+@fnindex @code{fsw_alloc}
+
+This function allocates a chunk of memory of the specified @var{size}
+and returns a pointer to it.  If the memory could not be allocated,
+@code{nullptr} is returned instead.
+
+@item @code{void fsw_free(void * ptr)}
+@fnindex @code{fsw_free}
+
+This function frees the memory pointed by @var{ptr}.
+
+@item @code{fsw_free}
+@end table
+
 @section Events in the C @acronym{API}
 @cpindex events
 @cpindex events, C @acronym{API}
@@ -1094,14 +1308,17 @@ typedef struct fsw_cevent
 @end example
 
 @section Event Flags
+@cpindex event type
 @tpindex @code{fsw_event_flag}
+@pgindex @file{cevent.h}
 @anchor{Event Flags} Events flags are @code{enum} values shared by
-both the C++ and the C @acronym{API}.  The values of event flags are
-power of 2, that is numbers @math{f} in the form @math{f = 2^n} where
-@math{n} is an integer.  This representation makes it easy to combine
-flags into a bit mask and encode multiple events flags into a single
-integer.  The @code{fsw_event_flag} enumeration currently includes the
-following values:
+both the C++ and the C @acronym{API} and they are defined in the
+@file{cevent.h} header.  The values of event flags are power of 2,
+that is numbers @math{f} in the form @math{f = 2^n} where @math{n} is
+an integer.  This representation makes it easy to combine flags into a
+bit mask and encode multiple events flags into a single integer.  The
+@code{fsw_event_flag} enumeration currently includes the following
+values:
 
 @table @code
 @item NoOp
@@ -1182,7 +1399,7 @@ not possible and the following situation may arise:
 
 @itemize
 @item
-One platform-specific flag must be mapped into multiple @acronym{API}
+One platform-specific flags must be mapped into multiple @acronym{API}
 flags.
 
 @item
@@ -1195,6 +1412,26 @@ mapped to the @code{PlatformSpecific} @acronym{API} flags.  The
 @acronym{API} currently offers no way to retain a platform-specific
 event flag value in this case.
 @end itemize
+
+The @file{cevent.h} header also defines the following utility functions:
+
+@table @code
+@item fsw_event_flag fsw_get_event_flag_by_name(const char * name);
+@fnindex @code{fsw_get_event_flag_by_name}
+
+This function looks for a @code{fsw_event_flag} instace with the
+specified @var{name}.  If a matching event type is not found, this
+function will return a negative number.
+
+@item char * fsw_get_event_flag_name(const fsw_event_flag flag);
+@fnindex @code{fsw_get_event_flag_name}
+
+This function returns a @code{char *} pointer to the name of the
+specified event type, @var{flag}, or @code{nullptr} if an error
+occurs.  The memory pointed by the return value of this function
+should be freed with a call to @code{fsw_free} (@pxref{Memory Management Functions}).
+
+@end table
 
 @section Filters in the C @acronym{API}
 @cpindex filter
@@ -1307,8 +1544,8 @@ fsw_start_monitor(handle);
 @c Print function index
 @node Index of Functions
 @appendix Index of Functions
-The @code{fsw::} prefix has been dropped by function names in the
-following index.
+The @code{fsw::} and @code{std::} prefixes have been dropped by
+function names in the following index.
 
 @printindex fn
 
