@@ -27,7 +27,6 @@ AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile po/Makefile.in])
 AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
-AC_CONFIG_FILES([build-aux/create-pot-template.sh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
