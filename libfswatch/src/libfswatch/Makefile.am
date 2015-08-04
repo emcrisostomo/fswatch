@@ -28,6 +28,11 @@ libfswatch_la_SOURCES += c++/libfswatch_exception.cpp
 libfswatch_la_SOURCES += c++/event.cpp
 libfswatch_la_SOURCES += c++/monitor.cpp
 libfswatch_la_SOURCES += c++/poll_monitor.cpp
+libfswatch_la_SOURCES += c++/path_utils.cpp
+libfswatch_la_SOURCES += gettext.h
+libfswatch_la_SOURCES += gettext_defs.h
+
+# Platform-dependent source files
 if USE_FSEVENTS
   libfswatch_la_SOURCES += c++/fsevents_monitor.cpp
 endif
@@ -37,7 +42,6 @@ endif
 if USE_INOTIFY
   libfswatch_la_SOURCES += c++/inotify_monitor.cpp
 endif
-libfswatch_la_SOURCES += c++/path_utils.cpp
 
 libfswatch_la_LDFLAGS = -version-info $(LIBFSWATCH_API_VERSION)
 
@@ -50,21 +54,21 @@ libfswatch_cdir = $(pkgincludedir)/c
 libfswatch_cppdir = $(pkgincludedir)/c++
 
 # Distribute C headers.
-libfswatch_c_HEADERS  = c/libfswatch_mem.h 
-libfswatch_c_HEADERS += c/libfswatch.h 
-libfswatch_c_HEADERS += c/cevent.h 
-libfswatch_c_HEADERS += c/cfilter.h 
-libfswatch_c_HEADERS += c/cmonitor.h 
-libfswatch_c_HEADERS += c/error.h 
+libfswatch_c_HEADERS  = c/libfswatch_mem.h
+libfswatch_c_HEADERS += c/libfswatch.h
+libfswatch_c_HEADERS += c/cevent.h
+libfswatch_c_HEADERS += c/cfilter.h
+libfswatch_c_HEADERS += c/cmonitor.h
+libfswatch_c_HEADERS += c/error.h
 libfswatch_c_HEADERS += c/libfswatch_log.h
 
 # Distribute C++ headers conditionally adding available backends.
 libfswatch_cpp_HEADERS  = c++/monitor.h
-libfswatch_cpp_HEADERS += c++/libfswatch_map.h 
-libfswatch_cpp_HEADERS += c++/libfswatch_set.h 
+libfswatch_cpp_HEADERS += c++/libfswatch_map.h
+libfswatch_cpp_HEADERS += c++/libfswatch_set.h
 libfswatch_cpp_HEADERS += c++/path_utils.h
 if USE_FSEVENTS
-  libfswatch_cpp_HEADERS += c++/fsevents_monitor.h 
+  libfswatch_cpp_HEADERS += c++/fsevents_monitor.h
 endif
 if USE_KQUEUE
   libfswatch_cpp_HEADERS += c++/kqueue_monitor.h
