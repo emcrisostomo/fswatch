@@ -1,0 +1,632 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for libfswatch (version 1.5.0,
+4 August 2015), a cross-platform file change monitor C/C++ library
+with multiple backends, including Apple OS X File System Events
+API, *BSD kqueue, Linux inotify and a stat-based
+backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'. -->
+<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>libfswatch 1.5.0: The C++ API</title>
+
+<meta name="description" content="libfswatch 1.5.0: The C++ API">
+<meta name="keywords" content="libfswatch 1.5.0: The C++ API">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="The-C-API.html#The-C-API" rel="next" title="The C API">
+<link href="Introduction.html#Introduction" rel="prev" title="Introduction">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space: nowrap}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: serif; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="The-C_002b_002b-API"></a>
+<div class="header">
+<p>
+Next: <a href="The-C-API.html#The-C-API" accesskey="n" rel="next">The C API</a>, Previous: <a href="Introduction.html#Introduction" accesskey="p" rel="prev">Introduction</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="The-C_002b_002b-API-1"></a>
+<h2 class="chapter">3 The C++ <acronym>API</acronym></h2>
+<p>The C++ <acronym>API</acronym> provides users an easy to use, object-oriented,
+common and intuitive interface to a wide range of file monitoring
+<acronym>API</acronym>s.  This <acronym>API</acronym> provides a common facade to a set
+of heterogeneous <acronym>API</acronym>s that not only greatly simplifies their
+usage, but provides an indirection layer that makes applications more
+portable: as far as there is an available monitor in another platform,
+an existing application will <em>just</em> work.
+</p>
+<p>In reality, a monitor may have platform-specific behaviours that
+should be taken into account when writing portable applications using
+this library.  This differences complicate the task of writing
+portable applications that are truly independent of the file
+monitoring <acronym>API</acronym> they may be using.  However, monitors try to
+&lsquo;compensate&rsquo; for any behavioural difference across implementations.
+</p>
+<p>The typical <acronym>API</acronym> usage pattern is similar to the following:
+</p>
+<ul>
+<li> An instance of a <code>monitor</code> is either created directly or through
+the factory (see <a href="#Monitor-Discovery">Monitor Discovery</a>).
+
+</li><li> The monitor is configured according to the user needs
+(see <a href="#Monitors">Monitors</a>).
+
+</li><li> The monitor is <em>run</em> and change events are waited for.
+</li></ul>
+
+<a name="Monitor-Discovery-1"></a>
+<h3 class="section">3.1 Monitor Discovery</h3>
+<a name="index-monitor_002c-discovery"></a>
+<a name="index-monitor_002c-factory"></a>
+<a name="index-monitor_005ffactory"></a>
+<a name="Monitor-Discovery"></a><p>Since multiple monitor implementations
+exist and the caller potentially ignores which monitors will be
+available at run time, there must exist a way to query the
+<acronym>API</acronym> for the list of available monitor and request a
+particular instance.  The <code>monitor_factory</code> is an object factory
+class that provides basic monitor <em>registration</em> and
+<em>discovery</em> functionality: <acronym>API</acronym> clients can query the
+monitor registry to get a list of available monitors and get an
+instance of a monitor by <em>type</em> or <em>name</em>.
+</p>
+<a name="index-monitor_005ffactory-1"></a>
+<p>The <code>monitor_factory</code> class provides the following methods:
+</p>
+<dl compact="compact">
+<dt><code>static monitor * create_monitor</code></dt>
+<dd><a name="index-monitor_005ffactory_003a_003acreate_005fmonitor"></a>
+<p>Creates a monitor of the specified type with the specified constructor
+parameters (see <a href="#Monitors">Monitors</a>).  A monitor of the platform default type
+can be created if
+<code>fsw_monitor_type::system_default_monitor_type</code>.  If the named
+monitor is not available, then return <code>nullptr</code>.
+</p>
+</dd>
+<dt><code>static monitor * create_monitor_by_name</code></dt>
+<dd><a name="index-monitor_005ffactory_003a_003acreate_005fmonitor_005fby_005fname"></a>
+<p>Creates a monitor of the specified type (by <var>name</var>) and
+constructor parameters (see <a href="#Monitors">Monitors</a>).  If the named monitor is
+not available, then return <code>nullptr</code>.
+</p>
+</dd>
+<dt><code>static std::vector&lt;std::string&gt; get_types()</code></dt>
+<dd><a name="index-monitor_005ffactory_003a_003aget_005ftypes"></a>
+<p>Get the list of available monitor types.  The type name can then be
+used to get a monitor instance by name using
+<code>create_monitor_by_name</code>.
+</p>
+</dd>
+<dt><code>static bool exists_type(const std::string&amp; name)</code></dt>
+<dd><a name="index-monitor_005ffactory_003a_003aexists_005ftype"></a>
+<p>Query whether the specified monitor exists.
+</p>
+</dd>
+<dt><code>static void register_type(const std::string&amp; name, fsw_monitor_type type)</code></dt>
+<dd><a name="index-monitor_005ffactory_003a_003aregister_005ftype"></a>
+<p>Register a monitor type in the list of available implementations.
+</p></dd>
+</dl>
+
+<a name="Monitor-Registration"></a>
+<h3 class="section">3.2 Monitor Registration</h3>
+<a name="index-monitor_002c-registration"></a>
+<a name="index-monitor_002eh"></a>
+<p>In order for monitor types to be visible to the factory they have to
+be registered.  Currently they can be registered using two helper
+macros, defined in <samp>monitor.h</samp>:
+</p>
+<dl compact="compact">
+<dd><a name="index-REGISTER_005fMONITOR"></a>
+</dd>
+<dt><code>REGISTER_MONITOR(classname, monitor_type)</code></dt>
+<dd><p>This macro must be invoked into a class&rsquo; header file and must be
+passed the class name and the monitor type.
+</p>
+</dd>
+<dt><code>REGISTER_MONITOR_IMPL(classname, monitor_type)</code></dt>
+<dd><a name="index-REGISTER_005fMONITOR_005fIMPL"></a>
+<p>This macro must be invoked into a class&rsquo; source file and must be
+passed the class name and the monitor type.
+</p></dd>
+</dl>
+
+<p>The same monitor type cannot be used to register multiple monitor
+implementations.  No checks are in place to detect this situation and
+the registration will succeed; however, the registration process of
+multiple monitor implementations for the same monitor type is not
+deterministic.
+</p>
+<a name="Monitors-1"></a>
+<h3 class="section">3.3 Monitors</h3>
+<a name="index-monitor-1"></a>
+<a name="index-monitor-2"></a>
+<a name="Monitors"></a><p>The <code>monitor</code> class is the fundamental type of
+the C++ <acronym>API</acronym>: it defines the interface of every monitor and
+provides common functionality to inheritors of this class.
+</p>
+<p>The public interface of a monitor is the following:
+</p>
+<a name="index-monitor_003a_003amonitor"></a>
+<a name="index-monitor_003a_003a_007emonitor"></a>
+<a name="index-monitor_003a_003aoperator_003d"></a>
+<div class="example">
+<pre class="example">class monitor
+{
+public:
+  monitor(std::vector&lt;std::string&gt; paths,
+          FSW_EVENT_CALLBACK * callback,
+          void * context = nullptr);
+  monitor(const monitor&amp; orig) = delete;
+  monitor&amp; operator=(const monitor &amp; that) = delete;
+
+  virtual ~monitor();
+
+  void set_latency(double latency);
+  void set_recursive(bool recursive);
+  void add_filter(const monitor_filter &amp;filter);
+  void set_filters(const std::vector&lt;monitor_filter&gt; &amp;filters);
+  void set_follow_symlinks(bool follow);
+  void * get_context() const;
+  void set_context(void * context);
+  void start();
+}
+</pre></div>
+
+<p>A monitor is thus a type with the following characteristics:
+</p><ul>
+<li> It cannot be copied.
+
+</li><li> It cannot be assigned.
+
+</li><li> It is disegned for extension.
+</li></ul>
+
+<a name="Business-Interface"></a>
+<h4 class="subsection">3.3.1 Business Interface</h4>
+<a name="index-monitor_002c-interface"></a>
+<a name="index-monitor-3"></a>
+<p>The business interface of the <code>monitor</code> class is the following:
+</p>
+<dl compact="compact">
+<dt><code>void set_latency(double latency);</code></dt>
+<dd><a name="index-monitor_003a_003aset_005flatency"></a>
+
+<p>This function sets the latency of the monitor in seconds.  This method
+only sets the latency value.  The exact meaning of latency and how it
+is enforced depends on a monitor implementation.
+</p>
+</dd>
+<dt><code>void set_recursive(bool recursive);</code></dt>
+<dd><a name="index-monitor_003a_003aset_005frecursive"></a>
+
+<p>This function sets the <code>recursive</code> flag of the monitor to
+indicate whether the monitor should recursively observe the contents
+of directories.
+</p>
+</dd>
+<dt><code>void add_filter(const monitor_filter &amp;filter);</code></dt>
+<dd><a name="index-monitor_003a_003aadd_005ffilter"></a>
+
+<p>This function adds a <code>monitor_filter</code> instance to the filter list
+of the current monitor.
+</p>
+</dd>
+<dt><code>void set_filters(const std::vector&lt;monitor_filter&gt; &amp;filters);</code></dt>
+<dd><a name="index-monitor_003a_003aset_005ffilters"></a>
+
+<p>This function sets the filter list of the current monitor,
+substituting existing filter if any.
+</p>
+</dd>
+<dt><code>void set_follow_symlinks(bool follow);</code></dt>
+<dd><a name="index-monitor_003a_003aset_005ffollow_005fsymlinks"></a>
+
+<p>This function sets the <code>follow_symlinks</code> flag of the monitor to
+indicate whether the monitor should follow observed symbolic links or
+observe the links themselves.
+</p>
+</dd>
+<dt><code>void * get_context() const;</code></dt>
+<dd><a name="index-monitor_003a_003aget_005fcontext"></a>
+
+<p>This function gest the pointer to the context data that is passed to
+the callback by the monitor.
+</p>
+</dd>
+<dt><code>void set_context(void * context);</code></dt>
+<dd><a name="index-monitor_003a_003aset_005fcontext"></a>
+
+<p>This function sets the pointer to the context data that is passed to
+the callback by the monitor.
+</p>
+</dd>
+<dt><code>void start();</code></dt>
+<dd><a name="index-monitor_003a_003astart"></a>
+
+<p>This function starts the monitor so that it begins listening to file
+system change events.
+</p>
+</dd>
+<dt><code>void add_event_type_filter(const fsw_event_type_filter &amp;filter);</code></dt>
+<dd><a name="index-monitor_003a_003aadd_005fevent_005ftype_005ffilter-1"></a>
+
+<p>This function adds a <code>fsw_event_type_filter</code> instance to the
+event type filter list of the current monitor.
+</p>
+</dd>
+<dt><code>void set_event_type_filters(const std::vector&lt;fsw_event_type_filter&gt; &amp;filters);</code></dt>
+<dd><a name="index-monitor_003a_003aset_005fevent_005ftype_005ffilters-1"></a>
+
+<p>This function sets the event type filter list of the current monitor,
+substituting existing filters if any.
+</p>
+</dd>
+<dt><code>void notify_events(const std::vector&lt;event&gt; &amp;events) const;</code></dt>
+<dd><a name="index-monitor_003a_003anotify_005fevents-1"></a>
+
+<p>This function applies all the filters configured in the current
+monitor to the specified list of events.  If the resulting filtered
+list is not empty it notifies it to the configured callback.
+</p>
+</dd>
+</dl>
+
+<a name="Implementing-Monitors"></a>
+<h4 class="subsection">3.3.2 Implementing Monitors</h4>
+<a name="index-monitor_002c-implementing"></a>
+<a name="index-monitor_002c-inherit-from"></a>
+<a name="index-monitor-4"></a>
+<p><code>monitor</code> is a class that declares the following protected
+functions:
+</p>
+<dl compact="compact">
+<dt><code>bool accept_path(const std::string &amp;path) const</code></dt>
+<dd><a name="index-monitor_003a_003aaccept_005fpath"></a>
+<p>This function checks whether the specified <code>path</code> can be accepted
+according to the list of filters of the monitor.
+</p>
+</dd>
+<dt><code>bool accept_path(const char *path) const</code></dt>
+<dd><a name="index-monitor_003a_003aaccept_005fpath-1"></a>
+<p>This function checks whether the specified <code>path</code> can be accepted
+according to the list of filters of the monitor.
+</p>
+</dd>
+<dt><code>virtual void run() = 0</code></dt>
+<dd><a name="index-monitor_003a_003arun"></a>
+<p>This pure virtual function shall contain the logic of a monitor
+implementation.  This function will be invoked by the monitor&rsquo;s
+<code>start</code> <acronym>API</acronym> function.
+</p>
+</dd>
+</dl>
+
+<p>Since it contains a pure virtual function, <code>run()</code>, the
+<code>monitor</code> class is abstract.  Inheritors are required to provide
+an implementation of the <code>run()</code> function containing the monitor
+logic and its &lsquo;event loop&rsquo;.
+</p>
+<a name="The-Anatomy-of-a-Typical-Monitor"></a>
+<h4 class="subsection">3.3.3 The Anatomy of a Typical Monitor</h4>
+<a name="index-monitor_002c-anatomy"></a>
+<a name="index-monitor_002c-example"></a>
+<p>The anatomy of monitors is typically very similar and it can be
+illustrated with the following algorithm (written in pseudo-code):
+</p>
+<div class="example">
+<pre class="example">void run()
+{
+  initialize_api();
+
+  while (true)
+  {
+    scan_paths();
+    wait_for_events(latency);
+
+    vector&lt;change_events&gt; evts = get_changes();
+    vector&lt;event&gt; events;
+
+    for (auto &amp; evt : evts)
+    {
+      if (accept(evt.get_path))
+      {
+        events.push_back({event from evt});
+      }
+    }
+
+    if (events.size())
+    {
+      notify_events(events);
+    }
+  }
+}
+</pre></div>
+
+<p>Despite being a minimal implementation, this algorithm exemplifies the
+common tasks performed by a monitor:
+</p>
+<ul>
+<li> <a name="index-monitor_002c-initialization"></a>
+It initializes the <acronym>API</acronym> it uses to detect file system change
+events.
+
+</li><li> It enters a loop, often infinite, where change events are waited for.
+
+</li><li> It scans the paths that must be observed: this step might be necessary
+for example because some path may not have existed during the loop&rsquo;s
+previous iteration, or because some <acronym>API</acronym> may require the user
+to re-register a watch on a path after events are retrieved.
+
+</li><li> Events are waited for and the wait should last approximately the
+<var>latency</var> configured into the monitor.
+
+</li><li> Events are filtered to exclude those that refer to paths that do not
+satisfy the filters of the monitor.
+
+</li><li> The <code>notify_events</code> method is called on the base class to filter
+the events and notify the caller.
+</li></ul>
+
+<a name="Events-1"></a>
+<h3 class="section">3.4 Events</h3>
+<a name="index-events"></a>
+<a name="index-event"></a>
+<a name="index-event_002eh"></a>
+<a name="Events"></a><p>Events are modeled by the <code>fsw::event</code> class,
+defined in the <code>event.h</code> header:
+</p>
+<a name="index-event-1"></a>
+<a name="index-event_003a_003aevent"></a>
+<a name="index-event_003a_003a_007eevent"></a>
+<a name="index-event_003a_003aget_005fpath"></a>
+<a name="index-event_003a_003aget_005ftime"></a>
+<a name="index-event_003a_003aget_005fflags"></a>
+<a name="index-event_003a_003aget_005fevent_005fflag_005fby_005fname-1"></a>
+<a name="index-event_003a_003aget_005fevent_005fflag_005fname"></a>
+<div class="example">
+<pre class="example">class event
+{
+public:
+  event(std::string path,
+        time_t evt_time,
+        std::vector&lt;fsw_event_flag&gt; flags);
+  virtual ~event();
+  std::string get_path() const;
+  time_t get_time() const;
+  std::vector&lt;fsw_event_flag&gt; get_flags() const;
+
+  static fsw_event_flag
+    get_event_flag_by_name(const std::string &amp;name);
+  static std::string
+    get_event_flag_name(const fsw_event_flag &amp;flag);
+
+private:
+  std::string path;
+  time_t evt_time;
+  std::vector&lt;fsw_event_flag&gt; evt_flags;
+};
+</pre></div>
+
+<a name="index-event-2"></a>
+<p>The <code>event</code> class provides a simple and uniform representation of
+an event to all the <acronym>API</acronym>.  An event has got the following
+characteristics:
+</p>
+<ul>
+<li> The <var>path</var> it relates to.
+
+</li><li> The timestamp <var>evt_time</var> of the moment the event was raised.
+
+</li><li> The list event <var>flags</var> (see <a href="The-C-API.html#Event-Flags">Event Flags</a>).
+
+</li></ul>
+
+<p>Currently the <acronym>API</acronym> provides no way for monitor implementors
+to provide additional, monitor-dependent fields to an event.  Since
+the <acronym>API</acronym> stores events by value into collections (such as
+<code>vector</code>), an extended event would be <em>sliced</em> and
+additional fields would be lost.
+</p>
+<a name="Looking-Up-Event-Types-by-Name"></a>
+<h4 class="subsection">3.4.1 Looking Up Event Types by Name</h4>
+<a name="index-event-type_002c-lookup"></a>
+<a name="index-event_002eh-1"></a>
+<p>Event types can be looked up by <em>name</em> using the following function:
+</p>
+<dl compact="compact">
+<dt><code>fsw_event_flag get_event_flag_by_name(const std::string &amp;name);</code></dt>
+<dd><a name="index-event_003a_003aget_005fevent_005fflag_005fby_005fname-2"></a>
+
+<a name="index-libfsw_005fexception"></a>
+<p>Returns the <code>fsw_event_flag</code> instance whose name is <var>name</var>.
+If no instance is found with the specified <var>name</var>, this function
+will throw a <code>libfsw_exception</code>.
+</p>
+</dd>
+</dl>
+
+<a name="Getting-the-Name-of-an-Event-Type"></a>
+<h4 class="subsection">3.4.2 Getting the Name of an Event Type</h4>
+<a name="index-event-type_002c-name"></a>
+<a name="index-event_002eh-2"></a>
+<p>The name of an event type can be obtained using the following function:
+</p>
+<dl compact="compact">
+<dt><code>static std::string get_event_flag_name(const fsw_event_flag &amp;flag);</code></dt>
+<dd><a name="index-event_003a_003aget_005fevent_005fflag_005fname-1"></a>
+
+<p>This function returns the name of the specified event type.
+</p></dd>
+</dl>
+
+<p>Most of the times, the name of an event type is used when writing user output: to ease this task, the <samp>event.h</samp> header defines the following operator overload:
+</p>
+<dl compact="compact">
+<dt><code>ostream&amp; operator&lt;&lt;(ostream&amp; out, const fsw_event_flag flag);</code></dt>
+<dd><a name="index-ostream_0026-operator_003c_003c_0028ostream_0026-out_002c-const-fsw_005fevent_005fflag-flag_0029-1"></a>
+
+<p>This operator writes the name of the specified <code>fsw_event_flag</code> to the stream.
+</p></dd>
+</dl>
+
+<a name="Path-Filters"></a>
+<h3 class="section">3.5 Path Filters</h3>
+<a name="index-filter_002c-by-path"></a>
+<a name="index-path-filter"></a>
+<a name="index-monitor_005ffilter"></a>
+<a name="index-filter_002eh"></a>
+<a name="Filters"></a><p><em>Path filters</em> are regular expression used to
+accept or reject file change events based on the value of their path.
+A filter is represented by the <code>fsw::monitor_filter</code> type,
+defined in the <code>filter.h</code> header:
+</p>
+<a name="index-monitor_005ffilter-1"></a>
+<a name="index-monitor_005ffilter_003a_003atext"></a>
+<a name="index-monitor_005ffilter_003a_003atype"></a>
+<a name="index-monitor_005ffilter_003a_003acase_005fsensitive"></a>
+<a name="index-monitor_005ffilter_003a_003aextended"></a>
+<div class="example">
+<pre class="example">typedef struct monitor_filter
+{
+  std::string text;
+  fsw_filter_type type;
+  bool case_sensitive;
+  bool extended;
+} monitor_filter;
+</pre></div>
+
+<p>and has the following characteristics:
+</p>
+<dl compact="compact">
+<dt><code>text</code></dt>
+<dd><a name="index-monitor_005ffilter_003a_003atext-1"></a>
+<p>The regular expression used to match paths.
+</p>
+</dd>
+<dt><code>type</code></dt>
+<dd><a name="index-monitor_005ffilter_003a_003atype-1"></a>
+<p>The filter type can either be an <em>inclusion</em> or <em>exclusion</em>
+filter.
+</p>
+</dd>
+<dt><code>case_sensitive</code></dt>
+<dd><a name="index-monitor_005ffilter_003a_003acase_005fsensitive-1"></a>
+<p>A flag indicating the filter case sensitivitiy.
+</p>
+</dd>
+<dt><code>extended</code></dt>
+<dd><a name="index-monitor_005ffilter_003a_003aextended-1"></a>
+<p>A flag indicating whether <code>text</code> is an extended regular
+expression.
+</p></dd>
+</dl>
+
+<a name="Filter-Types"></a>
+<h4 class="subsection">3.5.1 Filter Types</h4>
+<a name="index-filter_002c-by-path-1"></a>
+<a name="index-path-filter_002c-type"></a>
+<a name="index-path-filter_002c-inclusion"></a>
+<a name="index-path-filter_002c-exclusion"></a>
+<a name="index-path-filter_002c-algorithm"></a>
+<a name="index-filter_002eh-1"></a>
+<p>A filter type determine whether the filter regular expression is used
+to include and exclude paths from the list of the events processed by
+the library.  <samp>libfswatch</samp> processes filters this way:
+</p>
+<ul>
+<li> If a path matches an including filter, the path is accepted no matter
+any other filter.
+
+</li><li> If a path matches an excluding filter, the path is rejected.
+
+</li><li> If a path matches no filters, the path is accepted.
+</li></ul>
+
+<p>Said another way:
+</p>
+<ul>
+<li> All paths are accepted by default, unless an exclusion filter says
+otherwise.
+
+</li><li> Inclusion filters may override any other exclusion filter.
+
+</li><li> The order in the definition of filters has no effect.
+</li></ul>
+
+<p>The <code>fswatch</code> Info documentation has a user-oriented
+discussion of how filters are used.
+</p>
+<a name="Event-Type-Filters-1"></a>
+<h3 class="section">3.6 Event Type Filters</h3>
+<a name="index-filter"></a>
+<a name="index-filter_002c-by-event-type-1"></a>
+<a name="index-fsw_005fevent_005ftype_005ffilter-1"></a>
+<a name="index-cfilter_002eh"></a>
+<a name="Event-Type-Filters"></a><p><em>Event type filters</em> let callers
+filter the events using a specified set of event types.  An event type
+filter is represented by the <code>fsw_event_type_filter</code> type,
+defined in the <code>cfilter.h</code> header:
+</p>
+<a name="index-fsw_005fevent_005ftype_005ffilter-2"></a>
+<a name="index-fsw_005fevent_005ftype_005ffilter_003a_003aflag"></a>
+<div class="example">
+<pre class="example">typedef struct fsw_event_type_filter
+{
+  fsw_event_flag flag;
+} fsw_event_type_filter;
+</pre></div>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="The-C-API.html#The-C-API" accesskey="n" rel="next">The C API</a>, Previous: <a href="Introduction.html#Introduction" accesskey="p" rel="prev">Introduction</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
