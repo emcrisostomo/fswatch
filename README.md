@@ -185,10 +185,11 @@ English.
 Documentation
 -------------
 
-`fswatch` provides the following documentation:
+`fswatch` provides the following [documentation]:
 
   * Texinfo documentation, included with the distribution.
-  * [HTML] documentation.
+  * HTML documentation.
+  * PDF documentation.
   * A [wiki] page.
   * A man page.
 
@@ -210,15 +211,14 @@ and can then be installed invoking the `install-pdf` target:
 
 Since typical users will not have a TeX distribution installed in their
 computers, the PDF manuals for every version of `fswatch` will be hosted at
-[this address][manual].
+[this address][documentation].
 
 If you are installing `fswatch` using a package manager and you would like the
 PDF manual to be bundled into the package, please send a feature request to the
 package maintainer.
 
-[HTML]: http://emcrisostomo.github.io/fswatch/doc/html
+[documentation]: http://emcrisostomo.github.io/fswatch/doc
 [wiki]: https://github.com/emcrisostomo/fswatch/wiki
-[manual]: http://emcrisostomo.github.io/fswatch/doc/pdf
 
 Compatibility Issues with fswatch v. 0.x
 --------------------------------------
