@@ -68,16 +68,16 @@ Free Documentation License'.
 @end ifnottex
 
 @menu
-* History::
-* Introduction::
-* Tutorial Introduction to @command{fswatch}::
-* Invoking @command{fswatch}::
-* Monitors::
-* GNU Free Documentation License::
-* Index of Functions::
-* Index of Programs::
-* Index of Command Line Options::
-* Index::
+* History::                                    History
+* Introduction::                               Introduction
+* Tutorial Introduction to @command{fswatch}:: Tutorial Introduction to @code{fswatch}
+* Invoking @command{fswatch}::                 Invoking @code{fswatch}
+* Monitors::                                   Monitors
+* GNU Free Documentation License::             GNU Free Documentation License
+* Index of Functions::                         Index of Functions
+* Index of Programs::                          Index of Programs
+* Index of Command Line Options::              Index of Command Line Options
+* General Index::                              General Index
 @end menu
 
 @node History
@@ -1710,7 +1710,7 @@ double-dash.
 
 @printindex op
 
-@node Index
+@node General Index
 @unnumbered Index
 @printindex cp
 
