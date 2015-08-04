@@ -63,17 +63,74 @@ developer, you have the GNU Build System installed on your machine and you know
 how to bootstrap it on the sources.</p>
 
 <h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+<a id="getting-fswatch-1" class="anchor" href="#getting-fswatch-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting fswatch</h2>
 
-<p>See the <code>INSTALL</code> file for detailed information about how to configure and
-install <code>fswatch</code>.</p>
+<p>A regular user may be able to fetch <code>fswatch</code> from the package manager of your
+OS or a third-party one.  If you are looking for <code>fswatch</code> for OS X, you can
+install it using either <a href="https://www.macports.org">MacPorts</a> or <a href="http://brew.sh">Homebrew</a>:</p>
 
-<p><code>fswatch</code> is a C++ program and a C++ compiler compliant with the C++11 standard
-is required to compile it.  Check your OS documentation for information about
-how to install the C++ toolchain and the C++ runtime.</p>
+<pre><code># MacPorts
+$ port install fswatch
 
-<p>No other software packages or dependencies are required to configure and
-install <code>fswatch</code> but the aforementioned APIs used by the file system monitors.</p>
+# Homebrew
+$ brew install fswatch
+</code></pre>
+
+<p>Check your favourite package manager and let us know if <code>fswatch</code> is missing
+there.</p>
+
+<p>A user who whishes to build <code>fswatch</code> should get a <a href="https://github.com/alandipert/fswatch/releases">release tarball</a>.
+A release tarball contains everything a user needs to build <code>fswatch</code> on his
+system, following the instructions detailed in the Installation section below
+and the <code>INSTALL</code> file.</p>
+
+<p>A developer who wishes to modify <code>fswatch</code> should get the sources (either from a
+source tarball or cloning the repository) and have the GNU Build System
+installed on his machine.  Please read <code>README.gnu-build-system</code> to get further
+details about how to bootstrap <code>fswatch</code> from sources on your machine.</p>
+
+<p>Getting a copy of the source repository is not recommended unless you are a
+developer, you have the GNU Build System installed on your machine, and you know
+how to bootstrap it on the sources.</p>
+
+<h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p><code>fswatch</code> provides the following documentation:</p>
+
+<ul>
+<li>Texinfo documentation, included with the distribution.</li>
+<li>
+<a href="http://emcrisostomo.github.io/fswatch/doc/html">HTML</a> documentation.</li>
+<li>A <a href="https://github.com/emcrisostomo/fswatch/wiki">wiki</a> page.</li>
+<li>A man page.</li>
+</ul>
+
+<p><code>fswatch</code> official documentation is provided in Texinfo format.  This is the
+most comprehensive source of information about <code>fswatch</code>.  The man page, in
+particular, is a stub meant for quick reference from the command line and is not
+guaranteed to be kept up to date.</p>
+
+<p>By default, only Info and DVI formats are generated when <code>fswatch</code> is built,
+according to the default rules of the GNU Build Systems.  However, a PDF manual
+typeset with TeX can be generated from the Texinfo sources by issuing this
+command:</p>
+
+<pre><code>$ make pdf
+</code></pre>
+
+<p>and can then be installed invoking the <code>install-pdf</code> target:</p>
+
+<pre><code>$ make install-pdf
+</code></pre>
+
+<p>Since typical users will not have a TeX distribution installed in their
+computers, the PDF manuals for every version of <code>fswatch</code> will be hosted at
+<a href="https://drive.google.com/folderview?id=0BxZtP9CHH-Q6bHF3bmJGRmlVcVU&amp;usp=sharing">this address</a>.</p>
+
+<p>If you are installing <code>fswatch</code> using a package manager and you would like the
+PDF manual to be bundled into the package, please send a feature request to the
+package maintainer.</p>
 
 <h2>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
@@ -107,7 +164,16 @@ no event details are required, then the following command can be used:</p>
 Please, read the <em>Compatibility Issues with fswatch v. 0.x</em> section for further
 information.</p>
 
-<p>For more information, refer to the <code>fswatch</code> man page.</p>
+<p>By default <code>fswatch</code> chooses the best monitor available on the current platform,
+in terms of performance and resource consumption.  If the user wishes to specify
+a different monitor, the <code>-m</code> option can be used to specify the monitor by name:</p>
+
+<pre><code>$ fswatch -m kqueue_monitor path
+</code></pre>
+
+<p>The list of available monitors can be obtained with the <code>-h</code> option.</p>
+
+<p>For more information, refer to the <code>fswatch</code> documentation.</p>
 
 <hr>
 
