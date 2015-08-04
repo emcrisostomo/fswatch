@@ -163,24 +163,9 @@ Documentation
   * A man page.
 
 `fswatch` official documentation is provided in Texinfo format.  This is the
-most comprehensive source of information about `fswatch`.  The man page, in
-particular, is a stub meant for quick reference from the command line and is not
-guaranteed to be kept up to date.
-
-By default, only Info and DVI formats are generated when `fswatch` is built,
-according to the default rules of the GNU Build Systems.  However, a PDF manual
-typeset with TeX can be generated from the Texinfo sources by issuing this
-command:
-
-    $ make pdf
-
-and can then be installed invoking the `install-pdf` target:
-
-    $ make install-pdf
-
-Since typical users will not have a TeX distribution installed in their
-computers, the PDF manuals for every version of `fswatch` will be hosted at
-[this address][documentation].
+most comprehensive source of information about `fswatch` and the only
+authoritative one.  The man page, in particular, is a stub that suggests the
+user to use the info page instead.
 
 If you are installing `fswatch` using a package manager and you would like the
 PDF manual to be bundled into the package, please send a feature request to the
