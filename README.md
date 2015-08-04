@@ -23,11 +23,11 @@ Table of Contents
 -----------------
 
   * [Features](#features)
-  * [Documentation](#documentation)
   * [Limitations](#limitations)
   * [Getting fswatch](#getting-fswatch)
   * [Building from Source](#building-from-source)
   * [Installation](#installation)
+  * [Documentation](#documentation)
   * [Localization](#localization)
   * [Usage](#usage)
   * [Bug Reports](#bug-reports)
@@ -41,44 +41,6 @@ Features
   * Recursive directory monitoring.
   * Path filtering using including and excluding regular expressions.
   * Customizable record format.
-
-Documentation
--------------
-
-`fswatch` provides the following [documentation]:
-
-  * Texinfo documentation, included with the distribution.
-  * HTML documentation.
-  * PDF documentation.
-  * A [wiki] page.
-  * A man page.
-
-`fswatch` official documentation is provided in Texinfo format.  This is the
-most comprehensive source of information about `fswatch`.  The man page, in
-particular, is a stub meant for quick reference from the command line and is not
-guaranteed to be kept up to date.
-
-By default, only Info and DVI formats are generated when `fswatch` is built,
-according to the default rules of the GNU Build Systems.  However, a PDF manual
-typeset with TeX can be generated from the Texinfo sources by issuing this
-command:
-
-    $ make pdf
-
-and can then be installed invoking the `install-pdf` target:
-
-    $ make install-pdf
-
-Since typical users will not have a TeX distribution installed in their
-computers, the PDF manuals for every version of `fswatch` will be hosted at
-[this address][documentation].
-
-If you are installing `fswatch` using a package manager and you would like the
-PDF manual to be bundled into the package, please send a feature request to the
-package maintainer.
-
-[documentation]: http://emcrisostomo.github.io/fswatch/doc
-[wiki]: https://github.com/emcrisostomo/fswatch/wiki
 
 Limitations
 -----------
@@ -188,6 +150,44 @@ how to install the C++ toolchain and the C++ runtime.
 
 No other software packages or dependencies are required to configure and install
 `fswatch` but the aforementioned APIs used by the file system monitors.
+
+Documentation
+-------------
+
+`fswatch` provides the following [documentation]:
+
+  * Texinfo documentation, included with the distribution.
+  * HTML documentation.
+  * PDF documentation.
+  * A [wiki] page.
+  * A man page.
+
+`fswatch` official documentation is provided in Texinfo format.  This is the
+most comprehensive source of information about `fswatch`.  The man page, in
+particular, is a stub meant for quick reference from the command line and is not
+guaranteed to be kept up to date.
+
+By default, only Info and DVI formats are generated when `fswatch` is built,
+according to the default rules of the GNU Build Systems.  However, a PDF manual
+typeset with TeX can be generated from the Texinfo sources by issuing this
+command:
+
+    $ make pdf
+
+and can then be installed invoking the `install-pdf` target:
+
+    $ make install-pdf
+
+Since typical users will not have a TeX distribution installed in their
+computers, the PDF manuals for every version of `fswatch` will be hosted at
+[this address][documentation].
+
+If you are installing `fswatch` using a package manager and you would like the
+PDF manual to be bundled into the package, please send a feature request to the
+package maintainer.
+
+[documentation]: http://emcrisostomo.github.io/fswatch/doc
+[wiki]: https://github.com/emcrisostomo/fswatch/wiki
 
 Localization
 ------------
