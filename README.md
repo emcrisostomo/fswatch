@@ -24,7 +24,7 @@ Table of Contents
 
   * [Features](#features)
   * [Documentation](#documentation)
-  * [Limitations][#limitations)
+  * [Limitations](#limitations)
   * [Getting fswatch](#getting-fswatch)
   * [Building from Source](#building-from-source)
   * [Installation](#installation)
