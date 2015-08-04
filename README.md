@@ -188,6 +188,7 @@ Documentation
 `fswatch` provides the following documentation:
 
   * Texinfo documentation, included with the distribution.
+  * [HTML] documentation.
   * A [wiki] page.
   * A man page.
 
@@ -215,8 +216,9 @@ If you are installing `fswatch` using a package manager and you would like the
 PDF manual to be bundled into the package, please send a feature request to the
 package maintainer.
 
+[HTML]: http://emcrisostomo.github.io/fswatch/doc/html
 [wiki]: https://github.com/emcrisostomo/fswatch/wiki
-[manual]: https://drive.google.com/folderview?id=0BxZtP9CHH-Q6bHF3bmJGRmlVcVU&usp=sharing
+[manual]: http://emcrisostomo.github.io/fswatch/doc/pdf
 
 Compatibility Issues with fswatch v. 0.x
 --------------------------------------
@@ -304,7 +306,7 @@ a different monitor, the `-m` option can be used to specify the monitor by name:
 
 The list of available monitors can be obtained with the `-h` option.
 
-For more information, refer to the `fswatch` man page.
+For more information, refer to the `fswatch` documentation.
 
 Bug Reports
 -----------
