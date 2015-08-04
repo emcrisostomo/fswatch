@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW_POLL_MONITOR_H
 #  define FSW_POLL_MONITOR_H
@@ -23,7 +22,6 @@
 
 namespace fsw
 {
-
   class poll_monitor : public monitor
   {
     REGISTER_MONITOR(poll_monitor, poll_monitor_type);
@@ -63,7 +61,6 @@ namespace fsw
     bool intermediate_scan_callback(const std::string &path,
                                     const struct stat &stat);
     void find_removed_files();
-    void notify_events();
     void swap_data_containers();
 
     poll_monitor_data *previous_data;

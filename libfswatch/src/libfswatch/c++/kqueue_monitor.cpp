@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
@@ -39,7 +38,6 @@ using namespace std;
 
 namespace fsw
 {
-
   struct kqueue_monitor_load
   {
     fsw_hash_map<std::string, int> descriptors_by_file_name;
@@ -114,7 +112,7 @@ namespace fsw
     return ts;
   }
 
-  bool kqueue_monitor::is_path_watched(const string & path)
+  bool kqueue_monitor::is_path_watched(const string & path) const
   {
     return load->descriptors_by_file_name.find(path) != load->descriptors_by_file_name.end();
   }
@@ -337,18 +335,15 @@ namespace fsw
       // received with a non empty filter flag.
       if (e.fflags)
       {
-        if (accept_path(load->file_names_by_descriptor[e.ident]))
-        {
-          events.push_back({load->file_names_by_descriptor[e.ident],
-                           curr_time,
-                           decode_flags(e.fflags)});
-        }
+        events.push_back({load->file_names_by_descriptor[e.ident],
+                         curr_time,
+                         decode_flags(e.fflags)});
       }
     }
 
     if (events.size())
     {
-      callback(events, context);
+      notify_events(events);
     }
   }
 

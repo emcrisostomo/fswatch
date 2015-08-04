@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
@@ -29,7 +28,6 @@ using namespace std;
 
 namespace fsw
 {
-
   typedef struct FSEventFlagType
   {
     FSEventStreamEventFlags flag;
@@ -155,7 +153,7 @@ namespace fsw
   {
     vector<fsw_event_flag> evt_flags;
 
-    for (FSEventFlagType type : event_flag_type)
+    for (const FSEventFlagType & type : event_flag_type)
     {
       if (flag & type.flag)
       {
@@ -188,16 +186,12 @@ namespace fsw
 
     for (size_t i = 0; i < numEvents; ++i)
     {
-      const char * path = ((char **) eventPaths)[i];
-
-      if (!fse_monitor->accept_path(path)) continue;
-
-      events.push_back({path, curr_time, decode_flags(eventFlags[i])});
+      events.push_back({((char **) eventPaths)[i], curr_time, decode_flags(eventFlags[i])});
     }
 
     if (events.size() > 0)
     {
-      fse_monitor->callback(events, fse_monitor->context);
+      fse_monitor->notify_events(events);
     }
   }
 }

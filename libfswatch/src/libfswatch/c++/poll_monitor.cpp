@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
@@ -40,7 +39,6 @@ using namespace std;
 
 namespace fsw
 {
-
   typedef struct poll_monitor::poll_monitor_data
   {
     fsw_hash_map<std::string, poll_monitor::watched_file_info> tracked_files;
@@ -100,7 +98,7 @@ namespace fsw
         flags.push_back(fsw_event_flag::AttributeModified);
       }
 
-      if (flags.size() > 0 && accept_path(path))
+      if (flags.size() > 0)
       {
         events.push_back({path, curr_time, flags});
       }
@@ -111,11 +109,7 @@ namespace fsw
     {
       vector<fsw_event_flag> flags;
       flags.push_back(fsw_event_flag::Created);
-
-      if (accept_path(path))
-      {
-        events.push_back({path, curr_time, flags});
-      }
+      events.push_back({path, curr_time, flags});
     }
 
     return true;
@@ -165,10 +159,7 @@ namespace fsw
 
     for (auto &removed : previous_data->tracked_files)
     {
-      if (accept_path(removed.first))
-      {
         events.push_back({removed.first, curr_time, flags});
-      }
     }
   }
 
@@ -202,15 +193,6 @@ namespace fsw
     }
   }
 
-  void poll_monitor::notify_events()
-  {
-    if (events.size())
-    {
-      callback(events, context);
-      events.clear();
-    }
-  }
-
   void poll_monitor::run()
   {
     collect_initial_data();
@@ -226,7 +208,12 @@ namespace fsw
       time(&curr_time);
 
       collect_data();
-      notify_events();
+
+      if (events.size())
+      {
+        notify_events(events);
+        events.clear();
+      }
     }
   }
 }

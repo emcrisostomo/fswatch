@@ -1,5 +1,5 @@
 .\"   $Id$
-.\" Copyright (C) 2014, Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+.\" Copyright (c) 2013-2015 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -27,27 +27,23 @@
 .Nd Ask for notification when the contents of the specified files or directory
 hierarchies are modified.
 .Pp
-This man page is a stub.
-Please, consult the official TeXinfo documentation shipped with @FSWATCH@.
+This man page is kept for reference but it is not to be considered an
+authoritative or complete source of information.  Please, consult the official
+Info documentation shipped with
+.Nm .
 .Sh SYNOPSIS
-.Nm @FSWATCH@
-.Op Fl 0EhILmnortuvx
-.Op Fl e Ar regexp
-.Op Fl f Ar format-time
-.Op Fl i Ar regexp
-.Op Fl l Ar latency
+.Nm @FSWATCH@ (option)* path+
 .Sh DESCRIPTION
-The 
+The
 .Nm
 command receives notifications when the contents of the specified files or
-directories are modified.
-@FSWATCH@ implements three kind of monitors:
+directories are modified.  @FSWATCH@ implements three kind of monitors:
 .Bl -tag -width indent
 .It -
 A monitor based on the File System Events API of Apple OS X.
 .It -
-A monitor based on kqueue, an event notification interface introduces in
-FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+A monitor based on kqueue, an event notification interface introduces in FreeBSD
+4.1 and supported on most *BSD systems (including OS X).
 .It -
 A monitor based on inotify, a Linux kernel subsystem that reports file system
 changes to applications.
@@ -68,14 +64,14 @@ The path affected by the current event.
 .It -
 A space-separated list of
 .Em event types
-(see 
+(see
 .Sx EVENT TYPES
 ).
 .El
 .Pp
 .Nm
-enters an infinite loop and never returns.
-When it receives a SIGABRT, SIGINT or SIGTERM signal,
+enters an infinite loop and never returns.  When it receives a SIGABRT, SIGINT
+or SIGTERM signal,
 .Nm
 closes the notification streams and exits gracefully returning 0 to the calling
 process.
@@ -83,15 +79,26 @@ process.
 The following options are available:
 .Bl -tag -width indent
 .It Fl 0, -print0
-Use the ASCII NUL character (\e0) as line separator.
-Since file names can potentially contain any character but NUL, this option
-assures that the output of @FSWATCH@ can be safely parsed using NUL as delimiter,
-such as using xargs -0 and the shell builtin read -d ''. 
+Use the ASCII NUL character (\e0) as line separator.  Since file names can
+potentially contain any character but NUL, this option assures that the output
+of @FSWATCH@ can be safely parsed using NUL as delimiter, such as using xargs -0
+and the shell builtin read -d ''.
+.It Fl 1, -one-event
+Exit fswatch after the first set of events is received.
+.It Fl -batch-marker Ar marker
+Print a marker at the end of every batch.  An optional marker
+.Ar marker
+can be specified to override its default value `NoOp'.
+.It Fl -event Ar name
+Filter event with the specified
+.Ar name .
+This option can be used multiple times, one for each event
+.Ar name
+that must be included in the output.
 .It Fl e, -exclude Ar regexp
 Exclude paths matching
 .Ar regexp .
-Multiple exclude filters can be specified using this option multiple times. 
-See
+Multiple exclude filters can be specified using this option multiple times.  See
 .Sx FILTERING PATHS
 for further information.
 .It Fl E, -extended
@@ -106,7 +113,7 @@ Show the help message.
 .It Fl i, -include Ar regexp
 Include paths matching
 .Ar regexp .
-Multiple include filters can be specified using this option multiple times. 
+Multiple include filters can be specified using this option multiple times.
 See
 .Sx FILTERING PATHS
 for further information.
@@ -114,7 +121,7 @@ for further information.
 Use case insensitive regular expressions.
 .It Fl l, -latency Ar latency
 Set the
-.Ar latency 
+.Ar latency
 in seconds.
 The latency is a double value greater than 0.1.
 Smaller values are currently not allowed in order not to compromise the
@@ -122,6 +129,8 @@ performance of the system.
 The default latency is 1 second.
 .It Fl L, -follow-links
 Follow symbolic links.
+.It Fl M, -list-monitors
+List the available monitors.
 .It Fl m, -monitor Ar name
 Uses the monitor specified by
 .Ar name .
@@ -130,10 +139,9 @@ The list of currently available monitors can be obtained using the
 option.
 .It Fl n, -numeric
 Print the numeric value of the event flag, instead of the array of symbolic
-names.
-The numeric value of the event flags are system-specific and may vary across
-different versions of OS X.
-As a consequence, the use of numeric values is discouraged. 
+names.  The numeric value of the event flags are system-specific and may vary
+across different versions of OS X.  As a consequence, the use of numeric values
+is discouraged.
 .It Fl o, -one-per-batch
 Print a single message with the number of change events.
 .It Fl r, -recursive
@@ -142,8 +150,8 @@ systems.
 .It Fl t, -timestamp
 Print the event timestamp.
 .It Fl u, -utf-time
-Print the event time in UTC format.
-When this option is not specified, the time is printed using the system
+Print the event time in UTC format.  When this option is not specified, the time
+is printed using the system
 .Em local
 time, as defined by
 .Sy localtime (3) .
@@ -155,11 +163,14 @@ Print the version of
 and exits.
 .It Fl x, -event-flags
 Prints the event flags.
+.It Fl -event-flag-separator Ar separator
+Print event flags using the specified
+.Ar separator .
 .El
 .Sh MONITORS
 .Nm
-acts as a front-end to system-specific monitors.
-Currently, the available monitors are:
+acts as a front-end to system-specific monitors.  Currently, the available
+monitors are:
 .Bl -tag -width indent
 .It -
 The
@@ -184,8 +195,7 @@ any operating system where
 can be used.
 .El
 .Pp
-Each monitor has its own strengths, weakness and peculiarities.
-Although
+Each monitor has its own strengths, weakness and peculiarities.  Although
 .Nm
 strives to provide a uniform experience no matter which monitor is used, it is
 still important for users to know which monitor they are using and to be aware
@@ -194,26 +204,25 @@ of existing bugs, limitations, corner cases or pathological behaviour.
 The
 .Em FSEvents monitor ,
 available only on Apple OS X, has no known limitations and scales very well with
-the number of files being observed.
-In fact, I observed no performance degradation when testing
+the number of files being observed.  In fact, I observed no performance
+degradation when testing
 .Nm
-observing changes on a filesystem of 500 GB over long periods of time.
-On OS X, this is the default monitor.
+observing changes on a filesystem of 500 GB over long periods of time.  On OS X,
+this is the default monitor.
 .Ss The kqueue Monitor
 The
 .Em kqueue monitor ,
 available on any *BSD system featuring kqueue, requires a file descriptor to be
-opened for every file being watched.
-As a result, this monitor scales badly with the number of files being observed
-and may begin to misbehave as soon as the
+opened for every file being watched.  As a result, this monitor scales badly
+with the number of files being observed and may begin to misbehave as soon as
+the
 .Nm
-process runs out of file descriptors.
-In this case,
+process runs out of file descriptors.  In this case,
 .Nm
-dumps one error on standard error for every file that cannot be opened.
-Beware that on some systems the maximum number of file descriptors that can be
-opened by a process is set to a very low value (values as low as 256 are not
-uncommon), even if the operating system may allow a much larger value.
+dumps one error on standard error for every file that cannot be opened.  Beware
+that on some systems the maximum number of file descriptors that can be opened
+by a process is set to a very low value (values as low as 256 are not uncommon),
+even if the operating system may allow a much larger value.
 .Pp
 If you are running out of file descriptors when using this monitor and you
 cannot reduce the number of observed items, either:
@@ -228,18 +237,18 @@ Consider using another monitor.
 The
 .Em inotify monitor ,
 available on Linux since kernel 2.6.13, may suffer a queue overflow if events
-are generated faster than they are read from the queue.
-In any case, the application is guaranteed to receive an overflow notification
-which can be handled to gracefully recover.
+are generated faster than they are read from the queue.  In any case, the
+application is guaranteed to receive an overflow notification which can be
+handled to gracefully recover.
 .Nm
-currently throws an exception if a queue overflow occurs.
-Future versions will handle the overflow by emitting proper notifications.
-However, the odds of observing a queue overflow on a default configured
-mainstream GNU/Linux distribution is very low.
+currently throws an exception if a queue overflow occurs.  Future versions will
+handle the overflow by emitting proper notifications.  However, the odds of
+observing a queue overflow on a default configured mainstream GNU/Linux
+distribution is very low.
 .Pp
 The inotify API sends events for the direct child elements of a watched
-directory and it scales pretty well with the number of watched items.
-For this reason, depending on the number of files to watch, it may sometimes be
+directory and it scales pretty well with the number of watched items.  For this
+reason, depending on the number of files to watch, it may sometimes be
 preferable to watch a common parent directory and filter received events rather
 than adding a huge number of file watches.
 .Ss The Poll Monitor
@@ -259,22 +268,20 @@ on a system using the kqueue monitor).
 The poll monitor, available on any platform, only relies on available CPU and
 memory to perform its task (besides the
 .Xr stat 2
-function).
-The performance of this monitor degrades linearly with the number of files being
-watched.
-The authors' experience indicates that
+function).  The performance of this monitor degrades linearly with the number of
+files being watched.  The authors' experience indicates that
 .Nm
 requires approximately 150 MB or RAM memory to observe a hierarchy of 500.000
-files with a minimum path length of 32 characters.
-A common bottleneck of the poll monitor is disk access, since stat()-ing a great
-number of files may take a huge amount of time.
-In this case, the latency should be set to a sufficiently large value in order
-to reduce the performance degradation that may result from frequent disk access.
+files with a minimum path length of 32 characters.  A common bottleneck of the
+poll monitor is disk access, since stat()-ing a great number of files may take a
+huge amount of time.  In this case, the latency should be set to a sufficiently
+large value in order to reduce the performance degradation that may result from
+frequent disk access.
 .Ss How to Choose a Monitor
 .Nm
 already chooses the "best" monitor for your platform if you do not specify any.
-However, a specific monitor may be better suited to specific use cases.
-Please, read the
+However, a specific monitor may be better suited to specific use cases.  Please,
+read the
 .Sx MONITORS
 section to get a description of all the available monitors and their
 limitations.
@@ -289,27 +296,26 @@ On Linux, use the inotify monitor (which is the default behaviour).
 If the number of files to observe is sufficiently small, use the kqueue monitor.
 Beware that on some systems the maximum number of file descriptors that can be
 opened by a process is set to a very low value (values as low as 256 are not
-uncommon), even if the operating system may allow a much larger value.
-In this case, check your OS documentation to raise this limit on either a per
-process or a system-wide basis.
+uncommon), even if the operating system may allow a much larger value.  In this
+case, check your OS documentation to raise this limit on either a per process or
+a system-wide basis.
 .It -
-If feasible, watch directories instead of watching files.
-Properly crafting the receiving side of the events to deal with directories may
-sensibly reduce the monitor resource consumption.
+If feasible, watch directories instead of watching files.  Properly crafting the
+receiving side of the events to deal with directories may sensibly reduce the
+monitor resource consumption.
 .It -
-If none of the above applies, use the poll monitor.
-The authors' experience indicates that fswatch requires approximately 150 MB or
-RAM memory to observe a hierarchy of 500.000 files with a minimum path length of
-32 characters.
-A common bottleneck of the poll monitor is disk access, since stat()-ing a great
-number of files may take a huge amount of time.
-In this case, the latency should be set to a sufficiently large value in order
-to reduce the performance degradation that may result from frequent disk access.
+If none of the above applies, use the poll monitor.  The authors' experience
+indicates that fswatch requires approximately 150 MB or RAM memory to observe a
+hierarchy of 500.000 files with a minimum path length of 32 characters.  A
+common bottleneck of the poll monitor is disk access, since stat()-ing a great
+number of files may take a huge amount of time.  In this case, the latency
+should be set to a sufficiently large value in order to reduce the performance
+degradation that may result from frequent disk access.
 .El
 .Sh FILTERING PATHS
-Received events can be filtered by path using regular expressions.
-Regular expressions can be used to include or exclude matching paths.
-The user can specify multiple filter expression in any order and the
+Received events can be filtered by path using regular expressions.  Regular
+expressions can be used to include or exclude matching paths.  The user can
+specify multiple filter expression in any order and the
 .Em first
 matching expression wins.
 .Pp
@@ -328,32 +334,6 @@ if option
 .Fl I
 is specified.
 .El
-.Sh EVENT TYPES
-The event types currently supported and the corresponding record symbols are:
-.Bl -tag -width indent
-.It -
-kFSEventStreamEventFlagItemCreated, "created".
-.It -
-kFSEventStreamEventFlagItemRemoved, "removed".
-.It -
-kFSEventStreamEventFlagItemInodeMetaMod, "inodeMetaMod".
-.It -
-kFSEventStreamEventFlagItemRenamed, "renamed".
-.It -
-kFSEventStreamEventFlagItemModified, "modified".
-.It -
-kFSEventStreamEventFlagItemFinderInfoMod, "finderInfoMod".
-.It -
-kFSEventStreamEventFlagItemChangeOwner, "changeOwner".
-.It -
-kFSEventStreamEventFlagItemXattrMod, "xattrMod".
-.It -
-kFSEventStreamEventFlagItemIsFile, "isFile".
-.It -
-kFSEventStreamEventFlagItemIsDir, "isDir".
-.It -
-kFSEventStreamEventFlagItemIsSymlink, "isSymLink".
-.El
 .Sh EXAMPLES
 .Ss Basic Usage
 .Nm
@@ -363,8 +343,8 @@ syntax is the following:
 .Pp
 .Nm
 will then output change events to standard output. By default, only the affected
-file name is printed.
-However, many options are available to format the event record, including: 
+file name is printed.  However, many options are available to format the event
+record, including:
 .Bl -tag -width indent
 .It -
 The possibility of adding the event timestamp.
@@ -376,31 +356,28 @@ The following command listens for changes in the current directory and events
 are delivered every 5 seconds:
 .Pp
 .Dl "$ @FSWATCH@ -l 5 ."
-.Pp 
+.Pp
 The following command listens for changes in the current user home directory and
 .Em /var/log :
 .Pp
 .Dl "$ @FSWATCH@ ~ /var/log"
 .Ss Piping @FSWATCH@ Output to Another Process
-Very often you wish to not only receive an event, but react to it.
-The simplest way to do it is piping fswatch output to another process.
-Since in UNIX and UNIX-like file system file names may potentially contain any
-character but
+Very often you wish to not only receive an event, but react to it.  The simplest
+way to do it is piping fswatch output to another process.  Since in Unix and
+Unix-like file system file names may potentially contain any character but
 .Em NUL (\e0)
 and the path separator
 .Em (/) ,
 .Nm
 has a specific mode of operation when its output must be piped to another
-process.
-When the
+process.  When the
 .Op Fl 0
 option is used,
 .Nm
 will use the
 .Em NUL
 character as record separator, thus allowing any other character to appear in a
-path.
-This is important because many commands and shell builtins (such as
+path.  This is important because many commands and shell builtins (such as
 .Em read )
 split words and lines by default using the characters in
 .Em $IFS ,
@@ -439,17 +416,15 @@ records, then use
 .Em xargs -I {}
 will substitute occurrences of
 .Em {}
-in command with the parsed argument.
-If the command you are running does not need the event path name, just delete
-this option.
-If you prefer using another replacement string, substitute
+in command with the parsed argument.  If the command you are running does not
+need the event path name, just delete this option.  If you prefer using another
+replacement string, substitute
 .Em {}
 with yours.
 .El
 .Ss Bubbling Events
 An often requested feature is being able to receive a single event "per batch",
-instead of receiving multiple events.
-This use case is implemented by the
+instead of receiving multiple events.  This use case is implemented by the
 .Op Fl o, -one-per-batch
 option which tells
 .Nm
@@ -464,13 +439,12 @@ detail:
 This is useful if, for example, you want to respond to change events in a way
 which is (or can easily be) path-independent (because you are not receiving any
 event detail) and you prefer to "bubble" events together to reduce the overhead
-of the command being executed.
-A typical case is a directory synchronisation job whenever some files change.
+of the command being executed.  A typical case is a directory synchronisation
+job whenever some files change.
 .Ss Receiving a Single Event
 Another requested feature is the possibility of receiving a single event and
-exit.
-This is most useful when existing scripts processing events include the restart
-logic of
+exit.  This is most useful when existing scripts processing events include the
+restart logic of
 .Nm.
 This use case is implemented by the
 .Op Fl 1, -one-event
@@ -488,8 +462,8 @@ with the following syntax:
 .Pp
 Starting with
 .Nm
-v. 1.x this behaviour is no longer supported.
-The rationale behind this decision includes:
+v. 1.x this behaviour is no longer supported.  The rationale behind this
+decision includes:
 .Bl -tag -width indent
 .It -
 The old version only allows watching one path.
@@ -524,9 +498,8 @@ program:
 .Dl $ fswatch -o path | xargs -n1 program
 .Pp
 In this case, program will receive the number of change events as first
-argument.
-If no argument should be passed to program, then the following command could be
-used:
+argument.  If no argument should be passed to program, then the following
+command could be used:
 .Pp
 .Dl $ fswatch -o path | xargs -n1 -I{} program
 .Pp
@@ -548,9 +521,8 @@ piping its output to
 .Em xargs .
 .Pp
 .Em fswatch-run
-is a symbolic link to a shell-specific wrapper.
-Currently, ZSH and Bash scripts are provided.
-If no suitable shells are found in the target system, the
+is a symbolic link to a shell-specific wrapper.  Currently, ZSH and Bash scripts
+are provided.  If no suitable shells are found in the target system, the
 .Em fswatch-run
 symbolic link is not created.
 .Sh EXIT STATUS
@@ -558,7 +530,7 @@ symbolic link is not created.
 may exit with one of the following exit statuses:
 .Pp
 .Dl FSW_OK                            0
-.Dl FSW_ERR_UNKNOWN_ERROR             (1 << 0) 
+.Dl FSW_ERR_UNKNOWN_ERROR             (1 << 0)
 .Dl FSW_ERR_SESSION_UNKNOWN           (1 << 1)
 .Dl FSW_ERR_MONITOR_ALREADY_EXISTS    (1 << 2)
 .Dl FSW_ERR_MEMORY                    (1 << 3)
@@ -575,13 +547,13 @@ may exit with one of the following exit statuses:
 .Dl FSW_ERR_STALE_MONITOR_THREAD      (1 << 14)
 .Dl FSW_ERR_THREAD_FAULT              (1 << 15)
 .Dl FSW_ERR_UNSUPPORTED_OPERATION     (1 << 16)
+.Dl FSW_ERR_UNKNOWN_VALUE             (1 << 17)
 .Sh DIAGNOSTICS
 .Nm
 exits 0 on success, and >0 if an error occurs.
 .Sh COMPATIBILITY
 .Nm
-can be built on any system supporting at least one of the available
-monitors.
+can be built on any system supporting at least one of the available monitors.
 .Sh BUGS
 See
 .UR

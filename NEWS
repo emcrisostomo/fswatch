@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.5.0:
+
+  * Fix issue 46: Allow filtering by event type.
+
 New in 1.4.7:
 
   * Fix bug in exclusion filter ordering (PR 75).
@@ -41,8 +45,8 @@ New in 1.4.3.2:
 
 New in 1.4.3.1:
 
-  * Fix bug in fswatch-run wrapper script for ZSH which caused last argument
-    not to be split when passed to xargs.
+  * Fix bug in fswatch-run wrapper script for ZSH which caused last argument not
+    to be split when passed to xargs.
 
 New in 1.4.3:
 

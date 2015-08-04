@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -29,6 +28,8 @@
 #include <cerrno>
 #include <vector>
 #include "libfswatch/c++/monitor.h"
+#include "libfswatch/c/error.h"
+#include "libfswatch/c++/libfswatch_exception.h"
 
 #ifdef HAVE_GETOPT_LONG
 #  include <getopt.h>
@@ -37,8 +38,7 @@
 #define _(String) gettext(String)
 
 using namespace std;
-
-static string decode_event_flag_name(fsw_event_flag flag);
+using namespace fsw;
 
 /*
  * Event formatting types and routines.
@@ -72,6 +72,7 @@ static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
 static fsw::monitor *active_monitor = nullptr;
 static vector<monitor_filter> filters;
+static vector<fsw_event_type_filter> event_filters;
 static bool _0flag = false;
 static bool _1flag = false;
 static int batch_marker_flag = false;
@@ -92,7 +93,7 @@ static bool xflag = false;
 static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
-static string batch_marker = decode_event_flag_name(fsw_event_flag::NoOp);
+static string batch_marker = fsw::event::get_event_flag_name(fsw_event_flag::NoOp);
 static int format_flag = false;
 static string format;
 static string event_flag_separator = " ";
@@ -104,6 +105,7 @@ static string event_flag_separator = " ";
 static const int OPT_BATCH_MARKER = 128;
 static const int OPT_FORMAT = 129;
 static const int OPT_EVENT_FLAG_SEPARATOR = 130;
+static const int OPT_EVENT_TYPE = 131;
 
 bool is_verbose()
 {
@@ -112,8 +114,6 @@ bool is_verbose()
 
 static void list_monitor_types(ostream& stream)
 {
-  stream << _("Available monitors in this platform:\n\n");
-
   for (const auto & type : fsw::monitor_factory::get_types())
   {
     stream << "  " << type << "\n";
@@ -123,7 +123,7 @@ static void list_monitor_types(ostream& stream)
 static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2014, 2015, Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << "Copyright (C) 2014-2015 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
   stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
   stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
@@ -143,6 +143,7 @@ static void usage(ostream& stream)
   stream << " -0, --print0          " << _("Use the ASCII NUL character (0) as line separator.\n");
   stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
+  stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
 #  ifdef HAVE_REGCOMP
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
@@ -156,6 +157,7 @@ static void usage(ostream& stream)
 #  endif
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
+  stream << " -M, --list-monitors   " << _("List the available monitors.\n");
   stream << " -m, --monitor=NAME    " << _("Use the specified monitor.\n");
   stream << " -n, --numeric         " << _("Print a numeric event mask.\n");
   stream << " -o, --one-per-batch   " << _("Print a single message with the number of change events.\n");
@@ -178,7 +180,7 @@ static void usage(ostream& stream)
 #  ifdef HAVE_REGCOMP
   option_string += "i";
 #  endif
-  option_string += "lLmnortuvx";
+  option_string += "lLMmnortuvx";
   option_string += "]";
 
   stream << PACKAGE_STRING << "\n\n";
@@ -199,6 +201,7 @@ static void usage(ostream& stream)
   stream << " -i  Include paths matching REGEX.\n";
 #  endif
   stream << " -l  Set the latency.\n";
+  stream << " -M  List the available monitors.\n";
   stream << " -m  Use the specified monitor.\n";
   stream << " -L  Follow symbolic links.\n";
   stream << " -n  Print a numeric event masks.\n";
@@ -212,6 +215,7 @@ static void usage(ostream& stream)
   stream << "\n";
 #endif
 
+  stream << _("Available monitors in this platform:\n\n");
   list_monitor_types(stream);
 
   stream << _("\nSee the man page for more information.\n\n");
@@ -237,6 +241,20 @@ static void close_handler(int signal)
 
   fsw_log(_("Done.\n"));
   exit(FSW_EXIT_OK);
+}
+
+static bool parse_event_filter(const char * optarg)
+{
+  try
+  {
+    event_filters.push_back({event::get_event_flag_by_name(optarg)});
+    return true;
+  }
+  catch (fsw::libfsw_exception & ex)
+  {
+    cerr << ex.what() << endl;
+    return false;
+  }
 }
 
 static bool validate_latency(double latency, ostream &ost, ostream &est)
@@ -296,55 +314,6 @@ static void register_signal_handlers()
   }
 }
 
-static string decode_event_flag_name(fsw_event_flag flag)
-{
-  switch (flag)
-  {
-  case fsw_event_flag::NoOp:
-    return "NoOp";
-  case fsw_event_flag::PlatformSpecific:
-    return "PlatformSpecific";
-  case fsw_event_flag::Created:
-    return "Created";
-  case fsw_event_flag::Updated:
-    return "Updated";
-  case fsw_event_flag::Removed:
-    return "Removed";
-  case fsw_event_flag::Renamed:
-    return "Renamed";
-  case fsw_event_flag::OwnerModified:
-    return "OwnerModified";
-  case fsw_event_flag::AttributeModified:
-    return "AttributeModified";
-  case fsw_event_flag::MovedFrom:
-    return "MovedFrom";
-  case fsw_event_flag::MovedTo:
-    return "MovedTo";
-  case fsw_event_flag::IsFile:
-    return "IsFile";
-  case fsw_event_flag::IsDir:
-    return "IsDir";
-  case fsw_event_flag::IsSymLink:
-    return "IsSymLink";
-  case fsw_event_flag::Link:
-    return "Link";
-  default:
-    return "<Unknown>";
-  }
-}
-
-static vector<string> decode_event_flag_names(vector<fsw_event_flag> flags)
-{
-  vector<string> names;
-
-  for (fsw_event_flag flag : flags)
-  {
-    names.push_back(decode_event_flag_name(flag));
-  }
-
-  return names;
-}
-
 static void print_event_path(const event & evt)
 {
   cout << evt.get_path();
@@ -382,15 +351,12 @@ static void print_event_flags(const event & evt)
   }
   else
   {
-    vector<string> flag_names = decode_event_flag_names(flags);
-
-    for (int i = 0; i < flag_names.size(); ++i)
+    for (size_t i = 0; i < flags.size(); ++i)
     {
-      const string &name = flag_names[i];
-      cout << name;
+      cout << flags[i];
 
       // Event flag separator is currently hard-coded.
-      if (i != flag_names.size() - 1) cout << event_flag_separator;
+      if (i != flags.size() - 1) cout << event_flag_separator;
     }
   }
 }
@@ -472,14 +438,15 @@ static void start_monitor(int argc, char ** argv, int optind)
   }
 
   if (mflag)
-    active_monitor = fsw::monitor_factory::create_monitor_by_name(monitor_name,
-                                                                  paths,
-                                                                  process_events);
+    active_monitor = fsw::monitor_factory::create_monitor(monitor_name,
+                                                          paths,
+                                                          process_events);
   else
-    active_monitor = fsw::monitor::create_default_monitor(paths,
+    active_monitor = fsw::monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
+                                                          paths,
                                                           process_events);
 
-  /* 
+  /*
    * libfswatch supports case sensitivity and extended flags to be set on any
    * filter but fswatch does not.  For the time being, we apply the same flags
    * to every filter.
@@ -492,6 +459,7 @@ static void start_monitor(int argc, char ** argv, int optind)
 
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
+  active_monitor->set_event_type_filters(event_filters);
   active_monitor->set_filters(filters);
   active_monitor->set_follow_symlinks(Lflag);
 
@@ -503,11 +471,10 @@ static void parse_opts(int argc, char ** argv)
   int ch;
   ostringstream short_options;
 
-  short_options << "01f:hl:Lm:nortuvx";
+  short_options << "01f:hl:LMm:nortuvx";
 #ifdef HAVE_REGCOMP
   short_options << "e:Ei:I";
 #endif
-  short_options << "k";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
@@ -515,10 +482,14 @@ static void parse_opts(int argc, char ** argv)
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
+    { "event", required_argument, nullptr, OPT_EVENT_TYPE},
+    { "event-flags", no_argument, nullptr, 'x'},
+    { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
 #  ifdef HAVE_REGCOMP
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
 #  endif
+    { "follow-links", no_argument, nullptr, 'L'},
     { "format", required_argument, nullptr, OPT_FORMAT},
     { "format-time", required_argument, nullptr, 'f'},
     { "help", no_argument, nullptr, 'h'},
@@ -527,7 +498,7 @@ static void parse_opts(int argc, char ** argv)
     { "insensitive", no_argument, nullptr, 'I'},
 #  endif
     { "latency", required_argument, nullptr, 'l'},
-    { "follow-links", no_argument, nullptr, 'L'},
+    { "list-monitors", no_argument, nullptr, 'M'},
     { "monitor", required_argument, nullptr, 'm'},
     { "numeric", no_argument, nullptr, 'n'},
     { "one-per-batch", no_argument, nullptr, 'o'},
@@ -536,8 +507,6 @@ static void parse_opts(int argc, char ** argv)
     { "utc-time", no_argument, nullptr, 'u'},
     { "verbose", no_argument, nullptr, 'v'},
     { "version", no_argument, &version_flag, true},
-    { "event-flags", no_argument, nullptr, 'x'},
-    { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
     { nullptr, 0, nullptr, 0}
   };
 
@@ -606,6 +575,10 @@ static void parse_opts(int argc, char ** argv)
       Lflag = true;
       break;
 
+    case 'M':
+      list_monitor_types(cout);
+      ::exit(FSW_EXIT_OK);
+
     case 'm':
       mflag = true;
       monitor_name = string(optarg);
@@ -654,6 +627,13 @@ static void parse_opts(int argc, char ** argv)
       event_flag_separator = optarg;
       break;
 
+    case OPT_EVENT_TYPE:
+      if (!parse_event_filter(optarg))
+      {
+        ::exit(FSW_ERR_UNKNOWN_VALUE);
+      }
+      break;
+      
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
@@ -742,7 +722,7 @@ static int printf_event(const string & fmt,
    * %p - event path
    * %f - event flags (event separator will be formatted with a separate option)
    */
-  for (auto i = 0; i < format.length(); ++i)
+  for (size_t i = 0; i < format.length(); ++i)
   {
     // If the character does not start a format directive, copy it as it is.
     if (format[i] != '%')

@@ -1,19 +1,18 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (C) 2014-2015 Enrico M. Crisostomo
+# Copyright (c) 2014-2015 Enrico M. Crisostomo
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3, or (at your option)
-# any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3, or (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Process this file with autoconf to produce a configure script.
 #
@@ -26,7 +25,7 @@ AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
-AC_CONFIG_FILES([Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
+AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -60,8 +59,11 @@ AX_CXXFLAGS_WARN_ALL
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h unistd.h fcntl.h])
-AC_CHECK_HEADERS([sys/event.h sys/inotify.h])
+AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([unistd.h])
+AC_CHECK_HEADERS([fcntl.h])
+AC_CHECK_HEADERS([sys/event.h])
+AC_CHECK_HEADERS([sys/inotify.h])
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
 AC_CHECK_HEADERS([unordered_map unordered_set])
 
@@ -84,10 +86,10 @@ AC_CHECK_HEADER([mutex])
 
 if test "x${ac_cv_header_mutex}" = "xyes" ; then
   AC_DEFINE(HAVE_CXX_MUTEX,
-        1,
-        [Define if <mutex> is available.])
+    1,
+    [Define if <mutex> is available.])
 else
-    AC_WARN(AC_PACKAGE_NAME [is not thread-safe because required C++11 library classes are not available.].)
+  AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -97,25 +99,25 @@ AC_TYPE_UINT32_T
 AC_TYPE_MODE_T
 
 AC_CHECK_MEMBERS([struct stat.st_mtime],
-   [],
-   [],
-   [
-     AC_INCLUDES_DEFAULT
-     #include <sys/stat.h>
-   ])
+  [],
+  [],
+  [
+    AC_INCLUDES_DEFAULT
+    #include <sys/stat.h>
+  ])
 
 AC_CHECK_MEMBERS([struct stat.st_mtimespec],
-   [],
-   [],
-   [
-     AC_INCLUDES_DEFAULT
-     #include <sys/stat.h>
-   ])
+  [],
+  [],
+  [
+    AC_INCLUDES_DEFAULT
+    #include <sys/stat.h>
+  ])
 
 AC_CHECK_TYPE([std::unique_ptr<std::string>],
   [AC_DEFINE(HAVE_CXX_UNIQUE_PTR,
-        1,
-        [Define if std::unique_ptr in <memory> is available.])],
+    1,
+    [Define if std::unique_ptr in <memory> is available.])],
   [],
   [[#include <memory>]])
 
@@ -140,7 +142,7 @@ AC_CHECK_DECLS(
 AX_CXX_HAVE_THREAD_LOCAL
 
 if ! test "x${ax_cv_cxx_have_thread_local}" = "xyes" ; then
-  AC_WARN(AC_PACKAGE_NAME [is missing some functions because the current combination of compiler and libraries do not support the thread_local storage specifier].)
+  AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier].)
 fi
 
 AC_OUTPUT

@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
@@ -48,6 +47,7 @@ typedef struct FSW_SESSION
   bool recursive;
   bool follow_symlinks;
   vector<monitor_filter> filters;
+  vector<fsw_event_type_filter> event_type_filters;
   void * data;
 #ifdef HAVE_CXX_MUTEX
   atomic<bool> running;
@@ -71,9 +71,7 @@ static fsw_hash_map<FSW_HANDLE, mutex *> session_mutexes;
 static std::mutex session_mutex;
 #endif
 
-#if defined(HAVE_CXX_THREAD_LOCAL)
-static FSW_THREAD_LOCAL unsigned int last_error;
-#endif
+static FSW_THREAD_LOCAL FSW_STATUS last_error;
 
 // Default library callback.
 static FSW_EVENT_CALLBACK libfsw_cpp_callback_proxy;
@@ -86,7 +84,7 @@ static FSW_STATUS fsw_set_last_error(const int error);
  * Library initialization routine.  Currently, libfswatch only initializes
  * gettext.
  */
-int fsw_init_library()
+FSW_STATUS fsw_init_library()
 {
   // Trigger gettext operations
 #ifdef ENABLE_NLS
@@ -229,10 +227,10 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     context_ptr->handle = session->handle;
     context_ptr->data = session->data;
 
-    monitor * current_monitor = monitor::create_monitor(type,
-                                                        session->paths,
-                                                        libfsw_cpp_callback_proxy,
-                                                        context_ptr);
+    monitor * current_monitor = monitor_factory::create_monitor(type,
+                                                                session->paths,
+                                                                libfsw_cpp_callback_proxy,
+                                                                context_ptr);
     session->monitor = current_monitor;
   }
   catch (libfsw_exception ex)
@@ -247,7 +245,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_add_path(const FSW_HANDLE handle, const char * path)
+FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path)
 {
   if (!path)
     return fsw_set_last_error(int(FSW_ERR_INVALID_PATH));
@@ -269,7 +267,7 @@ int fsw_add_path(const FSW_HANDLE handle, const char * path)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
+FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
 {
   if (!callback)
     return fsw_set_last_error(int(FSW_ERR_INVALID_CALLBACK));
@@ -292,7 +290,7 @@ int fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_latency(const FSW_HANDLE handle, const double latency)
+FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency)
 {
   if (latency < 0)
     return fsw_set_last_error(int(FSW_ERR_INVALID_LATENCY));
@@ -314,7 +312,7 @@ int fsw_set_latency(const FSW_HANDLE handle, const double latency)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
+FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
 {
   try
   {
@@ -333,7 +331,7 @@ int fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_follow_symlinks(const FSW_HANDLE handle,
+FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
                             const bool follow_symlinks)
 {
   try
@@ -353,7 +351,27 @@ int fsw_set_follow_symlinks(const FSW_HANDLE handle,
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_add_filter(const FSW_HANDLE handle,
+FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
+                                     const fsw_event_type_filter event_type)
+{
+  try
+  {
+#ifdef HAVE_CXX_MUTEX
+    std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
+    FSW_SESSION * session = get_session(handle);
+
+    session->event_type_filters.push_back(event_type);
+  }
+  catch (int error)
+  {
+    return fsw_set_last_error(error);
+  }
+
+  return fsw_set_last_error(FSW_OK);
+}
+
+FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
                    const fsw_cmonitor_filter filter)
 {
   try
@@ -397,7 +415,7 @@ public:
 };
 #endif
 
-int fsw_start_monitor(const FSW_HANDLE handle)
+FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
 {
   try
   {
@@ -427,6 +445,7 @@ int fsw_start_monitor(const FSW_HANDLE handle)
       create_monitor(handle, session->type);
 
     session->monitor->set_filters(session->filters);
+    session->monitor->set_event_type_filters(session->event_type_filters);
     session->monitor->set_follow_symlinks(session->follow_symlinks);
     if (session->latency) session->monitor->set_latency(session->latency);
     session->monitor->set_recursive(session->recursive);
@@ -446,7 +465,7 @@ int fsw_start_monitor(const FSW_HANDLE handle)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_destroy_session(const FSW_HANDLE handle)
+FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
 {
   int ret = FSW_OK;
 
@@ -490,7 +509,7 @@ int fsw_destroy_session(const FSW_HANDLE handle)
   session_mutexes.erase(handle);
 #endif
 
-  return fsw_set_last_error(FSW_OK);
+  return fsw_set_last_error(ret);
 }
 
 FSW_SESSION * get_session(const FSW_HANDLE handle)
@@ -505,22 +524,16 @@ FSW_SESSION * get_session(const FSW_HANDLE handle)
 #endif
 }
 
-int fsw_set_last_error(const int error)
+FSW_STATUS fsw_set_last_error(const FSW_STATUS error)
 {
-#if defined(HAVE_CXX_THREAD_LOCAL)
   last_error = error;
-#endif
 
-  return error;
+  return last_error;
 }
 
-int fsw_last_error()
+FSW_STATUS fsw_last_error()
 {
-#if defined(HAVE_CXX_THREAD_LOCAL)
   return last_error;
-#else
-  return fsw_set_last_error(FSW_ERR_UNSUPPORTED_OPERATION);
-#endif
 }
 
 bool fsw_is_verbose()

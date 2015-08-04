@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef FSW__CEVENT_H
 #  define FSW__CEVENT_H
@@ -47,6 +46,9 @@ extern "C"
     Link = (1 << 12)
   };
 
+  fsw_event_flag fsw_get_event_flag_by_name(const char * name);
+  char * fsw_get_event_flag_name(const fsw_event_flag flag);
+
   /*
    * An file change event is represented as an instance of this struct where:
    *   - path is the path where the event was triggered.
@@ -69,7 +71,7 @@ extern "C"
    *   - events, a const pointer to an array of events of type const fsw_cevent.
    *   - event_num, the size of the *events array.
    *   - data, optional persisted data for a callback.
-   * 
+   *
    * The memory used by the fsw_cevent objects will be freed at the end of the
    * callback invocation.  A callback should copy such data instead of storing
    * a pointer to it.
@@ -82,4 +84,3 @@ extern "C"
 #  endif
 
 #endif  /* FSW__CEVENT_H */
-

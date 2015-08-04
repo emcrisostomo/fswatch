@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
@@ -20,11 +19,13 @@
 #include "gettext_defs.h"
 #include "monitor.h"
 #include "libfswatch_exception.h"
+#include "../c/libfswatch_log.h"
 #include <cstdlib>
 #ifdef HAVE_REGCOMP
 #  include <regex.h>
 #endif
-
+#include <iostream>
+#include <sstream>
 /*
  * Conditionally include monitor headers for default construction.
  */
@@ -39,22 +40,19 @@
 #endif
 #include "poll_monitor.h"
 
-#include <iostream>
-
 using namespace std;
 
 namespace fsw
 {
-
   struct compiled_monitor_filter
   {
-#ifdef HAVE_REGCOMP    
+#ifdef HAVE_REGCOMP
     regex_t regex;
     fsw_filter_type type;
 #endif
   };
 
-  monitor::monitor(std::vector<std::string> paths,
+  monitor::monitor(vector<string> paths,
                    FSW_EVENT_CALLBACK * callback,
                    void * context) :
     paths(paths), callback(callback), context(context)
@@ -80,6 +78,18 @@ namespace fsw
     this->recursive = recursive;
   }
 
+  void monitor::add_event_type_filter(const fsw_event_type_filter &filter)
+  {
+    this->event_type_filters.push_back(filter);
+  }
+
+  void monitor::set_event_type_filters(const std::vector<fsw_event_type_filter> &filters)
+  {
+    event_type_filters.clear();
+
+    for (const auto & filter : filters) add_event_type_filter(filter);
+  }
+
   void monitor::add_filter(const monitor_filter &filter)
   {
     regex_t regex;
@@ -97,7 +107,7 @@ namespace fsw
     this->filters.push_back({regex, filter.type});
   }
 
-  void monitor::set_filters(const std::vector<monitor_filter> &filters)
+  void monitor::set_filters(const vector<monitor_filter> &filters)
   {
 #ifdef HAVE_REGCOMP
     for (const monitor_filter &filter : filters)
@@ -112,33 +122,51 @@ namespace fsw
     follow_symlinks = follow;
   }
 
-  bool monitor::accept_path(const string &path)
+  bool monitor::accept_event_type(fsw_event_flag event_type) const
+  {
+    // If no filters are set, then accept the event.
+    if (event_type_filters.size() == 0) return true;
+
+    // If filters are set, accept the event only if present amongst the filters.
+    for (const auto & filter : event_type_filters)
+    {
+      if (filter.flag == event_type)
+      {
+        return true;
+      }
+    }
+
+    // If no filters match, then reject the event.
+    return false;
+  }
+
+  bool monitor::accept_path(const string &path) const
   {
     return accept_path(path.c_str());
   }
 
-  bool monitor::accept_path(const char *path)
+  bool monitor::accept_path(const char *path) const
   {
 #ifdef HAVE_REGCOMP
     bool is_excluded = false;
-    
-    for (auto &filter : filters)
+
+    for (const auto &filter : filters)
     {
       if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
         if (filter.type == fsw_filter_type::filter_include) return true;
-        
+
         is_excluded = (filter.type == fsw_filter_type::filter_exclude);
       }
     }
-    
+
     if (is_excluded) return false;
 #endif
 
     return true;
   }
 
-  void * monitor::get_context()
+  void * monitor::get_context() const
   {
     return context;
   }
@@ -160,9 +188,9 @@ namespace fsw
 #endif
   }
 
-  monitor * monitor::create_default_monitor(std::vector<std::string> paths,
-                                            FSW_EVENT_CALLBACK * callback,
-                                            void * context)
+  static monitor * create_default_monitor(vector<string> paths,
+                                          FSW_EVENT_CALLBACK * callback,
+                                          void * context)
   {
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
     return new fsevents_monitor(paths, callback, context);
@@ -175,36 +203,36 @@ namespace fsw
 #endif
   }
 
-  monitor * monitor::create_monitor(fsw_monitor_type type,
-                                    std::vector<std::string> paths,
-                                    FSW_EVENT_CALLBACK * callback,
-                                    void * context)
+  monitor * monitor_factory::create_monitor(fsw_monitor_type type,
+                                            vector<string> paths,
+                                            FSW_EVENT_CALLBACK * callback,
+                                            void * context)
   {
     switch (type)
     {
     case system_default_monitor_type:
-      return monitor::create_default_monitor(paths, callback, context);
+      return create_default_monitor(paths, callback, context);
 
     case fsevents_monitor_type:
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
       return new fsevents_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case kqueue_monitor_type:
 #if defined(HAVE_SYS_EVENT_H)
       return new kqueue_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case inotify_monitor_type:
 #if defined(HAVE_SYS_INOTIFY_H)
       return new inotify_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif      
+#endif
 
     case poll_monitor_type:
       return new poll_monitor(paths, callback, context);
@@ -222,52 +250,88 @@ namespace fsw
     this->run();
   }
 
-  map<string, fsw_monitor_type> & monitor_factory::type_by_string()
+  vector<fsw_event_flag> monitor::filter_flags(const event &evt) const
   {
-    static map<string, fsw_monitor_type> type_by_string_map;
+    // If there is nothing to filter, just return the original vector.
+    if (event_type_filters.size() == 0) return evt.get_flags();
+    
+    vector<fsw_event_flag> filtered_flags;
 
-    return type_by_string_map;
-  };
+    for (auto const & flag : evt.get_flags())
+    {
+      if (accept_event_type(flag)) filtered_flags.push_back(flag);
+    }
 
-  monitor * monitor_factory::create_monitor_by_name(const std::string& name,
-                                                    std::vector<std::string> paths,
-                                                    FSW_EVENT_CALLBACK * callback,
-                                                    void * context)
+    return filtered_flags;
+  }
+
+  void monitor::notify_events(const vector<event> &events) const
   {
-    auto i = type_by_string().find(name);
+    vector<event> filtered_events;
 
-    if (i == type_by_string().end())
+    for (auto const & event : events)
+    {
+      // Filter flags
+      vector<fsw_event_flag> filtered_flags = filter_flags(event);
+      if (filtered_flags.size() == 0) continue;
+
+      if (!accept_path(event.get_path())) continue;
+
+      filtered_events.push_back({event.get_path(), event.get_time(), filtered_flags});
+    }
+
+    if (filtered_events.size() > 0)
+    {
+      ostringstream log;
+      log << _("Notifying events #: ") << filtered_events.size() << "\n";
+      libfsw_log(log.str().c_str());
+
+      callback(filtered_events, context);
+    }
+  }
+
+  map<string, FSW_FN_MONITOR_CREATOR> & monitor_factory::creators_by_string()
+  {
+    static map<string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
+
+    return creator_by_string_map;
+  }
+
+  monitor * monitor_factory::create_monitor(const string & name,
+                                            vector<string> paths,
+                                            FSW_EVENT_CALLBACK * callback,
+                                            void * context)
+  {
+    auto i = creators_by_string().find(name);
+
+    if (i == creators_by_string().end())
       return nullptr;
     else
-      return monitor::create_monitor(i->second, paths, callback, context);
+      return i->second(paths, callback, context);
   }
 
-  bool monitor_factory::exists_type(const std::string& name)
+  bool monitor_factory::exists_type(const string & name)
   {
-    auto i = type_by_string().find(name);
+    auto i = creators_by_string().find(name);
 
-    return (i != type_by_string().end());
+    return (i != creators_by_string().end());
   }
 
-  void monitor_factory::register_type(const std::string& name, fsw_monitor_type type)
+  void monitor_factory::register_creator(const string & name,
+                                         FSW_FN_MONITOR_CREATOR creator)
   {
-    type_by_string()[name] = type;
+    creators_by_string()[name] = creator;
   }
 
   vector<string> monitor_factory::get_types()
   {
     vector<string> types;
 
-    for (auto & i : type_by_string())
+    for (auto & i : creators_by_string())
     {
       types.push_back(i.first);
     }
 
     return types;
-  }
-
-  monitor_registrant::monitor_registrant(const std::string & name, fsw_monitor_type type)
-  {
-    monitor_factory::register_type(name, type);
   }
 }

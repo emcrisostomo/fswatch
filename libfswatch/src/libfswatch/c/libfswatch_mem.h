@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,32 +13,21 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW__CMONITOR_H
-#  define FSW__CMONITOR_H
+#ifndef LIBFSWATCH_MEM_H
+#  define	LIBFSWATCH_MEM_H
+#include <cstddef>
 
-#  include <ctime>
-
-#  ifdef __cplusplus
+#  ifdef	__cplusplus
 extern "C"
 {
 #  endif
 
-  /*
-   * This enumeration lists all the available monitors, where the special
-   * system_default_monitor_type element refers to the (platform-specific)
-   * default monitor.
-   */
-  enum fsw_monitor_type
-  {
-    system_default_monitor_type = 0,
-    fsevents_monitor_type,
-    kqueue_monitor_type,
-    inotify_monitor_type,
-    poll_monitor_type
-  };
+  void * fsw_alloc(size_t size);
+  void fsw_free(void * ptr);
 
-#  ifdef __cplusplus
+#  ifdef	__cplusplus
 }
 #  endif
 
-#endif  /* FSW__CMONITOR_H */
+#endif	/* LIBFSWATCH_MEM_H */
+

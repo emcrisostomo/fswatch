@@ -1,18 +1,17 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
@@ -37,7 +36,6 @@ using namespace std;
 
 namespace fsw
 {
-
   struct inotify_monitor_impl
   {
     int inotify_monitor_handle = -1;
@@ -55,7 +53,7 @@ namespace fsw
      * descriptors a cache maintaining a relationship between a watch
      * descriptor and the path used to get it is required to be able to map an
      * event to the path it refers to.  From man inotify:
-     * 
+     *
      *   The inotify API identifies events via watch descriptors.  It is the
      *   application's responsibility to cache a mapping (if one is needed)
      *   between watch descriptors and pathnames.  Be aware that directory
@@ -175,7 +173,7 @@ namespace fsw
     }
   }
 
-  bool inotify_monitor::is_watched(const string & path)
+  bool inotify_monitor::is_watched(const string & path) const
   {
     return (impl->path_to_wd.find(path) != impl->path_to_wd.end());
   }
@@ -264,7 +262,7 @@ namespace fsw
      * the same filesystem and keeps watching it.  Since its path has changed,
      * we remove the watch so that recreation is attempted at the next
      * iteration.
-     * 
+     *
      * Beware that a race condition exists which may result in events go
      * unnoticed when a watched file x is removed and a new file named x is
      * created thereafter.  In this case, fswatch could be blocked on ::read
@@ -311,24 +309,11 @@ namespace fsw
     preprocess_node_event(event);
   }
 
-  void inotify_monitor::notify_events()
-  {
-    if (impl->events.size())
-    {
-      ostringstream log;
-      log << _("Notifying events #: ") << impl->events.size() << "\n";
-      libfsw_log(log.str().c_str());
-
-      callback(impl->events, context);
-      impl->events.clear();
-    }
-  }
-
   void inotify_monitor::remove_watch(int wd)
   {
     /*
      * No need to remove the inotify watch because it is removed automatically
-     * when a watched element is deleted. 
+     * when a watched element is deleted.
      */
     impl->wd_to_path.erase(wd);
   }
@@ -447,7 +432,13 @@ namespace fsw
         p += (sizeof (struct inotify_event)) + event->len;
       }
 
-      notify_events();
+      if (impl->events.size())
+      {
+        notify_events(impl->events);
+
+        impl->events.clear();
+      }
+
       ::sleep(latency);
     }
   }
