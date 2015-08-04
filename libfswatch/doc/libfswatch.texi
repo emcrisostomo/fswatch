@@ -75,7 +75,7 @@ Free Documentation License'.
 * Index of Functions::
 * Index of Data Types::
 * Index of Programs::
-* Index::
+* General Index::
 @end menu
 
 @node History
@@ -1563,7 +1563,7 @@ following index.
 
 @printindex pg
 
-@node Index
+@node General Index
 @unnumbered Index
 @printindex cp
 
