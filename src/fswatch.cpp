@@ -351,7 +351,7 @@ static void print_event_flags(const event & evt)
   }
   else
   {
-    for (int i = 0; i < flags.size(); ++i)
+    for (size_t i = 0; i < flags.size(); ++i)
     {
       cout << flags[i];
 
@@ -722,7 +722,7 @@ static int printf_event(const string & fmt,
    * %p - event path
    * %f - event flags (event separator will be formatted with a separate option)
    */
-  for (auto i = 0; i < format.length(); ++i)
+  for (size_t i = 0; i < format.length(); ++i)
   {
     // If the character does not start a format directive, copy it as it is.
     if (format[i] != '%')
