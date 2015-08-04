@@ -13,31 +13,21 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CONFIG_H
-#  include "libfswatch_config.h"
-#endif
+#ifndef LIBFSWATCH_MEM_H
+#  define	LIBFSWATCH_MEM_H
+#include <cstddef>
 
-#include "libfswatch_mem.h"
-#include "cevent.h"
-#include "../c++/event.h"
-#include <cstring>
-
-using namespace std;
-using namespace fsw;
-
-fsw_event_flag fsw_get_event_flag_by_name(const char * name)
+#  ifdef	__cplusplus
+extern "C"
 {
-  return event::get_event_flag_by_name(name);
-}
+#  endif
 
-char * fsw_get_event_flag_name(const fsw_event_flag flag)
-{
-  string name = event::get_event_flag_name(flag);
-  char * cstr = static_cast<char *>(fsw_alloc(name.size() + 1));
-  
-  if (cstr == nullptr) return nullptr;
-  
-  strcpy(cstr, name.c_str());
-  
-  return cstr;
+  void * fsw_alloc(size_t size);
+  void fsw_free(void * ptr);
+
+#  ifdef	__cplusplus
 }
+#  endif
+
+#endif	/* LIBFSWATCH_MEM_H */
+

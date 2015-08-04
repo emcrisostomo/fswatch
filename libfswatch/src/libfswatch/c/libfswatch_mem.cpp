@@ -16,28 +16,16 @@
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
 #endif
-
 #include "libfswatch_mem.h"
-#include "cevent.h"
-#include "../c++/event.h"
-#include <cstring>
+#include <cstdlib>
 
-using namespace std;
-using namespace fsw;
-
-fsw_event_flag fsw_get_event_flag_by_name(const char * name)
+void * fsw_alloc(size_t size)
 {
-  return event::get_event_flag_by_name(name);
+  return ::malloc(size);
 }
 
-char * fsw_get_event_flag_name(const fsw_event_flag flag)
+void fsw_free(void * ptr)
 {
-  string name = event::get_event_flag_name(flag);
-  char * cstr = static_cast<char *>(fsw_alloc(name.size() + 1));
-  
-  if (cstr == nullptr) return nullptr;
-  
-  strcpy(cstr, name.c_str());
-  
-  return cstr;
+  ::free(ptr);
 }
+

@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2014, Enrico M. Crisostomo
+/*
+ * Copyright (C) 2014-2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,4 +31,3 @@ extern "C"
 #  endif
 
 #endif  /* FSW_GETTEXT_DEFS_H */
-
