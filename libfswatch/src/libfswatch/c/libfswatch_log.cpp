@@ -16,6 +16,7 @@
 #include "libfswatch.h"
 #include "libfswatch_log.h"
 #include <iostream>
+#include <cstdio>
 
 using namespace std;
 

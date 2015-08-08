@@ -26,7 +26,6 @@ AC_CONFIG_SRCDIR([src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile po/Makefile.in])
-AC_CONFIG_FILES([scripts/fswatch-run-bash scripts/fswatch-run-zsh])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -59,31 +58,6 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.19.4])
 
 # Checks for programs.
-AC_PROG_LN_S
-AC_PATH_PROG([ZSH_PROG], [zsh], [no])
-AC_PATH_PROG([BASH_PROG], [bash], [no])
-
-if test "x${ZSH_PROG}" = "xno" && test "x${BASH_PROG}" = "xno" ; then
-  AC_MSG_WARN([Either ZSH or the Bash shell is required by fswatch-run.])
-fi
-
-AM_CONDITIONAL([HAVE_ZSH], [test "x${ZSH_PROG}" != "xno"])
-AM_CONDITIONAL([HAVE_BASH], [test "x${BASH_PROG}" != "xno"])
-
-if test "x${ZSH_PROG}" = "xno" ; then
-  ZSH_PATH=/bin/zsh
-else
-  ZSH_PATH=$ZSH_PROG
-fi
-
-if test "x${BASH_PROG}" = "xno" ; then
-  BASH_PATH=/bin/bash
-else
-  BASH_PATH=$BASH_PROG
-fi
-
-AC_SUBST([ZSH_PATH])
-AC_SUBST([BASH_PATH])
 
 # Configure C++ compiler
 AX_CXX_COMPILE_STDCXX_11(noext)
