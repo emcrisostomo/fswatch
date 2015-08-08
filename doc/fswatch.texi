@@ -82,6 +82,32 @@ Free Documentation License'.
 
 @node History
 @chapter History
+@section 1.5.1
+The changes introduced in @code{fswatch} 1.5.1 are the following:
+
+@itemize
+@item
+@file{fswatch-run} scripts have been removed.
+
+@item
+As a consequence of the @file{fswatch-run} removal, dependency on at
+least one supported shell (Zsh and Bash) have been removed from the
+currently supported ports:
+
+@itemize
+@item
+Macports.
+
+@item
+Homebrew.
+
+@item
+FreeBSD.
+
+@end itemize
+
+@end itemize
+
 @section 1.5.0
 The changes introduced in @code{fswatch} 1.5.0 are the following:
 
