@@ -28,9 +28,34 @@
 
         <h2>Getting fswatch</h2>
 
-        <p>A regular user may be able to fetch <code>fswatch</code> from the package manager of your
-          OS or a third-party one.  If you are looking for <code>fswatch</code> for OS X, you can
-          install it using either <a href="https://www.macports.org">MacPorts</a> or <a href="http://brew.sh">Homebrew</a>:</p>
+        <p>I currently maintain <code>fswatch</code> ports for OS X and FreeBSD.
+        If you are using another platform you have to
+        compile <code>fswatch</code> yourself.</p>
+
+        <h3>FreeBSD</h3>
+
+        <p>I'm maintaining a port for <code>fswatch</code> on
+        a <a href="https://github.com/emcrisostomo/FreeBSD-Ports">repository of
+        mine</a>
+        and <a href="https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=200552">I'm
+        waiting for it to be integrated into the official FreeBSD ports
+        collection</a>.  Meanwhile, you can get the port from my repository and
+        build it on your system:</p>
+
+        <pre><code># FreeBSD port
+$ sudo make stage
+$ sudo make check-orphans
+$ sudo make package
+$ sudo make package
+$ sudo pkg add [package-name]</code></pre>
+
+        <p>The FreeBSD port is tested on FreeBSD production releases.</p>
+        
+        <h3>Apple OS X</h3>
+
+        <p>Pre-built binaries can be obtained from
+          either <a href="https://www.macports.org">MacPorts</a>
+          or <a href="http://brew.sh">Homebrew</a>.</p>
 
         <pre><code># MacPorts
 $ port install fswatch
@@ -38,23 +63,30 @@ $ port install fswatch
 # Homebrew
 $ brew install fswatch</code></pre>
 
-        <p>Check your favourite package manager and let us know if <code>fswatch</code> is missing
-          there.</p>
+        <h3>Building fswatch</h3>
 
-        <p>A user who whishes to build <code>fswatch</code> should get a <a href="https://github.com/emcrisostomo/fswatch/releases">release tarball</a>.
-          A release tarball contains everything a user needs to build <code>fswatch</code> on his
-          system, following the instructions detailed in the Installation section below
-          and the <code>INSTALL</code> file.</p>
+        <p>If <code>fswatch</code> is not available on your favourite package
+        manager,
+        please <a href="https://github.com/emcrisostomo/fswatch/issues/new">let
+        us know</a>.</p>
 
-        <p>A developer who wishes to modify <code>fswatch</code> should get the sources (either from a
-          source tarball or cloning the repository) and have the GNU Build System
-          installed on his machine.  Please read <code>README.gnu-build-system</code> to get further
-          details about how to bootstrap <code>fswatch</code> from sources on your machine.</p>
+        <p>In the meantime, you can build <code>fswatch</code> yourself. If you
+          whishes to do so, you should get
+          a <a href="https://github.com/emcrisostomo/fswatch/releases">release
+          tarball</a>.  A release tarball contains everything a user needs to
+          build <code>fswatch</code> on his system, following the instructions
+          detailed in the <code>INSTALL</code> file.</p>
 
-        <p>Getting a copy of the source repository is not recommended unless you are a
-          developer, you have the GNU Build System installed on your machine, and you know
-          how to bootstrap it on the sources.</p>
+        <p>A developer who wishes to modify <code>fswatch</code> should get the
+          sources (either from a source tarball or cloning the repository) and
+          have the GNU Build System installed on his machine.  Please
+          read <code>README.gnu-build-system</code> to get further details about
+          how to bootstrap <code>fswatch</code> from sources on your
+          machine.</p>
 
+        <p>Getting a copy of the source repository is not recommended unless you
+          are a developer, you have the GNU Build System installed on your
+          machine, and you know how to bootstrap it on the sources.</p>
       </section>
     </div>
 
