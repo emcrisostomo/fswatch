@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 1.5.1:
+
+  * fswatch-run scripts have been removed.
+  * Dependency on at least one supported shell (Zsh or Bash) has been removed.
+
 New in 1.5.0:
 
   * Fix issue 46: Allow filtering by event type.

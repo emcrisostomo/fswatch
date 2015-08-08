@@ -27,30 +27,6 @@ dist_doc_DATA  = README.bsd README.codestyle README.freebsd
 dist_doc_DATA += README.gnu-build-system README.md README.linux README.osx
 dist_doc_DATA += ABOUT-NLS AUTHORS COPYING LICENSE NEWS
 
-dist_bin_SCRIPTS =
-if HAVE_ZSH
-  dist_bin_SCRIPTS += scripts/fswatch-run-zsh
-endif
-if HAVE_BASH
-  dist_bin_SCRIPTS += scripts/fswatch-run-bash
-endif
-
-install-exec-hook: fswatch-remove-links
-if HAVE_ZSH
-	$(LN_S) $(bindir)/fswatch-run-zsh $(DESTDIR)$(bindir)/fswatch-run
-else
-if HAVE_BASH
-	$(LN_S) $(bindir)/fswatch-run-bash $(DESTDIR)$(bindir)/fswatch-run
-else
-	@echo "No compatible shell was found for fswatch-run."
-endif
-endif
-
-uninstall-local: fswatch-remove-links
-
-fswatch-remove-links:
-	-rm $(DESTDIR)$(bindir)/fswatch-run
-
 dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
 	chmod u+w $(distdir)/ChangeLog

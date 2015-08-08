@@ -18,6 +18,7 @@
 #include "c/libfswatch_log.h"
 #include <dirent.h>
 #include <cstdlib>
+#include <cstdio>
 #include <errno.h>
 #include <iostream>
 
