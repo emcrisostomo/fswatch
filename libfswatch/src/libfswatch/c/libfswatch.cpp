@@ -24,7 +24,7 @@
 #  include <atomic>
 #endif
 #include <ctime>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cstring>
 #include <memory>
 #include "libfswatch.h"
