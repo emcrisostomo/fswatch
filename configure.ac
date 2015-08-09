@@ -26,6 +26,7 @@ AC_CONFIG_SRCDIR([src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile po/Makefile.in])
+AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -66,7 +67,6 @@ AX_CXXFLAGS_WARN_ALL
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h])
 AC_CHECK_HEADERS([getopt.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -77,7 +77,6 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([atexit], [], AC_MSG_ERROR([The atexit function cannot be found.]))
 AC_CHECK_FUNCS([getopt_long])
 AC_CHECK_FUNCS([realpath], [], AC_MSG_ERROR([The realpath function cannot be found.]))
-AC_CHECK_FUNCS([regcomp])
 
 # Variables used in man files
 MAN_DATE=$(date +'%B %d, %Y')
@@ -86,15 +85,5 @@ MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
 AC_SUBST([MAN_DATE])
 AC_SUBST([FSWATCH])
 AC_SUBST([MAN_BUG_REPORT])
-
-# Variables used in gettext management scripts
-PO_BUG_REPORT=${PACKAGE_BUGREPORT}
-PO_PACKAGE_NAME=${PACKAGE_NAME}
-PO_PACKAGE_VERSION=${PACKAGE_VERSION}
-AC_SUBST([PO_BUG_REPORT])
-AC_SUBST([PO_PACKAGE_NAME])
-AC_SUBST([PO_PACKAGE_VERSION])
-
-AC_CONFIG_FILES([man/fswatch.7])
 
 AC_OUTPUT
