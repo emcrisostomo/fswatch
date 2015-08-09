@@ -18,10 +18,8 @@ basically means that:
 
   * If you are fixing a bug, you can create a *hotfix* branch from the affected
   release (preferably, the latest one) and send a pull request from that branch.
-
   * If you are creating a new feature, please checkout the `develop` branch and
   send a pull request from there.
-
   * I won't consider pull request coming from the `master` branch and if I do, I
     won't be quick.
 
