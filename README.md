@@ -30,6 +30,7 @@ Table of Contents
   * [Documentation](#documentation)
   * [Localization](#localization)
   * [Usage](#usage)
+  * [Contributing](#contributing)
   * [Bug Reports](#bug-reports)
 
 Features
@@ -232,6 +233,14 @@ a different monitor, the `-m` option can be used to specify the monitor by name:
 The list of available monitors can be obtained with the `-h` option.
 
 For more information, refer to the `fswatch` documentation.
+
+Contributing
+------------
+
+Everybody is welcome to contribute to `fswatch`.  Please, see
+[`CONTRIBUTING`][contrib] for further information.
+
+[contrib]: CONTRIBUTING.md
 
 Bug Reports
 -----------

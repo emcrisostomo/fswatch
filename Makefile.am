@@ -25,7 +25,7 @@ SUBDIRS = libfswatch src po doc
 dist_man_MANS = man/fswatch.7
 dist_doc_DATA  = README.bsd README.codestyle README.freebsd
 dist_doc_DATA += README.gnu-build-system README.md README.linux README.osx
-dist_doc_DATA += ABOUT-NLS AUTHORS COPYING LICENSE NEWS
+dist_doc_DATA += ABOUT-NLS AUTHORS CONTRIBUTING.md COPYING LICENSE NEWS
 
 dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
