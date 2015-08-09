@@ -5,6 +5,7 @@ New in 1.5.1:
 
   * fswatch-run scripts have been removed.
   * Dependency on at least one supported shell (Zsh or Bash) has been removed.
+  * Fixes Issue 91: Can't compile fswatch 1.5.0 on FreeBSD 9.3-RELEASE.
 
 New in 1.5.0:
 
@@ -87,21 +88,25 @@ New in 1.4.0:
 
 New in 1.3.9:
 
+  * Fix Issue 23: Add `--include [regex]` option.
+  * Fix Issue 25: Add `--include [regex]` option.
   * Paths can be included using -i/--include and providing a set of regular
     expressions.
 
 New in 1.3.8:
 
-  * Diagnostic messages were output by the inotify monitor even if fswatch was
-    not run in verbose mode.
+  * Fix Issue 34: Diagnostic messages were output by the inotify monitor even if
+    fswatch was not run in verbose mode.
 
 New in 1.3.7:
 
+  * Fix Issue 32: Problems building fswatch 1.3.6 on Mac v10.8.5
   * Remove usages of C++11 initializer lists so that fswatch builds with older
     compiler.
 
 New in 1.3.6:
 
+  * Fix Issue 26: fswatch-run can't run a command with arguments.
   * fswatch-run scripts are provided for ZSH and Bash.
   * System is scanned during installation to check for ZSH and Bash
     availability.  Path of found shells is substituted in the corresponding
@@ -114,6 +119,8 @@ New in 1.3.6:
 
 New in 1.3.5:
 
+  * Fix Issue 27: Redirect usage text to standard error unless `-h` or
+    `--help`.
   * Fix bug to write usage to standard error when invalid arguments are
     specified.
 
