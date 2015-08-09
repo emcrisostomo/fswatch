@@ -12,7 +12,7 @@ The easiest ways to contribute to `fswatch` are:
 Git Flow
 --------
 
-I chose to use the [Git flow branching model](flow) for `fswatch`, so you are
+I chose to use the [Git flow branching model][flow] for `fswatch`, so you are
 kindly required to follow the same model when making your contributions.  That
 basically means that:
 
