@@ -47,6 +47,7 @@ typedef struct FSW_SESSION
   bool recursive;
   bool follow_symlinks;
   vector<monitor_filter> filters;
+  vector<fsw_event_type_filter> event_type_filters;
   void * data;
 #ifdef HAVE_CXX_MUTEX
   atomic<bool> running;
@@ -70,7 +71,7 @@ static fsw_hash_map<FSW_HANDLE, mutex *> session_mutexes;
 static std::mutex session_mutex;
 #endif
 
-static FSW_THREAD_LOCAL unsigned int last_error;
+static FSW_THREAD_LOCAL FSW_STATUS last_error;
 
 // Default library callback.
 static FSW_EVENT_CALLBACK libfsw_cpp_callback_proxy;
@@ -244,7 +245,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_add_path(const FSW_HANDLE handle, const char * path)
+FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path)
 {
   if (!path)
     return fsw_set_last_error(int(FSW_ERR_INVALID_PATH));
@@ -266,7 +267,7 @@ int fsw_add_path(const FSW_HANDLE handle, const char * path)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
+FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
 {
   if (!callback)
     return fsw_set_last_error(int(FSW_ERR_INVALID_CALLBACK));
@@ -289,7 +290,7 @@ int fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_latency(const FSW_HANDLE handle, const double latency)
+FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency)
 {
   if (latency < 0)
     return fsw_set_last_error(int(FSW_ERR_INVALID_LATENCY));
@@ -311,7 +312,7 @@ int fsw_set_latency(const FSW_HANDLE handle, const double latency)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
+FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
 {
   try
   {
@@ -330,7 +331,7 @@ int fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_set_follow_symlinks(const FSW_HANDLE handle,
+FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
                             const bool follow_symlinks)
 {
   try
@@ -350,7 +351,27 @@ int fsw_set_follow_symlinks(const FSW_HANDLE handle,
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_add_filter(const FSW_HANDLE handle,
+FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
+                                     const fsw_event_type_filter event_type)
+{
+  try
+  {
+#ifdef HAVE_CXX_MUTEX
+    std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
+    FSW_SESSION * session = get_session(handle);
+
+    session->event_type_filters.push_back(event_type);
+  }
+  catch (int error)
+  {
+    return fsw_set_last_error(error);
+  }
+
+  return fsw_set_last_error(FSW_OK);
+}
+
+FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
                    const fsw_cmonitor_filter filter)
 {
   try
@@ -394,7 +415,7 @@ public:
 };
 #endif
 
-int fsw_start_monitor(const FSW_HANDLE handle)
+FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
 {
   try
   {
@@ -424,6 +445,7 @@ int fsw_start_monitor(const FSW_HANDLE handle)
       create_monitor(handle, session->type);
 
     session->monitor->set_filters(session->filters);
+    session->monitor->set_event_type_filters(session->event_type_filters);
     session->monitor->set_follow_symlinks(session->follow_symlinks);
     if (session->latency) session->monitor->set_latency(session->latency);
     session->monitor->set_recursive(session->recursive);
@@ -443,7 +465,7 @@ int fsw_start_monitor(const FSW_HANDLE handle)
   return fsw_set_last_error(FSW_OK);
 }
 
-int fsw_destroy_session(const FSW_HANDLE handle)
+FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
 {
   int ret = FSW_OK;
 
@@ -502,14 +524,14 @@ FSW_SESSION * get_session(const FSW_HANDLE handle)
 #endif
 }
 
-int fsw_set_last_error(const int error)
+FSW_STATUS fsw_set_last_error(const FSW_STATUS error)
 {
   last_error = error;
 
   return last_error;
 }
 
-int fsw_last_error()
+FSW_STATUS fsw_last_error()
 {
   return last_error;
 }

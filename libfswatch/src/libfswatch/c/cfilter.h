@@ -15,6 +15,7 @@
  */
 #ifndef FSW__CFILTER_H
 #  define FSW__CFILTER_H
+#  include "cevent.h"
 
 #  ifdef __cplusplus
 extern "C"
@@ -34,6 +35,11 @@ extern "C"
     bool case_sensitive;
     bool extended;
   } fsw_cmonitor_filter;
+  
+  typedef struct fsw_event_type_filter
+  {
+    fsw_event_flag flag;
+  } fsw_event_type_filter;
 
 #  ifdef __cplusplus
 }

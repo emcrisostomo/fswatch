@@ -29,14 +29,10 @@ hierarchies are modified.
 .Pp
 This man page is kept for reference but it is not to be considered an
 authoritative or complete source of information.  Please, consult the official
-TeXinfo documentation shipped with @FSWATCH@.
+Info documentation shipped with
+.Nm .
 .Sh SYNOPSIS
-.Nm @FSWATCH@
-.Op Fl 01EhILMmnortuvx
-.Op Fl e Ar regexp
-.Op Fl f Ar format-time
-.Op Fl i Ar regexp
-.Op Fl l Ar latency
+.Nm @FSWATCH@ (option)* path+
 .Sh DESCRIPTION
 The
 .Nm
@@ -93,6 +89,12 @@ Exit fswatch after the first set of events is received.
 Print a marker at the end of every batch.  An optional marker
 .Ar marker
 can be specified to override its default value `NoOp'.
+.It Fl -event Ar name
+Filter event with the specified
+.Ar name .
+This option can be used multiple times, one for each event
+.Ar name
+that must be included in the output.
 .It Fl e, -exclude Ar regexp
 Exclude paths matching
 .Ar regexp .
@@ -332,32 +334,6 @@ if option
 .Fl I
 is specified.
 .El
-.Sh EVENT TYPES
-The event types currently supported and the corresponding record symbols are:
-.Bl -tag -width indent
-.It -
-kFSEventStreamEventFlagItemCreated, "created".
-.It -
-kFSEventStreamEventFlagItemRemoved, "removed".
-.It -
-kFSEventStreamEventFlagItemInodeMetaMod, "inodeMetaMod".
-.It -
-kFSEventStreamEventFlagItemRenamed, "renamed".
-.It -
-kFSEventStreamEventFlagItemModified, "modified".
-.It -
-kFSEventStreamEventFlagItemFinderInfoMod, "finderInfoMod".
-.It -
-kFSEventStreamEventFlagItemChangeOwner, "changeOwner".
-.It -
-kFSEventStreamEventFlagItemXattrMod, "xattrMod".
-.It -
-kFSEventStreamEventFlagItemIsFile, "isFile".
-.It -
-kFSEventStreamEventFlagItemIsDir, "isDir".
-.It -
-kFSEventStreamEventFlagItemIsSymlink, "isSymLink".
-.El
 .Sh EXAMPLES
 .Ss Basic Usage
 .Nm
@@ -571,6 +547,7 @@ may exit with one of the following exit statuses:
 .Dl FSW_ERR_STALE_MONITOR_THREAD      (1 << 14)
 .Dl FSW_ERR_THREAD_FAULT              (1 << 15)
 .Dl FSW_ERR_UNSUPPORTED_OPERATION     (1 << 16)
+.Dl FSW_ERR_UNKNOWN_VALUE             (1 << 17)
 .Sh DIAGNOSTICS
 .Nm
 exits 0 on success, and >0 if an error occurs.

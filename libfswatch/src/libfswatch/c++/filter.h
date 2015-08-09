@@ -19,12 +19,15 @@
 #  include <string>
 #  include "../c/cfilter.h"
 
-typedef struct monitor_filter
+namespace fsw
 {
-  std::string text;
-  fsw_filter_type type;
-  bool case_sensitive;
-  bool extended;
-} monitor_filter;
+  typedef struct monitor_filter
+  {
+    std::string text;
+    fsw_filter_type type;
+    bool case_sensitive;
+    bool extended;
+  } monitor_filter;
+}
 
 #endif  /* FSW__FILTER_H */

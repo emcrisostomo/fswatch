@@ -38,7 +38,6 @@ using namespace std;
 
 namespace fsw
 {
-
   struct kqueue_monitor_load
   {
     fsw_hash_map<std::string, int> descriptors_by_file_name;
@@ -336,18 +335,15 @@ namespace fsw
       // received with a non empty filter flag.
       if (e.fflags)
       {
-        if (accept_path(load->file_names_by_descriptor[e.ident]))
-        {
-          events.push_back({load->file_names_by_descriptor[e.ident],
-                           curr_time,
-                           decode_flags(e.fflags)});
-        }
+        events.push_back({load->file_names_by_descriptor[e.ident],
+                         curr_time,
+                         decode_flags(e.fflags)});
       }
     }
 
     if (events.size())
     {
-      callback(events, context);
+      notify_events(events);
     }
   }
 

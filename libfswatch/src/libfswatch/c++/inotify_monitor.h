@@ -44,7 +44,6 @@ namespace fsw
 
     void scan_root_paths();
     bool is_watched(const std::string & path) const;
-    void notify_events();
     void preprocess_dir_event(struct inotify_event * event);
     void preprocess_event(struct inotify_event * event);
     void preprocess_node_event(struct inotify_event * event);

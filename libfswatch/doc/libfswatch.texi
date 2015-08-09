@@ -3,8 +3,8 @@
 @c %**start of header
 @setfilename libfswatch.info
 
-@c Automake automatically updates version.texi to @set VERSION and @set UPDATED
-@c to appropriate values.
+@c Automake automatically updates version.texi to @set VERSION
+@c and @set UPDATED to appropriate values.
 @include version.texi
 
 @settitle libfswatch @value{VERSION}
@@ -19,19 +19,21 @@
 @c %**end of header
 
 @copying
-This manual is for @file{libfswatch} (version @value{VERSION}, @value{UPDATED}),
-a cross-platform file change monitor C/C++ library with multiple backends,
-including Apple OS X File System Events @acronym{API}, *BSD kqueue, Linux
-inotify and a @code{stat}-based backend.
+This manual is for @file{libfswatch} (version @value{VERSION},
+@value{UPDATED}), a cross-platform file change monitor C/C++ library
+with multiple backends, including Apple OS X File System Events
+@acronym{API}, *BSD kqueue, Linux inotify and a @code{stat}-based
+backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
 @quotation
-Permission is granted to copy, distribute and/or modify this document under the
-terms of the GNU Free Documentation License, Version 1.3 or any later version
-published by the Free Software Foundation; with no Invariant Sections, with no
-Front-Cover Texts, and with no Back-Cover Texts.  A copy of the license is
-included in the section entitled `GNU Free Documentation License'.
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'.
 @end quotation
 @end copying
 
@@ -45,8 +47,8 @@ included in the section entitled `GNU Free Documentation License'.
 
 @author Enrico M. Crisostomo
 
-@c Include the Distribution inside the titlepage so that headings are turned
-@c off.
+@c Include the Distribution inside the titlepage so that headings are
+@c turned off.
 
 @page
 @vskip 0pt plus 1filll
@@ -65,6 +67,7 @@ included in the section entitled `GNU Free Documentation License'.
 @end ifnottex
 
 @menu
+* History::
 * Introduction::
 * The C++ API::
 * The C API::
@@ -72,15 +75,99 @@ included in the section entitled `GNU Free Documentation License'.
 * Index of Functions::
 * Index of Data Types::
 * Index of Programs::
-* Index::
-
+* General Index::
 @end menu
+
+@node History
+@chapter History
+@section 3:0:0
+@subsection Feature Changes
+The changes introduced in @code{3:0:0} are the following:
+@itemize
+@item
+@cpindex filter, by event type
+The possibility of filtering events by @emph{event type} was added.
+
+@item
+All the monitors were refactored and the callback invocation logic was
+moved to the base @code{monitor} class.
+
+@item
+All the monitors were refactored and the filtering logic (both by path
+and event type) was moved to the base @code{monitor} class.
+@end itemize
+
+@subsection Interface Changes
+The interface changes introduced in @code{3:0:0} are the following:
+@itemize
+@item
+@tpindex @code{fsw_event_type_filter}
+Added the @code{fsw_event_type_filter} structure to represent a event
+type filter.
+
+@item
+@fnindex @code{FSW_ERR_UNKNOWN_VALUE}
+Added the @code{FSW_ERR_UNKNOWN_VALUE} exit code.
+@end itemize
+
+@subsection C++ Interface Changes
+@itemize
+@item
+@fnindex @code{monitor::add_event_type_filter}
+Added the @code{monitor::add_event_type_filter} method to add an event
+type filter.
+
+@item
+@fnindex @code{monitor::set_event_type_filters}
+Added the @code{monitor::set_event_type_filters} method to set the
+event type filters.
+
+@item
+@fnindex @code{monitor::notify_events}
+Added the @code{monitor::notify_events} method to centralize event
+filtering and dispatching into the base monitor class.
+
+@item
+@fnindex @code{event::get_event_flag_by_name}
+Added the @code{event::get_event_flag_by_name} method to lookup an
+event type by name.
+
+@item
+@fnindex @code{event::get_event}
+Added the @code{event::get_event_flag_name} method to get the name of
+an event type.
+
+@item
+@fnindex @code{ostream& operator<<(ostream& out, const fsw_event_flag flag)}
+Added the overloaded @code{ostream& operator<<(ostream& out, const
+fsw_event_flag flag)} operator to simplify printing the name of an
+event type on a stream.
+
+@end itemize
+
+@subsection C Interface Changes
+@itemize
+@item
+@fnindex @code{fsw_add_event_type_filter}
+Added the @code{fsw_add_event_type_filter} function to add an event
+type filter.
+
+@item
+@fnindex @code{fsw_get_event_flag_by_name}
+Added the @code{fsw_get_event_flag_by_name} function to lookup an
+event type by name.
+
+@item
+@fnindex @code{fsw_get_event_flag_name}
+Added the @code{fsw_get_event_flag_name} function to get the name of
+an event type.
+@end itemize
 
 @node Introduction
 @chapter Introduction
 @pgindex @command{fswatch}
-@command{fswatch} is a cross-platform file change monitor currently supporting
-the following backends:
+@command{fswatch} is a cross-platform file change monitor currently
+supporting the following backends:
 
 @itemize
 @item
@@ -95,69 +182,76 @@ A monitor based on the @emph{FSEvents} @acronym{API} of Apple OS X.
 @cpindex BSD
 @cpindex FreeBSD
 @cpindex Apple OS X
-A monitor based on @emph{kqueue}, an event notification interface introduced in
-FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+A monitor based on @emph{kqueue}, an event notification interface
+introduced in FreeBSD 4.1 and supported on most *BSD systems
+(including OS X).
 
 @item
 @cpindex inotify monitor
 @cpindex inotify
 @cpindex Linux
-A monitor based on @emph{inotify}, a Linux kernel subsystem that reports file
-system changes to applications.
+A monitor based on @emph{inotify}, a Linux kernel subsystem that
+reports file system changes to applications.
 
 @item
 @cpindex poll monitor
-A monitor which periodically stats the file system, saves file modification
-times in memory and manually calculates file system changes, which can work on
-any operating system where @code{stat} can be used.
+A monitor which periodically stats the file system, saves file
+modification times in memory and manually calculates file system
+changes, which can work on any operating system where @code{stat} can
+be used.
 @end itemize
 
 @cpindex @file{libfswatch}
 @cpindex @command{fswatch}
-The first releases of @command{fswatch} were monolithic, self-contained binaries
-whose output was typically piped to other applications for processing.  Given
-the nature of the features provided by @command{fswatch}, however, we recognized
-the need to expose this functionality through a library and the
-@file{libfswatch} package was born.  @command{fswatch} is now built upon it and
-all its functionality is provided by the @file{libfswatch} library, with the
-exception perhaps of some formatting routines printing results to the standard
-output.
+The first releases of @command{fswatch} were monolithic,
+self-contained binaries whose output was typically piped to other
+applications for processing.  Given the nature of the features
+provided by @command{fswatch}, however, we recognized the need to
+expose this functionality through a library and the @file{libfswatch}
+package was born.  @command{fswatch} is now built upon it and all its
+functionality is provided by the @file{libfswatch} library, with the
+exception perhaps of some formatting routines printing results to the
+standard output.
 
 The biggest issue we have faced while developing @command{fswatch} was
-abstracting the behaviour of different backends behind a common interface and
-@file{libfswatch} is the result of that effort.  Instead of using different
-@acronym{API}s, a programmer can use just one: @file{libfswatch}'s.  The
-advantages of using @code{libfswatch} are many:
+abstracting the behaviour of different backends behind a common
+interface and @file{libfswatch} is the result of that effort.  Instead
+of using different @acronym{API}s, a programmer can use just one:
+@file{libfswatch}'s.  The advantages of using @code{libfswatch} are
+many:
 
 @itemize
 @item
-Portability: @code{libfswatch} supports many backends, effectively giving
-support to a great number of operating systems, including Linux and *BSD Unix.
+Portability: @code{libfswatch} supports many backends, effectively
+giving support to a great number of operating systems, including Linux
+and *BSD Unix.
 
 @item
-Ease of use: using @code{libfswatch} should be easier than using any of the
-@acronym{API}s it supports.
+Ease of use: using @code{libfswatch} should be easier than using any
+of the @acronym{API}s it supports.
 @end itemize
 
 @section Available Bindings
-@file{libfswatch} is a C++ library with C bindings which makes it available to a
-wide range of programming languages.  If a programming language has C bindings,
-then @file{libfswatch} can be used from it.  The C binding provides all the
-functionality provided by the C++ implementation and it can be used as a
-fallback solution when the C++ @acronym{API} cannot be used.
+@file{libfswatch} is a C++ library with C bindings which makes it
+available to a wide range of programming languages.  If a programming
+language has C bindings, then @file{libfswatch} can be used from it.
+The C binding provides all the functionality provided by the C++
+implementation and it can be used as a fallback solution when the C++
+@acronym{API} cannot be used.
 
 @section Relation between @command{fswatch} and @file{libfswatch}
-Although @command{fswatch} uses functionality provided by @file{libfswatch} and
-depends on it, @file{libfswatch} is currently a package nested into
-@command{fswatch}.  If either component is updated, the whole package is, as
-well as their version numbers are.  From the @acronym{GNU} Build System point of
-view, the package version of @file{libfswatch} is always kept in sync with
-@command{fswatch}'s.
+Although @command{fswatch} uses functionality provided by
+@file{libfswatch} and depends on it, @file{libfswatch} is currently a
+package nested into @command{fswatch}.  If either component is
+updated, the whole package is, as well as their version numbers are.
+From the @acronym{GNU} Build System point of view, the package version
+of @file{libfswatch} is always kept in sync with @command{fswatch}'s.
 
-The library @acronym{API} version, however, @emph{is not}, and it is the only
-piece of information that should be kept into account when linking against
-@file{libfswatch}.  Since we use @command{libtool} to build @file{libfswatch},
-we adopt @command{libtool}'s versioning scheme for library interface versions.
+The library @acronym{API} version, however, @emph{is not}, and it is
+the only piece of information that should be kept into account when
+linking against @file{libfswatch}.  Since we use @command{libtool} to
+build @file{libfswatch}, we adopt @command{libtool}'s versioning
+scheme for library interface versions.
 
 @section @command{libtool}'s versioning scheme
 @pgindex @command{libtool}
@@ -178,48 +272,52 @@ where:
 
 @itemize
 @item
-@code{current} is the most recent interface number implemented by the library.
+@code{current} is the most recent interface number implemented by the
+library.
 
 @item
 @code{revision} is the implementation number of the current interface.
 
 @item
-@code{age} is the difference between the newest and the oldest interface that
-the library implements.
+@code{age} is the difference between the newest and the oldest
+interface that the library implements.
 @end itemize
 
 @section The C and the C++ @acronym{API}
-The C @acronym{API} is built on top of the C++ @acronym{API} but the two are
-very different and the main difference reflect the differences between the two
-languages.
+The C @acronym{API} is built on top of the C++ @acronym{API} but the
+two are very different and the main difference reflect the differences
+between the two languages.
 
 @cpindex monitor
 @cpindex callback
-The C++ @acronym{API} centres on the concept of @emph{monitor}, a class of
-objects modelling the functionality of the file monitoring @acronym{API}.
-Different monitor types are modelled as different classes inheriting from the
-@code{fsw::monitor} abstract class, that is the type that defines the core
-monitoring @acronym{API}.  @acronym{API} clients can pick the current platform's
-default monitor, or choose a specific implementation amongst the available ones,
-configure it and @emph{run} it.  When running, a monitor gathers file system
-change events and communicates them back to the caller using a @emph{callback}.
+The C++ @acronym{API} centres on the concept of @emph{monitor}, a
+class of objects modelling the functionality of the file monitoring
+@acronym{API}.  Different monitor types are modelled as different
+classes inheriting from the @code{fsw::monitor} abstract class, that
+is the type that defines the core monitoring @acronym{API}.
+@acronym{API} clients can pick the current platform's default monitor,
+or choose a specific implementation amongst the available ones,
+configure it and @emph{run} it.  When running, a monitor gathers file
+system change events and communicates them back to the caller using a
+@emph{callback}.
 
 @cpindex monitoring session
 @cpindex session handle
 The C @acronym{API}, on the other hand, centres on the concept of
-@emph{monitoring session}.  A session internally wraps a monitor instance and
-represents an opaque C bridge to the C++ monitor @acronym{API}.  Sessions are
-identified by a @emph{session handle} and they can be thought as a sort of C
-`fa@,{c}ade' of the C++ monitor class.  In fact there is an evident similarity
-between the C library functions operating on a monitoring session and the
-methods of the @code{monitor} class.
+@emph{monitoring session}.  A session internally wraps a monitor
+instance and represents an opaque C bridge to the C++ monitor
+@acronym{API}.  Sessions are identified by a @emph{session handle} and
+they can be thought as a sort of C `fa@,{c}ade' of the C++ monitor
+class.  In fact there is an evident similarity between the C library
+functions operating on a monitoring session and the methods of the
+@code{monitor} class.
 
 @section Thread Safety
 @cpindex thread safety
-@anchor{Thread Safety} The C++ @acronym{API} does not deal with thread safety
-explicitely.  Rather, it leaves the responsibility of implementing a thread-safe
-use of the library to the callers.  The C++ implementation has been designed in
-order to:
+@anchor{Thread Safety} The C++ @acronym{API} does not deal with thread
+safety explicitely.  Rather, it leaves the responsibility of
+implementing a thread-safe use of the library to the callers.  The C++
+implementation has been designed in order to:
 
 @itemize
 @item
@@ -232,29 +330,33 @@ Perform no concurrent access control in methods or class fields.
 Guarantee that functions and @emph{static} methods are thread safe.
 @end itemize
 
-As a consequence, it is @emph{not} thread-safe to access a monitor's member, be
-it a method or a field, from different threads concurrently.  The easiest way to
-implement thread-safety when using @file{libfswatch}, therefore, is segregating
-access to each monitor instance from a different thread.
+As a consequence, it is @emph{not} thread-safe to access a monitor's
+member, be it a method or a field, from different threads
+concurrently.  The easiest way to implement thread-safety when using
+@file{libfswatch}, therefore, is segregating access to each monitor
+instance from a different thread.
 
-The C @acronym{API}, a layer above the C++ @acronym{API}, has been designed in
-order to provide the same basic guarantee:
+The C @acronym{API}, a layer above the C++ @acronym{API}, has been
+designed in order to provide the same basic guarantee:
 
 @itemize
 @item
-Concurrently manipulating different monitoring sessions is thread safe.
+Concurrently manipulating different monitoring sessions is thread
+safe.
 
 @item
-Concurrently manipulating the same monitoring session is @emph{not} thread safe.
+Concurrently manipulating the same monitoring session is @emph{not}
+thread safe.
 @end itemize
 
 @cpindex C++11
-There is an additional limitation which affects the C library only: the C
-binding implementation internally uses @acronym{C++11} classes and keywords to
-provide the aforementioned guarantees.  If compiler or library support is not
-found when building @file{libfswatch} the library will still build, but those
-guarantees will @emph{not} be honoured.  A warning such as the following will
-appear in @command{configure}'s output to inform the user:
+There is an additional limitation which affects the C library only:
+the C binding implementation internally uses @acronym{C++11} classes
+and keywords to provide the aforementioned guarantees.  If compiler or
+library support is not found when building @file{libfswatch} the
+library will still build, but those guarantees will @emph{not} be
+honoured.  A warning such as the following will appear in
+@command{configure}'s output to inform the user:
 
 @smallexample
 configure: WARNING: libfswatch is not thread-safe because the current
@@ -269,40 +371,43 @@ storage specifier.
 @cpindex GitHub repository
 @cpindex @command{fswatch}, repository
 @cpindex @command{fswatch}, sources
-If you find problems or have suggestions about this program or this manual,
-please report them as new issues in the official GitHub repository of
-@command{fswatch} at @uref{https://github.com/emcrisostomo/fswatch}.  If you
-with you may contact the authors at the addresses listed in the @file{AUTHORS}
+If you find problems or have suggestions about this program or this
+manual, please report them as new issues in the official GitHub
+repository of @command{fswatch} at
+@uref{https://github.com/emcrisostomo/fswatch}.  If you with you may
+contact the authors at the addresses listed in the @file{AUTHORS}
 file.
 
-When reporting a bug, please be sure to include as much detail as possible and
-sufficient information to reproduce it.
+When reporting a bug, please be sure to include as much detail as
+possible and sufficient information to reproduce it.
 
 @node The C++ API
 @chapter The C++ @acronym{API}
-The C++ @acronym{API} provides users an easy to use, object-oriented, common and
-intuitive interface to a wide range of file monitoring @acronym{API}s.  This
-@acronym{API} provides a common facade to a set of heterogeneous @acronym{API}s
-that not only greatly simplifies their usage, but provides an indirection layer
-that makes applications more portable: as far as there is an available monitor
-in another platform, an existing application will @emph{just} work.
+The C++ @acronym{API} provides users an easy to use, object-oriented,
+common and intuitive interface to a wide range of file monitoring
+@acronym{API}s.  This @acronym{API} provides a common facade to a set
+of heterogeneous @acronym{API}s that not only greatly simplifies their
+usage, but provides an indirection layer that makes applications more
+portable: as far as there is an available monitor in another platform,
+an existing application will @emph{just} work.
 
-In reality, a monitor may have platform-specific behaviours that should be taken
-into account when writing portable applications using this library.  This
-differences complicate the task of writing portable applications that are truly
-independent of the file monitoring @acronym{API} they may be using.  However,
-monitors try to `compensate' for any behavioural difference across
-implementations.
+In reality, a monitor may have platform-specific behaviours that
+should be taken into account when writing portable applications using
+this library.  This differences complicate the task of writing
+portable applications that are truly independent of the file
+monitoring @acronym{API} they may be using.  However, monitors try to
+`compensate' for any behavioural difference across implementations.
 
 The typical @acronym{API} usage pattern is similar to the following:
 
 @itemize
 @item
-An instance of a @code{monitor} is either created directly or through the
-factory (@pxref{Monitor Discovery}).
+An instance of a @code{monitor} is either created directly or through
+the factory (@pxref{Monitor Discovery}).
 
 @item
-The monitor is configured according to the user needs (@pxref{Monitors}).
+The monitor is configured according to the user needs
+(@pxref{Monitors}).
 
 @item
 The monitor is @emph{run} and change events are waited for.
@@ -312,14 +417,15 @@ The monitor is @emph{run} and change events are waited for.
 @cpindex monitor, discovery
 @cpindex monitor, factory
 @tpindex @code{monitor_factory}
-@anchor{Monitor Discovery} Since multiple monitor implementations exist and the
-caller potentially ignores which monitors will be available at run time, there
-must exist a way to query the @acronym{API} for the list of available monitor
-and request a particular instance.  The @code{monitor_factory} is an object
-factory class that provides basic monitor @emph{registration} and
-@emph{discovery} functionality: @acronym{API} clients can query the monitor
-registry to get a list of available monitors and get an instance of a monitor by
-@emph{type} or @emph{name}.
+@anchor{Monitor Discovery} Since multiple monitor implementations
+exist and the caller potentially ignores which monitors will be
+available at run time, there must exist a way to query the
+@acronym{API} for the list of available monitor and request a
+particular instance.  The @code{monitor_factory} is an object factory
+class that provides basic monitor @emph{registration} and
+@emph{discovery} functionality: @acronym{API} clients can query the
+monitor registry to get a list of available monitors and get an
+instance of a monitor by @emph{type} or @emph{name}.
 
 @tpindex @code{monitor_factory}
 The @code{monitor_factory} class provides the following methods:
@@ -329,20 +435,22 @@ The @code{monitor_factory} class provides the following methods:
 @item static monitor * create_monitor
 @fnindex @code{monitor_factory::create_monitor}
 Creates a monitor of the specified type with the specified constructor
-parameters (@pxref{Monitors}).  A monitor of the platform default type can be
-created if @code{fsw_monitor_type::system_default_monitor_type}.  If the named
+parameters (@pxref{Monitors}).  A monitor of the platform default type
+can be created if
+@code{fsw_monitor_type::system_default_monitor_type}.  If the named
 monitor is not available, then return @code{nullptr}.
 
 @item static monitor * create_monitor_by_name
 @fnindex @code{monitor_factory::create_monitor_by_name}
-Creates a monitor of the specified type (by @var{name}) and constructor
-parameters (@pxref{Monitors}).  If the named monitor is not available, then
-return @code{nullptr}.
+Creates a monitor of the specified type (by @var{name}) and
+constructor parameters (@pxref{Monitors}).  If the named monitor is
+not available, then return @code{nullptr}.
 
 @item static std::vector<std::string> get_types()
 @fnindex @code{monitor_factory::get_types}
-Get the list of available monitor types.  The type name can then be used to get
-a monitor instance by name using @code{create_monitor_by_name}.
+Get the list of available monitor types.  The type name can then be
+used to get a monitor instance by name using
+@code{create_monitor_by_name}.
 
 @item static bool exists_type(const std::string& name)
 @fnindex @code{monitor_factory::exists_type}
@@ -356,33 +464,34 @@ Register a monitor type in the list of available implementations.
 @section Monitor Registration
 @cpindex monitor, registration
 @pgindex @file{monitor.h}
-In order for monitor types to be visible to the factory they have to be
-registered.  Currently they can be registered using two helper macros, defined
-in @file{monitor.h}:
+In order for monitor types to be visible to the factory they have to
+be registered.  Currently they can be registered using two helper
+macros, defined in @file{monitor.h}:
 
 @table @code
 @fnindex @code{REGISTER_MONITOR}
 @item REGISTER_MONITOR(classname, monitor_type)
-This macro must be invoked into a class' header file and must be passed the
-class name and the monitor type.
+This macro must be invoked into a class' header file and must be
+passed the class name and the monitor type.
 
 @item REGISTER_MONITOR_IMPL(classname, monitor_type)
 @fnindex @code{REGISTER_MONITOR_IMPL}
-This macro must be invoked into a class' source file and must be passed the
-class name and the monitor type.
+This macro must be invoked into a class' source file and must be
+passed the class name and the monitor type.
 @end table
 
 The same monitor type cannot be used to register multiple monitor
-implementations.  No checks are in place to detect this situation and the
-registration will succeed; however, the registration process of multiple monitor
-implementations for the same monitor type is not deterministic.
+implementations.  No checks are in place to detect this situation and
+the registration will succeed; however, the registration process of
+multiple monitor implementations for the same monitor type is not
+deterministic.
 
 @section Monitors
 @cpindex monitor
 @tpindex @code{monitor}
-@anchor{Monitors} The @code{monitor} class is the fundamental type of the C++
-@acronym{API}: it defines the interface of every monitor and provides common
-functionality to inheritors of this class.
+@anchor{Monitors} The @code{monitor} class is the fundamental type of
+the C++ @acronym{API}: it defines the interface of every monitor and
+provides common functionality to inheritors of this class.
 
 The public interface of a monitor is the following:
 
@@ -434,52 +543,72 @@ The business interface of the @code{monitor} class is the following:
 @item void set_latency(double latency);
 @fnindex @code{monitor::set_latency}
 
-This function sets the latency of the monitor in seconds.  This method only sets
-the latency value.  The exact meaning of latency and how it is enforced depends
-on a monitor implementation.
+This function sets the latency of the monitor in seconds.  This method
+only sets the latency value.  The exact meaning of latency and how it
+is enforced depends on a monitor implementation.
 
 @item void set_recursive(bool recursive);
 @fnindex @code{monitor::set_recursive}
 
-This function sets the @code{recursive} flag of the monitor to indicate whether
-the monitor should recursively observe the contents of directories.
+This function sets the @code{recursive} flag of the monitor to
+indicate whether the monitor should recursively observe the contents
+of directories.
 
 @item void add_filter(const monitor_filter &filter);
 @fnindex @code{monitor::add_filter}
 
-This function adds a @code{monitor_filter} instance to the filter list of the
-current monitor.
+This function adds a @code{monitor_filter} instance to the filter list
+of the current monitor.
 
 @item void set_filters(const std::vector<monitor_filter> &filters);
 @fnindex @code{monitor::set_filters}
 
-This function sets the filter list of the current monitor, substituting existing
-filter if any.
+This function sets the filter list of the current monitor,
+substituting existing filter if any.
 
 @item void set_follow_symlinks(bool follow);
 @fnindex @code{monitor::set_follow_symlinks}
 
-This function sets the @code{follow_symlinks} flag of the monitor to indicate
-whether the monitor should follow observed symbolic links or observe the links
-themselves.
+This function sets the @code{follow_symlinks} flag of the monitor to
+indicate whether the monitor should follow observed symbolic links or
+observe the links themselves.
 
 @item void * get_context() const;
 @fnindex @code{monitor::get_context}
 
-This function gest the pointer to the context data that is passed to the
-callback by the monitor.
+This function gest the pointer to the context data that is passed to
+the callback by the monitor.
 
 @item void set_context(void * context);
 @fnindex @code{monitor::set_context}
 
-This function sets the pointer to the context data that is passed to the
-callback by the monitor.
+This function sets the pointer to the context data that is passed to
+the callback by the monitor.
 
 @item void start();
 @fnindex @code{monitor::start}
 
-This function starts the monitor so that it begins listening to file system
-change events.
+This function starts the monitor so that it begins listening to file
+system change events.
+
+@item void add_event_type_filter(const fsw_event_type_filter &filter);
+@fnindex @code{monitor::add_event_type_filter}
+
+This function adds a @code{fsw_event_type_filter} instance to the
+event type filter list of the current monitor.
+
+@item void set_event_type_filters(const std::vector<fsw_event_type_filter> &filters);
+@fnindex @code{monitor::set_event_type_filters}
+
+This function sets the event type filter list of the current monitor,
+substituting existing filters if any.
+
+@item void notify_events(const std::vector<event> &events) const;
+@fnindex @code{monitor::notify_events}
+
+This function applies all the filters configured in the current
+monitor to the specified list of events.  If the resulting filtered
+list is not empty it notifies it to the configured callback.
 
 @end table
 
@@ -487,37 +616,39 @@ change events.
 @cpindex monitor, implementing
 @cpindex monitor, inherit from
 @tpindex @code{monitor}
-@code{monitor} is a class that declares the following protected functions:
+@code{monitor} is a class that declares the following protected
+functions:
 
 @table @code
 @item bool accept_path(const std::string &path) const
 @fnindex @code{monitor::accept_path}
-This function checks whether the specified @code{path} can be accepted according
-to the list of filters of the monitor.
+This function checks whether the specified @code{path} can be accepted
+according to the list of filters of the monitor.
 
 @item bool accept_path(const char *path) const
 @fnindex @code{monitor::accept_path}
-This function checks whether the specified @code{path} can be accepted according
-to the list of filters of the monitor.
+This function checks whether the specified @code{path} can be accepted
+according to the list of filters of the monitor.
 
 @item virtual void run() = 0
 @fnindex @code{monitor::run}
-This pure virtual function shall contain the logic of a monitor implementation.
-This function will be invoked by the monitor's @code{start} @acronym{API}
-function.
+This pure virtual function shall contain the logic of a monitor
+implementation.  This function will be invoked by the monitor's
+@code{start} @acronym{API} function.
 
 @end table
 
 @noindent
-Since it contains a pure virtual function, @code{run()}, the @code{monitor}
-class is abstract.  Inheritors are required to provide an implementation of the
-@code{run()} function containing the monitor logic and its `event loop'.
+Since it contains a pure virtual function, @code{run()}, the
+@code{monitor} class is abstract.  Inheritors are required to provide
+an implementation of the @code{run()} function containing the monitor
+logic and its `event loop'.
 
 @subsection The Anatomy of a Typical Monitor
 @cpindex monitor, anatomy
 @cpindex monitor, example
-The anatomy of monitors is typically very similar and it can be illustrated with
-the following algorithm (written in pseudo-code):
+The anatomy of monitors is typically very similar and it can be
+illustrated with the following algorithm (written in pseudo-code):
 
 @example
 void run()
@@ -542,48 +673,50 @@ void run()
 
     if (events.size())
     @{
-      callback(events, context);
+      notify_events(events);
     @}
   @}
 @}
 @end example
 
 @noindent
-Despite being a minimal implementation, this algorithm exemplifies the common
-tasks performed by a monitor:
+Despite being a minimal implementation, this algorithm exemplifies the
+common tasks performed by a monitor:
 
 @itemize
 @item
 @cpindex monitor, initialization
-It initializes the @acronym{API} it uses to detect file system change events.
+It initializes the @acronym{API} it uses to detect file system change
+events.
 
 @item
 It enters a loop, often infinite, where change events are waited for.
 
 @item
-It scans the paths that must be observed: this step might be necessary for
-example because some path may not have existed during the loop's previous
-iteration, or because some @acronym{API} may require the user to re-register a
-watch on a path after events are retrieved.
+It scans the paths that must be observed: this step might be necessary
+for example because some path may not have existed during the loop's
+previous iteration, or because some @acronym{API} may require the user
+to re-register a watch on a path after events are retrieved.
 
 @item
-Events are waited for and the wait should last approximately the @var{latency}
-configured into the monitor.
+Events are waited for and the wait should last approximately the
+@var{latency} configured into the monitor.
 
 @item
-Events are filtered to exclude those that refer to paths that do not satisfy the
-filters of the monitor.
+Events are filtered to exclude those that refer to paths that do not
+satisfy the filters of the monitor.
 
 @item
-The callback is invoked to notify the caller.
+The @code{notify_events} method is called on the base class to filter
+the events and notify the caller.
 @end itemize
 
 @section Events
 @cpindex events
 @tpindex @code{event}
 @pgindex @code{event.h}
-@anchor{Events} Events are modeled by the @code{fsw::event} class, defined in
-the @code{event.h} header:
+@anchor{Events} Events are modeled by the @code{fsw::event} class,
+defined in the @code{event.h} header:
 
 @tpindex @code{event}
 @fnindex @code{event::event}
@@ -591,6 +724,8 @@ the @code{event.h} header:
 @fnindex @code{event::get_path}
 @fnindex @code{event::get_time}
 @fnindex @code{event::get_flags}
+@fnindex @code{event::get_event_flag_by_name}
+@fnindex @code{event::get_event_flag_name}
 @example
 class event
 @{
@@ -603,6 +738,11 @@ public:
   time_t get_time() const;
   std::vector<fsw_event_flag> get_flags() const;
 
+  static fsw_event_flag
+    get_event_flag_by_name(const std::string &name);
+  static std::string
+    get_event_flag_name(const fsw_event_flag &flag);
+
 private:
   std::string path;
   time_t evt_time;
@@ -612,8 +752,9 @@ private:
 
 @noindent
 @tpindex @code{event}
-The @code{event} class provides a simple and uniform representation of an event
-to all the @acronym{API}.  An event has got the following characteristics:
+The @code{event} class provides a simple and uniform representation of
+an event to all the @acronym{API}.  An event has got the following
+characteristics:
 
 @itemize
 @item
@@ -628,18 +769,59 @@ The list event @var{flags} (@pxref{Event Flags}).
 @end itemize
 
 @noindent
-Currently the @acronym{API} provides no way for monitor implementors to provide
-additional, monitor-dependent fields to an event.  Since the @acronym{API}
-stores events by value into collections (such as @code{vector}), an extended
-event would be @emph{sliced} and additional fields would be lost.
+Currently the @acronym{API} provides no way for monitor implementors
+to provide additional, monitor-dependent fields to an event.  Since
+the @acronym{API} stores events by value into collections (such as
+@code{vector}), an extended event would be @emph{sliced} and
+additional fields would be lost.
 
-@section Filters
-@cpindex filter
+@subsection Looking Up Event Types by Name
+@cpindex event type, lookup
+@pgindex @code{event.h}
+Event types can be looked up by @emph{name} using the following function:
+
+@table @code
+@item fsw_event_flag get_event_flag_by_name(const std::string &name);
+@fnindex @code{event::get_event_flag_by_name}
+
+@tpindex @code{libfsw_exception}
+Returns the @code{fsw_event_flag} instance whose name is @var{name}.
+If no instance is found with the specified @var{name}, this function
+will throw a @code{libfsw_exception}.
+
+@end table
+
+@subsection Getting the Name of an Event Type
+@cpindex event type, name
+@pgindex @code{event.h}
+The name of an event type can be obtained using the following function:
+
+@table @code
+@item static std::string get_event_flag_name(const fsw_event_flag &flag);
+@fnindex @code{event::get_event_flag_name}
+
+This function returns the name of the specified event type.
+@end table
+
+@noindent
+Most of the times, the name of an event type is used when writing user output: to ease this task, the @file{event.h} header defines the following operator overload:
+
+@table @code
+@item ostream& operator<<(ostream& out, const fsw_event_flag flag);
+@fnindex @code{ostream& operator<<(ostream& out, const fsw_event_flag flag)}
+
+This operator writes the name of the specified @code{fsw_event_flag} to the stream.
+@end table
+
+@section Path Filters
+@cpindex filter, by path
+@cpindex path filter
 @tpindex @code{monitor_filter}
 @pgindex @code{filter.h}
-@anchor{Filters} Filters are regular expression used to accept or reject file
-change events based on the value of their path.  A filter is represented by the
-@code{fsw::monitor_filter} type, defined in the @code{filter.h} header:
+@anchor{Filters} @emph{Path filters} are regular expression used to
+accept or reject file change events based on the value of their path.
+A filter is represented by the @code{fsw::monitor_filter} type,
+defined in the @code{filter.h} header:
 
 @tpindex @code{monitor_filter}
 @fnindex @code{monitor_filter::text}
@@ -666,7 +848,8 @@ The regular expression used to match paths.
 
 @item type
 @fnindex @code{monitor_filter::type}
-The filter type can either be an @emph{inclusion} or @emph{exclusion} filter.
+The filter type can either be an @emph{inclusion} or @emph{exclusion}
+filter.
 
 @item case_sensitive
 @fnindex @code{monitor_filter::case_sensitive}
@@ -674,21 +857,25 @@ A flag indicating the filter case sensitivitiy.
 
 @item extended
 @fnindex @code{monitor_filter::extended}
-A flag indicating whether @code{text} is an extended regular expression.
+A flag indicating whether @code{text} is an extended regular
+expression.
 @end table
 
 @subsection Filter Types
-@cpindex filter, type
-@cpindex filter, inclusion
-@cpindex filter, exclusion
-@cpindex filter, algorithm
-A filter type determine whether the filter regular expression is used to include
-and exclude paths from the list of the events processed by the library.
-@file{libfswatch} processes filters this way:
+@cpindex filter, by path
+@cpindex path filter, type
+@cpindex path filter, inclusion
+@cpindex path filter, exclusion
+@cpindex path filter, algorithm
+@pgindex @code{filter.h}
+A filter type determine whether the filter regular expression is used
+to include and exclude paths from the list of the events processed by
+the library.  @file{libfswatch} processes filters this way:
 
 @itemize
 @item
-If a path matches an including filter, the path is accepted no matter any other filter.
+If a path matches an including filter, the path is accepted no matter
+any other filter.
 
 @item
 If a path matches an excluding filter, the path is rejected.
@@ -702,7 +889,8 @@ Said another way:
 
 @itemize
 @item
-All paths are accepted by default, unless an exclusion filter says other- wise.
+All paths are accepted by default, unless an exclusion filter says
+otherwise.
 
 @item
 Inclusion filters may override any other exclusion filter.
@@ -711,8 +899,27 @@ Inclusion filters may override any other exclusion filter.
 The order in the definition of filters has no effect.
 @end itemize
 
-The @command{fswatch} Info documentation has a user-oriented discussion of how
-filters are used.
+The @command{fswatch} Info documentation has a user-oriented
+discussion of how filters are used.
+
+@section Event Type Filters
+@cpindex filter
+@cpindex filter, by event type
+@tpindex @code{fsw_event_type_filter}
+@pgindex @code{cfilter.h}
+@anchor{Event Type Filters} @emph{Event type filters} let callers
+filter the events using a specified set of event types.  An event type
+filter is represented by the @code{fsw_event_type_filter} type,
+defined in the @code{cfilter.h} header:
+
+@tpindex @code{fsw_event_type_filter}
+@tpindex @code{fsw_event_type_filter::flag}
+@example
+typedef struct fsw_event_type_filter
+@{
+  fsw_event_flag flag;
+@} fsw_event_type_filter;
+@end example
 
 @node The C API
 @chapter The C @acronym{API}
@@ -720,55 +927,60 @@ filters are used.
 @cpindex monitoring session
 @tpindex @code{FSW_HANDLE}
 @pgindex @code{libfswatch.h}
-The C @acronym{API}, whose main header file is @code{libfswatch.h}, is a
-C-compatible lightweight wrapper around the C++ @acronym{API} that provides an
-easy to use binding to C clients.  The central type in the C @acronym{API} is
-the @emph{monitoring session}, an opaque type identified by a handle of type
-@code{FSW_HANDLE} that can be manipulated using the C functions of this library.
+The C @acronym{API}, whose main header file is @code{libfswatch.h}, is
+a C-compatible lightweight wrapper around the C++ @acronym{API} that
+provides an easy to use binding to C clients.  The central type in the
+C @acronym{API} is the @emph{monitoring session}, an opaque type
+identified by a handle of type @code{FSW_HANDLE} that can be
+manipulated using the C functions of this library.
 
 @fnindex @code{fsw_add_path}
 @fnindex @code{fsw_start_monitor}
-Session-modifying @acronym{API} calls (such as @code{fsw_add_path}) will take
-effect the next time a monitor is started with @code{fsw_start_monitor}.
-Currently not all monitors supports being stopped, in which case
-@code{fsw_start_monitor} is a non-returning @acronym{API} call.
+Session-modifying @acronym{API} calls (such as @code{fsw_add_path})
+will take effect the next time a monitor is started with
+@code{fsw_start_monitor}.  Currently not all monitors supports being
+stopped, in which case @code{fsw_start_monitor} is a non-returning
+@acronym{API} call.
 
 @subsection Translating the C++ @acronym{API}
 @cpindex @acronym{API}, conventions
-The conventions used to translate C++ types into C types are rather common:
+The conventions used to translate C++ types into C types are rather
+common:
 
 @itemize
 @item
-@code{std::string} is represented as a @samp{NUL}-terminated @code{char *}.
+@code{std::string} is represented as a @samp{NUL}-terminated
+@code{char *}.
 
 @item
-Lists are represented as arrays whose length is specified in a separate field:
-@code{flags_num} indicates how many elements are stored in the array pointed by
-@code{flags}.
+Lists are represented as arrays whose length is specified in a
+separate field: @code{flags_num} indicates how many elements are
+stored in the array pointed by @code{flags}.
 
 @item
-More complex types are usually translated as a @code{struct} containing data
-fields and a set of functions to operate on it.
+More complex types are usually translated as a @code{struct}
+containing data fields and a set of functions to operate on it.
 
 @end itemize
 
 @subsection Thread Safety
 @cpindex thread safety
 @tpindex @code{thread_local}
-If the compiler and the C++ library used to build @file{libfswatch} support the
-@code{thread_local} storage specified then this @acronym{API} is thread safe and
-a different state is maintained on a per-thread basis (@pxref{Thread Safety}).
+If the compiler and the C++ library used to build @file{libfswatch}
+support the @code{thread_local} storage specified then this
+@acronym{API} is thread safe and a different state is maintained on a
+per-thread basis (@pxref{Thread Safety}).
 
 Even when @code{thread_local} is not available, manipulating different
-monitoring sessions in different threads concurrently is thread safe, since they
-share no data.
+monitoring sessions in different threads concurrently is thread safe,
+since they share no data.
 
 @section Library Initialization
 @cpindex library, initialization
 @cpindex initialization
 @fnindex @code{fsw_init_library}
-Before calling any library method, the library must be initialized by calling
-the @code{fsw_init_library()} function:
+Before calling any library method, the library must be initialized by
+calling the @code{fsw_init_library()} function:
 
 @example
 // Initialize the library
@@ -786,12 +998,12 @@ if (ret != FSW_OK)
 @fnindex @code{FSW_OK}
 @tpindex @code{FSW_STATUS}
 @pgindex @code{error.h}
-@anchor{Status Codes and Errors} Most @acronym{API} functions return a status
-code of type @code{FSW_STATUS} (@code{error.h} header) which can take any value
-specified in the @file{error.h} header.  A successful @acronym{API} call returns
-@code{FSW_OK} and the last error can be obtained calling the
-@code{fsw_last_error()} function.  Currently, the following status codes are
-defined:
+@anchor{Status Codes and Errors} Most @acronym{API} functions return a
+status code of type @code{FSW_STATUS} (@code{error.h} header) which
+can take any value specified in the @file{error.h} header.  A
+successful @acronym{API} call returns @code{FSW_OK} and the last error
+can be obtained calling the @code{fsw_last_error()} function.
+Currently, the following status codes are defined:
 
 @table @code
 @item FSW_OK
@@ -883,76 +1095,97 @@ Unused.
 @itemx (1 << 16)
 @fnindex @code{FSW_ERR_UNSUPPORTED_OPERATION}
 Unused.
+
+@item FSW_ERR_UNKNOWN_VALUE
+@itemx (1 << 17)
+@fnindex @code{FSW_ERR_UNKNOWN_VALUE}
+Unused.
+
 @end table
 
 @section Functions
 @cpindex monitoring session, handle
 @tpindex @code{FSW_HANDLE}
-The library provides the functions listed in the following table.  As seen in
-@xref{Status Codes and Errors}, functions return @code{FSW_OK} if they succeed,
-otherwise they return an error code.  Functions that modify an existing
-monitoring sessions accept the session handle of type @code{FSW_HANDLE}.
+@pgindex @file{libfswatch.h}
+The library @file{libfswatch.h} header file defines the functions
+listed in the following table.  As seen in @xref{Status Codes and
+Errors}, functions return @code{FSW_OK} if they succeed, otherwise
+they return an error code.  Functions that modify an existing
+monitoring sessions accept the session handle of type
+@code{FSW_HANDLE}.
 
 @table @code
 @item FSW_STATUS
 @itemx fsw_init_library()
 @fnindex @code{fsw_init_library}
-This function initializes the libfswatch library and must be invoked before any
-other calls to the C or C++ @acronym{API}.  If the function succeeds, it returns
-@code{FSW_OK}, otherwise the initialization routine failed and the library will
-not be usable.
+This function initializes the libfswatch library and must be invoked
+before any other calls to the C or C++ @acronym{API}.  If the function
+succeeds, it returns @code{FSW_OK}, otherwise the initialization
+routine failed and the library will not be usable.
 
 @item FSW_HANDLE
 @itemx fsw_init_session(const fsw_monitor_type type = system_default_monitor_type)
 @fnindex @code{fsw_init_session}
-This function creates a new monitor session using the specified monitor and
-returns an handle to it.  This function is the libfswatch @acronym{API} entry
-point.
+This function creates a new monitor session using the specified
+monitor and returns an handle to it.  This function is the libfswatch
+@acronym{API} entry point.
 
 @item FSW_STATUS
 @itemx fsw_add_path(const FSW_HANDLE handle, const char * path)
 @fnindex @code{fsw_add_path}
-Adds a path to watch to the specified session.  At least one path must be added
-to the current session in order for it to be valid.
+Adds a path to watch to the specified session.  At least one path must
+be added to the current session in order for it to be valid.
 
 @item FSW_STATUS
 @itemx fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
 @fnindex @code{fsw_set_callback}
 Sets the callback the monitor invokes when some events are received
-(@pxref{Callbacks}) and an optional pointer to context data (@pxref{Context
-Data}).  The callback must be set in the current session in order for it to be
-valid.
+(@pxref{Callbacks}) and an optional pointer to context data
+(@pxref{Context Data}).  The callback must be set in the current
+session in order for it to be valid.
 
 @item FSW_STATUS
 @itemx fsw_set_latency(const FSW_HANDLE handle, const double latency);
 @fnindex @code{fsw_set_latency}
-Sets the latency of the monitor.  By default, the latency is set to 1 second.
+Sets the latency of the monitor.  By default, the latency is set to 1
+second.
 
 @item FSW_STATUS
 @itemx fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
 @fnindex @code{fsw_set_recursive}
-Determines whether the monitor recursively scans each watched path or not.
-Recursive scanning is an optional feature which could not be implemented by all
-the monitors.  By default, recursive scanning is disabled.
+Determines whether the monitor recursively scans each watched path or
+not.  Recursive scanning is an optional feature which could not be
+implemented by all the monitors.  By default, recursive scanning is
+disabled.
 
 @item FSW_STATUS
 @itemx fsw_set_follow_symlinks(const FSW_HANDLE handle, const bool follow_symlinks)
 @fnindex @code{fsw_set_follow_symlinks}
-Determines whether a symbolic link is followed or not.  By default, symbolic
-links are not followed.
+Determines whether a symbolic link is followed or not.  By default,
+symbolic links are not followed.
 
 @item FSW_STATUS
 @itemx fsw_add_filter(const FSW_HANDLE handle,const fsw_cmonitor_filter filter)
 @fnindex @code{fsw_add_filter}
-Adds a filter to the current session.  A filter (@pxref{Filters}) is a regular
-expression that, depending on whether the filter type is exclusion or not, must
-or must not be matched for an event path for the event to be accepted.
+Adds a filter to the current session.  A filter (@pxref{Filters}) is a
+regular expression that, depending on whether the filter type is
+exclusion or not, must or must not be matched for an event path for
+the event to be accepted.
+
+@item FSW_STATUS
+@itemx fsw_add_event_type_filter(const FSW_HANDLE handle, const fsw_event_type_filter event_type)
+@fnindex @code{fsw_add_event_type_filter}
+Adds an event type filter to the current session.  A filter
+(@pxref{Event Type Filters}) contains the @emph{name} of the event
+type to include into the output.  A session may contain multiple event
+type filters.
 
 @item FSW_STATUS
 @itemx fsw_start_monitor(const FSW_HANDLE handle)
 @fnindex @code{fsw_start_monitor}
-Starts the monitor if it is properly configured.  Depending on the type of
-monitor this call might return when a monitor is stopped or not.
+Starts the monitor if it is properly configured.  Depending on the
+type of monitor this call might return when a monitor is stopped or
+not.
 
 @item FSW_STATUS
 @itemx fsw_destroy_session(const FSW_HANDLE handle)
@@ -974,10 +1207,10 @@ Check whether the verbose mode is active.
 @section Callbacks
 @cpindex callback
 @fnindex @code{FSW_CEVENT_CALLBACK}
-@anchor{Callbacks} When a monitor receives change events satisfying all the
-session criteria, a callback provided by the user is invoked and passed a copy
-of the events; a function pointer of type @code{FSW_CEVENT_CALLBACK} is used by
-the @acronym{API} as a callback:
+@anchor{Callbacks} When a monitor receives change events satisfying
+all the session criteria, a callback provided by the user is invoked
+and passed a copy of the events; a function pointer of type
+@code{FSW_CEVENT_CALLBACK} is used by the @acronym{API} as a callback:
 
 @example
 typedef void (*FSW_CEVENT_CALLBACK)(
@@ -992,7 +1225,8 @@ The callback is passed the following arguments:
 @itemize
 @item
 @fnindex @code{FSW_CEVENT_CALLBACK::events}
-@code{events}, a const pointer to an array of events of type @code{const fsw_cevent}.
+@code{events}, a const pointer to an array of events of type
+@code{const fsw_cevent}.
 
 @item
 @fnindex @code{FSW_CEVENT_CALLBACK::event_num}
@@ -1004,38 +1238,64 @@ The callback is passed the following arguments:
 @end itemize
 
 @tpindex @code{fsw_cevent}
-The memory used by the @code{fsw_cevent} objects will be freed at the end of the
-callback invocation.  A callback should copy such data instead of storing a
-pointer to it.
+The memory used by the @code{fsw_cevent} objects will be freed at the
+end of the callback invocation.  A callback should copy such data
+instead of storing a pointer to it.
 
 @subsection Context Data
 @cpindex context
 @cpindex context, data
-@anchor{Context Data} A @emph{context} may be passed to the callback when events
-are received.  Context data may be useful to easily associate a `state' to each
-monitoring session.  A monitoring session does @emph{not} acquire ownership of
-the context data pointer; therefore, the following are responsibilities of the
-caller:
+@anchor{Context Data} A @emph{context} may be passed to the callback
+when events are received.  Context data may be useful to easily
+associate a `state' to each monitoring session.  A monitoring session
+does @emph{not} acquire ownership of the context data pointer;
+therefore, the following are responsibilities of the caller:
 
 @itemize
 @item
-To keep the pointer valid throughout the life of a monitoring session that
-shares this pointer.
+To keep the pointer valid throughout the life of a monitoring session
+that shares this pointer.
 
 @item
-To free the pointed memory @emph{after} when the pointer is not shared with any
-monitoring session any longer.
+To free the pointed memory @emph{after} when the pointer is not shared
+with any monitoring session any longer.
 @end itemize
+
+@section Memory Management Functions
+@cpindex memory management
+@cpindex memory management, functions
+@pgindex @file{libfswatch_mem.h}
+@anchor{Memory Management Functions} The C @acronym{API} published by
+the @code{libfswatch} library contains some memory management
+routines.  These functions, defined in the @file{libfswatch_mem.h}
+header file, are the following:
+
+@table @code
+@item @code{void * fsw_alloc(size_t size)}
+@fnindex @code{fsw_alloc}
+
+This function allocates a chunk of memory of the specified @var{size}
+and returns a pointer to it.  If the memory could not be allocated,
+@code{nullptr} is returned instead.
+
+@item @code{void fsw_free(void * ptr)}
+@fnindex @code{fsw_free}
+
+This function frees the memory pointed by @var{ptr}.
+
+@item @code{fsw_free}
+@end table
 
 @section Events in the C @acronym{API}
 @cpindex events
 @cpindex events, C @acronym{API}
 @tpindex @code{fsw_cevent}
 @pgindex @code{cevent.h}
-@anchor{Events in the C @acronym{API}} The C @acronym{API} represents events as
-instances of the @code{fsw_cevent} structure (@code{cevent.h}) which is an exact
-translation of the @code{fsw:event} type (@pxref{Events}) where C++ types and
-collections are represented by C friendly equivalent types:
+@anchor{Events in the C @acronym{API}} The C @acronym{API} represents
+events as instances of the @code{fsw_cevent} structure
+(@code{cevent.h}) which is an exact translation of the
+@code{fsw:event} type (@pxref{Events}) where C++ types and collections
+are represented by C friendly equivalent types:
 
 @example
 typedef struct fsw_cevent
@@ -1048,13 +1308,17 @@ typedef struct fsw_cevent
 @end example
 
 @section Event Flags
+@cpindex event type
 @tpindex @code{fsw_event_flag}
-@anchor{Event Flags} Events flags are @code{enum} values shared by both the C++
-and the C @acronym{API}.  The values of event flags are power of 2, that is
-numbers @math{f} in the form @math{f = 2^n} where @math{n} is an integer.  This
-representation makes it easy to combine flags into a bit mask and encode
-multiple events flags into a single integer.  The @code{fsw_event_flag}
-enumeration currently includes the following values:
+@pgindex @file{cevent.h}
+@anchor{Event Flags} Events flags are @code{enum} values shared by
+both the C++ and the C @acronym{API} and they are defined in the
+@file{cevent.h} header.  The values of event flags are power of 2,
+that is numbers @math{f} in the form @math{f = 2^n} where @math{n} is
+an integer.  This representation makes it easy to combine flags into a
+bit mask and encode multiple events flags into a single integer.  The
+@code{fsw_event_flag} enumeration currently includes the following
+values:
 
 @table @code
 @item NoOp
@@ -1065,8 +1329,8 @@ This event flag is used as a marker.
 @item PlatformSpecific
 @itemx 1 << 0
 @fnindex @code{fsw_event_flag::PlatformSpecific}
-This event flag represents a platform-specific flag that is not encoded as any
-other event flag by the @acronym{API}.
+This event flag represents a platform-specific flag that is not
+encoded as any other event flag by the @acronym{API}.
 
 @item Created
 @itemx 1 << 1
@@ -1129,23 +1393,45 @@ This event flag indicates that the modified object is a symbolic link.
 This event flag represents a file link event.
 @end table
 
-A monitor implementation is required to map implementation-specific flags into
-@acronym{API} flags.  Sometimes, though, a perfect match is not possible and the
-following situation may arise:
+A monitor implementation is required to map implementation-specific
+flags into @acronym{API} flags.  Sometimes, though, a perfect match is
+not possible and the following situation may arise:
 
 @itemize
 @item
-One platform-specific flag must be mapped into multiple @acronym{API} flags.
+One platform-specific flags must be mapped into multiple @acronym{API}
+flags.
 
 @item
-Multiple platform-specific flags must be mapped into a single @acronym{API}
-flag.
+Multiple platform-specific flags must be mapped into a single
+@acronym{API} flag.
 
 @item
-A mapping is not possible for some flags, in which case they should be mapped to
-the @code{PlatformSpecific} @acronym{API} flags.  The @acronym{API} currently
-offers no way to retain a platform-specific event flag value in this case.
+A mapping is not possible for some flags, in which case they should be
+mapped to the @code{PlatformSpecific} @acronym{API} flags.  The
+@acronym{API} currently offers no way to retain a platform-specific
+event flag value in this case.
 @end itemize
+
+The @file{cevent.h} header also defines the following utility functions:
+
+@table @code
+@item fsw_event_flag fsw_get_event_flag_by_name(const char * name);
+@fnindex @code{fsw_get_event_flag_by_name}
+
+This function looks for a @code{fsw_event_flag} instace with the
+specified @var{name}.  If a matching event type is not found, this
+function will return a negative number.
+
+@item char * fsw_get_event_flag_name(const fsw_event_flag flag);
+@fnindex @code{fsw_get_event_flag_name}
+
+This function returns a @code{char *} pointer to the name of the
+specified event type, @var{flag}, or @code{nullptr} if an error
+occurs.  The memory pointed by the return value of this function
+should be freed with a call to @code{fsw_free} (@pxref{Memory Management Functions}).
+
+@end table
 
 @section Filters in the C @acronym{API}
 @cpindex filter
@@ -1154,10 +1440,11 @@ offers no way to retain a platform-specific event flag value in this case.
 @tpindex @code{monitor_filter}
 @tpindex @code{fsw_filter_type}
 @pgindex @code{cfilter.h}
-@anchor{Filters in the C @acronym{API}} The C @acronym{API} represents filters
-(@pxref{Filters}) as instances of the @code{fsw_cmonitor_filter} structure,
-defined in the @code{cfilter.h} header.  This structure is a translation of the
-@code{monitor_filter} class using C equivalent types:
+@anchor{Filters in the C @acronym{API}} The C @acronym{API} represents
+filters (@pxref{Filters}) as instances of the
+@code{fsw_cmonitor_filter} structure, defined in the @code{cfilter.h}
+header.  This structure is a translation of the @code{monitor_filter}
+class using C equivalent types:
 
 @tpindex @code{fsw_filter_type}
 @fnindex @code{fsw_filter_type::filter_include}
@@ -1192,9 +1479,9 @@ typedef struct fsw_cmonitor_filter
 @cpindex monitor, poll
 @tpindex @code{fsw_monitor_type}
 @pgindex @code{cmonitor.h}
-The @code{fsw_monitor_type} enumeration, defined in the @code{cmonitor.h}
-header, contains a list of monitor types built into the @command{libfswatch}
-library:
+The @code{fsw_monitor_type} enumeration, defined in the
+@code{cmonitor.h} header, contains a list of monitor types built into
+the @command{libfswatch} library:
 
 @tpindex @code{fsw_monitor_type}
 @fnindex @code{fsw_monitor_type::system_default_monitor_type}
@@ -1214,15 +1501,16 @@ enum fsw_monitor_type
 @end example
 
 @noindent
-Members of this enumeration may be used with factory methods (@pxref{Monitor
-Discovery} provided by the @acronym{API} to request a monitor of a specific
-type.  The members of this enumeration must be known at compile time.
+Members of this enumeration may be used with factory methods
+(@pxref{Monitor Discovery} provided by the @acronym{API} to request a
+monitor of a specific type.  The members of this enumeration must be
+known at compile time.
 
 @section Example
 @cpindex monitoring session, example
-This is a basic example of how a monitor session can be constructed and run
-using the C @acronym{API}.  To be valid, a session needs at least the following
-information:
+This is a basic example of how a monitor session can be constructed
+and run using the C @acronym{API}.  To be valid, a session needs at
+least the following information:
 
 @itemize
 @item
@@ -1233,8 +1521,8 @@ A @var{callback} to process the events sent by the monitor.
 @end itemize
 
 @noindent
-The next code fragment shows how to create and start a basic monitoring session
-(error checking code was omitted):
+The next code fragment shows how to create and start a basic
+monitoring session (error checking code was omitted):
 
 @example
 // Initialize the library
@@ -1256,16 +1544,16 @@ fsw_start_monitor(handle);
 @c Print function index
 @node Index of Functions
 @appendix Index of Functions
-The @code{fsw::} prefix has been dropped by function names in the following
-index.
+The @code{fsw::} and @code{std::} prefixes have been dropped by
+function names in the following index.
 
 @printindex fn
 
 @c Print data type index
 @node Index of Data Types
 @appendix Index of Data Types
-The @code{fsw::} prefix has been dropped by function names in the following
-index.
+The @code{fsw::} prefix has been dropped by function names in the
+following index.
 
 @printindex tp
 
@@ -1275,7 +1563,7 @@ index.
 
 @printindex pg
 
-@node Index
+@node General Index
 @unnumbered Index
 @printindex cp
 

@@ -19,33 +19,19 @@ kinds of monitors:
 `fswatch` should build and work correctly on any system shipping either of the
 aforementioned APIs.
 
-History
--------
+Table of Contents
+-----------------
 
-**2009:** [Alan Dipert][alan] wrote the first implementation of `fswatch`.  This
-version ran exclusively on OS X and relied on the [FSEvents][fse] API to get
-change events from the OS.
-
-**Late 2013:** [Enrico M. Crisostomo][enrico] wrote `fsw`, aiming at a drop-in
-replacement for `fswatch`.  But it went further, offering a common front-end
-from multiple file system change events APIs, including:
-
-  * OS X FSEvents.
-  * \*BSD kqueue.
-  * Linux inotify.
-
-**April 2014:** Alan and Enrico, in the best interest of users of either
-`fswatch` and `fsw`, agreed on merging the two programs together.  At the same
-time, Enrico was taking over `fswatch` as a maintainer.
-
-**Presently:** Development of `fswatch` will continue on its
-[main repository][fswatchrepo].  Meanwhile, the `fsw` repository will likely be
-frozen, and its documentation updated to redirect users to `fswatch`.
-
-[alan]: http://alandipert.tumblr.com
-[fse]: https://developer.apple.com/library/mac/documentation/Darwin/Reference/FSEvents_Ref/Reference/reference.html
-[enrico]: http://thegreyblog.blogspot.com
-[fswatchrepo]: https://github.com/emcrisostomo/fswatch
+  * [Features](#features)
+  * [Limitations](#limitations)
+  * [Getting fswatch](#getting-fswatch)
+  * [Building from Source](#building-from-source)
+  * [Installation](#installation)
+  * [Documentation](#documentation)
+  * [Localization](#localization)
+  * [Usage](#usage)
+  * [Contributing](#contributing)
+  * [Bug Reports](#bug-reports)
 
 Features
 --------
@@ -120,6 +106,12 @@ $ brew install fswatch
 Check your favourite package manager and let us know if `fswatch` is missing
 there.
 
+[MacPorts]: https://www.macports.org
+[Homebrew]: http://brew.sh
+
+Building from Source
+--------------------
+
 A user who whishes to build `fswatch` should get a [release tarball][release].
 A release tarball contains everything a user needs to build `fswatch` on his
 system, following the instructions detailed in the Installation section below
@@ -134,9 +126,7 @@ Getting a copy of the source repository is not recommended unless you are a
 developer, you have the GNU Build System installed on your machine, and you know
 how to bootstrap it on the sources.
 
-[MacPorts]: https://www.macports.org
-[Homebrew]: http://brew.sh
-[release]: https://github.com/alandipert/fswatch/releases
+[release]: https://github.com/emcrisostomo/fswatch/releases
 
 Installation
 ------------
@@ -162,6 +152,29 @@ how to install the C++ toolchain and the C++ runtime.
 No other software packages or dependencies are required to configure and install
 `fswatch` but the aforementioned APIs used by the file system monitors.
 
+Documentation
+-------------
+
+`fswatch` provides the following [documentation]:
+
+  * Texinfo documentation, included with the distribution.
+  * HTML documentation.
+  * PDF documentation.
+  * A [wiki] page.
+  * A man page.
+
+`fswatch` official documentation is provided in Texinfo format.  This is the
+most comprehensive source of information about `fswatch` and the only
+authoritative one.  The man page, in particular, is a stub that suggests the
+user to use the info page instead.
+
+If you are installing `fswatch` using a package manager and you would like the
+PDF manual to be bundled into the package, please send a feature request to the
+package maintainer.
+
+[documentation]: http://emcrisostomo.github.io/fswatch/doc
+[wiki]: https://github.com/emcrisostomo/fswatch/wiki
+
 Localization
 ------------
 
@@ -181,91 +194,6 @@ variables.  See `README.osx` for an example.
 If `gettext` is not available on your system, `fswatch` shall build correctly,
 but it will lack localization support and the only available locale will be
 English.
-
-Documentation
--------------
-
-`fswatch` provides the following documentation:
-
-  * Texinfo documentation, included with the distribution.
-  * A [wiki] page.
-  * A man page.
-
-`fswatch` official documentation is provided in Texinfo format.  This is the
-most comprehensive source of information about `fswatch`.  The man page, in
-particular, is a stub meant for quick reference from the command line and is not
-guaranteed to be kept up to date.
-
-By default, only Info and DVI formats are generated when `fswatch` is built,
-according to the default rules of the GNU Build Systems.  However, a PDF manual
-typeset with TeX can be generated from the Texinfo sources by issuing this
-command:
-
-    $ make pdf
-
-and can then be installed invoking the `install-pdf` target:
-
-    $ make install-pdf
-
-Since typical users will not have a TeX distribution installed in their
-computers, the PDF manuals for every version of `fswatch` will be hosted at
-[this address][manual].
-
-If you are installing `fswatch` using a package manager and you would like the
-PDF manual to be bundled into the package, please send a feature request to the
-package maintainer.
-
-[wiki]: https://github.com/emcrisostomo/fswatch/wiki
-[manual]: https://drive.google.com/folderview?id=0BxZtP9CHH-Q6bHF3bmJGRmlVcVU&usp=sharing
-
-Compatibility Issues with fswatch v. 0.x
---------------------------------------
-
-The previous major version of `fswatch` (v. 0.x) allowed users to run a command
-whenever a set of changes was detected with the following syntax:
-
-    $ fswatch path program
-
-Starting with `fswatch` v. 1.x this behaviour is no longer supported.  The
-rationale behind this decision includes:
-
-  * The old version only allows watching one path.
-  * The command to execute was passed as last argument, alongside the path to
-    watch, making it difficult to extend the program functionality to add
-    multiple path support
-  * The old version forks and executes `/bin/bash`, which is neither portable,
-    nor guaranteed to succeed, nor desirable by users of other shells.
-  * No information about the change events is passed to the forked process.
-
-To solve the aforementioned issues and keep `fswatch` consistent with common
-UNIX practices, the behaviour has changed and `fswatch` now prints event records
-to the standard output that users can process further by piping the output of
-`fswatch` to other programs.
-
-To fully support the old use, the `-o/--one-per-batch` option was added in
-v. 1.3.3.  When specified, `fswatch` will only dump 1 event to standard output
-which can be used to trigger another `program`:
-
-    $ fswatch -o path | xargs -n1 program
-
-In this case, `program` will receive the number of change events as first
-argument.  If no argument should be passed to `program`, then the following
-command could be used:
-
-    $ fswatch -o path | xargs -n1 -I{} program
-
-Although we encourage you to embrace the new fswatch behaviour and update your
-scripts, we provide a little wrapper called `fswatch-run` which is installed
-alongside `fswatch` which lets you use the legacy syntax:
-
-    $ fswatch-run path [paths] program
-
-Under the hood, `fswatch-run` simply calls `fswatch -o` piping its output to
-`xargs`.
-
-`fswatch-run` is a symbolic link to a shell-specific wrapper.  Currently, ZSH
-and Bash scripts are provided.  If no suitable shells are found in the target
-system, the `fswatch-run` symbolic link is _not_ created.
 
 Usage
 -----
@@ -304,7 +232,15 @@ a different monitor, the `-m` option can be used to specify the monitor by name:
 
 The list of available monitors can be obtained with the `-h` option.
 
-For more information, refer to the `fswatch` man page.
+For more information, refer to the `fswatch` documentation.
+
+Contributing
+------------
+
+Everybody is welcome to contribute to `fswatch`.  Please, see
+[`CONTRIBUTING`][contrib] for further information.
+
+[contrib]: CONTRIBUTING.md
 
 Bug Reports
 -----------

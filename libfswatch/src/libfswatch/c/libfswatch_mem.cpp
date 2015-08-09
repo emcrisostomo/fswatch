@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,27 +13,19 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch.h"
-#include "libfswatch_log.h"
-#include <cstdio>
-#include <iostream>
-#include <cstdio>
+#ifdef HAVE_CONFIG_H
+#  include "libfswatch_config.h"
+#endif
+#include "libfswatch_mem.h"
+#include <cstdlib>
 
-using namespace std;
-
-void libfsw_log(const char * msg)
+void * fsw_alloc(size_t size)
 {
-  if (fsw_is_verbose())
-  {
-    cout << msg;
-  }
+  return ::malloc(size);
 }
 
-void libfsw_perror(const char * msg)
+void fsw_free(void * ptr)
 {
-  // TODO
-  if (fsw_is_verbose())
-  {
-    perror(msg);
-  }
+  ::free(ptr);
 }
+

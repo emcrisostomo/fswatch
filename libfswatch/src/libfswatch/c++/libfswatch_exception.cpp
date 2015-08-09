@@ -20,7 +20,6 @@ using namespace std;
 
 namespace fsw
 {
-
   libfsw_exception::libfsw_exception(string cause, int code) :
     cause(cause), code(code)
   {

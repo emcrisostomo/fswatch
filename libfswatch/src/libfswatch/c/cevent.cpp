@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,27 +13,31 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch.h"
-#include "libfswatch_log.h"
-#include <cstdio>
-#include <iostream>
-#include <cstdio>
+#ifdef HAVE_CONFIG_H
+#  include "libfswatch_config.h"
+#endif
+
+#include "libfswatch_mem.h"
+#include "cevent.h"
+#include "../c++/event.h"
+#include <cstring>
 
 using namespace std;
+using namespace fsw;
 
-void libfsw_log(const char * msg)
+fsw_event_flag fsw_get_event_flag_by_name(const char * name)
 {
-  if (fsw_is_verbose())
-  {
-    cout << msg;
-  }
+  return event::get_event_flag_by_name(name);
 }
 
-void libfsw_perror(const char * msg)
+char * fsw_get_event_flag_name(const fsw_event_flag flag)
 {
-  // TODO
-  if (fsw_is_verbose())
-  {
-    perror(msg);
-  }
+  string name = event::get_event_flag_name(flag);
+  char * cstr = static_cast<char *>(fsw_alloc(name.size() + 1));
+  
+  if (cstr == nullptr) return nullptr;
+  
+  strcpy(cstr, name.c_str());
+  
+  return cstr;
 }

@@ -22,7 +22,6 @@
 
 namespace fsw
 {
-
   class poll_monitor : public monitor
   {
     REGISTER_MONITOR(poll_monitor, poll_monitor_type);
@@ -62,7 +61,6 @@ namespace fsw
     bool intermediate_scan_callback(const std::string &path,
                                     const struct stat &stat);
     void find_removed_files();
-    void notify_events();
     void swap_data_containers();
 
     poll_monitor_data *previous_data;
