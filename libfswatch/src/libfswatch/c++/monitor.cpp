@@ -21,9 +21,7 @@
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
 #include <cstdlib>
-#ifdef HAVE_REGCOMP
-#  include <regex.h>
-#endif
+#include <regex.h>
 #include <iostream>
 #include <sstream>
 /*
@@ -46,10 +44,8 @@ namespace fsw
 {
   struct compiled_monitor_filter
   {
-#ifdef HAVE_REGCOMP
     regex_t regex;
     fsw_filter_type type;
-#endif
   };
 
   monitor::monitor(vector<string> paths,
@@ -109,12 +105,10 @@ namespace fsw
 
   void monitor::set_filters(const vector<monitor_filter> &filters)
   {
-#ifdef HAVE_REGCOMP
     for (const monitor_filter &filter : filters)
     {
       add_filter(filter);
     }
-#endif
   }
 
   void monitor::set_follow_symlinks(bool follow)
@@ -147,7 +141,6 @@ namespace fsw
 
   bool monitor::accept_path(const char *path) const
   {
-#ifdef HAVE_REGCOMP
     bool is_excluded = false;
 
     for (const auto &filter : filters)
@@ -161,7 +154,6 @@ namespace fsw
     }
 
     if (is_excluded) return false;
-#endif
 
     return true;
   }
@@ -178,14 +170,12 @@ namespace fsw
 
   monitor::~monitor()
   {
-#ifdef HAVE_REGCOMP
     for (auto &re : filters)
     {
       ::regfree(&re.regex);
     }
 
     filters.clear();
-#endif
   }
 
   static monitor * create_default_monitor(vector<string> paths,

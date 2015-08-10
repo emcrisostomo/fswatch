@@ -145,17 +145,13 @@ static void usage(ostream& stream)
   stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
   stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
-#  ifdef HAVE_REGCOMP
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
-#  endif
   stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
   stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
   stream << " -h, --help            " << _("Show this message.\n");
-#  ifdef HAVE_REGCOMP
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
   stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
-#  endif
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
   stream << " -M, --list-monitors   " << _("List the available monitors.\n");
@@ -172,17 +168,7 @@ static void usage(ostream& stream)
   stream << "                       " << _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
-  string option_string = "[";
-  option_string += "01";
-#  ifdef HAVE_REGCOMP
-  option_string += "eE";
-#  endif
-  option_string += "fh";
-#  ifdef HAVE_REGCOMP
-  option_string += "i";
-#  endif
-  option_string += "lLMmnortuvx";
-  option_string += "]";
+  string option_string = "[01eEfhilLMmnortuvx]";
 
   stream << PACKAGE_STRING << "\n\n";
   stream << "Syntax:\n";
@@ -191,16 +177,12 @@ static void usage(ostream& stream)
   stream << "Usage:\n";
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1  Exit fswatch after the first set of events is received.\n";
-#  ifdef HAVE_REGCOMP
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
-#  endif
   stream << " -f  Print the event time stamp with the specified format.\n";
   stream << " -h  Show this message.\n";
-#  ifdef HAVE_REGCOMP
   stream << " -i  Use case insensitive regular expressions.\n";
   stream << " -i  Include paths matching REGEX.\n";
-#  endif
   stream << " -l  Set the latency.\n";
   stream << " -M  List the available monitors.\n";
   stream << " -m  Use the specified monitor.\n";
@@ -472,10 +454,7 @@ static void parse_opts(int argc, char ** argv)
   int ch;
   ostringstream short_options;
 
-  short_options << "01f:hl:LMm:nortuvx";
-#ifdef HAVE_REGCOMP
-  short_options << "e:Ei:I";
-#endif
+  short_options << "01e:Ef:hi:Il:LMm:nortuvx";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
@@ -486,18 +465,14 @@ static void parse_opts(int argc, char ** argv)
     { "event", required_argument, nullptr, OPT_EVENT_TYPE},
     { "event-flags", no_argument, nullptr, 'x'},
     { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
-#  ifdef HAVE_REGCOMP
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
-#  endif
     { "follow-links", no_argument, nullptr, 'L'},
     { "format", required_argument, nullptr, OPT_FORMAT},
     { "format-time", required_argument, nullptr, 'f'},
     { "help", no_argument, nullptr, 'h'},
-#  ifdef HAVE_REGCOMP
     { "include", required_argument, nullptr, 'i'},
     { "insensitive", no_argument, nullptr, 'I'},
-#  endif
     { "latency", required_argument, nullptr, 'l'},
     { "list-monitors", no_argument, nullptr, 'M'},
     { "monitor", required_argument, nullptr, 'm'},
@@ -532,7 +507,6 @@ static void parse_opts(int argc, char ** argv)
       _1flag = true;
       break;
 
-#ifdef HAVE_REGCOMP
     case 'e':
       filters.push_back({optarg, fsw_filter_type::filter_exclude});
       break;
@@ -540,7 +514,6 @@ static void parse_opts(int argc, char ** argv)
     case 'E':
       Eflag = true;
       break;
-#endif
 
     case 'f':
       fflag = true;
@@ -551,7 +524,6 @@ static void parse_opts(int argc, char ** argv)
       usage(cout);
       ::exit(FSW_EXIT_OK);
 
-#ifdef HAVE_REGCOMP
     case 'i':
       filters.push_back({optarg, fsw_filter_type::filter_include});
       break;
@@ -559,7 +531,6 @@ static void parse_opts(int argc, char ** argv)
     case 'I':
       Iflag = true;
       break;
-#endif
 
     case 'l':
       lflag = true;
