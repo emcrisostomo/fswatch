@@ -4,6 +4,9 @@ fswatch
 *.lo
 *.o
 
+# Distribution files
+*.tar.gz
+
 # GNU Build System
 autom4te.cache/
 
@@ -57,6 +60,7 @@ stamp-h1
 **/po/remove-potcdate.sin
 **/po/stamp-po
 **/po/*.insert-header
+**/po/remove-potcdate.sed
 POTFILES
 
 # M4 macros required by gettext and added by autopoint
