@@ -18,14 +18,14 @@
 #endif
 
 #include "gettext_defs.h"
-#include "poll_monitor.h"
+#include "poll_monitor.hpp"
 #include <unistd.h>
 #include <cstdlib>
 #include <fcntl.h>
 #include <iostream>
 #include "c/libfswatch_log.h"
-#include "path_utils.h"
-#include "libfswatch_map.h"
+#include "path_utils.hpp"
+#include "libfswatch_map.hpp"
 
 using namespace std;
 

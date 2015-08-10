@@ -13,9 +13,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "event.h"
 #include "gettext_defs.h"
-#include "libfswatch_exception.h"
+#include "event.hpp"
+#include "libfswatch_exception.hpp"
 #include <map>
 
 using namespace std;

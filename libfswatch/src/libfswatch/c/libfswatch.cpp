@@ -28,10 +28,10 @@
 #include <cstring>
 #include <memory>
 #include "libfswatch.h"
-#include "../c++/libfswatch_map.h"
-#include "../c++/filter.h"
-#include "../c++/monitor.h"
-#include "../c++/libfswatch_exception.h"
+#include "../c++/libfswatch_map.hpp"
+#include "../c++/filter.hpp"
+#include "../c++/monitor.hpp"
+#include "../c++/libfswatch_exception.hpp"
 
 using namespace std;
 using namespace fsw;

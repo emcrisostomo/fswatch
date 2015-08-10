@@ -17,12 +17,12 @@
 #  include "libfswatch_config.h"
 #endif
 
-#include "fsevents_monitor.h"
+#include "fsevents_monitor.hpp"
 #include "gettext_defs.h"
-#include "libfswatch_exception.h"
+#include "libfswatch_exception.hpp"
+#include "event.hpp"
 #include "c/libfswatch_log.h"
 #include <iostream>
-#include "event.h"
 
 using namespace std;
 

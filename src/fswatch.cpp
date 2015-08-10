@@ -27,9 +27,10 @@
 #include <ctime>
 #include <cerrno>
 #include <vector>
-#include "libfswatch/c++/monitor.h"
+#include "libfswatch/c++/event.hpp"
+#include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c/error.h"
-#include "libfswatch/c++/libfswatch_exception.h"
+#include "libfswatch/c++/libfswatch_exception.hpp"
 
 #ifdef HAVE_GETOPT_LONG
 #  include <getopt.h>
@@ -93,7 +94,7 @@ static bool xflag = false;
 static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
-static string batch_marker = fsw::event::get_event_flag_name(fsw_event_flag::NoOp);
+static string batch_marker = event::get_event_flag_name(fsw_event_flag::NoOp);
 static int format_flag = false;
 static string format;
 static string event_flag_separator = " ";

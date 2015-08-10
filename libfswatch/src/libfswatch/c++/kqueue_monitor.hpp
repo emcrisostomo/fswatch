@@ -16,7 +16,7 @@
 #ifndef FSW_KQUEUE_MONITOR_H
 #  define FSW_KQUEUE_MONITOR_H
 
-#  include "monitor.h"
+#  include "monitor.hpp"
 #  include <string>
 #  include <vector>
 #  include <sys/stat.h>

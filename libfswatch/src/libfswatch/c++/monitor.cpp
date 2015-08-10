@@ -17,8 +17,8 @@
 #  include "libfswatch_config.h"
 #endif
 #include "gettext_defs.h"
-#include "monitor.h"
-#include "libfswatch_exception.h"
+#include "monitor.hpp"
+#include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
 #include <cstdlib>
 #ifdef HAVE_REGCOMP
@@ -30,15 +30,15 @@
  * Conditionally include monitor headers for default construction.
  */
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
-#  include "fsevents_monitor.h"
+#  include "fsevents_monitor.hpp"
 #endif
 #if defined(HAVE_SYS_EVENT_H)
-#  include "kqueue_monitor.h"
+#  include "kqueue_monitor.hpp"
 #endif
 #if defined(HAVE_SYS_INOTIFY_H)
-#  include "inotify_monitor.h"
+#  include "inotify_monitor.hpp"
 #endif
-#include "poll_monitor.h"
+#include "poll_monitor.hpp"
 
 using namespace std;
 
