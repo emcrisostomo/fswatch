@@ -45,14 +45,14 @@ AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
+# Configure language
+AC_LANG(C++)
+AC_PROG_CXX([clang++ g++])
+
 # Initialize libtool
 LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
-
-# Configure language
-AC_LANG(C++)
-AC_PROG_CXX([clang++ g++])
 
 # Initialize gettext
 AM_GNU_GETTEXT([external])
