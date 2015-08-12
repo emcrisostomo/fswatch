@@ -64,18 +64,19 @@ AC_CHECK_HEADERS([unistd.h], [], [AC_MSG_ERROR([A required header file is missin
 AC_CHECK_HEADERS([fcntl.h],  [], [AC_MSG_ERROR([A required header file is missing.])])
 
 # Check for optional header files
+AC_CHECK_HEADERS([unordered_map unordered_set])
+
+# Check for optional header files required to support OS-specific monitors
 AC_CHECK_HEADERS([sys/event.h])
 AC_CHECK_HEADERS([sys/inotify.h])
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
-AC_CHECK_HEADERS([unordered_map unordered_set])
 
-AM_CONDITIONAL([USE_KQUEUE], [test "x${ac_cv_header_sys_event_h}" = "xyes"])
-AM_CONDITIONAL([USE_INOTIFY], [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
+# OS X FSEvents added file events in a later release, so this check must be
+# performed separately.
+AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS])
 
-if test "x${ac_cv_header_CoreServices_CoreServices_h}" = "xyes" ; then
-  AX_FSEVENTS_HAVE_FILE_EVENTS
-fi
-
+AM_CONDITIONAL([USE_KQUEUE],   [test "x${ac_cv_header_sys_event_h}" = "xyes"])
+AM_CONDITIONAL([USE_INOTIFY],  [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
 AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
 
 # Some compilers declare to conform to C++11 but the library does not.
@@ -87,8 +88,8 @@ AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xy
 AC_CHECK_HEADER([mutex])
 
 if test "x${ac_cv_header_mutex}" = "xyes" ; then
-  AC_DEFINE(HAVE_CXX_MUTEX,
-    1,
+  AC_DEFINE([HAVE_CXX_MUTEX],
+    [1],
     [Define if <mutex> is available.])
 else
   AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
@@ -118,8 +119,8 @@ AC_CHECK_MEMBERS([struct stat.st_mtimespec],
   ])
 
 AC_CHECK_TYPE([std::unique_ptr<std::string>],
-  [AC_DEFINE(HAVE_CXX_UNIQUE_PTR,
-    1,
+  [AC_DEFINE([HAVE_CXX_UNIQUE_PTR],
+    [1],
     [Define if std::unique_ptr in <memory> is available.])],
   [],
   [[#include <memory>]])
@@ -145,8 +146,10 @@ AC_CHECK_DECLS(
 
 AX_CXX_HAVE_THREAD_LOCAL
 
-if ! test "x${ax_cv_cxx_have_thread_local}" = "xyes" ; then
-  AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier].)
-fi
+AS_VAR_IF(
+  [ax_cv_cxx_have_thread_local],
+  ["yes"],
+  [],
+  [AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier.])])
 
 AC_OUTPUT
