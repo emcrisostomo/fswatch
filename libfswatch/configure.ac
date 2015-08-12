@@ -95,6 +95,7 @@ fi
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
 AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
 AC_TYPE_UINT32_T
 AC_TYPE_MODE_T
 
@@ -122,9 +123,11 @@ AC_CHECK_TYPE([std::unique_ptr<std::string>],
   [[#include <memory>]])
 
 # Checks for library functions.
-AC_CHECK_FUNCS([realpath], [], AC_MSG_ERROR([The realpath function cannot be found.]))
-AC_CHECK_FUNCS([modf], [], AC_MSG_ERROR([The modf function cannot be found.]))
-AC_CHECK_FUNCS([select], [], AC_MSG_ERROR([The select function cannot be found.]))
+AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+AC_CHECK_FUNCS([modf],     [], [AC_MSG_ERROR([The modf function cannot be found.])])
+AC_CHECK_FUNCS([realpath], [], [AC_MSG_ERROR([The realpath function cannot be found.])])
+AC_CHECK_FUNCS([regcomp],  [], [AC_MSG_ERROR([The regcomp function cannot be found.])])
+AC_CHECK_FUNCS([select],   [], [AC_MSG_ERROR([The select function cannot be found.])])
 
 AC_CHECK_DECLS(
   [kqueue, kevent],
