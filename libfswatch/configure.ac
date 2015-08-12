@@ -67,17 +67,36 @@ AC_CHECK_HEADERS([fcntl.h],  [], [AC_MSG_ERROR([A required header file is missin
 AC_CHECK_HEADERS([unordered_map unordered_set])
 
 # Check for optional header files required to support OS-specific monitors
-AC_CHECK_HEADERS([sys/event.h])
-AC_CHECK_HEADERS([sys/inotify.h])
+
+# Check for OS X FSEvents.  FSEvents added file events in a later release, so
+# this check must be performed separately.
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
-
-# OS X FSEvents added file events in a later release, so this check must be
-# performed separately.
 AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS])
-
-AM_CONDITIONAL([USE_KQUEUE],   [test "x${ac_cv_header_sys_event_h}" = "xyes"])
-AM_CONDITIONAL([USE_INOTIFY],  [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
 AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
+
+# Check for kqueue: if the sys/event.h header is present, perform a check for
+# the kqueue and kevent functions.
+AC_CHECK_HEADERS([sys/event.h])
+AS_VAR_IF([ac_cv_header_sys_event_h], ["yes"], [
+  AS_VAR_SET([KQUEUE_AVAILABLE], ["yes"])
+  AC_CHECK_DECLS(
+    [kqueue, kevent],
+    [],
+    [AS_VAR_SET([KQUEUE_AVAILABLE], ["no"])],
+    [
+      AC_INCLUDES_DEFAULT
+      [#include <sys/event.h>]
+      [#include <sys/types.h>]
+      [#include <sys/time.h>]
+    ]
+  )
+])
+
+AM_CONDITIONAL([USE_KQUEUE], [test "x${KQUEUE_AVAILABLE}" = "xyes"])
+
+# Check for Linux inotify.
+AC_CHECK_HEADERS([sys/inotify.h])
+AM_CONDITIONAL([USE_INOTIFY],  [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
 
 # Some compilers declare to conform to C++11 but the library does not.
 # These OS X versions are known to miss at least the listed headers:
@@ -131,18 +150,6 @@ AC_CHECK_FUNCS([modf],     [], [AC_MSG_ERROR([The modf function cannot be found.
 AC_CHECK_FUNCS([realpath], [], [AC_MSG_ERROR([The realpath function cannot be found.])])
 AC_CHECK_FUNCS([regcomp],  [], [AC_MSG_ERROR([The regcomp function cannot be found.])])
 AC_CHECK_FUNCS([select],   [], [AC_MSG_ERROR([The select function cannot be found.])])
-
-AC_CHECK_DECLS(
-  [kqueue, kevent],
-  [],
-  [],
-  [
-    AC_INCLUDES_DEFAULT
-    [#include <sys/event.h>]
-    [#include <sys/types.h>]
-    [#include <sys/time.h>]
-  ]
-)
 
 AX_CXX_HAVE_THREAD_LOCAL
 
