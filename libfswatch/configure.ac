@@ -58,10 +58,12 @@ AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
 
-# Checks for header files.
-AC_CHECK_HEADERS([cstdlib])
-AC_CHECK_HEADERS([unistd.h])
-AC_CHECK_HEADERS([fcntl.h])
+# Checks for required header files.
+AC_CHECK_HEADERS([cstdlib],  [], [AC_MSG_ERROR([A required header file is missing.])])
+AC_CHECK_HEADERS([unistd.h], [], [AC_MSG_ERROR([A required header file is missing.])])
+AC_CHECK_HEADERS([fcntl.h],  [], [AC_MSG_ERROR([A required header file is missing.])])
+
+# Check for optional header files
 AC_CHECK_HEADERS([sys/event.h])
 AC_CHECK_HEADERS([sys/inotify.h])
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
