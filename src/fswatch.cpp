@@ -17,8 +17,8 @@
 #  include "config.h"
 #endif
 #include "gettext.h"
-#include "fswatch.h"
-#include "fswatch_log.h"
+#include "fswatch.hpp"
+#include "fswatch_log.hpp"
 #include <iostream>
 #include <sstream>
 #include <csignal>
