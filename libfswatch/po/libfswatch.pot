@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: libfswatch 1.5.0.develop\n"
+"Project-Id-Version: libfswatch 1.6.0.develop\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-08-03 11:59+0200\n"
+"POT-Creation-Date: 2015-08-15 17:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,23 +133,23 @@ msgstr ""
 msgid "Error: "
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:62
+#: src/libfswatch/c++/monitor.cpp:58
 msgid "Callback cannot be null."
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:70
+#: src/libfswatch/c++/monitor.cpp:66
 msgid "Latency cannot be negative."
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:103
+#: src/libfswatch/c++/monitor.cpp:99
 msgid "An error occurred during the compilation of "
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:286
+#: src/libfswatch/c++/monitor.cpp:276
 msgid "Notifying events #: "
 msgstr ""
 
-#: src/libfswatch/c++/path_utils.cpp:70
+#: src/libfswatch/c++/path_utils.cpp:71
 msgid "Cannot stat() "
 msgstr ""
 

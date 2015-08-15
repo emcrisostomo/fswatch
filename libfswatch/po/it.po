@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-08-03 11:59+0200\n"
+"POT-Creation-Date: 2015-08-15 17:29+0200\n"
 "PO-Revision-Date: 2015-08-03 12:04+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -133,23 +133,23 @@ msgstr "Evento con EV_ERROR"
 msgid "Error: "
 msgstr "Errore: "
 
-#: src/libfswatch/c++/monitor.cpp:62
+#: src/libfswatch/c++/monitor.cpp:58
 msgid "Callback cannot be null."
 msgstr "Il callback non può essere nullo."
 
-#: src/libfswatch/c++/monitor.cpp:70
+#: src/libfswatch/c++/monitor.cpp:66
 msgid "Latency cannot be negative."
 msgstr "La latenza non può essere negativa."
 
-#: src/libfswatch/c++/monitor.cpp:103
+#: src/libfswatch/c++/monitor.cpp:99
 msgid "An error occurred during the compilation of "
 msgstr "Si è prodotto un errore durante la compilazione di "
 
-#: src/libfswatch/c++/monitor.cpp:286
+#: src/libfswatch/c++/monitor.cpp:276
 msgid "Notifying events #: "
 msgstr "Notificando eventi #: "
 
-#: src/libfswatch/c++/path_utils.cpp:70
+#: src/libfswatch/c++/path_utils.cpp:71
 msgid "Cannot stat() "
 msgstr "Non posso eseguire stat() "
 
