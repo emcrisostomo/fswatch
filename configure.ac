@@ -67,6 +67,9 @@ AX_CXXFLAGS_WARN_ALL
 # Checks for libraries.
 
 # Checks for header files.
+AC_CHECK_HEADERS([unistd.h])
+AS_VAR_IF([ac_cv_header_unistd_h], ["yes"], [], [AC_MSG_ERROR([The unistd.h header cannot be found.])])
+
 AC_CHECK_HEADERS([getopt.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -76,9 +79,10 @@ AC_CHECK_HEADER_STDBOOL
 # Checks for library functions.
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([atexit],    [], [AC_MSG_ERROR([The atexit function cannot be found.])])
-AC_CHECK_FUNCS([getopt_long])
 AC_CHECK_FUNCS([realpath],  [], [AC_MSG_ERROR([The realpath function cannot be found.])])
 AC_CHECK_FUNCS([setlocale], [], [AC_MSG_ERROR([The setlocale function cannot be found.])])
+
+AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])
 
 # Variables used in man files
 MAN_DATE=$(date +'%B %d, %Y')
