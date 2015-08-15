@@ -20,6 +20,8 @@ autom4te.cache/
 nbproject/
 
 # GNU Build System
+autoscan.log
+configure.scan
 .deps
 Makefile
 Makefile.in
