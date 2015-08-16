@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for fswatch (version 1.5.1,
+16 August 2015), a cross-platform file change monitor with multiple
+backends, including Apple OS X File System Events API, *BSD kqueue,
+Linux inotify and a stat-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'. -->
+<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>fswatch 1.5.1: Introduction</title>
+
+<meta name="description" content="fswatch 1.5.1: Introduction">
+<meta name="keywords" content="fswatch 1.5.1: Introduction">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="Tutorial-Introduction-to-fswatch.html#Tutorial-Introduction-to-fswatch" rel="next" title="Tutorial Introduction to fswatch">
+<link href="History.html#History" rel="prev" title="History">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space: nowrap}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: serif; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="Introduction"></a>
+<div class="header">
+<p>
+Next: <a href="Tutorial-Introduction-to-fswatch.html#Tutorial-Introduction-to-fswatch" accesskey="n" rel="next">Tutorial Introduction to <code>fswatch</code></a>, Previous: <a href="History.html#History" accesskey="p" rel="prev">History</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="Introduction-1"></a>
+<h2 class="chapter">2 Introduction</h2>
+<p><code>fswatch</code> is a file change monitor that receives notifications
+when the contents of the specified files or directories are modified.
+<code>fswatch</code> implements four kinds of monitors:
+</p>
+<ul>
+<li> <a name="index-File-System-Events_002c-see-FSEvents"></a>
+<a name="index-FSEvents_002c-API"></a>
+<a name="index-monitor_002c-FSEvents"></a>
+A monitor based on the File System Events API of Apple OS X.
+
+</li><li> <a name="index-FreeBSD"></a>
+<a name="index-BSD"></a>
+<a name="index-kqueue"></a>
+<a name="index-monitor_002c-kqueue"></a>
+A monitor based on kqueue, an event notification interface introduced
+in FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+
+</li><li> <a name="index-inotify"></a>
+<a name="index-Linux"></a>
+<a name="index-monitor_002c-inotify"></a>
+A monitor based on inotify, a Linux kernel subsystem that reports file
+system changes to applications.
+
+</li><li> <a name="index-monitor_002c-poll"></a>
+<a name="index-stat"></a>
+A monitor which periodically stats the file system, saves file
+modification times in memory and manually calculates file system
+changes, which can work on any operating system where stat (2) can be
+used.
+</li></ul>
+
+<p><code>fswatch</code> should build and work correctly on any system
+shipping either of the aforementioned APIs.
+</p>
+<a name="History-and-fswatch-Authors"></a>
+<h3 class="section">2.1 History and <code>fswatch</code> Authors</h3>
+<a name="index-authors"></a>
+<a name="index-fswatch"></a>
+<a name="index-fswatch_002c-initial-version"></a>
+<a name="index-FSEvents"></a>
+<p>Alan <small>DIPERT</small> wrote the first implementation of <code>fswatch</code>
+in 2009.  This version ran exclusively on OS X and relied on the
+<em>FSEvents</em> API to get change events from the OS.
+</p>
+<a name="index-fsw"></a>
+<a name="index-FSEvents-1"></a>
+<a name="index-kqueue-1"></a>
+<a name="index-inotify-1"></a>
+<p>At the end of 2013 Enrico M. <small>CRISOSTOMO</small> wrote <code>fsw</code>
+aiming at providing not only a drop-in replacement for
+<code>fswatch</code>, but also a common front-end from multiple file
+system change events APIs, including:
+</p><ul>
+<li> OS X FSEvents.
+
+</li><li> *BSD kqueue.
+
+</li><li> Linux inotify.
+</li></ul>
+
+<a name="index-fsw_002c-merging-with-fswatch"></a>
+<a name="index-fswatch_002c-merging-with-fsw"></a>
+<p>In April 2014 Alan and Enrico, in the best interest of users of either
+<code>fswatch</code> and <code>fsw</code>, agreed on merging the two
+programs together.  At the same time, Enrico was taking over
+<code>fswatch</code> as a maintainer.
+</p>
+<p>As a consequence, development of <code>fswatch</code> will continue on
+its main repository while the <code>fsw</code> repository will likely be
+frozen and its documentation updated to redirect users to
+<code>fswatch</code>.
+</p>
+<a name="Reporting-Bugs-and-Suggestions-1"></a>
+<h3 class="section">2.2 Reporting Bugs and Suggestions</h3>
+<a name="Reporting-Bugs-and-Suggestions"></a><a name="index-bug"></a>
+<a name="index-bug-report"></a>
+<a name="index-GitHub"></a>
+<a name="index-fswatch_002c-repository"></a>
+<a name="index-fswatch_002c-source-code"></a>
+<p>If you find problems or have suggestions about this program or this
+manual, please report them as new issues in the official GitHub
+repository of <code>fswatch</code> at
+<a href="https://github.com/emcrisostomo/fswatch">https://github.com/emcrisostomo/fswatch</a>.  If you wish, you may
+contact the authors at the addresses listed in the <samp>AUTHORS</samp>
+file.
+</p>
+<p>When reporting a bug, please be sure to include as much detail as
+possible.
+</p>
+<hr>
+<div class="header">
+<p>
+Next: <a href="Tutorial-Introduction-to-fswatch.html#Tutorial-Introduction-to-fswatch" accesskey="n" rel="next">Tutorial Introduction to <code>fswatch</code></a>, Previous: <a href="History.html#History" accesskey="p" rel="prev">History</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
