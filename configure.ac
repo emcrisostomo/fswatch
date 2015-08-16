@@ -37,24 +37,24 @@ TARGET_OS=$target_os
 AC_SUBST([TARGET_VENDOR])
 AC_SUBST([TARGET_OS])
 
-# Other packages
+# Other packages.
 AC_CONFIG_SUBDIRS([libfswatch])
 
-# Initialize Automake
+# Initialize Automake.
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
-# Configure language
+# Configure language.
 AC_LANG(C++)
 AC_PROG_CXX([clang++ g++])
 
-# Initialize libtool
+# Initialize libtool.
 LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
-# Initialize gettext
+# Initialize gettext.
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.19.4])
 
@@ -70,6 +70,7 @@ AX_CXXFLAGS_WARN_ALL
 AC_CHECK_HEADERS([unistd.h])
 AS_VAR_IF([ac_cv_header_unistd_h], ["yes"], [], [AC_MSG_ERROR([The unistd.h header cannot be found.])])
 
+# Check for optional header files.
 AC_CHECK_HEADERS([getopt.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -82,9 +83,10 @@ AC_CHECK_FUNCS([atexit],    [], [AC_MSG_ERROR([The atexit function cannot be fou
 AC_CHECK_FUNCS([realpath],  [], [AC_MSG_ERROR([The realpath function cannot be found.])])
 AC_CHECK_FUNCS([setlocale], [], [AC_MSG_ERROR([The setlocale function cannot be found.])])
 
+# Check for optional library functions.
 AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])
 
-# Variables used in man files
+# Variables used in man files.
 MAN_DATE=$(date +'%B %d, %Y')
 FSWATCH=${PACKAGE_NAME}
 MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
