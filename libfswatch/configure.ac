@@ -41,6 +41,10 @@ AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
+# Configure language
+AC_LANG(C++)
+AC_PROG_CXX([clang++ g++])
+
 # Initialize libtool
 LT_PREREQ([2.4.2])
 LT_INIT
@@ -51,10 +55,6 @@ AM_CONDITIONAL([OS_CYGWIN], [test "${target_os}" = "cygwin"])
 
 # Set library interface version
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
-
-# Configure language
-AC_LANG(C++)
-AC_PROG_CXX([clang++ g++])
 
 # Checks for programs.
 
@@ -68,23 +68,45 @@ AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
 
-# Checks for header files.
-AC_CHECK_HEADERS([stdlib.h])
-AC_CHECK_HEADERS([unistd.h])
-AC_CHECK_HEADERS([fcntl.h])
-AC_CHECK_HEADERS([sys/event.h])
-AC_CHECK_HEADERS([sys/inotify.h])
-AC_CHECK_HEADERS([CoreServices/CoreServices.h])
+# Checks for required header files.
+AC_CHECK_HEADERS([cstdlib],  [], [AC_MSG_ERROR([A required header file is missing.])])
+AC_CHECK_HEADERS([unistd.h], [], [AC_MSG_ERROR([A required header file is missing.])])
+AC_CHECK_HEADERS([fcntl.h],  [], [AC_MSG_ERROR([A required header file is missing.])])
+
+# Check for optional header files
 AC_CHECK_HEADERS([unordered_map unordered_set])
 
-AM_CONDITIONAL([USE_KQUEUE], [test "x${ac_cv_header_sys_event_h}" = "xyes"])
-AM_CONDITIONAL([USE_INOTIFY], [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
+# Check for optional header files required to support OS-specific monitors
 
-if test "x${ac_cv_header_CoreServices_CoreServices_h}" = "xyes" ; then
-  AX_FSEVENTS_HAVE_FILE_EVENTS
-fi
-
+# Check for OS X FSEvents.  FSEvents added file events in a later release, so
+# this check must be performed separately.
+AC_CHECK_HEADERS([CoreServices/CoreServices.h])
+AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS])
 AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xyes"])
+
+# Check for kqueue: if the sys/event.h header is present, perform a check for
+# the kqueue and kevent functions.
+AC_CHECK_HEADERS([sys/event.h])
+AS_VAR_IF([ac_cv_header_sys_event_h], ["yes"], [
+  AS_VAR_SET([KQUEUE_AVAILABLE], ["yes"])
+  AC_CHECK_DECLS(
+    [kqueue, kevent],
+    [],
+    [AS_VAR_SET([KQUEUE_AVAILABLE], ["no"])],
+    [
+      AC_INCLUDES_DEFAULT
+      [#include <sys/event.h>]
+      [#include <sys/types.h>]
+      [#include <sys/time.h>]
+    ]
+  )
+])
+
+AM_CONDITIONAL([USE_KQUEUE], [test "x${KQUEUE_AVAILABLE}" = "xyes"])
+
+# Check for Linux inotify.
+AC_CHECK_HEADERS([sys/inotify.h])
+AM_CONDITIONAL([USE_INOTIFY],  [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
 
 # Some compilers declare to conform to C++11 but the library does not.
 # These OS X versions are known to miss at least the listed headers:
@@ -95,8 +117,8 @@ AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_file_events}" = "xy
 AC_CHECK_HEADER([mutex])
 
 if test "x${ac_cv_header_mutex}" = "xyes" ; then
-  AC_DEFINE(HAVE_CXX_MUTEX,
-    1,
+  AC_DEFINE([HAVE_CXX_MUTEX],
+    [1],
     [Define if <mutex> is available.])
 else
   AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
@@ -105,6 +127,7 @@ fi
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
 AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
 AC_TYPE_UINT32_T
 AC_TYPE_MODE_T
 
@@ -125,34 +148,25 @@ AC_CHECK_MEMBERS([struct stat.st_mtimespec],
   ])
 
 AC_CHECK_TYPE([std::unique_ptr<std::string>],
-  [AC_DEFINE(HAVE_CXX_UNIQUE_PTR,
-    1,
+  [AC_DEFINE([HAVE_CXX_UNIQUE_PTR],
+    [1],
     [Define if std::unique_ptr in <memory> is available.])],
   [],
   [[#include <memory>]])
 
 # Checks for library functions.
-AC_CHECK_FUNCS([realpath], [], AC_MSG_ERROR([The realpath function cannot be found.]))
-AC_CHECK_FUNCS([modf], [], AC_MSG_ERROR([The modf function cannot be found.]))
-AC_CHECK_FUNCS([select], [], AC_MSG_ERROR([The select function cannot be found.]))
-AC_CHECK_FUNCS([regcomp])
-
-AC_CHECK_DECLS(
-  [kqueue, kevent],
-  [],
-  [],
-  [
-    AC_INCLUDES_DEFAULT
-    [#include <sys/event.h>]
-    [#include <sys/types.h>]
-    [#include <sys/time.h>]
-  ]
-)
+AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+AC_CHECK_FUNCS([modf],     [], [AC_MSG_ERROR([The modf function cannot be found.])])
+AC_CHECK_FUNCS([realpath], [], [AC_MSG_ERROR([The realpath function cannot be found.])])
+AC_CHECK_FUNCS([regcomp],  [], [AC_MSG_ERROR([The regcomp function cannot be found.])])
+AC_CHECK_FUNCS([select],   [], [AC_MSG_ERROR([The select function cannot be found.])])
 
 AX_CXX_HAVE_THREAD_LOCAL
 
-if ! test "x${ax_cv_cxx_have_thread_local}" = "xyes" ; then
-  AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier].)
-fi
+AS_VAR_IF(
+  [ax_cv_cxx_have_thread_local],
+  ["yes"],
+  [],
+  [AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier.])])
 
 AC_OUTPUT

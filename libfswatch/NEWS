@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.5.1:
+
+  * Fixes Issue 91: Can't compile fswatch 1.5.0 on FreeBSD 9.3-RELEASE.
+
 New in 1.5.0:
 
   * Fix issue 46: Allow filtering by event type.
@@ -14,8 +18,40 @@ New in 1.4.6:
 
   * Fix issue 74: Assertion failed on fsw_destroy_session.
 
+New in 1.4.5.3:
+
+  * Fix issue 67: 100% CPU usage while using libfswatch.  This issue only
+    affects the inotify monitor, available only on Linux.
+
+New in 1.4.5.2:
+
+  * Fix issue 66: Exclude items with poll_monitor not considered.
+
+New in 1.4.4:
+
+  * Localize fswatch and libfswatch using GNU gettext.
+  * Add Italian (it) localization.
+  * Add Spanish (es) localization.
+
+New in 1.4.3:
+
+  * Add Texinfo documentation.
+  * libfswatch API is now versioned.
+  * Improved Autoconf checks.
+  * The inotify monitor now waits for events and honours the latency settings.
+  * Automaticaly generate the ChangeLog using Git.
+  * Update autogen.sh to honour some commonly used environment variables.
+
+New in 1.4.2:
+
+  * The inotify monitor now provides the same functionality provided by all the
+    other monitors.  Recursive directory monitoring is now implemented.
+  * Version and revision is now determined dynamically from Git by ancillary
+    scripts invoked by the GNU Build System.
+
 New in 1.4.0:
 
+  * The libfswatch library has been added with bindings for C and C++.
   * Move monitors to separate library.
   * Provide a libtool-configured library exposing the functionality of fswatch
     monitors.

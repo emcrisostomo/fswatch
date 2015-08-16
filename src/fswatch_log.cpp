@@ -13,8 +13,8 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "fswatch_log.h"
-#include "fswatch.h"
+#include "fswatch_log.hpp"
+#include "fswatch.hpp"
 #include <iostream>
 
 using namespace std;

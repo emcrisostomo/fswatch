@@ -26,6 +26,7 @@ AC_CONFIG_SRCDIR([src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile po/Makefile.in])
+AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -36,24 +37,24 @@ TARGET_OS=$target_os
 AC_SUBST([TARGET_VENDOR])
 AC_SUBST([TARGET_OS])
 
-# Other packages
+# Other packages.
 AC_CONFIG_SUBDIRS([libfswatch])
 
-# Initialize Automake
+# Initialize Automake.
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
-# Initialize libtool
+# Configure language.
+AC_LANG(C++)
+AC_PROG_CXX([clang++ g++])
+
+# Initialize libtool.
 LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
-# Configure language
-AC_LANG(C++)
-AC_PROG_CXX([clang++ g++])
-
-# Initialize gettext
+# Initialize gettext.
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.19.4])
 
@@ -66,35 +67,31 @@ AX_CXXFLAGS_WARN_ALL
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([unistd.h])
+AS_VAR_IF([ac_cv_header_unistd_h], ["yes"], [], [AC_MSG_ERROR([The unistd.h header cannot be found.])])
+
+# Check for optional header files.
 AC_CHECK_HEADERS([getopt.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_SIZE_T
 AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
 AC_FUNC_STRTOD
-AC_CHECK_FUNCS([atexit], [], AC_MSG_ERROR([The atexit function cannot be found.]))
-AC_CHECK_FUNCS([getopt_long])
-AC_CHECK_FUNCS([realpath], [], AC_MSG_ERROR([The realpath function cannot be found.]))
-AC_CHECK_FUNCS([regcomp])
+AC_CHECK_FUNCS([atexit],    [], [AC_MSG_ERROR([The atexit function cannot be found.])])
+AC_CHECK_FUNCS([realpath],  [], [AC_MSG_ERROR([The realpath function cannot be found.])])
+AC_CHECK_FUNCS([setlocale], [], [AC_MSG_ERROR([The setlocale function cannot be found.])])
 
-# Variables used in man files
+# Check for optional library functions.
+AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])
+
+# Variables used in man files.
 MAN_DATE=$(date +'%B %d, %Y')
 FSWATCH=${PACKAGE_NAME}
 MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
 AC_SUBST([MAN_DATE])
 AC_SUBST([FSWATCH])
 AC_SUBST([MAN_BUG_REPORT])
-
-# Variables used in gettext management scripts
-PO_BUG_REPORT=${PACKAGE_BUGREPORT}
-PO_PACKAGE_NAME=${PACKAGE_NAME}
-PO_PACKAGE_VERSION=${PACKAGE_VERSION}
-AC_SUBST([PO_BUG_REPORT])
-AC_SUBST([PO_PACKAGE_NAME])
-AC_SUBST([PO_PACKAGE_VERSION])
-
-AC_CONFIG_FILES([man/fswatch.7])
 
 AC_OUTPUT

@@ -68,20 +68,20 @@ libfswatch_c_HEADERS += c/error.h
 libfswatch_c_HEADERS += c/libfswatch_log.h
 
 # Distribute C++ headers conditionally adding available backends.
-libfswatch_cpp_HEADERS  = c++/monitor.h
-libfswatch_cpp_HEADERS += c++/libfswatch_map.h
-libfswatch_cpp_HEADERS += c++/libfswatch_set.h
-libfswatch_cpp_HEADERS += c++/path_utils.h
+libfswatch_cpp_HEADERS  = c++/monitor.hpp
+libfswatch_cpp_HEADERS += c++/libfswatch_map.hpp
+libfswatch_cpp_HEADERS += c++/libfswatch_set.hpp
+libfswatch_cpp_HEADERS += c++/path_utils.hpp
 if USE_FSEVENTS
-  libfswatch_cpp_HEADERS += c++/fsevents_monitor.h
+  libfswatch_cpp_HEADERS += c++/fsevents_monitor.hpp
 endif
 if USE_KQUEUE
-  libfswatch_cpp_HEADERS += c++/kqueue_monitor.h
+  libfswatch_cpp_HEADERS += c++/kqueue_monitor.hpp
 endif
 if USE_INOTIFY
-  libfswatch_cpp_HEADERS += c++/inotify_monitor.h
+  libfswatch_cpp_HEADERS += c++/inotify_monitor.hpp
 endif
-libfswatch_cpp_HEADERS += c++/poll_monitor.h
-libfswatch_cpp_HEADERS += c++/filter.h
-libfswatch_cpp_HEADERS += c++/event.h
-libfswatch_cpp_HEADERS += c++/libfswatch_exception.h
+libfswatch_cpp_HEADERS += c++/poll_monitor.hpp
+libfswatch_cpp_HEADERS += c++/filter.hpp
+libfswatch_cpp_HEADERS += c++/event.hpp
+libfswatch_cpp_HEADERS += c++/libfswatch_exception.hpp

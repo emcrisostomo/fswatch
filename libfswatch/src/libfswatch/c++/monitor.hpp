@@ -16,14 +16,14 @@
 #ifndef FSW__MONITOR_H
 #  define FSW__MONITOR_H
 
-#  include "filter.h"
+#  include "filter.hpp"
 #  include <vector>
 #  include <string>
 #  ifdef HAVE_CXX_MUTEX
 #    include <mutex>
 #  endif
 #  include <map>
-#  include "event.h"
+#  include "event.hpp"
 #  include "../c/cmonitor.h"
 
 namespace fsw

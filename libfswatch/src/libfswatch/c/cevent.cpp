@@ -19,7 +19,7 @@
 
 #include "libfswatch_mem.h"
 #include "cevent.h"
-#include "../c++/event.h"
+#include "../c++/event.hpp"
 #include <cstring>
 
 using namespace std;

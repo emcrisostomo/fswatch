@@ -18,7 +18,7 @@
 #endif
 
 #include "gettext_defs.h"
-#include "inotify_monitor.h"
+#include "inotify_monitor.hpp"
 #include <limits.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -26,11 +26,11 @@
 #include <ctime>
 #include <cmath>
 #include <sys/select.h>
-#include "libfswatch_exception.h"
+#include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
-#include "libfswatch_map.h"
-#include "libfswatch_set.h"
-#include "path_utils.h"
+#include "libfswatch_map.hpp"
+#include "libfswatch_set.hpp"
+#include "path_utils.hpp"
 
 using namespace std;
 

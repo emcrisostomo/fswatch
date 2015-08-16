@@ -16,7 +16,7 @@
 #ifndef FSW_POLL_MONITOR_H
 #  define FSW_POLL_MONITOR_H
 
-#  include "monitor.h"
+#  include "monitor.hpp"
 #  include <sys/stat.h>
 #  include <ctime>
 
