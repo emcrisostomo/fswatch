@@ -1,5 +1,6 @@
 # Binaries
 fswatch
+fswatch.exe
 .libs
 *.lo
 *.o
