@@ -108,6 +108,24 @@ AM_CONDITIONAL([USE_KQUEUE], [test "x${KQUEUE_AVAILABLE}" = "xyes"])
 AC_CHECK_HEADERS([sys/inotify.h])
 AM_CONDITIONAL([USE_INOTIFY],  [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
 
+# Check for Microsoft Windows directory change notification API
+AC_CHECK_HEADERS([windows.h])
+AS_VAR_IF([ac_cv_header_windows_h], ["yes"], [
+  AS_VAR_SET([WINDOWS_AVAILABLE], ["yes"])
+  AC_CHECK_DECLS(
+    [FindFirstChangeNotification, FindNextChangeNotification, WaitForSingleObject],
+    [],
+    [AS_VAR_SET([WINDOWS_AVAILABLE], ["no"])],
+    [
+      AC_INCLUDES_DEFAULT
+      [#include <windows.h>]
+    ]
+  )
+])
+
+AM_CONDITIONAL([USE_WINDOWS], [test "x${WINDOWS_AVAILABLE}" = "xyes"])
+AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_WINDOWS], [1], [Windows API present.])])
+
 # Some compilers declare to conform to C++11 but the library does not.
 # These OS X versions are known to miss at least the listed headers:
 #   - 10.6 Snow Leopard: mutex, atomic
