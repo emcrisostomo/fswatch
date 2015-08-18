@@ -86,56 +86,70 @@ namespace fsw
     }
   }
 
+
+  typedef struct DirectoryChangeEvent
+  {
+    HANDLE handle;
+    DWORD nBufferLength;
+    size_t bufferSize;
+    DWORD bytesReturned;
+    unique_ptr<void, decltype(::free)*> lpBuffer = {nullptr, ::free};
+    OVERLAPPED overlapped;
+
+    DirectoryChangeEvent() : handle(), nBufferLength(16),
+                             bufferSize(sizeof(FILE_NOTIFY_INFORMATION) * nBufferLength),
+                             bytesReturned(), overlapped()
+    {
+      lpBuffer.reset(::malloc(bufferSize));
+      if (lpBuffer.get() == nullptr) throw libfsw_exception(_("::malloc failed."));
+    }
+  } DirectoryChangeEvent;
+
   void windows_monitor::run()
   {
     initialize_windows_path_list();
 
-    const DWORD nBufferLength = 16;
-    DWORD bytesReturned;
-    auto lpBuffer = unique_ptr<void, decltype(::free)*> {
-        ::malloc(sizeof(FILE_NOTIFY_INFORMATION) * nBufferLength),
-        ::free
-      };
-    if (lpBuffer.get() == nullptr) throw libfsw_exception(_("::malloc failed."));
+    DirectoryChangeEvent dce;
 
     while (true)
     {
       for (const auto & path : load->win_paths)
       {
-        HANDLE h = CreateFileW(path.c_str(),
-                               GENERIC_READ,
-                               FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
-                               nullptr, OPEN_EXISTING,
-                               FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
-                               nullptr);
+        dce.handle = CreateFileW(path.c_str(),
+                                 GENERIC_READ,
+                                 FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                 nullptr, OPEN_EXISTING,
+                                 FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
+                                 nullptr);
 
-        if (h == INVALID_HANDLE_VALUE)
+        if (dce.handle == INVALID_HANDLE_VALUE)
         {
           wcerr << L"Invalid handle when opening " << path << endl;
           continue;
         }
 
-        OVERLAPPED overlapped = {};
-        overlapped.hEvent = CreateEvent(nullptr,
-                                        TRUE,
-                                        FALSE,
-                                        nullptr);
-        if (overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
+        dce.overlapped.hEvent = CreateEvent(nullptr,
+                                            TRUE,
+                                            FALSE,
+                                            nullptr);
+        if (dce.overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
-        BOOL b = ReadDirectoryChangesW(h,
-                                       lpBuffer.get(),
-                                       nBufferLength * sizeof(FILE_NOTIFY_INFORMATION),
+        while (true)
+        {
+        BOOL b = ReadDirectoryChangesW(dce.handle,
+                                       dce.lpBuffer.get(),
+                                       dce.bufferSize,
                                        TRUE,
                                        FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
                                        FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
-                                       &bytesReturned,
-                                       &overlapped,
+                                       &dce.bytesReturned,
+                                       &dce.overlapped,
                                        nullptr);
 
         if (!b) throw libfsw_exception(_("ReadDirectoryChangesW failed."));
 
-        BOOL res = GetOverlappedResult(h, &overlapped, &bytesReturned, TRUE);
-        if (res == FALSE || bytesReturned == 0)
+        BOOL res = GetOverlappedResult(dce.handle, &dce.overlapped, &dce.bytesReturned, TRUE);
+        if (res == FALSE || dce.bytesReturned == 0)
         {
           LPWSTR pTemp = nullptr;
           DWORD retSize = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ARGUMENT_ARRAY,
@@ -157,7 +171,7 @@ namespace fsw
           }
         }
 
-        FILE_NOTIFY_INFORMATION * currEntry = static_cast<FILE_NOTIFY_INFORMATION *>(lpBuffer.get());
+        FILE_NOTIFY_INFORMATION * currEntry = static_cast<FILE_NOTIFY_INFORMATION *>(dce.lpBuffer.get());
 
         while (currEntry != nullptr)
         {
@@ -171,6 +185,7 @@ namespace fsw
             LocalFree(stringBuffer);
           }
           currEntry = (currEntry->NextEntryOffset == 0) ? nullptr : currEntry + currEntry->NextEntryOffset;
+        }
         }
       }
     }
