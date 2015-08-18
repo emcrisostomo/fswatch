@@ -109,11 +109,11 @@ AC_CHECK_HEADERS([sys/inotify.h])
 AM_CONDITIONAL([USE_INOTIFY],  [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
 
 # Check for Microsoft Windows directory change notification API
-AC_CHECK_HEADERS([windows.h])
-AS_VAR_IF([ac_cv_header_windows_h], ["yes"], [
-  AS_VAR_SET([WINDOWS_AVAILABLE], ["yes"])
+AS_VAR_SET([WINDOWS_AVAILABLE], ["yes"])
+AC_CHECK_HEADERS([windows.h sys/cygwin.h], [], [AS_VAR_SET([WINDOWS_AVAILABLE], ["no"])])
+AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
   AC_CHECK_DECLS(
-    [FindFirstChangeNotification, FindNextChangeNotification, WaitForSingleObject],
+    [FindFirstChangeNotification, FindNextChangeNotification, FindCloseChangeNotification, WaitForSingleObject, ReadDirectoryChangesW],
     [],
     [AS_VAR_SET([WINDOWS_AVAILABLE], ["no"])],
     [

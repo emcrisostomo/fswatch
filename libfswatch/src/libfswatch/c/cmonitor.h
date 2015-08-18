@@ -34,6 +34,7 @@ extern "C"
     fsevents_monitor_type,
     kqueue_monitor_type,
     inotify_monitor_type,
+    windows_monitor_type,
     poll_monitor_type
   };
 

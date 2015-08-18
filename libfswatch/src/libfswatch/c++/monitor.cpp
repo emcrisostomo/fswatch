@@ -36,6 +36,9 @@
 #if defined(HAVE_SYS_INOTIFY_H)
 #  include "inotify_monitor.hpp"
 #endif
+#if defined(HAVE_WINDOWS)
+#  include "windows_monitor.hpp"
+#endif
 #include "poll_monitor.hpp"
 
 using namespace std;
@@ -188,6 +191,8 @@ namespace fsw
     return new kqueue_monitor(paths, callback, context);
 #elif defined(HAVE_SYS_INOTIFY_H)
     return new inotify_monitor(paths, callback, context);
+#elif defined(HAVE_WINDOWS)
+    return new windows_monitor(paths, callback, context);
 #else
     return new poll_monitor(paths, callback, context);
 #endif
@@ -224,6 +229,13 @@ namespace fsw
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
 #endif
 
+    case windows_monitor_type:
+#if defined(HAVE_WINDOWS)
+      return new windows_monitor(paths, callback, context);
+#else
+      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
+#endif
+
     case poll_monitor_type:
       return new poll_monitor(paths, callback, context);
 
@@ -244,7 +256,7 @@ namespace fsw
   {
     // If there is nothing to filter, just return the original vector.
     if (event_type_filters.size() == 0) return evt.get_flags();
-    
+
     vector<fsw_event_flag> filtered_flags;
 
     for (auto const & flag : evt.get_flags())
