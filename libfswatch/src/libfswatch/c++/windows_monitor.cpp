@@ -106,13 +106,21 @@ namespace fsw
                                GENERIC_READ,
                                FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
                                nullptr, OPEN_EXISTING,
-                               FILE_FLAG_BACKUP_SEMANTICS,
+                               FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
                                nullptr);
+
         if (h == INVALID_HANDLE_VALUE)
         {
           wcerr << L"Invalid handle when opening " << path << endl;
           continue;
         }
+
+        OVERLAPPED overlapped = {};
+        overlapped.hEvent = CreateEvent(nullptr,
+                                        TRUE,
+                                        FALSE,
+                                        nullptr);
+        if (overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
         BOOL b = ReadDirectoryChangesW(h,
                                        lpBuffer.get(),
@@ -121,13 +129,14 @@ namespace fsw
                                        FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
                                        FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
                                        &bytesReturned,
-                                       nullptr,
+                                       &overlapped,
                                        nullptr);
 
         if (!b) throw libfsw_exception(_("ReadDirectoryChangesW failed."));
-        if (bytesReturned == 0)
+
+        BOOL res = GetOverlappedResult(h, &overlapped, &bytesReturned, TRUE);
+        if (res == FALSE || bytesReturned == 0)
         {
-          cout << "Emtpy result set." << endl;
           LPWSTR pTemp = nullptr;
           DWORD retSize = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ARGUMENT_ARRAY,
                                          NULL,
@@ -142,8 +151,10 @@ namespace fsw
             wcerr << pTemp << endl;
             LocalFree(pTemp);
           }
-
-          continue;
+          else
+          {
+            cerr << "Cannot format system error message." << endl;
+          }
         }
 
         FILE_NOTIFY_INFORMATION * currEntry = static_cast<FILE_NOTIFY_INFORMATION *>(lpBuffer.get());
