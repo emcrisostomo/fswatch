@@ -48,6 +48,12 @@ namespace fsw
   class WinErrorMessage
   {
   public:
+    static WinErrorMessage current()
+    {
+      WinErrorMessage current;
+      return std::move(current);
+    }
+
     WinErrorMessage(DWORD errCode) : errCode{errCode}{}
     WinErrorMessage() : errCode{GetLastError()}{}
 
@@ -72,14 +78,14 @@ namespace fsw
       }
       else
       {
-        msg = L"Cannot format system error message.";
+        msg = L"The system error message could not be formatted.";
       }
 
       return msg;
     }
 
     operator wstring() const { return get_message(); }
-    
+
   private:
     mutable bool initialized = false;
     mutable wstring msg;
@@ -236,7 +242,7 @@ namespace fsw
     }
   }
 
-  
+
   void windows_monitor::run()
   {
     initialize_windows_path_list();
@@ -265,8 +271,7 @@ namespace fsw
           BOOL res = GetOverlappedResult(dce.handle, &dce.overlapped, &dce.bytesReturned, TRUE);
           if (!res || dce.bytesReturned == 0)
           {
-            WinErrorMessage error;
-            wcerr << (wstring)error << endl;
+            wcerr << (wstring)WinErrorMessage::current() << endl;
             continue;
           }
 
