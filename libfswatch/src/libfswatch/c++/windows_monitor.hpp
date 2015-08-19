@@ -43,6 +43,7 @@ namespace fsw
 
     void initialize_windows_path_list();
     bool is_path_watched(const std::wstring path) const;
+    void initial_scan();
 
     // initial load
     windows_monitor_load * load;

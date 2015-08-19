@@ -48,6 +48,11 @@ namespace fsw
   class CHandle
   {
   public:
+    static bool is_valid(const HANDLE & handle)
+    {
+      return (handle != INVALID_HANDLE_VALUE);
+    }
+
     CHandle() : h(INVALID_HANDLE_VALUE){}
     CHandle(HANDLE handle) : h(handle){}
 
@@ -63,7 +68,7 @@ namespace fsw
 
     bool is_valid() const
     {
-      return (h != INVALID_HANDLE_VALUE);
+      return CHandle::is_valid(h);
     }
 
     CHandle(const CHandle&) = delete;
@@ -159,57 +164,49 @@ namespace fsw
     }
   }
 
-  void windows_monitor::run()
+  void windows_monitor::initial_scan()
   {
-    initialize_windows_path_list();
-
-    // DirectoryChangeEvent target;
+    for (const auto & path : load->win_paths)
     {
-      DirectoryChangeEvent dcee;
-      // dcee.handle = std::move(CHandle((HANDLE)22));
-
-      // if (dce.lpBuffer == nullptr) cout << "Source null!" << endl;
-      // else cout << "Source not null!" << endl;
-
-      // if (target.lpBuffer == nullptr) cout << "Target null!" << endl;
-      // else cout << "Target not null!" << endl;
-
-      load->dce_by_path[L"aaa"] = std::move(dcee);
-      cout << "Moving DCE finished." << endl;
-    }
-
-    DirectoryChangeEvent & dce = load->dce_by_path[L"aaa"];
-
-    while (true)
-    {
-      for (const auto & path : load->win_paths)
+      HANDLE h = CreateFileW(path.c_str(),
+                             GENERIC_READ,
+                             FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
+                             nullptr, OPEN_EXISTING,
+                             FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
+                             nullptr);
+      if (!CHandle::is_valid(h))
       {
-        HANDLE h = CreateFileW(path.c_str(),
-                               GENERIC_READ,
-                               FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
-                               nullptr, OPEN_EXISTING,
-                               FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
-                               nullptr);
-        dce.handle = h;
+        // To do: format error message
+        wcerr << L"Invalid handle when opening " << path << endl;
+        continue;
+      }
 
-        cout << "Create file handle: " << (HANDLE)dce.handle << endl;
-
-        if (!dce.handle.is_valid())
-        {
-          // To do: format error message
-          wcerr << L"Invalid handle when opening " << path << endl;
-          continue;
-        }
-
-        dce.overlapped.hEvent = CreateEvent(nullptr,
+      DirectoryChangeEvent dce;
+      dce.handle = h;
+      dce.overlapped.hEvent = CreateEvent(nullptr,
                                             TRUE,
                                             FALSE,
                                             nullptr);
 
-        if (dce.overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
+      if (dce.overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
+      load->dce_by_path[path] = std::move(dce);
+    }
+  }
+
+  void windows_monitor::run()
+  {
+    initialize_windows_path_list();
+    initial_scan();
+
+    while (true)
+    {
+      for (auto path_dce_pair = load->dce_by_path.begin(); path_dce_pair != load->dce_by_path.end(); path_dce_pair++)
+      {
         while (true)
         {
+          DirectoryChangeEvent & dce = path_dce_pair->second;
+
           BOOL b = ReadDirectoryChangesW((HANDLE)dce.handle,
                                          dce.lpBuffer.get(),
                                          dce.bufferSize,
