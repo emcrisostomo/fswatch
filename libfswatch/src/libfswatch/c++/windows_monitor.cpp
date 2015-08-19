@@ -69,10 +69,18 @@ namespace fsw
     CHandle(const CHandle&) = delete;
     CHandle& operator=(const CHandle&) = delete;
 
+    CHandle& operator=(const HANDLE& handle)
+    {
+      if (is_valid()) CloseHandle(h);
+
+      h = handle;
+
+      return *this;
+    }
+
     CHandle(CHandle&& other)
     {
       h = other.h;
-
       other.h = INVALID_HANDLE_VALUE;
     }
 
