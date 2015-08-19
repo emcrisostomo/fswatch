@@ -45,6 +45,47 @@ namespace fsw
 {
   REGISTER_MONITOR_IMPL(windows_monitor, windows_monitor_type);
 
+  class WinErrorMessage
+  {
+  public:
+    WinErrorMessage(DWORD errCode) : errCode{errCode}{}
+    WinErrorMessage() : errCode{GetLastError()}{}
+
+    wstring get_message() const
+    {
+      if (initialized) return msg;
+      initialized = true;
+
+      LPWSTR pTemp = nullptr;
+      DWORD retSize = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                     NULL,
+                                     errCode,
+                                     0,
+                                     (LPWSTR)&pTemp,
+                                     0,
+                                     nullptr);
+
+      if (retSize > 0)
+      {
+        msg = pTemp;
+        LocalFree(pTemp);
+      }
+      else
+      {
+        msg = L"Cannot format system error message.";
+      }
+
+      return msg;
+    }
+
+    operator wstring() const { return get_message(); }
+    
+  private:
+    mutable bool initialized = false;
+    mutable wstring msg;
+    DWORD errCode;
+  };
+
   class CHandle
   {
   public:
@@ -174,6 +215,7 @@ namespace fsw
                              nullptr, OPEN_EXISTING,
                              FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
                              nullptr);
+
       if (!CHandle::is_valid(h))
       {
         // To do: format error message
@@ -194,6 +236,7 @@ namespace fsw
     }
   }
 
+  
   void windows_monitor::run()
   {
     initialize_windows_path_list();
@@ -220,26 +263,11 @@ namespace fsw
           if (!b) throw libfsw_exception(_("ReadDirectoryChangesW failed."));
 
           BOOL res = GetOverlappedResult(dce.handle, &dce.overlapped, &dce.bytesReturned, TRUE);
-          if (res == FALSE || dce.bytesReturned == 0)
+          if (!res || dce.bytesReturned == 0)
           {
-            LPWSTR pTemp = nullptr;
-            DWORD retSize = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                                           NULL,
-                                           GetLastError(),
-                                           0,
-                                           (LPWSTR)&pTemp,
-                                           0,
-                                           nullptr);
-
-            if (retSize > 0)
-            {
-              wcerr << pTemp << endl;
-              LocalFree(pTemp);
-            }
-            else
-            {
-              cerr << "Cannot format system error message." << endl;
-            }
+            WinErrorMessage error;
+            wcerr << (wstring)error << endl;
+            continue;
           }
 
           FILE_NOTIFY_INFORMATION * currEntry = static_cast<FILE_NOTIFY_INFORMATION *>(dce.lpBuffer.get());
