@@ -53,9 +53,9 @@ namespace fsw
 
     ~CHandle()
     {
-      if (h != INVALID_HANDLE_VALUE)
+      if (is_valid())
       {
-        CloseHandle(h);
+        ::CloseHandle(h);
       }
     }
 
@@ -71,7 +71,7 @@ namespace fsw
 
     CHandle& operator=(const HANDLE& handle)
     {
-      if (is_valid()) CloseHandle(h);
+      if (is_valid()) ::CloseHandle(h);
 
       h = handle;
 
@@ -88,7 +88,7 @@ namespace fsw
     {
       if (this == &other) return *this;
 
-      if (h != INVALID_HANDLE_VALUE) CloseHandle(h);
+      if (h != INVALID_HANDLE_VALUE) ::CloseHandle(h);
 
       h = other.h;
       other.h = INVALID_HANDLE_VALUE;
