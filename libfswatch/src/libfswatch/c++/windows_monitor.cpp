@@ -93,7 +93,7 @@ namespace fsw
     {
       if (this == &other) return *this;
 
-      if (h != INVALID_HANDLE_VALUE) ::CloseHandle(h);
+      if (is_valid()) ::CloseHandle(h);
 
       h = other.h;
       other.h = INVALID_HANDLE_VALUE;
