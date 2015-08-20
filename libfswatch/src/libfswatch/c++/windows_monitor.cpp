@@ -155,15 +155,15 @@ namespace fsw
   typedef struct DirectoryChangeEvent
   {
     CHandle handle;
-    DWORD nBufferLength;
     size_t bufferSize;
     DWORD bytesReturned;
     unique_ptr<void, decltype(::free)*> lpBuffer = {nullptr, ::free};
     OVERLAPPED overlapped;
 
-    DirectoryChangeEvent() : handle{INVALID_HANDLE_VALUE}, nBufferLength{16},
-                             bufferSize{sizeof(FILE_NOTIFY_INFORMATION) * nBufferLength},
-                             bytesReturned{}, overlapped{}
+    DirectoryChangeEvent(size_t buffer_length = 16) : handle{INVALID_HANDLE_VALUE},
+                                                      bufferSize{sizeof(FILE_NOTIFY_INFORMATION) * buffer_length},
+                                                      bytesReturned{},
+                                                      overlapped{}
     {
       lpBuffer.reset(::malloc(bufferSize));
       if (lpBuffer.get() == nullptr) throw libfsw_exception(_("::malloc failed."));
@@ -278,7 +278,7 @@ namespace fsw
                                      nullptr))
           {
             // TODO: this error should be logged only in verbose mode.
-            wcout << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage(err) << endl;
+            wcout << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage::current() << endl;
             // load->dce_by_path.erase(path_dce_pair++);
             ++path_dce_pair;
             continue;
