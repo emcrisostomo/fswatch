@@ -97,7 +97,7 @@ namespace fsw
   public:
     static bool is_valid(const HANDLE & handle)
     {
-      return (handle != INVALID_HANDLE_VALUE);
+      return (handle != INVALID_HANDLE_VALUE && handle != nullptr);
     }
 
     CHandle() : h(INVALID_HANDLE_VALUE){}
@@ -161,9 +161,9 @@ namespace fsw
     unique_ptr<void, decltype(::free)*> lpBuffer = {nullptr, ::free};
     OVERLAPPED overlapped;
 
-    DirectoryChangeEvent() : handle(INVALID_HANDLE_VALUE), nBufferLength(16),
-                             bufferSize(sizeof(FILE_NOTIFY_INFORMATION) * nBufferLength),
-                             bytesReturned(), overlapped()
+    DirectoryChangeEvent() : handle{INVALID_HANDLE_VALUE}, nBufferLength{16},
+                             bufferSize{sizeof(FILE_NOTIFY_INFORMATION) * nBufferLength},
+                             bytesReturned{}, overlapped{}
     {
       lpBuffer.reset(::malloc(bufferSize));
       if (lpBuffer.get() == nullptr) throw libfsw_exception(_("::malloc failed."));
@@ -231,17 +231,10 @@ namespace fsw
 
       DirectoryChangeEvent dce;
       dce.handle = h;
-      dce.overlapped.hEvent = CreateEvent(nullptr,
-                                            TRUE,
-                                            FALSE,
-                                            nullptr);
-
-      if (dce.overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
       load->dce_by_path[path] = std::move(dce);
     }
   }
-
 
   void windows_monitor::run()
   {
@@ -250,46 +243,108 @@ namespace fsw
 
     while (true)
     {
-      for (auto path_dce_pair = load->dce_by_path.begin(); path_dce_pair != load->dce_by_path.end(); path_dce_pair++)
+      ::sleep(latency);
+
+      for (auto path_dce_pair = load->dce_by_path.begin(); path_dce_pair != load->dce_by_path.end(); )
       {
-        while (true)
+        DirectoryChangeEvent & dce = path_dce_pair->second;
+
+        // Since the file handles are open with FILE_SHARE_DELETE, it may
+        // happen that file is deleted when a handle to it is being used.
+        // A blocking call to GetOverlappedResult will return with an error
+        // if the file system object being observed is deleted.  Unfortunately,
+        // the error reported by Windows is `Access denied', preventing
+        // fswatch to report better messages to the user.
+        // if(dce.overlapped.Internal != STATUS_PENDING &&
+
+        if (!CHandle::is_valid(dce.overlapped.hEvent))
         {
-          DirectoryChangeEvent & dce = path_dce_pair->second;
+          dce.overlapped = OVERLAPPED{};
+          dce.overlapped.hEvent = CreateEvent(nullptr,
+                                              TRUE,
+                                              FALSE,
+                                              nullptr);
 
-          BOOL b = ReadDirectoryChangesW((HANDLE)dce.handle,
-                                         dce.lpBuffer.get(),
-                                         dce.bufferSize,
-                                         TRUE,
-                                         FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
-                                         FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
-                                         &dce.bytesReturned,
-                                         &dce.overlapped,
-                                         nullptr);
+          if (dce.overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
-          if (!b) throw libfsw_exception(_("ReadDirectoryChangesW failed."));
-
-          BOOL res = GetOverlappedResult(dce.handle, &dce.overlapped, &dce.bytesReturned, TRUE);
-          if (!res || dce.bytesReturned == 0)
+          if (!ReadDirectoryChangesW((HANDLE)dce.handle,
+                                     dce.lpBuffer.get(),
+                                     dce.bufferSize,
+                                     TRUE,
+                                     FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
+                                     FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
+                                     &dce.bytesReturned,
+                                     &dce.overlapped,
+                                     nullptr))
           {
-            wcerr << (wstring)WinErrorMessage::current() << endl;
+            DWORD err = GetLastError();
+            if (err == ERROR_NOTIFY_ENUM_DIR)
+            {
+              cerr << "Overflow." << endl;
+            }
+
+            // TODO: this error should be logged only in verbose mode.
+            wcout << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage(err) << endl;
+            // load->dce_by_path.erase(path_dce_pair++);
+            ++path_dce_pair;
+            continue;
+          }
+        }
+
+        if(!GetOverlappedResult(dce.handle, &dce.overlapped, &dce.bytesReturned, FALSE))
+        {
+          DWORD err = GetLastError();
+          if (err == ERROR_IO_INCOMPLETE)
+          {
+            ++path_dce_pair;
             continue;
           }
 
-          FILE_NOTIFY_INFORMATION * currEntry = static_cast<FILE_NOTIFY_INFORMATION *>(dce.lpBuffer.get());
+          // TODO: this error should be logged only in verbose mode.
+          wcout << L"GetOverlappedResult: " << (wstring)WinErrorMessage(err) << endl;
+          load->dce_by_path.erase(path_dce_pair++);
+          continue;
+        }
 
-          while (currEntry != nullptr)
+        if(dce.bytesReturned == 0)
+        {
+          DWORD err = GetLastError();
+          if (err == ERROR_NOTIFY_ENUM_DIR)
           {
+            cerr << "Overflow." << endl;
+          }
+          else
+          {
+            cerr << "The current buffer is too small." << endl;
+          }
+        }
+        else
+        {
+          char * curr_entry = static_cast<char *>(dce.lpBuffer.get());
+
+          while (curr_entry != nullptr)
+          {
+            FILE_NOTIFY_INFORMATION * currEntry = reinterpret_cast<FILE_NOTIFY_INFORMATION *>(curr_entry);
+
             if (currEntry->FileNameLength > 0)
             {
               wchar_t * stringBuffer = static_cast<wchar_t *>(LocalAlloc(LMEM_ZEROINIT, currEntry->FileNameLength + sizeof(wchar_t)));
               if (stringBuffer == nullptr) throw libfsw_exception(_("::LocalAlloc failed."));
+
               memcpy(stringBuffer, currEntry->FileName, currEntry->FileNameLength);
               wcout << stringBuffer << endl;
+
               LocalFree(stringBuffer);
             }
-            currEntry = (currEntry->NextEntryOffset == 0) ? nullptr : currEntry + currEntry->NextEntryOffset;
+
+            curr_entry = (currEntry->NextEntryOffset == 0) ? nullptr : curr_entry + currEntry->NextEntryOffset;
           }
         }
+
+        CloseHandle(dce.overlapped.hEvent);
+        dce.overlapped.hEvent = nullptr;;
+
+        ++path_dce_pair;
       }
     }
   }
