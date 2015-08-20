@@ -299,6 +299,10 @@ namespace fsw
             ++path_dce_pair;
             continue;
           }
+          else if (err == ERROR_NOTIFY_ENUM_DIR)
+          {
+            cerr << "Overflow." << endl;
+          }
 
           // TODO: this error should be logged only in verbose mode.
           wcout << L"GetOverlappedResult: " << (wstring)WinErrorMessage(err) << endl;
@@ -308,15 +312,7 @@ namespace fsw
 
         if(dce.bytesReturned == 0)
         {
-          DWORD err = GetLastError();
-          if (err == ERROR_NOTIFY_ENUM_DIR)
-          {
-            cerr << "Overflow." << endl;
-          }
-          else
-          {
-            cerr << "The current buffer is too small." << endl;
-          }
+          cerr << _("The current buffer is too small.") << endl;
         }
         else
         {
