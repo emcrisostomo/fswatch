@@ -277,12 +277,6 @@ namespace fsw
                                      &dce.overlapped,
                                      nullptr))
           {
-            DWORD err = GetLastError();
-            if (err == ERROR_NOTIFY_ENUM_DIR)
-            {
-              cerr << "Overflow." << endl;
-            }
-
             // TODO: this error should be logged only in verbose mode.
             wcout << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage(err) << endl;
             // load->dce_by_path.erase(path_dce_pair++);
