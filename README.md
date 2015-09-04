@@ -112,7 +112,7 @@ there.
 Building from Source
 --------------------
 
-A user who whishes to build `fswatch` should get a [release tarball][release].
+A user who wishes to build `fswatch` should get a [release tarball][release].
 A release tarball contains everything a user needs to build `fswatch` on his
 system, following the instructions detailed in the Installation section below
 and the `INSTALL` file.
