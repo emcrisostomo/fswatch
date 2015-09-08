@@ -259,7 +259,7 @@ namespace fsw
 
         if (!CHandle::is_valid(dce.overlapped.hEvent))
         {
-          dce.overlapped = OVERLAPPED{};
+          dce.overlapped = {};
           dce.overlapped.hEvent = CreateEvent(nullptr,
                                               TRUE,
                                               FALSE,
@@ -332,7 +332,7 @@ namespace fsw
         }
 
         CloseHandle(dce.overlapped.hEvent);
-        dce.overlapped.hEvent = nullptr;;
+        dce.overlapped.hEvent = nullptr;
 
         ++path_dce_pair;
       }
