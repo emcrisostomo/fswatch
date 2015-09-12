@@ -343,7 +343,7 @@ namespace fsw
               if (stringBuffer == nullptr) throw libfsw_exception(_("::LocalAlloc failed."));
 
               memcpy(stringBuffer, currEntry->FileName, currEntry->FileNameLength);
-              wcout << L"Path: " << stringBuffer << endl;
+              wcout << stringBuffer << endl;
 
               LocalFree(stringBuffer);
             }
@@ -352,10 +352,7 @@ namespace fsw
           }
         }
 
-        if (ResetEvent(dce.overlapped.hEvent))
-          cout << "Event reset." << endl;
-        else
-          cout << "Event not reset." << endl;
+        if (!ResetEvent(dce.overlapped.hEvent)) cout << "Event not reset." << endl;
 
         if (!read_directory_changes(dce))
         {
