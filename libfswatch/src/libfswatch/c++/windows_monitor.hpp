@@ -42,8 +42,9 @@ namespace fsw
     windows_monitor& operator=(const windows_monitor & that) = delete;
 
     void initialize_windows_path_list();
-    bool is_path_watched(const std::wstring path) const;
+    void initialize_events();
     void initial_scan();
+    bool is_path_watched(const std::wstring path) const;
 
     // initial load
     windows_monitor_load * load;

@@ -130,13 +130,13 @@ namespace fsw
       return *this;
     }
 
-    CHandle(CHandle&& other)
+    CHandle(CHandle&& other) noexcept
     {
       h = other.h;
       other.h = INVALID_HANDLE_VALUE;
     }
 
-    CHandle& operator=(CHandle&& other)
+    CHandle& operator=(CHandle&& other) noexcept
     {
       if (this == &other) return *this;
 
@@ -174,6 +174,8 @@ namespace fsw
   {
     fsw_hash_set<wstring> win_paths;
     fsw_hash_map<wstring, DirectoryChangeEvent> dce_by_path;
+    fsw_hash_map<wstring, CHandle> event_by_path;
+
     fsw_hash_map<wstring, int> descriptors_by_file_name;
     fsw_hash_map<int, string> file_names_by_descriptor;
     fsw_hash_set<int> descriptors_to_remove;
@@ -249,18 +251,37 @@ namespace fsw
                                  nullptr);
   }
 
+  void windows_monitor::initialize_events()
+  {
+    for (const wstring & path : load->win_paths)
+    {
+      HANDLE hEvent = CreateEvent(nullptr,
+                                  TRUE,
+                                  FALSE,
+                                  nullptr);
+
+      if (hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
+
+      load->event_by_path.emplace(path, hEvent);
+    }
+  }
+
   void windows_monitor::run()
   {
     initialize_windows_path_list();
+    initialize_events();
     initial_scan();
 
     while (true)
     {
       ::sleep(latency);
 
-      for (auto path_dce_pair = load->dce_by_path.begin(); path_dce_pair != load->dce_by_path.end(); )
+      for (const auto & path : load->win_paths)
       {
-        DirectoryChangeEvent & dce = path_dce_pair->second;
+        auto it = load->dce_by_path.find(path);
+        if (it == load->dce_by_path.end()) continue;
+
+        DirectoryChangeEvent & dce = it->second;
 
         // Since the file handles are open with FILE_SHARE_DELETE, it may happen
         // that file is deleted when a handle to it is being used.  A call to
@@ -273,21 +294,15 @@ namespace fsw
         // Windows' asynchronous I/O API functions.
         if (!CHandle::is_valid(dce.overlapped.hEvent))
         {
-          cout << "Creating event." << endl;
           dce.overlapped = {};
-          dce.overlapped.hEvent = CreateEvent(nullptr,
-                                              TRUE,
-                                              FALSE,
-                                              nullptr);
-
-          if (dce.overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
+          dce.overlapped.hEvent = load->event_by_path[path];
 
           if (!read_directory_changes(dce))
           {
             // TODO: this error should be logged only in verbose mode.
             wcout << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage::current() << endl;
             // load->dce_by_path.erase(path_dce_pair++);
-            ++path_dce_pair;
+            // ++path_dce_pair;
             continue;
           }
         }
@@ -297,7 +312,6 @@ namespace fsw
           DWORD err = GetLastError();
           if (err == ERROR_IO_INCOMPLETE)
           {
-            ++path_dce_pair;
             continue;
           }
           else if (err == ERROR_NOTIFY_ENUM_DIR)
@@ -307,7 +321,7 @@ namespace fsw
 
           // TODO: this error should be logged only in verbose mode.
           wcout << L"GetOverlappedResult: " << (wstring)WinErrorMessage(err) << endl;
-          load->dce_by_path.erase(path_dce_pair++);
+          load->dce_by_path.erase(path);
           continue;
         }
 
@@ -348,14 +362,8 @@ namespace fsw
           // TODO: this error should be logged only in verbose mode.
           wcout << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage::current() << endl;
           // load->dce_by_path.erase(path_dce_pair++);
-          ++path_dce_pair;
           continue;
         }
-
-//        CloseHandle(dce.overlapped.hEvent);
-//        dce.overlapped.hEvent = nullptr;
-
-        ++path_dce_pair;
       }
     }
   }
