@@ -229,11 +229,24 @@ namespace fsw
         continue;
       }
 
-      DirectoryChangeEvent dce;
+      DirectoryChangeEvent dce(128);
       dce.handle = h;
 
       load->dce_by_path[path] = std::move(dce);
     }
+  }
+
+  static bool read_directory_changes(DirectoryChangeEvent & dce)
+  {
+    return ReadDirectoryChangesW((HANDLE)dce.handle,
+                                 dce.lpBuffer.get(),
+                                 dce.bufferSize,
+                                 TRUE,
+                                 FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
+                                 FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
+                                 &dce.bytesReturned,
+                                 &dce.overlapped,
+                                 nullptr);
   }
 
   void windows_monitor::run()
@@ -249,16 +262,18 @@ namespace fsw
       {
         DirectoryChangeEvent & dce = path_dce_pair->second;
 
-        // Since the file handles are open with FILE_SHARE_DELETE, it may
-        // happen that file is deleted when a handle to it is being used.
-        // A blocking call to GetOverlappedResult will return with an error
-        // if the file system object being observed is deleted.  Unfortunately,
-        // the error reported by Windows is `Access denied', preventing
-        // fswatch to report better messages to the user.
-        // if(dce.overlapped.Internal != STATUS_PENDING &&
+        // Since the file handles are open with FILE_SHARE_DELETE, it may happen
+        // that file is deleted when a handle to it is being used.  A call to
+        // either ReadDirectoryChangesW or GetOverlappedResult will return with
+        // an error if the file system object being observed is deleted.
+        // Unfortunately, the error reported by Windows is `Access denied',
+        // preventing fswatch to report better messages to the user.
 
+        // For each watched file system object, an event is created to use
+        // Windows' asynchronous I/O API functions.
         if (!CHandle::is_valid(dce.overlapped.hEvent))
         {
+          cout << "Creating event." << endl;
           dce.overlapped = {};
           dce.overlapped.hEvent = CreateEvent(nullptr,
                                               TRUE,
@@ -267,15 +282,7 @@ namespace fsw
 
           if (dce.overlapped.hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
-          if (!ReadDirectoryChangesW((HANDLE)dce.handle,
-                                     dce.lpBuffer.get(),
-                                     dce.bufferSize,
-                                     TRUE,
-                                     FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
-                                     FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
-                                     &dce.bytesReturned,
-                                     &dce.overlapped,
-                                     nullptr))
+          if (!read_directory_changes(dce))
           {
             // TODO: this error should be logged only in verbose mode.
             wcout << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage::current() << endl;
@@ -322,7 +329,7 @@ namespace fsw
               if (stringBuffer == nullptr) throw libfsw_exception(_("::LocalAlloc failed."));
 
               memcpy(stringBuffer, currEntry->FileName, currEntry->FileNameLength);
-              wcout << stringBuffer << endl;
+              wcout << L"Path: " << stringBuffer << endl;
 
               LocalFree(stringBuffer);
             }
@@ -331,8 +338,22 @@ namespace fsw
           }
         }
 
-        CloseHandle(dce.overlapped.hEvent);
-        dce.overlapped.hEvent = nullptr;
+        if (ResetEvent(dce.overlapped.hEvent))
+          cout << "Event reset." << endl;
+        else
+          cout << "Event not reset." << endl;
+
+        if (!read_directory_changes(dce))
+        {
+          // TODO: this error should be logged only in verbose mode.
+          wcout << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage::current() << endl;
+          // load->dce_by_path.erase(path_dce_pair++);
+          ++path_dce_pair;
+          continue;
+        }
+
+//        CloseHandle(dce.overlapped.hEvent);
+//        dce.overlapped.hEvent = nullptr;
 
         ++path_dce_pair;
       }
