@@ -18,8 +18,21 @@
 #include <cstdio>
 #include <iostream>
 #include <cstdio>
+#include <cstdarg>
 
 using namespace std;
+
+void libfsw_logv(const char * format, ...)
+{
+  if (!fsw_is_verbose()) return;
+
+  va_list args;
+  va_start(args, format);
+
+  vfprintf(stderr, format, args);
+
+  va_end(args);
+}
 
 void libfsw_log(const char * msg)
 {

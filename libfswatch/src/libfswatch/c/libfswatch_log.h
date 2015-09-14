@@ -16,6 +16,7 @@
 #ifndef LIBFSW_LOG_H
 #  define LIBFSW_LOG_H
 
+void libfsw_logv(const char * format, ...);
 void libfsw_log(const char * msg);
 void libfsw_perror(const char * msg);
 
