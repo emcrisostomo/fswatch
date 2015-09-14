@@ -26,6 +26,7 @@
 #  include "libfswatch_exception.hpp"
 #  include "../c/libfswatch_log.h"
 #  include "path_utils.hpp"
+#  include <set>
 #  include <iostream>
 #  include <memory>
 #  include <sys/types.h>
@@ -178,6 +179,41 @@ namespace fsw
     fsw_hash_map<wstring, CHandle> event_by_path;
   };
 
+  struct WindowsFlagType
+  {
+    DWORD action;
+    vector<fsw_event_flag> types;
+  };
+
+  static vector<WindowsFlagType> create_flag_type_vector()
+  {
+    vector<WindowsFlagType> flags;
+    flags.push_back({FILE_ACTION_ADDED,            {fsw_event_flag::Created}});
+    flags.push_back({FILE_ACTION_REMOVED,          {fsw_event_flag::Removed}});
+    flags.push_back({FILE_ACTION_MODIFIED,         {fsw_event_flag::Updated}});
+    flags.push_back({FILE_ACTION_RENAMED_OLD_NAME, {fsw_event_flag::MovedFrom, fsw_event_flag::Renamed}});
+    flags.push_back({FILE_ACTION_RENAMED_NEW_NAME, {fsw_event_flag::MovedTo, fsw_event_flag::Renamed}});
+
+    return flags;
+  }
+
+  static const vector<WindowsFlagType> event_flag_type = create_flag_type_vector();
+
+  static vector<fsw_event_flag> decode_flags(DWORD flag)
+  {
+    set<fsw_event_flag> evt_flags_set;
+
+    for (const WindowsFlagType & event_type : event_flag_type)
+    {
+      if (flag == event_type.action)
+      {
+        for (const auto & type : event_type.types) evt_flags_set.insert(type);
+      }
+    }
+
+    return vector<fsw_event_flag>(evt_flags_set.begin(), evt_flags_set.end());
+  }
+
   windows_monitor::windows_monitor(vector<string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK * callback,
                                    void * context) :
@@ -232,7 +268,7 @@ namespace fsw
       if (hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
       libfsw_logv(_("initialize_events: event %d created for %S\n"), hEvent, path.c_str());
-      
+
       load->event_by_path.emplace(path, hEvent);
     }
   }
@@ -286,6 +322,8 @@ namespace fsw
     // an error if the file system object being observed is deleted.
     // Unfortunately, the error reported by Windows is `Access denied',
     // preventing fswatch to report better messages to the user.
+
+    SetConsoleOutputCP(CP_UTF8);
 
     initialize_windows_path_list();
     initialize_events();
@@ -348,13 +386,26 @@ namespace fsw
 
             if (currEntry->FileNameLength > 0)
             {
-              wchar_t * stringBuffer = static_cast<wchar_t *>(LocalAlloc(LMEM_ZEROINIT, currEntry->FileNameLength + sizeof(wchar_t)));
-              if (stringBuffer == nullptr) throw libfsw_exception(_("::LocalAlloc failed."));
+              // The FileName member of the FILE_NOTIFY_INFORMATION structure
+              // has the following characteristics:
+              //
+              //   * It's not NUL terminated.
+              //
+              //   * Its length is specified in bytes.
+              wstring abs_path = path + L"\\" + wstring(currEntry->FileName, currEntry->FileNameLength/sizeof(wchar_t));
 
-              memcpy(stringBuffer, currEntry->FileName, currEntry->FileNameLength);
-              wcout << stringBuffer << endl;
+              int bs = WideCharToMultiByte(CP_UTF8, 0, abs_path.c_str(), -1, NULL, 0, NULL, NULL);
 
-              LocalFree(stringBuffer);
+              if (bs == 0)
+              {
+                wcerr << L"WideCharToMultiByte: " << (wstring)WinErrorMessage::current() << endl;
+                throw libfsw_exception(_("WideCharToMultiByte failed."));
+              }
+
+              char u_string[bs];
+              WideCharToMultiByte(CP_UTF8, 0, abs_path.c_str(), -1, u_string, bs, NULL, NULL);
+
+              cout << u_string << endl;
             }
 
             curr_entry = (currEntry->NextEntryOffset == 0) ? nullptr : curr_entry + currEntry->NextEntryOffset;
