@@ -214,6 +214,16 @@ namespace fsw
     return vector<fsw_event_flag>(evt_flags_set.begin(), evt_flags_set.end());
   }
 
+  ostream & operator+(ostream & stream, const wchar_t * s)
+  {
+    int buf_size = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
+    char buf[buf_size];
+    WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, buf_size, NULL, NULL);
+    stream << buf;
+
+    return stream;
+  }
+
   windows_monitor::windows_monitor(vector<string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK * callback,
                                    void * context) :
@@ -392,20 +402,9 @@ namespace fsw
               //   * It's not NUL terminated.
               //
               //   * Its length is specified in bytes.
-              wstring abs_path = path + L"\\" + wstring(currEntry->FileName, currEntry->FileNameLength/sizeof(wchar_t));
-
-              int bs = WideCharToMultiByte(CP_UTF8, 0, abs_path.c_str(), -1, NULL, 0, NULL, NULL);
-
-              if (bs == 0)
-              {
-                wcerr << L"WideCharToMultiByte: " << (wstring)WinErrorMessage::current() << endl;
-                throw libfsw_exception(_("WideCharToMultiByte failed."));
-              }
-
-              char u_string[bs];
-              WideCharToMultiByte(CP_UTF8, 0, abs_path.c_str(), -1, u_string, bs, NULL, NULL);
-
-              cout << u_string << endl;
+              cout + path.c_str();
+              cout << "\\";
+              cout + wstring(currEntry->FileName, currEntry->FileNameLength/sizeof(wchar_t)).c_str() << endl;
             }
 
             curr_entry = (currEntry->NextEntryOffset == 0) ? nullptr : curr_entry + currEntry->NextEntryOffset;
