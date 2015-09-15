@@ -299,7 +299,7 @@ namespace fsw
     if (!win_handle::is_valid(h))
     {
       // To do: format error message
-      wcerr << L"Invalid handle when opening " << path << endl;
+      fprintf(stderr, _("Invalid handle when opening %s.\n"), wstring_to_string(path).c_str());
       return false;
     }
 
@@ -312,7 +312,7 @@ namespace fsw
     if (!read_directory_changes(dce))
     {
       // TODO: this error should be logged only in verbose mode.
-      wcerr << L"ReadDirectoryChangesW: " << (wstring)win_error_message::current() << endl;
+      fprintf(stderr, "ReadDirectoryChangesW: %s.\n", wstring_to_string(win_error_message::current()).c_str());
       return false;
     }
 
@@ -377,7 +377,7 @@ namespace fsw
           }
 
           // TODO: this error should be logged only in verbose mode.
-          wcerr << L"GetOverlappedResult: " << (wstring)win_error_message(err) << endl;
+          fprintf(stderr, "GetOverlappedResult: %s.\n", wstring_to_string((wstring)win_error_message(err)).c_str());
           stop_search_for_path(path);
           continue;
         }
@@ -431,7 +431,7 @@ namespace fsw
         if (!read_directory_changes(dce))
         {
           // TODO: this error should be logged only in verbose mode.
-          wcerr << L"ReadDirectoryChangesW: " << (wstring)win_error_message::current() << endl;
+          fprintf(stderr, "ReadDirectoryChangesW: %s.\n", wstring_to_string((wstring)win_error_message::current()).c_str());
           stop_search_for_path(path);
           continue;
         }
