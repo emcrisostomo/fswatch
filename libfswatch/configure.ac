@@ -90,6 +90,7 @@ AS_VAR_IF([ac_cv_header_sys_event_h], ["yes"], [
       [#include <sys/time.h>]
     ]
   )
+  AC_CHECK_LIB([c], [kqueue], [], [AS_VAR_SET([KQUEUE_AVAILABLE], ["no"])])
 ])
 
 AM_CONDITIONAL([USE_KQUEUE], [test "x${KQUEUE_AVAILABLE}" = "xyes"])
