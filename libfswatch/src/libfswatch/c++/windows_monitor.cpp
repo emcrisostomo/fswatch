@@ -44,36 +44,36 @@ namespace fsw
 {
   REGISTER_MONITOR_IMPL(windows_monitor, windows_monitor_type);
 
-  class WinErrorMessage
+  class win_error_message
   {
   public:
-    static WinErrorMessage current()
+    static win_error_message current()
     {
-      WinErrorMessage current;
+      win_error_message current;
       return std::move(current);
     }
 
-    WinErrorMessage(DWORD errCode) : errCode{errCode}{}
-    WinErrorMessage() : errCode{GetLastError()}{}
+    win_error_message(DWORD err_code) : err_code{err_code}{}
+    win_error_message() : err_code{GetLastError()}{}
 
     wstring get_message() const
     {
       if (initialized) return msg;
       initialized = true;
 
-      LPWSTR pTemp = nullptr;
-      DWORD retSize = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                                     NULL,
-                                     errCode,
-                                     0,
-                                     (LPWSTR)&pTemp,
-                                     0,
-                                     nullptr);
+      LPWSTR buf = nullptr;
+      DWORD ret_size = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                      NULL,
+                                      err_code,
+                                      0,
+                                      (LPWSTR)&buf,
+                                      0,
+                                      nullptr);
 
-      if (retSize > 0)
+      if (ret_size > 0)
       {
-        msg = pTemp;
-        LocalFree(pTemp);
+        msg = buf;
+        LocalFree(buf);
       }
       else
       {
@@ -88,7 +88,7 @@ namespace fsw
   private:
     mutable bool initialized = false;
     mutable wstring msg;
-    DWORD errCode;
+    DWORD err_code;
   };
 
   class CHandle
@@ -312,7 +312,7 @@ namespace fsw
     if (!read_directory_changes(dce))
     {
       // TODO: this error should be logged only in verbose mode.
-      wcerr << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage::current() << endl;
+      wcerr << L"ReadDirectoryChangesW: " << (wstring)win_error_message::current() << endl;
       return false;
     }
 
@@ -377,7 +377,7 @@ namespace fsw
           }
 
           // TODO: this error should be logged only in verbose mode.
-          wcerr << L"GetOverlappedResult: " << (wstring)WinErrorMessage(err) << endl;
+          wcerr << L"GetOverlappedResult: " << (wstring)win_error_message(err) << endl;
           stop_search_for_path(path);
           continue;
         }
@@ -431,7 +431,7 @@ namespace fsw
         if (!read_directory_changes(dce))
         {
           // TODO: this error should be logged only in verbose mode.
-          wcerr << L"ReadDirectoryChangesW: " << (wstring)WinErrorMessage::current() << endl;
+          wcerr << L"ReadDirectoryChangesW: " << (wstring)win_error_message::current() << endl;
           stop_search_for_path(path);
           continue;
         }
