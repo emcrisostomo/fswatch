@@ -152,7 +152,7 @@ namespace fsw
     HANDLE h;
   };
 
-  typedef struct DirectoryChangeEvent
+  typedef struct directory_change_event
   {
     win_handle handle;
     size_t buffer_size;
@@ -160,20 +160,20 @@ namespace fsw
     unique_ptr<void, decltype(::free)*> buffer = {nullptr, ::free};
     unique_ptr<OVERLAPPED, decltype(::free)*> overlapped = {static_cast<OVERLAPPED *>(::malloc(sizeof(OVERLAPPED))), ::free};
 
-    DirectoryChangeEvent(size_t buffer_length = 16) : handle{INVALID_HANDLE_VALUE},
-                                                      buffer_size{sizeof(FILE_NOTIFY_INFORMATION) * buffer_length},
-                                                      bytes_returned{}
+    directory_change_event(size_t buffer_length = 16) : handle{INVALID_HANDLE_VALUE},
+                                                        buffer_size{sizeof(FILE_NOTIFY_INFORMATION) * buffer_length},
+                                                        bytes_returned{}
     {
       buffer.reset(::malloc(buffer_size));
       if (buffer.get() == nullptr) throw libfsw_exception(_("::malloc failed."));
       if (overlapped.get() == nullptr) throw libfsw_exception(_("::malloc failed."));
     }
-  } DirectoryChangeEvent;
+  } directory_change_event;
 
   struct windows_monitor_load
   {
     fsw_hash_set<wstring> win_paths;
-    fsw_hash_map<wstring, DirectoryChangeEvent> dce_by_path;
+    fsw_hash_map<wstring, directory_change_event> dce_by_path;
     fsw_hash_map<wstring, win_handle> event_by_path;
   };
 
@@ -251,7 +251,7 @@ namespace fsw
     }
   }
 
-  static bool read_directory_changes(DirectoryChangeEvent & dce)
+  static bool read_directory_changes(directory_change_event & dce)
   {
     libfsw_logv(_("read_directory_changes: %p\n"), &dce);
 
@@ -305,7 +305,7 @@ namespace fsw
 
     libfsw_logv(_("init_search_for_path: file handle: %d\n"), h);
 
-    DirectoryChangeEvent dce(128);
+    directory_change_event dce(128);
     dce.handle = h;
     dce.overlapped.get()->hEvent = load->event_by_path[path];
 
@@ -361,7 +361,7 @@ namespace fsw
         it = load->dce_by_path.find(path);
         if (it == load->dce_by_path.end()) throw libfsw_exception(_("Initialization failed."));
 
-        DirectoryChangeEvent & dce = it->second;
+        directory_change_event & dce = it->second;
 
         if(!GetOverlappedResult(dce.handle, dce.overlapped.get(), &dce.bytes_returned, FALSE))
         {
