@@ -91,7 +91,7 @@ namespace fsw
     DWORD err_code;
   };
 
-  class CHandle
+  class win_handle
   {
   public:
     static bool is_valid(const HANDLE & handle)
@@ -99,14 +99,14 @@ namespace fsw
       return (handle != INVALID_HANDLE_VALUE && handle != nullptr);
     }
 
-    CHandle() : h(INVALID_HANDLE_VALUE){}
-    CHandle(HANDLE handle) : h(handle){}
+    win_handle() : h(INVALID_HANDLE_VALUE){}
+    win_handle(HANDLE handle) : h(handle){}
 
-    ~CHandle()
+    ~win_handle()
     {
       if (is_valid())
       {
-        libfsw_logv(_("CHandle::~Chandle(): Closing handle: %d.\n"), h);
+        libfsw_logv(_("win_handle::~win_handle(): Closing handle: %d.\n"), h);
         CloseHandle(h);
       }
     }
@@ -115,13 +115,13 @@ namespace fsw
 
     bool is_valid() const
     {
-      return CHandle::is_valid(h);
+      return win_handle::is_valid(h);
     }
 
-    CHandle(const CHandle&) = delete;
-    CHandle& operator=(const CHandle&) = delete;
+    win_handle(const win_handle&) = delete;
+    win_handle& operator=(const win_handle&) = delete;
 
-    CHandle& operator=(const HANDLE& handle)
+    win_handle& operator=(const HANDLE& handle)
     {
       if (is_valid()) ::CloseHandle(h);
 
@@ -130,13 +130,13 @@ namespace fsw
       return *this;
     }
 
-    CHandle(CHandle&& other) noexcept
+    win_handle(win_handle&& other) noexcept
     {
       h = other.h;
       other.h = INVALID_HANDLE_VALUE;
     }
 
-    CHandle& operator=(CHandle&& other) noexcept
+    win_handle& operator=(win_handle&& other) noexcept
     {
       if (this == &other) return *this;
 
@@ -154,7 +154,7 @@ namespace fsw
 
   typedef struct DirectoryChangeEvent
   {
-    CHandle handle;
+    win_handle handle;
     size_t buffer_size;
     DWORD bytes_returned;
     unique_ptr<void, decltype(::free)*> buffer = {nullptr, ::free};
@@ -174,7 +174,7 @@ namespace fsw
   {
     fsw_hash_set<wstring> win_paths;
     fsw_hash_map<wstring, DirectoryChangeEvent> dce_by_path;
-    fsw_hash_map<wstring, CHandle> event_by_path;
+    fsw_hash_map<wstring, win_handle> event_by_path;
   };
 
   struct WindowsFlagType
@@ -296,7 +296,7 @@ namespace fsw
                              FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
                              nullptr);
 
-    if (!CHandle::is_valid(h))
+    if (!win_handle::is_valid(h))
     {
       // To do: format error message
       wcerr << L"Invalid handle when opening " << path << endl;
