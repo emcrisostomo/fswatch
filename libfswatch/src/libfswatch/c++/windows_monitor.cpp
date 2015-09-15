@@ -214,14 +214,18 @@ namespace fsw
     return vector<fsw_event_flag>(evt_flags_set.begin(), evt_flags_set.end());
   }
 
-  ostream & operator+(ostream & stream, const wchar_t * s)
+  static string wstring_to_string(wchar_t * s)
   {
     int buf_size = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
     char buf[buf_size];
     WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, buf_size, NULL, NULL);
-    stream << buf;
 
-    return stream;
+    return string(buf);
+  }
+
+  static string wstring_to_string(const wstring & s)
+  {
+    return wstring_to_string((wchar_t *)s.c_str());
   }
 
   windows_monitor::windows_monitor(vector<string> paths_to_monitor,
@@ -388,6 +392,10 @@ namespace fsw
         }
         else
         {
+          time_t curr_time;
+          time(&curr_time);
+          vector<event> events;
+
           char * curr_entry = static_cast<char *>(dce.buffer.get());
 
           while (curr_entry != nullptr)
@@ -402,13 +410,21 @@ namespace fsw
               //   * It's not NUL terminated.
               //
               //   * Its length is specified in bytes.
-              cout + path.c_str();
-              cout << "\\";
-              cout + wstring(currEntry->FileName, currEntry->FileNameLength/sizeof(wchar_t)).c_str() << endl;
+              string file_name = wstring_to_string(path)
+                + "\\"
+                + wstring_to_string(wstring(currEntry->FileName, currEntry->FileNameLength/sizeof(wchar_t)));
+
+              events.push_back({file_name, curr_time, decode_flags(currEntry->Action)});
+            }
+            else
+            {
+              cerr << _("File name unexpectedly empty.") << endl;
             }
 
             curr_entry = (currEntry->NextEntryOffset == 0) ? nullptr : curr_entry + currEntry->NextEntryOffset;
           }
+
+          if (events.size()) notify_events(events);
         }
 
         if (!ResetEvent(dce.overlapped.get()->hEvent)) throw libfsw_exception(_("::ResetEvent failed."));
