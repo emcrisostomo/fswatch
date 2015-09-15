@@ -100,13 +100,28 @@ AS_VAR_IF([ac_cv_header_sys_event_h], ["yes"], [
       [#include <sys/time.h>]
     ]
   )
+  AC_CHECK_LIB([c], [kqueue], [], [AS_VAR_SET([KQUEUE_AVAILABLE], ["no"])])
 ])
 
 AM_CONDITIONAL([USE_KQUEUE], [test "x${KQUEUE_AVAILABLE}" = "xyes"])
 
 # Check for Linux inotify.
 AC_CHECK_HEADERS([sys/inotify.h])
-AM_CONDITIONAL([USE_INOTIFY],  [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
+AS_VAR_IF([ac_cv_header_sys_inotify_h], ["yes"], [
+  AS_VAR_SET([INOTIFY_AVAILABLE], ["yes"])
+  AC_CHECK_DECLS(
+    [inotify_init, inotify_add_watch, inotify_rm_watch],
+    [],
+    [AS_VAR_SET([INOTIFY_AVAILABLE], ["no"])],
+    [
+      AC_INCLUDES_DEFAULT
+      [#include <sys/inotify.h>]
+    ]
+  )
+  AC_CHECK_LIB([c], [inotify_init], [], [AS_VAR_SET([INOTIFY_AVAILABLE], ["no"])])
+])
+
+AM_CONDITIONAL([USE_INOTIFY],  [test "x${INOTIFY_AVAILABLE}" = "xyes"])
 
 # Check for Microsoft Windows directory change notification API
 AS_VAR_SET([WINDOWS_AVAILABLE], ["yes"])
