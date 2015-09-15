@@ -96,7 +96,20 @@ AM_CONDITIONAL([USE_KQUEUE], [test "x${KQUEUE_AVAILABLE}" = "xyes"])
 
 # Check for Linux inotify.
 AC_CHECK_HEADERS([sys/inotify.h])
-AM_CONDITIONAL([USE_INOTIFY],  [test "x${ac_cv_header_sys_inotify_h}" = "xyes"])
+AS_VAR_IF([ac_cv_header_sys_inotify_h], ["yes"], [
+  AS_VAR_SET([INOTIFY_AVAILABLE], ["yes"])
+  AC_CHECK_DECLS(
+    [inotify_init, inotify_add_watch, inotify_rm_watch],
+    [],
+    [AS_VAR_SET([INOTIFY_AVAILABLE], ["no"])],
+    [
+      AC_INCLUDES_DEFAULT
+      [#include <sys/inotify.h>]
+    ]
+  )
+])
+
+AM_CONDITIONAL([USE_INOTIFY],  [test "x${INOTIFY_AVAILABLE}" = "xyes"])
 
 # Some compilers declare to conform to C++11 but the library does not.
 # These OS X versions are known to miss at least the listed headers:
