@@ -25,7 +25,6 @@
 #  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
 #  include "../c/libfswatch_log.h"
-#  include "path_utils.hpp"
 #  include <set>
 #  include <iostream>
 #  include <memory>
@@ -34,7 +33,6 @@
 #  include <cstring>
 #  include <ctime>
 #  include <cstdio>
-#  include <cmath>
 #  include <unistd.h>
 #  include <fcntl.h>
 #  include <sys/cygwin.h>
