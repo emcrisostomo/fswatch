@@ -253,7 +253,7 @@ namespace fsw
 
   static bool read_directory_changes(directory_change_event & dce)
   {
-    libfsw_logv(_("read_directory_changes: %p\n"), &dce);
+    libfsw_logv(_("read_directory_changes: %p.\n"), &dce);
 
     return ReadDirectoryChangesW((HANDLE)dce.handle,
                                  dce.buffer.get(),
@@ -270,7 +270,7 @@ namespace fsw
   {
     for (const wstring & path : load->win_paths)
     {
-      libfsw_logv(_("initialize_events: creating event for %S\n"), path.c_str());
+      libfsw_logv(_("initialize_events: creating event for %s.\n"), wstring_to_string(path).c_str());
 
       HANDLE h = ::CreateEvent(nullptr,
                                TRUE,
@@ -279,7 +279,7 @@ namespace fsw
 
       if (h == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
-      libfsw_logv(_("initialize_events: event %d created for %S\n"), h, path.c_str());
+      libfsw_logv(_("initialize_events: event %d created for %s.\n"), h, wstring_to_string(path).c_str());
 
       load->event_by_path.emplace(path, h);
     }
@@ -287,7 +287,7 @@ namespace fsw
 
   bool windows_monitor::init_search_for_path(const wstring path)
   {
-    libfsw_logv(_("init_search_for_path: %S\n"), path.c_str());
+    libfsw_logv(_("init_search_for_path: %s.\n"), wstring_to_string(path).c_str());
 
     HANDLE h = ::CreateFileW(path.c_str(),
                              GENERIC_READ,
@@ -298,12 +298,11 @@ namespace fsw
 
     if (!win_handle::is_valid(h))
     {
-      // To do: format error message
       fprintf(stderr, _("Invalid handle when opening %s.\n"), wstring_to_string(path).c_str());
       return false;
     }
 
-    libfsw_logv(_("init_search_for_path: file handle: %d\n"), h);
+    libfsw_logv(_("init_search_for_path: file handle: %d.\n"), h);
 
     directory_change_event dce(128);
     dce.handle = h;
@@ -311,8 +310,7 @@ namespace fsw
 
     if (!read_directory_changes(dce))
     {
-      // TODO: this error should be logged only in verbose mode.
-      fprintf(stderr, "ReadDirectoryChangesW: %s.\n", wstring_to_string(win_error_message::current()).c_str());
+      libfsw_logv("ReadDirectoryChangesW: %s\n", wstring_to_string(win_error_message::current()).c_str());
       return false;
     }
 
@@ -346,7 +344,7 @@ namespace fsw
 
       for (const auto & path : load->win_paths)
       {
-        libfsw_logv(_("run: processing %S\n"), path.c_str());
+        libfsw_logv(_("run: processing %s.\n"), wstring_to_string(path).c_str());
 
         // If the path is not currently watched, then initialize the search
         // structures.  If the initalization fails, skip the path altogether
@@ -354,7 +352,7 @@ namespace fsw
         auto it = load->dce_by_path.find(path);
         if (it == load->dce_by_path.end())
         {
-          libfsw_logv(_("run: initializing search structures for %S\n"), path.c_str());
+          libfsw_logv(_("run: initializing search structures for %s.\n"), wstring_to_string(path).c_str());
           if (!init_search_for_path(path)) continue;
         }
 
@@ -377,7 +375,7 @@ namespace fsw
           }
 
           // TODO: this error should be logged only in verbose mode.
-          fprintf(stderr, "GetOverlappedResult: %s.\n", wstring_to_string((wstring)win_error_message(err)).c_str());
+          fprintf(stderr, "GetOverlappedResult: %s\n", wstring_to_string((wstring)win_error_message(err)).c_str());
           stop_search_for_path(path);
           continue;
         }
@@ -426,12 +424,11 @@ namespace fsw
         }
 
         if (!ResetEvent(dce.overlapped.get()->hEvent)) throw libfsw_exception(_("::ResetEvent failed."));
-        else libfsw_logv(_("run: event %d reset\n"), dce.overlapped.get()->hEvent);
+        else libfsw_logv(_("run: event %d reset.\n"), dce.overlapped.get()->hEvent);
 
         if (!read_directory_changes(dce))
         {
-          // TODO: this error should be logged only in verbose mode.
-          fprintf(stderr, "ReadDirectoryChangesW: %s.\n", wstring_to_string((wstring)win_error_message::current()).c_str());
+          libfsw_logv("ReadDirectoryChangesW: %s\n", wstring_to_string(win_error_message::current()).c_str());
           stop_search_for_path(path);
           continue;
         }
