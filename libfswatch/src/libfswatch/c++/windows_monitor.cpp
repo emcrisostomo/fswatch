@@ -272,16 +272,16 @@ namespace fsw
     {
       libfsw_logv(_("initialize_events: creating event for %S\n"), path.c_str());
 
-      HANDLE hEvent = ::CreateEvent(nullptr,
-                                    TRUE,
-                                    FALSE,
-                                    nullptr);
+      HANDLE h = ::CreateEvent(nullptr,
+                               TRUE,
+                               FALSE,
+                               nullptr);
 
-      if (hEvent == NULL) throw libfsw_exception(_("CreateEvent failed."));
+      if (h == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
-      libfsw_logv(_("initialize_events: event %d created for %S\n"), hEvent, path.c_str());
+      libfsw_logv(_("initialize_events: event %d created for %S\n"), h, path.c_str());
 
-      load->event_by_path.emplace(path, hEvent);
+      load->event_by_path.emplace(path, h);
     }
   }
 
