@@ -177,15 +177,15 @@ namespace fsw
     fsw_hash_map<wstring, win_handle> event_by_path;
   };
 
-  struct WindowsFlagType
+  struct win_flag_type
   {
     DWORD action;
     vector<fsw_event_flag> types;
   };
 
-  static vector<WindowsFlagType> create_flag_type_vector()
+  static vector<win_flag_type> create_flag_type_vector()
   {
-    vector<WindowsFlagType> flags;
+    vector<win_flag_type> flags;
     flags.push_back({FILE_ACTION_ADDED,            {fsw_event_flag::Created}});
     flags.push_back({FILE_ACTION_REMOVED,          {fsw_event_flag::Removed}});
     flags.push_back({FILE_ACTION_MODIFIED,         {fsw_event_flag::Updated}});
@@ -195,13 +195,13 @@ namespace fsw
     return flags;
   }
 
-  static const vector<WindowsFlagType> event_flag_type = create_flag_type_vector();
+  static const vector<win_flag_type> event_flag_type = create_flag_type_vector();
 
   static vector<fsw_event_flag> decode_flags(DWORD flag)
   {
     set<fsw_event_flag> evt_flags_set;
 
-    for (const WindowsFlagType & event_type : event_flag_type)
+    for (const win_flag_type & event_type : event_flag_type)
     {
       if (flag == event_type.action)
       {
