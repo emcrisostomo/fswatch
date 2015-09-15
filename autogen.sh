@@ -15,6 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 : ${AUTORECONF=autoreconf}
-AUTORECONFFLAGS="--verbose --install --force $ACLOCAL_FLAGS"
+AUTORECONFFLAGS="--warnings=all --verbose --install --force $ACLOCAL_FLAGS"
 
 ${AUTORECONF} ${AUTORECONFFLAGS} "$@" || exit 1
