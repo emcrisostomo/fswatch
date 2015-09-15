@@ -107,6 +107,7 @@ AS_VAR_IF([ac_cv_header_sys_inotify_h], ["yes"], [
       [#include <sys/inotify.h>]
     ]
   )
+  AC_CHECK_LIB([c], [inotify_init], [], [AS_VAR_SET([INOTIFY_AVAILABLE], ["no"])])
 ])
 
 AM_CONDITIONAL([USE_INOTIFY],  [test "x${INOTIFY_AVAILABLE}" = "xyes"])
