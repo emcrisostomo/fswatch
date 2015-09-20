@@ -384,7 +384,7 @@ namespace fsw
 
         if(dce.bytes_returned == 0)
         {
-          cerr << _("The current buffer is too small.") << endl;
+          throw libfsw_exception(_("Event queue overflow."));
         }
         else
         {
