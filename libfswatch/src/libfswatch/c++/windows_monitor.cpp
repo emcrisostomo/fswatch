@@ -238,16 +238,35 @@ namespace fsw
     delete load;
   }
 
+  static wstring posix_to_win_w(string path)
+  {
+    void * raw_path = ::cygwin_create_path(CCP_POSIX_TO_WIN_W, path.c_str());
+    if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));
+
+    wstring win_path(static_cast<wchar_t *>(raw_path));
+
+    ::free(raw_path);
+
+    return win_path;
+  }
+
+  static string win_w_to_posix(wstring path)
+  {
+    void * raw_path = ::cygwin_create_path(CCP_WIN_W_TO_POSIX, path.c_str());
+    if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));
+
+    string posix_path(static_cast<char *>(raw_path));
+
+    ::free(raw_path);
+
+    return posix_path;
+  }
+
   void windows_monitor::initialize_windows_path_list()
   {
     for (const auto & path : paths)
     {
-      void * raw_path = ::cygwin_create_path(CCP_POSIX_TO_WIN_W, path.c_str());
-      if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory."));
-
-      load->win_paths.insert(wstring(static_cast<wchar_t *>(raw_path)));
-
-      ::free(raw_path);
+      load->win_paths.insert(posix_to_win_w(path));
     }
   }
 
@@ -406,11 +425,11 @@ namespace fsw
               //   * It's not NUL terminated.
               //
               //   * Its length is specified in bytes.
-              string file_name = wstring_to_string(path)
-                + "\\"
-                + wstring_to_string(wstring(currEntry->FileName, currEntry->FileNameLength/sizeof(wchar_t)));
+              wstring file_name = path
+                + L"\\"
+                + wstring(currEntry->FileName, currEntry->FileNameLength/sizeof(wchar_t));
 
-              events.push_back({file_name, curr_time, decode_flags(currEntry->Action)});
+              events.push_back({win_w_to_posix(file_name), curr_time, decode_flags(currEntry->Action)});
             }
             else
             {
