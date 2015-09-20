@@ -125,7 +125,7 @@ AM_CONDITIONAL([USE_INOTIFY],  [test "x${INOTIFY_AVAILABLE}" = "xyes"])
 
 # Check for Microsoft Windows directory change notification API
 AS_VAR_SET([WINDOWS_AVAILABLE], ["yes"])
-AC_CHECK_HEADERS([windows.h sys/cygwin.h], [], [AS_VAR_SET([WINDOWS_AVAILABLE], ["no"])])
+AC_CHECK_HEADERS([windows.h], [], [AS_VAR_SET([WINDOWS_AVAILABLE], ["no"])])
 AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
   AC_CHECK_DECLS(
     [FindFirstChangeNotification, FindNextChangeNotification, FindCloseChangeNotification, WaitForSingleObject, ReadDirectoryChangesW],
@@ -140,6 +140,25 @@ AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
 
 AM_CONDITIONAL([USE_WINDOWS], [test "x${WINDOWS_AVAILABLE}" = "xyes"])
 AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_WINDOWS], [1], [Windows API present.])])
+
+# Check for CygWin only if Windows is available
+AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
+  AS_VAR_SET([CYGWIN_AVAILABLE], ["yes"])
+  AC_CHECK_HEADERS([sys/cygwin.h], [], [AS_VAR_SET([CYGWIN_AVAILABLE], ["no"])])
+  AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [
+    AC_CHECK_DECLS(
+      [cygwin_create_path],
+      [],
+      [AS_VAR_SET([CYGWIN_AVAILABLE], ["no"])],
+      [
+        AC_INCLUDES_DEFAULT
+        [#include <sys/cygwin.h>]
+      ]
+    )
+  ])
+  AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
+  AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
+])
 
 # Some compilers declare to conform to C++11 but the library does not.
 # These OS X versions are known to miss at least the listed headers:
