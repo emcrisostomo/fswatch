@@ -43,7 +43,9 @@ if USE_INOTIFY
   libfswatch_la_SOURCES += c++/inotify_monitor.cpp
 endif
 if USE_WINDOWS
+if USE_CYGWIN
   libfswatch_la_SOURCES += c++/windows_monitor.cpp
+endif
 endif
 
 libfswatch_la_LDFLAGS  = -version-info $(LIBFSWATCH_API_VERSION)
