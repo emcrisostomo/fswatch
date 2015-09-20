@@ -156,9 +156,10 @@ AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
       ]
     )
   ])
-  AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
-  AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
 ])
+
+AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
+AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
 
 # Some compilers declare to conform to C++11 but the library does not.
 # These OS X versions are known to miss at least the listed headers:
