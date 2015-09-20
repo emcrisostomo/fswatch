@@ -22,7 +22,7 @@
 
 using namespace std;
 
-void libfsw_logv(const char * format, ...)
+void libfsw_logf(const char * format, ...)
 {
   if (!fsw_is_verbose()) return;
 

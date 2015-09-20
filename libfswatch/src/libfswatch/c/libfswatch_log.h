@@ -16,8 +16,11 @@
 #ifndef LIBFSW_LOG_H
 #  define LIBFSW_LOG_H
 
-void libfsw_logv(const char * format, ...);
+void libfsw_logf(const char * format, ...);
 void libfsw_log(const char * msg);
 void libfsw_perror(const char * msg);
+
+#define FSW_LOG(msg)       libfsw_logf("%s: ", __func__); libfsw_log(msg)
+#define FSW_LOGF(msg, ...) libfsw_logf("%s: ", __func__); libfsw_logf(msg, __VA_ARGS__)
 
 #endif  /* LIBFSW_LOG_H */
