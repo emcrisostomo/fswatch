@@ -234,7 +234,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
                                                                 context_ptr);
     session->monitor = current_monitor;
   }
-  catch (libfsw_exception ex)
+  catch (libfsw_exception & ex)
   {
     return fsw_set_last_error(int(ex));
   }
@@ -457,6 +457,10 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
 #endif
 
     session->monitor->start();
+  }
+  catch (libfsw_exception & ex)
+  {
+    return fsw_set_last_error(int(ex));
   }
   catch (int error)
   {
