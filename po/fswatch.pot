@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.6.0.develop\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-08-15 17:29+0200\n"
+"POT-Creation-Date: 2015-09-20 21:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,230 +17,230 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/fswatch.cpp:128
+#: src/fswatch.cpp:129
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
 "html>.\n"
 msgstr ""
 
-#: src/fswatch.cpp:129
+#: src/fswatch.cpp:130
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr ""
 
-#: src/fswatch.cpp:130
+#: src/fswatch.cpp:131
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 
-#: src/fswatch.cpp:132
+#: src/fswatch.cpp:133
 msgid "Written by Enrico M. Crisostomo."
 msgstr ""
 
-#: src/fswatch.cpp:140
+#: src/fswatch.cpp:141
 msgid "Usage:\n"
 msgstr ""
 
-#: src/fswatch.cpp:141
+#: src/fswatch.cpp:142
 msgid " [OPTION] ... path ...\n"
 msgstr ""
 
-#: src/fswatch.cpp:143
+#: src/fswatch.cpp:144
 msgid "Options:\n"
 msgstr ""
 
-#: src/fswatch.cpp:144
+#: src/fswatch.cpp:145
 msgid "Use the ASCII NUL character (0) as line separator.\n"
 msgstr ""
 
-#: src/fswatch.cpp:145
+#: src/fswatch.cpp:146
 msgid "Exit fswatch after the first set of events is received.\n"
 msgstr ""
 
-#: src/fswatch.cpp:146
+#: src/fswatch.cpp:147
 msgid "Print a marker at the end of every batch.\n"
 msgstr ""
 
-#: src/fswatch.cpp:147
+#: src/fswatch.cpp:148
 msgid "Filter the event by the specified type.\n"
 msgstr ""
 
-#: src/fswatch.cpp:148
+#: src/fswatch.cpp:149
 msgid "Exclude paths matching REGEX.\n"
 msgstr ""
 
-#: src/fswatch.cpp:149
+#: src/fswatch.cpp:150
 msgid "Use extended regular expressions.\n"
 msgstr ""
 
-#: src/fswatch.cpp:150
+#: src/fswatch.cpp:151
 msgid "Use the specified record format."
 msgstr ""
 
-#: src/fswatch.cpp:151
+#: src/fswatch.cpp:152
 msgid "Print the event time using the specified format.\n"
 msgstr ""
 
-#: src/fswatch.cpp:152
+#: src/fswatch.cpp:153
 msgid "Show this message.\n"
 msgstr ""
 
-#: src/fswatch.cpp:153
+#: src/fswatch.cpp:154
 msgid "Include paths matching REGEX.\n"
 msgstr ""
 
-#: src/fswatch.cpp:154
+#: src/fswatch.cpp:155
 msgid "Use case insensitive regular expressions.\n"
 msgstr ""
 
-#: src/fswatch.cpp:155
+#: src/fswatch.cpp:156
 msgid "Set the latency.\n"
 msgstr ""
 
-#: src/fswatch.cpp:156
+#: src/fswatch.cpp:157
 msgid "Follow symbolic links.\n"
 msgstr ""
 
-#: src/fswatch.cpp:157
+#: src/fswatch.cpp:158
 msgid "List the available monitors.\n"
 msgstr ""
 
-#: src/fswatch.cpp:158
+#: src/fswatch.cpp:159
 msgid "Use the specified monitor.\n"
 msgstr ""
 
-#: src/fswatch.cpp:159
+#: src/fswatch.cpp:160
 msgid "Print a numeric event mask.\n"
 msgstr ""
 
-#: src/fswatch.cpp:160
+#: src/fswatch.cpp:161
 msgid "Print a single message with the number of change events.\n"
 msgstr ""
 
-#: src/fswatch.cpp:161
+#: src/fswatch.cpp:162
 msgid "Recurse subdirectories.\n"
 msgstr ""
 
-#: src/fswatch.cpp:162
+#: src/fswatch.cpp:163
 msgid "Print the event timestamp.\n"
 msgstr ""
 
-#: src/fswatch.cpp:163
+#: src/fswatch.cpp:164
 msgid "Print the event time as UTC time.\n"
 msgstr ""
 
-#: src/fswatch.cpp:164
+#: src/fswatch.cpp:165
 msgid "Print verbose output.\n"
 msgstr ""
 
-#: src/fswatch.cpp:165
+#: src/fswatch.cpp:166
 msgid "Print the version of "
 msgstr ""
 
-#: src/fswatch.cpp:165
+#: src/fswatch.cpp:166
 msgid " and exit.\n"
 msgstr ""
 
-#: src/fswatch.cpp:166
+#: src/fswatch.cpp:167
 msgid "Print the event flags.\n"
 msgstr ""
 
-#: src/fswatch.cpp:168
+#: src/fswatch.cpp:169
 msgid "Print event flags using the specified separator."
 msgstr ""
 
-#: src/fswatch.cpp:201
+#: src/fswatch.cpp:202
 msgid ""
 "Available monitors in this platform:\n"
 "\n"
 msgstr ""
 
-#: src/fswatch.cpp:204
+#: src/fswatch.cpp:205
 msgid ""
 "\n"
 "See the man page for more information.\n"
 "\n"
 msgstr ""
 
-#: src/fswatch.cpp:206
+#: src/fswatch.cpp:207
 msgid "Report bugs to <"
 msgstr ""
 
-#: src/fswatch.cpp:207
+#: src/fswatch.cpp:208
 msgid " home page: <"
 msgstr ""
 
-#: src/fswatch.cpp:225
+#: src/fswatch.cpp:226
 msgid "Done.\n"
 msgstr ""
 
-#: src/fswatch.cpp:247
+#: src/fswatch.cpp:248
 msgid "Invalid value: "
 msgstr ""
 
-#: src/fswatch.cpp:253
+#: src/fswatch.cpp:254
 msgid "Value out of range: "
 msgstr ""
 
-#: src/fswatch.cpp:259
+#: src/fswatch.cpp:260
 msgid "Latency set to: "
 msgstr ""
 
-#: src/fswatch.cpp:274
+#: src/fswatch.cpp:275
 msgid "SIGTERM handler registered.\n"
 msgstr ""
 
-#: src/fswatch.cpp:278
+#: src/fswatch.cpp:279
 msgid "SIGTERM handler registration failed."
 msgstr ""
 
-#: src/fswatch.cpp:283
+#: src/fswatch.cpp:284
 msgid "SIGABRT handler registered.\n"
 msgstr ""
 
-#: src/fswatch.cpp:287
+#: src/fswatch.cpp:288
 msgid "SIGABRT handler registration failed."
 msgstr ""
 
-#: src/fswatch.cpp:292
+#: src/fswatch.cpp:293
 msgid "SIGINT handler registered.\n"
 msgstr ""
 
-#: src/fswatch.cpp:296
+#: src/fswatch.cpp:297
 msgid "SIGINT handler registration failed"
 msgstr ""
 
-#: src/fswatch.cpp:316
+#: src/fswatch.cpp:317
 msgid "<date format error>"
 msgstr ""
 
-#: src/fswatch.cpp:416
+#: src/fswatch.cpp:417
 msgid "Adding path: "
 msgstr ""
 
-#: src/fswatch.cpp:624
+#: src/fswatch.cpp:628
 msgid ""
 "--format is incompatible with any other format option such as -t and -x."
 msgstr ""
 
-#: src/fswatch.cpp:630
+#: src/fswatch.cpp:634
 msgid "--format is incompatible with -o."
 msgstr ""
 
-#: src/fswatch.cpp:645
+#: src/fswatch.cpp:649
 msgid "Invalid format."
 msgstr ""
 
-#: src/fswatch.cpp:757
+#: src/fswatch.cpp:761
 msgid "Invalid number of arguments."
 msgstr ""
 
-#: src/fswatch.cpp:763
+#: src/fswatch.cpp:767
 msgid "Invalid monitor name."
 msgstr ""
 
-#: src/fswatch.cpp:779
+#: src/fswatch.cpp:783
 msgid "An error occurred and the program will be terminated.\n"
 msgstr ""
 
-#: src/fswatch.cpp:786
+#: src/fswatch.cpp:790
 msgid "An unknown error occurred and the program will be terminated."
 msgstr ""
