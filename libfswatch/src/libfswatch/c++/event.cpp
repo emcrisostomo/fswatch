@@ -22,43 +22,6 @@ using namespace std;
 
 namespace fsw
 {
-#define FSW_MAKE_PAIR_FROM_NAME(p) {p, #p}
-  static const std::map<fsw_event_flag, std::string> names_by_flag = {
-    FSW_MAKE_PAIR_FROM_NAME(NoOp),
-    FSW_MAKE_PAIR_FROM_NAME(PlatformSpecific),
-    FSW_MAKE_PAIR_FROM_NAME(Created),
-    FSW_MAKE_PAIR_FROM_NAME(Updated),
-    FSW_MAKE_PAIR_FROM_NAME(Removed),
-    FSW_MAKE_PAIR_FROM_NAME(Renamed),
-    FSW_MAKE_PAIR_FROM_NAME(OwnerModified),
-    FSW_MAKE_PAIR_FROM_NAME(AttributeModified),
-    FSW_MAKE_PAIR_FROM_NAME(MovedFrom),
-    FSW_MAKE_PAIR_FROM_NAME(MovedTo),
-    FSW_MAKE_PAIR_FROM_NAME(IsFile),
-    FSW_MAKE_PAIR_FROM_NAME(IsDir),
-    FSW_MAKE_PAIR_FROM_NAME(IsSymLink),
-    FSW_MAKE_PAIR_FROM_NAME(Link)
-  };
-#undef FSW_MAKE_PAIR_FROM_NAME
-
-#define FSW_MAKE_PAIR_FROM_NAME(p) {#p, p}
-  static const std::map<std::string, fsw_event_flag> flag_by_names = {
-    FSW_MAKE_PAIR_FROM_NAME(NoOp),
-    FSW_MAKE_PAIR_FROM_NAME(PlatformSpecific),
-    FSW_MAKE_PAIR_FROM_NAME(Created),
-    FSW_MAKE_PAIR_FROM_NAME(Updated),
-    FSW_MAKE_PAIR_FROM_NAME(Removed),
-    FSW_MAKE_PAIR_FROM_NAME(Renamed),
-    FSW_MAKE_PAIR_FROM_NAME(OwnerModified),
-    FSW_MAKE_PAIR_FROM_NAME(AttributeModified),
-    FSW_MAKE_PAIR_FROM_NAME(MovedFrom),
-    FSW_MAKE_PAIR_FROM_NAME(MovedTo),
-    FSW_MAKE_PAIR_FROM_NAME(IsFile),
-    FSW_MAKE_PAIR_FROM_NAME(IsDir),
-    FSW_MAKE_PAIR_FROM_NAME(IsSymLink),
-    FSW_MAKE_PAIR_FROM_NAME(Link)
-  };
-#undef FSW_MAKE_PAIR_FROM_NAME
 
   event::event(string path, time_t evt_time, vector<fsw_event_flag> flags) :
     path(path), evt_time(evt_time), evt_flags(flags)
@@ -86,6 +49,25 @@ namespace fsw
 
   fsw_event_flag event::get_event_flag_by_name(const std::string &name)
   {
+#define FSW_MAKE_PAIR_FROM_NAME(p) {#p, p}
+    static const std::map<std::string, fsw_event_flag> flag_by_names = {
+      FSW_MAKE_PAIR_FROM_NAME(NoOp),
+      FSW_MAKE_PAIR_FROM_NAME(PlatformSpecific),
+      FSW_MAKE_PAIR_FROM_NAME(Created),
+      FSW_MAKE_PAIR_FROM_NAME(Updated),
+      FSW_MAKE_PAIR_FROM_NAME(Removed),
+      FSW_MAKE_PAIR_FROM_NAME(Renamed),
+      FSW_MAKE_PAIR_FROM_NAME(OwnerModified),
+      FSW_MAKE_PAIR_FROM_NAME(AttributeModified),
+      FSW_MAKE_PAIR_FROM_NAME(MovedFrom),
+      FSW_MAKE_PAIR_FROM_NAME(MovedTo),
+      FSW_MAKE_PAIR_FROM_NAME(IsFile),
+      FSW_MAKE_PAIR_FROM_NAME(IsDir),
+      FSW_MAKE_PAIR_FROM_NAME(IsSymLink),
+      FSW_MAKE_PAIR_FROM_NAME(Link)
+    };
+#undef FSW_MAKE_PAIR_FROM_NAME
+
     auto flag = flag_by_names.find(name);
 
     if (flag == flag_by_names.end())
@@ -96,6 +78,25 @@ namespace fsw
 
   std::string event::get_event_flag_name(const fsw_event_flag &flag)
   {
+#define FSW_MAKE_PAIR_FROM_NAME(p) {p, #p}
+    static const std::map<fsw_event_flag, std::string> names_by_flag = {
+      FSW_MAKE_PAIR_FROM_NAME(NoOp),
+      FSW_MAKE_PAIR_FROM_NAME(PlatformSpecific),
+      FSW_MAKE_PAIR_FROM_NAME(Created),
+      FSW_MAKE_PAIR_FROM_NAME(Updated),
+      FSW_MAKE_PAIR_FROM_NAME(Removed),
+      FSW_MAKE_PAIR_FROM_NAME(Renamed),
+      FSW_MAKE_PAIR_FROM_NAME(OwnerModified),
+      FSW_MAKE_PAIR_FROM_NAME(AttributeModified),
+      FSW_MAKE_PAIR_FROM_NAME(MovedFrom),
+      FSW_MAKE_PAIR_FROM_NAME(MovedTo),
+      FSW_MAKE_PAIR_FROM_NAME(IsFile),
+      FSW_MAKE_PAIR_FROM_NAME(IsDir),
+      FSW_MAKE_PAIR_FROM_NAME(IsSymLink),
+      FSW_MAKE_PAIR_FROM_NAME(Link)
+    };
+#undef FSW_MAKE_PAIR_FROM_NAME
+
     auto name = names_by_flag.find(flag);
 
     if (name == names_by_flag.end())
