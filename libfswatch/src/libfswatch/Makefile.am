@@ -45,6 +45,7 @@ endif
 if USE_WINDOWS
 if USE_CYGWIN
   libfswatch_la_SOURCES += c++/windows_monitor.cpp
+  libfswatch_la_SOURCES += c++/windows/win_handle.cpp
 endif
 endif
 
@@ -88,6 +89,7 @@ if USE_INOTIFY
 endif
 if USE_WINDOWS
   libfswatch_cpp_HEADERS += c++/windows_monitor.hpp
+	libfswatch_cpp_HEADERS += c++/windows/win_handle.cpp
 endif
 libfswatch_cpp_HEADERS += c++/poll_monitor.hpp
 libfswatch_cpp_HEADERS += c++/filter.hpp

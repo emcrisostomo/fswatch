@@ -26,3 +26,4 @@ src/libfswatch/c++/monitor.cpp
 src/libfswatch/c++/path_utils.cpp
 src/libfswatch/c++/poll_monitor.cpp
 src/libfswatch/c++/windows_monitor.cpp
+src/libfswatch/c++/windows/win_handle.cpp

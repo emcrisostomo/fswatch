@@ -45,6 +45,8 @@ namespace fsw
     void initialize_events();
     bool init_search_for_path(const std::wstring path);
     void stop_search_for_path(const std::wstring path);
+    void process_path(const std::wstring & path);
+    bool is_path_watched(std::wstring path);
 
     // initial load
     windows_monitor_load * load;
