@@ -39,6 +39,7 @@
 #  include <sys/cygwin.h>
 #  include <windows.h>
 #  include "./windows/win_handle.hpp"
+#  include "./windows/win_error_message.hpp"
 
 using namespace std;
 
@@ -83,57 +84,6 @@ namespace fsw
 
     return posix_path;
   }
-
-  class win_error_message
-  {
-  public:
-    static win_error_message current()
-    {
-      return win_error_message();
-    }
-
-    win_error_message(DWORD err_code) : err_code{err_code}{}
-    win_error_message() : err_code{GetLastError()}{}
-
-    DWORD get_error_code() const
-    {
-      return err_code;
-    }
-
-    wstring get_message() const
-    {
-      if (initialized) return msg;
-      initialized = true;
-
-      LPWSTR buf = nullptr;
-      DWORD ret_size = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                                      NULL,
-                                      err_code,
-                                      0,
-                                      (LPWSTR)&buf,
-                                      0,
-                                      nullptr);
-
-      if (ret_size > 0)
-      {
-        msg = buf;
-        LocalFree(buf);
-      }
-      else
-      {
-        msg = L"The system error message could not be formatted.";
-      }
-
-      return msg;
-    }
-
-    operator wstring() const { return get_message(); }
-
-  private:
-    mutable bool initialized = false;
-    mutable wstring msg;
-    DWORD err_code;
-  };
 
   struct win_flag_type
   {
