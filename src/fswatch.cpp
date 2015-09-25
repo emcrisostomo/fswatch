@@ -77,6 +77,7 @@ static vector<monitor_filter> filters;
 static vector<fsw_event_type_filter> event_filters;
 static bool _0flag = false;
 static bool _1flag = false;
+static bool allow_overflow = false;
 static int batch_marker_flag = false;
 static bool Eflag = false;
 static bool fflag = false;
@@ -108,6 +109,7 @@ static const int OPT_BATCH_MARKER = 128;
 static const int OPT_FORMAT = 129;
 static const int OPT_EVENT_FLAG_SEPARATOR = 130;
 static const int OPT_EVENT_TYPE = 131;
+static const int OPT_ALLOW_OVERFLOW = 132;
 
 bool is_verbose()
 {
@@ -144,6 +146,7 @@ static void usage(ostream& stream)
   stream << _("Options:\n");
   stream << " -0, --print0          " << _("Use the ASCII NUL character (0) as line separator.\n");
   stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
+  stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
   stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
@@ -441,6 +444,7 @@ static void start_monitor(int argc, char ** argv, int optind)
     filter.extended = Eflag;
   }
 
+  active_monitor->set_allow_overflow(allow_overflow);
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
   active_monitor->set_event_type_filters(event_filters);
@@ -460,7 +464,8 @@ static void parse_opts(int argc, char ** argv)
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
   static struct option long_options[] = {
-    { "print0", no_argument, nullptr, '0'},
+	{ "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
+	{ "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
     { "event", required_argument, nullptr, OPT_EVENT_TYPE},
@@ -606,6 +611,10 @@ static void parse_opts(int argc, char ** argv)
         ::exit(FSW_ERR_UNKNOWN_VALUE);
       }
       break;
+
+    case OPT_ALLOW_OVERFLOW:
+    	allow_overflow = true;
+    	break;
 
     case '?':
       usage(cerr);
