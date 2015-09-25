@@ -107,6 +107,12 @@ extern "C"
   FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path);
 
   /*
+   * Sets the allow overflow flag of the monitor.  When this flag is set, a
+   * monitor is allowed to overflow and report it as a change event.
+   */
+  FSW_STATUS fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow);
+
+  /*
    * Sets the callback the monitor invokes when some events are received.  The
    * callback must be set in the current session in order for it to be valid.
    *

@@ -42,6 +42,7 @@ namespace fsw
     monitor(const monitor& orig) = delete;
     monitor& operator=(const monitor & that) = delete;
     void set_latency(double latency);
+    void set_allow_overflow(bool overflow);
     void set_recursive(bool recursive);
     void add_filter(const monitor_filter &filter);
     void set_filters(const std::vector<monitor_filter> &filters);
@@ -57,6 +58,7 @@ namespace fsw
     bool accept_path(const std::string &path) const;
     bool accept_path(const char *path) const;
     void notify_events(const std::vector<event> &events) const;
+    void notify_overflow() const;
     std::vector<fsw_event_flag> filter_flags(const event &evt) const;
 
     virtual void run() = 0;
@@ -66,6 +68,7 @@ namespace fsw
     FSW_EVENT_CALLBACK * callback;
     void * context = nullptr;
     double latency = 1.0;
+    bool allow_overflow = false;
     bool recursive = false;
     bool follow_symlinks = false;
 

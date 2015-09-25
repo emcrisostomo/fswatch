@@ -44,6 +44,7 @@ typedef struct FSW_SESSION
   fsw::monitor * monitor;
   FSW_CEVENT_CALLBACK callback;
   double latency;
+  bool allow_overflow;
   bool recursive;
   bool follow_symlinks;
   vector<monitor_filter> filters;
@@ -291,6 +292,25 @@ FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK c
   return fsw_set_last_error(FSW_OK);
 }
 
+FSW_STATUS fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow)
+{
+  try
+  {
+#ifdef HAVE_CXX_MUTEX
+    std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
+    FSW_SESSION * session = get_session(handle);
+
+    session->allow_overflow = allow_overflow;
+  }
+  catch (int error)
+  {
+    return fsw_set_last_error(error);
+  }
+
+  return fsw_set_last_error(FSW_OK);
+}
+
 FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency)
 {
   if (latency < 0)
@@ -445,6 +465,7 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
     if (!session->monitor)
       create_monitor(handle, session->type);
 
+    session->monitor->set_allow_overflow(session->allow_overflow);
     session->monitor->set_filters(session->filters);
     session->monitor->set_event_type_filters(session->event_type_filters);
     session->monitor->set_follow_symlinks(session->follow_symlinks);

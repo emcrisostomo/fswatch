@@ -5,6 +5,8 @@ New in 1.6.0:
 
   * fswatch can now be built on Microsoft Windows using Cygwin.
   * A monitor for Microsoft Windows has been added.
+  * fswatch can report monitor buffer overflows (which cannot be avoided with
+    certain monitors) as regular events for callers to recover gracefully.
 
 New in 1.5.1:
 

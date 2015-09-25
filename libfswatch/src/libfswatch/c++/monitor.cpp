@@ -24,6 +24,7 @@
 #include <regex.h>
 #include <iostream>
 #include <sstream>
+#include <time.h>
 /*
  * Conditionally include monitor headers for default construction.
  */
@@ -60,6 +61,11 @@ namespace fsw
     {
       throw libfsw_exception(_("Callback cannot be null."), FSW_ERR_CALLBACK_NOT_SET);
     }
+  }
+
+  void monitor::set_allow_overflow(bool overflow)
+  {
+	  allow_overflow = overflow;
   }
 
   void monitor::set_latency(double latency)
@@ -265,6 +271,19 @@ namespace fsw
     }
 
     return filtered_flags;
+  }
+
+  void monitor::notify_overflow() const
+  {
+    if (!allow_overflow)
+	{
+      throw libfsw_exception(_("Event queue overflow."));
+	}
+
+    time_t curr_time;
+    time(&curr_time);
+
+	notify_events({{"", curr_time, {fsw_event_flag::Overflow}}});
   }
 
   void monitor::notify_events(const vector<event> &events) const

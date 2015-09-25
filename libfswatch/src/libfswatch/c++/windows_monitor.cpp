@@ -343,7 +343,7 @@ namespace fsw
 
       if (dce.is_buffer_overflowed())
       {
-        cerr << "Overflow." << endl;
+    	notify_overflow();
       }
 
       stop_search_for_path(path);
@@ -355,7 +355,7 @@ namespace fsw
 
     if(dce.bytes_returned == 0)
     {
-      throw libfsw_exception(_("Event queue overflow."));
+      notify_overflow();
     }
 
     vector<event> events = dce.get_events();
