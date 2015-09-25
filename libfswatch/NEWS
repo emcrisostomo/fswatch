@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.6.0:
+
+  * A monitor for Microsoft Windows has been added.
+
 New in 1.5.1:
 
   * Fixes Issue 91: Can't compile fswatch 1.5.0 on FreeBSD 9.3-RELEASE.
