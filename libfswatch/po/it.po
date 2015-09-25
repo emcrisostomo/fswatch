@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-09-22 17:14+0200\n"
-"PO-Revision-Date: 2015-09-22 17:16+0200\n"
+"POT-Creation-Date: 2015-09-25 14:04+0200\n"
+"PO-Revision-Date: 2015-09-25 14:08+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/libfswatch/c++/event.cpp:92
+#: src/libfswatch/c++/event.cpp:74
 msgid "Unknown event type: "
 msgstr "Tipo evento sconosciuto: "
 
-#: src/libfswatch/c++/event.cpp:102
+#: src/libfswatch/c++/event.cpp:103
 msgid "Unknown event type."
 msgstr "Tipo evento sconosciuto."
 
@@ -78,7 +78,7 @@ msgid "Generic event: "
 msgstr "Evento generico: "
 
 #: src/libfswatch/c++/inotify_monitor.cpp:305
-#: src/libfswatch/c++/windows_monitor.cpp:406
+#: src/libfswatch/c++/windows_monitor.cpp:358
 msgid "Event queue overflow."
 msgstr "La coda degli eventi è andata in overflow."
 
@@ -158,92 +158,96 @@ msgstr "Non posso eseguire stat() "
 msgid "Done scanning.\n"
 msgstr "Scansione terminata.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:109
-#, c-format
-msgid "Closing handle: %d.\n"
-msgstr "Chiudendo handle: %d.\n"
+#: src/libfswatch/c++/windows_monitor.cpp:67
+#: src/libfswatch/c++/windows_monitor.cpp:79
+msgid "cygwin_create_path could not allocate memory to convert the path."
+msgstr ""
+"cygwin_create_path non ha potuto allocare memoria per convertire il path."
 
-#: src/libfswatch/c++/windows_monitor.cpp:168
-#: src/libfswatch/c++/windows_monitor.cpp:169
+#: src/libfswatch/c++/windows_monitor.cpp:138
+#: src/libfswatch/c++/windows_monitor.cpp:139
 msgid "::malloc failed."
 msgstr "::malloc ha fallito."
 
-#: src/libfswatch/c++/windows_monitor.cpp:244
-#: src/libfswatch/c++/windows_monitor.cpp:256
-msgid "cygwin_create_path could not allocate memory to convert the path."
-msgstr "cygwin_create_path non ha potuto allocare memoria per convertire il path."
-
-#: src/libfswatch/c++/windows_monitor.cpp:275
+#: src/libfswatch/c++/windows_monitor.cpp:156
 #, c-format
 msgid "%p.\n"
 msgstr "%p.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:292
+#: src/libfswatch/c++/windows_monitor.cpp:175
 #, c-format
-msgid "Creating event for %s.\n"
-msgstr "Creando evento per %s.\n"
+msgid "GetOverlappedResult: %s\n"
+msgstr "GetOverlappedResult: %s\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:299
-msgid "CreateEvent failed."
-msgstr "CreateEvent ha fallito."
-
-#: src/libfswatch/c++/windows_monitor.cpp:301
-#, c-format
-msgid "Event %d created for %s.\n"
-msgstr "Evento %d creato per %s.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:309
-#, c-format
-msgid "Processing path: %s.\n"
-msgstr "Processando path: %s.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:320
-#, c-format
-msgid "Invalid handle when opening %s.\n"
-msgstr "Handle invalido mentra si apriva %s.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:324
-#, c-format
-msgid "Open file handle: %d.\n"
-msgstr "File handle aperto: %d.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:366
-#, c-format
-msgid "Processing %s.\n"
-msgstr "Processando %s.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:374
-#, c-format
-msgid "Initializing search structures for %s.\n"
-msgstr "Initializzando strutture di ricerca per %s.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:379
-msgid "Initialization failed."
-msgstr "Inizializzazione fallita."
-
-#: src/libfswatch/c++/windows_monitor.cpp:388
-msgid "I/O incomplete.\n"
-msgstr "I/O incompleto.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:402
-#, c-format
-msgid "GetOverlappedResult returned %d bytes\n"
-msgstr "GetOverlappedResult ha restituito %d bytes\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:436
-msgid "File name unexpectedly empty."
-msgstr "Nome file inaspettatamente vuoto."
-
-#: src/libfswatch/c++/windows_monitor.cpp:445
+#: src/libfswatch/c++/windows_monitor.cpp:182
 msgid "::ResetEvent failed."
 msgstr "::ResetEvent ha fallito."
 
-#: src/libfswatch/c++/windows_monitor.cpp:446
+#: src/libfswatch/c++/windows_monitor.cpp:184
 #, c-format
 msgid "Event %d reset.\n"
 msgstr "Evento %d resettato.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:450
+#: src/libfswatch/c++/windows_monitor.cpp:217
+msgid "File name unexpectedly empty."
+msgstr "Nome file inaspettatamente vuoto."
+
+#: src/libfswatch/c++/windows_monitor.cpp:259
+#, c-format
+msgid "Creating event for %s.\n"
+msgstr "Creando evento per %s.\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:266
+msgid "CreateEvent failed."
+msgstr "CreateEvent ha fallito."
+
+#: src/libfswatch/c++/windows_monitor.cpp:268
+#, c-format
+msgid "Event %d created for %s.\n"
+msgstr "Evento %d creato per %s.\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:276
+#, c-format
+msgid "Initializing search structures for %s.\n"
+msgstr "Initializzando strutture di ricerca per %s.\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:287
+#, c-format
+msgid "Invalid handle when opening %s.\n"
+msgstr "Handle invalido mentra si apriva %s.\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:291
+#, c-format
+msgid "Open file handle: %d.\n"
+msgstr "File handle aperto: %d.\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:321
+#, c-format
+msgid "Processing %s.\n"
+msgstr "Processando %s.\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:332
+msgid "Initialization failed."
+msgstr "Inizializzazione fallita."
+
+#: src/libfswatch/c++/windows_monitor.cpp:340
+msgid "I/O incomplete.\n"
+msgstr "I/O incompleto.\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:354
+#, c-format
+msgid "GetOverlappedResult returned %d bytes\n"
+msgstr "GetOverlappedResult ha restituito %d bytes\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:367
 #, c-format
 msgid "ReadDirectoryChangesW: %s\n"
 msgstr "ReadDirectoryChangesW: %s\n"
+
+#: src/libfswatch/c++/windows/win_handle.cpp:42
+#, c-format
+msgid "Closing handle: %d.\n"
+msgstr "Chiudendo handle: %d.\n"
+
+#~ msgid "Processing path: %s.\n"
+#~ msgstr "Processando path: %s.\n"
