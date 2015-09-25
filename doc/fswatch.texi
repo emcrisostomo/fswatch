@@ -24,7 +24,7 @@
 This manual is for @command{fswatch} (version @value{VERSION},
 @value{UPDATED}), a cross-platform file change monitor with multiple
 backends, including Apple OS X File System Events API, *BSD kqueue,
-Linux inotify and a @command{stat}-based backend.
+Linux inotify, Microsoft Windows and a @command{stat}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
@@ -82,6 +82,16 @@ Free Documentation License'.
 
 @node History
 @chapter History
+@section fswatch 1.6.0
+@itemize
+@item
+@file{fswatch} can be build on Microsoft Windows using Cygwin.
+
+@item
+A monitor for Microsoft Windows has been added.
+
+@end itemize
+
 @section fswatch 1.5.1
 
 @itemize
@@ -397,6 +407,14 @@ A monitor based on inotify, a Linux kernel subsystem that reports file
 system changes to applications.
 
 @item
+@cpindex Microsoft Windows monitor
+@cpindex monitor, Microsoft Windows
+@cpindex Microsoft Windows
+@fnindex @code{ReadDirectoryChangesW}
+A monitor based on the Microsoft Windows' @code{ReadDirectoryChangesW}
+function and reads change events asynchronously.
+
+@item
 @cpindex monitor, poll
 @fnindex @command{stat}
 A monitor which periodically stats the file system, saves file
@@ -421,6 +439,7 @@ in 2009.  This version ran exclusively on OS X and relied on the
 @cpindex FSEvents
 @cpindex kqueue
 @cpindex inotify
+@cpindex Microsoft Windows
 At the end of 2013 Enrico M. @sc{Crisostomo} wrote @command{fsw}
 aiming at providing not only a drop-in replacement for
 @command{fswatch}, but also a common front-end from multiple file
@@ -434,6 +453,10 @@ OS X FSEvents.
 
 @item
 Linux inotify.
+
+@item
+Microsoft Windows.
+
 @end itemize
 
 @cpindex @command{fsw}, merging with @command{fswatch}
@@ -1710,6 +1733,11 @@ notification interface introduced in FreeBSD 4.1 and supported on most
 @item
 The @emph{inotify} monitor, a Linux kernel subsystem that reports file
 system changes to applications (@pxref{The inotify Monitor}).
+
+@item
+The @emph{Windows} monitor, a monitor that uses the Microsoft Windows'
+@code{ReadDirectoryChangesW} function and reads change events
+asynchronously.
 
 @item
 The @emph{poll} monitor, a monitor that periodically stats the file

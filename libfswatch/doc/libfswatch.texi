@@ -22,8 +22,8 @@
 This manual is for @file{libfswatch} (version @value{VERSION},
 @value{UPDATED}), a cross-platform file change monitor C/C++ library
 with multiple backends, including Apple OS X File System Events
-@acronym{API}, *BSD kqueue, Linux inotify and a @code{stat}-based
-backend.
+@acronym{API}, *BSD kqueue, Linux inotify, Microsoft Windows and a
+@code{stat}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
@@ -80,6 +80,59 @@ Free Documentation License'.
 
 @node History
 @chapter History
+@section 4:0:1
+@subsection Feature Changes
+The changes introducted in @code{4:0:1} are the following:
+@itemize
+@item
+@cpindex monitor, Windows
+A monitor for Microsoft Windows was added.
+
+@item
+@cpindex logging
+A logging function has been added to the library to log verbose
+messages.
+
+@end itemize
+
+@subsection C++ Interface Changes
+@itemize
+@tpindex @code{windows_monitor}
+@item
+The @code{windows_monitor} class has been added to provide a monitor
+that uses the Windows @acronym{API}.
+
+@end itemize
+
+@subsection C Interface Changes
+@itemize
+@item
+A family of functions and macros have been added to log diagnostic messages and conditionally print them only in verbose mode:
+@itemize
+@item
+@fnindex @code{libfsw_logf}
+@code{libfsw_logf}
+
+@item
+@fnindex @code{libfsw_log}
+@code{libfsw_log}
+
+@item
+@fnindex @code{libfsw_perror}
+@code{libfsw_perror}
+
+@item
+@fnindex @code{FSW_LOG}
+@code{FSW_LOG}
+
+@item
+@fnindex @code{FSW_LOGF}
+@code{FSW_LOGF}
+@end itemize
+@end itemize
+
+
+
 @section 3:0:0
 @subsection Feature Changes
 The changes introduced in @code{3:0:0} are the following:
@@ -95,19 +148,6 @@ moved to the base @code{monitor} class.
 @item
 All the monitors were refactored and the filtering logic (both by path
 and event type) was moved to the base @code{monitor} class.
-@end itemize
-
-@subsection Interface Changes
-The interface changes introduced in @code{3:0:0} are the following:
-@itemize
-@item
-@tpindex @code{fsw_event_type_filter}
-Added the @code{fsw_event_type_filter} structure to represent a event
-type filter.
-
-@item
-@fnindex @code{FSW_ERR_UNKNOWN_VALUE}
-Added the @code{FSW_ERR_UNKNOWN_VALUE} exit code.
 @end itemize
 
 @subsection C++ Interface Changes
@@ -148,6 +188,15 @@ event type on a stream.
 @subsection C Interface Changes
 @itemize
 @item
+@tpindex @code{fsw_event_type_filter}
+Added the @code{fsw_event_type_filter} structure to represent a event
+type filter.
+
+@item
+@fnindex @code{FSW_ERR_UNKNOWN_VALUE}
+Added the @code{FSW_ERR_UNKNOWN_VALUE} exit code.
+
+@item
 @fnindex @code{fsw_add_event_type_filter}
 Added the @code{fsw_add_event_type_filter} function to add an event
 type filter.
@@ -172,12 +221,14 @@ supporting the following backends:
 @itemize
 @item
 @cpindex FSEvents monitor
+@cpindex monitor, FSEvents
 @cpindex FSEvents
 @cpindex Apple OS X
 A monitor based on the @emph{FSEvents} @acronym{API} of Apple OS X.
 
 @item
 @cpindex kqueue monitor
+@cpindex monitor, kqueue
 @cpindex kqueue
 @cpindex BSD
 @cpindex FreeBSD
@@ -188,10 +239,19 @@ introduced in FreeBSD 4.1 and supported on most *BSD systems
 
 @item
 @cpindex inotify monitor
+@cpindex monitor, inotify
 @cpindex inotify
 @cpindex Linux
 A monitor based on @emph{inotify}, a Linux kernel subsystem that
 reports file system changes to applications.
+
+@item
+@cpindex Microsoft Windows monitor
+@cpindex monitor, Microsoft Windows
+@cpindex Microsoft Windows
+@fnindex @code{ReadDirectoryChangesW}
+A monitor based on the Microsoft Windows' @code{ReadDirectoryChangesW}
+function and reads change events asynchronously.
 
 @item
 @cpindex poll monitor
@@ -1496,6 +1556,7 @@ enum fsw_monitor_type
   fsevents_monitor_type,
   kqueue_monitor_type,
   inotify_monitor_type,
+  windows_monitor_type,
   poll_monitor_type
 @};
 @end example
