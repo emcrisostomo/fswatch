@@ -64,7 +64,8 @@ namespace fsw
       FSW_MAKE_PAIR_FROM_NAME(IsFile),
       FSW_MAKE_PAIR_FROM_NAME(IsDir),
       FSW_MAKE_PAIR_FROM_NAME(IsSymLink),
-      FSW_MAKE_PAIR_FROM_NAME(Link)
+      FSW_MAKE_PAIR_FROM_NAME(Link),
+      FSW_MAKE_PAIR_FROM_NAME(Overflow)
     };
 #undef FSW_MAKE_PAIR_FROM_NAME
 
@@ -93,7 +94,8 @@ namespace fsw
       FSW_MAKE_PAIR_FROM_NAME(IsFile),
       FSW_MAKE_PAIR_FROM_NAME(IsDir),
       FSW_MAKE_PAIR_FROM_NAME(IsSymLink),
-      FSW_MAKE_PAIR_FROM_NAME(Link)
+      FSW_MAKE_PAIR_FROM_NAME(Link),
+      FSW_MAKE_PAIR_FROM_NAME(Overflow)
     };
 #undef FSW_MAKE_PAIR_FROM_NAME
 
