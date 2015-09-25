@@ -42,8 +42,20 @@ endif
 if USE_INOTIFY
   libfswatch_la_SOURCES += c++/inotify_monitor.cpp
 endif
+if USE_WINDOWS
+if USE_CYGWIN
+  libfswatch_la_SOURCES += c++/windows_monitor.cpp
+  libfswatch_la_SOURCES += c++/windows/win_handle.cpp
+  libfswatch_la_SOURCES += c++/windows/win_error_message.cpp
+endif
+endif
 
-libfswatch_la_LDFLAGS = -version-info $(LIBFSWATCH_API_VERSION)
+libfswatch_la_LDFLAGS  = -version-info $(LIBFSWATCH_API_VERSION)
+libfswatch_la_LDFLAGS += @LTLIBINTL@
+
+if OS_CYGWIN
+  libfswatch_la_LDFLAGS += -no-undefined
+endif
 
 if USE_FSEVENTS
   libfswatch_la_LDFLAGS += -framework CoreServices
@@ -75,6 +87,11 @@ if USE_KQUEUE
 endif
 if USE_INOTIFY
   libfswatch_cpp_HEADERS += c++/inotify_monitor.hpp
+endif
+if USE_WINDOWS
+  libfswatch_cpp_HEADERS += c++/windows_monitor.hpp
+	libfswatch_cpp_HEADERS += c++/windows/win_handle.hpp
+  libfswatch_cpp_HEADERS += c++/windows/win_error_message.hpp
 endif
 libfswatch_cpp_HEADERS += c++/poll_monitor.hpp
 libfswatch_cpp_HEADERS += c++/filter.hpp

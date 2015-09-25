@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,14 +13,33 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBFSW_LOG_H
-#  define LIBFSW_LOG_H
+#ifndef FSW_WINDOWS_ERROR_MESSAGE_H
+#  define FSW_WINDOWS_ERROR_MESSAGE_H
 
-void libfsw_logf(const char * format, ...);
-void libfsw_log(const char * msg);
-void libfsw_perror(const char * msg);
+#  include <string>
+#  include <windows.h>
 
-#define FSW_LOG(msg)       libfsw_logf("%s: ", __func__); libfsw_log(msg)
-#define FSW_LOGF(msg, ...) libfsw_logf("%s: ", __func__); libfsw_logf(msg, __VA_ARGS__)
+namespace fsw
+{
+  class win_error_message
+  {
+  public:
+    static win_error_message current();
 
-#endif  /* LIBFSW_LOG_H */
+    win_error_message(DWORD err_code);
+    win_error_message();
+
+    DWORD get_error_code() const;
+
+    std::wstring get_message() const;
+
+    operator std::wstring() const;
+
+  private:
+    mutable bool initialized = false;
+    mutable std::wstring msg;
+    DWORD err_code;
+  };
+}
+
+#endif  /* FSW_WINDOWS_ERROR_MESSAGE_H */

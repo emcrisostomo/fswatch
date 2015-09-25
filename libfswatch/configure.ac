@@ -29,6 +29,13 @@ AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile src/libfswatch/Makefile po/M
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
+# Compute the canonical target-system type variables
+AC_CANONICAL_TARGET
+TARGET_VENDOR=$target_vendor
+TARGET_OS=$target_os
+AC_SUBST([TARGET_VENDOR])
+AC_SUBST([TARGET_OS])
+
 # Initialize Automake
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects])
 AM_SILENT_RULES([yes])
@@ -43,6 +50,9 @@ LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
+# OS-specific treatment
+AM_CONDITIONAL([OS_CYGWIN], [test "${target_os}" = "cygwin"])
+
 # Set library interface version
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
 
@@ -53,7 +63,7 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.19.4])
 
 # Configure C++ compiler
-AX_CXX_COMPILE_STDCXX_11(noext)
+AX_CXX_COMPILE_STDCXX_11
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
@@ -112,6 +122,44 @@ AS_VAR_IF([ac_cv_header_sys_inotify_h], ["yes"], [
 ])
 
 AM_CONDITIONAL([USE_INOTIFY],  [test "x${INOTIFY_AVAILABLE}" = "xyes"])
+
+# Check for Microsoft Windows directory change notification API
+AS_VAR_SET([WINDOWS_AVAILABLE], ["yes"])
+AC_CHECK_HEADERS([windows.h], [], [AS_VAR_SET([WINDOWS_AVAILABLE], ["no"])])
+AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
+  AC_CHECK_DECLS(
+    [FindFirstChangeNotification, FindNextChangeNotification, FindCloseChangeNotification, WaitForSingleObject, ReadDirectoryChangesW],
+    [],
+    [AS_VAR_SET([WINDOWS_AVAILABLE], ["no"])],
+    [
+      AC_INCLUDES_DEFAULT
+      [#include <windows.h>]
+    ]
+  )
+])
+
+AM_CONDITIONAL([USE_WINDOWS], [test "x${WINDOWS_AVAILABLE}" = "xyes"])
+AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_WINDOWS], [1], [Windows API present.])])
+
+# Check for CygWin only if Windows is available
+AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
+  AS_VAR_SET([CYGWIN_AVAILABLE], ["yes"])
+  AC_CHECK_HEADERS([sys/cygwin.h], [], [AS_VAR_SET([CYGWIN_AVAILABLE], ["no"])])
+  AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [
+    AC_CHECK_DECLS(
+      [cygwin_create_path],
+      [],
+      [AS_VAR_SET([CYGWIN_AVAILABLE], ["no"])],
+      [
+        AC_INCLUDES_DEFAULT
+        [#include <sys/cygwin.h>]
+      ]
+    )
+  ])
+])
+
+AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
+AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
 
 # Some compilers declare to conform to C++11 but the library does not.
 # These OS X versions are known to miss at least the listed headers:

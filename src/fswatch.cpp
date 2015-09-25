@@ -30,6 +30,7 @@
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c/error.h"
+#include "libfswatch/c/libfswatch.h"
 #include "libfswatch/c++/libfswatch_exception.hpp"
 
 #ifdef HAVE_GETOPT_LONG
@@ -605,12 +606,15 @@ static void parse_opts(int argc, char ** argv)
         ::exit(FSW_ERR_UNKNOWN_VALUE);
       }
       break;
-      
+
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
     }
   }
+
+  // Set verbose mode for libfswatch.
+  fsw_set_verbose(vflag);
 
   if (version_flag)
   {

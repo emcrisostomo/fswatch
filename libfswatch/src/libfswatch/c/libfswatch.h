@@ -137,7 +137,7 @@ extern "C"
 
   /*
    * Adds an event type filter to the current session.
-   * 
+   *
    * See cfilter.h for the definition of fsw_event_type_filter.
    */
   FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
@@ -173,6 +173,11 @@ extern "C"
    * Check whether the verbose mode is active.
    */
   bool fsw_is_verbose();
+
+  /*
+   * Set the verbose mode.
+   */
+  void fsw_set_verbose(bool verbose);
 
 #  ifdef __cplusplus
 }

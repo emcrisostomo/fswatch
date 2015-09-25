@@ -302,7 +302,7 @@ namespace fsw
   {
     if (event->mask & IN_Q_OVERFLOW)
     {
-      throw libfsw_exception(_("Event queue overflowed."));
+      throw libfsw_exception(_("Event queue overflow."));
     }
 
     preprocess_dir_event(event);

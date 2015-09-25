@@ -15,10 +15,24 @@
  */
 #include "libfswatch.h"
 #include "libfswatch_log.h"
+#include <cstdio>
 #include <iostream>
 #include <cstdio>
+#include <cstdarg>
 
 using namespace std;
+
+void libfsw_logf(const char * format, ...)
+{
+  if (!fsw_is_verbose()) return;
+
+  va_list args;
+  va_start(args, format);
+
+  vfprintf(stderr, format, args);
+
+  va_end(args);
+}
 
 void libfsw_log(const char * msg)
 {

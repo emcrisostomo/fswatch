@@ -55,6 +55,7 @@ typedef struct FSW_SESSION
 } FSW_SESSION;
 
 static bool srand_initialized = false;
+static bool fsw_libfswatch_verbose = false;
 
 #ifdef HAVE_CXX_UNIQUE_PTR
 static fsw_hash_map<FSW_HANDLE, unique_ptr<FSW_SESSION>> sessions;
@@ -542,5 +543,10 @@ FSW_STATUS fsw_last_error()
 
 bool fsw_is_verbose()
 {
-  return false;
+  return fsw_libfswatch_verbose;
+}
+
+void fsw_set_verbose(bool verbose)
+{
+  fsw_libfswatch_verbose = verbose;
 }
