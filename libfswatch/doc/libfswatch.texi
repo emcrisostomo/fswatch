@@ -1465,7 +1465,6 @@ This event flag indicates that the modified object is a symbolic link.
 @itemx 1 << 12
 @fnindex @code{fsw_event_flag::Link}
 This event flag represents a file link event.
-@end table
 
 @item Overflow
 @itemx 1 << 13

@@ -974,6 +974,13 @@ Use the @acronym{ASCII} @samp{NUL} (@samp{\0}) as record separator.
 
 Exit @command{fswatch} after the first set of events is received.
 
+@opsummary{allow-overflow}
+@item --allow-overflow
+
+Sets the allow overflow flag of the monitor.  When this flag is set,
+monitor buffer overflows are reported as change events of type
+@code{fsw_event_flag::Overflow}.
+
 @opsummary{batch-marker}
 @item --batch-marker
 
