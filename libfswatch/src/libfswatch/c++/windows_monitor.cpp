@@ -343,7 +343,7 @@ namespace fsw
 
       if (dce.is_buffer_overflowed())
       {
-    	notify_overflow();
+        notify_overflow();
       }
 
       stop_search_for_path(path);
@@ -357,10 +357,12 @@ namespace fsw
     {
       notify_overflow();
     }
+    else
+    {
+      vector<event> events = dce.get_events();
 
-    vector<event> events = dce.get_events();
-
-    if (events.size()) notify_events(events);
+      if (events.size()) notify_events(events);
+    }
 
     if (!dce.read_changes_async())
     {
