@@ -600,6 +600,13 @@ It is disegned for extension.
 The business interface of the @code{monitor} class is the following:
 
 @table @code
+@item void set_allow_overflow(bool allow_overflow);
+@fnindex @code{monitor::set_allow_overflow}
+
+This function sets the allow overflow flag to the specified value.  If
+this flag is set, then the monitor will report a monitor buffer
+overflow as a change event of type @code{fsw_event_flag::Overflow}.
+
 @item void set_latency(double latency);
 @fnindex @code{monitor::set_latency}
 
@@ -1197,6 +1204,13 @@ Adds a path to watch to the specified session.  At least one path must
 be added to the current session in order for it to be valid.
 
 @item FSW_STATUS
+@itemx fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow)
+@fnindex @code{fsw_set_allow_overflow}
+Sets the allow overflow flag to the specified value.  If this flag is
+set, monitor buffer overflows will be reported as change events of
+type @code{fsw_event_flag::Overflow}.
+
+@item FSW_STATUS
 @itemx fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
 @fnindex @code{fsw_set_callback}
 Sets the callback the monitor invokes when some events are received
@@ -1451,6 +1465,12 @@ This event flag indicates that the modified object is a symbolic link.
 @itemx 1 << 12
 @fnindex @code{fsw_event_flag::Link}
 This event flag represents a file link event.
+@end table
+
+@item Overflow
+@itemx 1 << 13
+@fnindex @code{fsw_event_flag::Overflow}
+This event flag represents a monitor buffer overflow.
 @end table
 
 A monitor implementation is required to map implementation-specific
