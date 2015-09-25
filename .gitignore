@@ -5,6 +5,10 @@ fswatch.exe
 *.lo
 *.o
 
+# Documentation
+fswatch.pdf
+libfswatch.pdf
+
 # Distribution files
 *.tar.gz
 
@@ -101,6 +105,7 @@ POTFILES
 stamp-vti
 version.texi
 *.info
+*.t2p
 
 # Template files
 build-aux/create-pot-template.sh
