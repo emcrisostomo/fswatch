@@ -93,6 +93,11 @@ if USE_INOTIFY
 endif
 if USE_WINDOWS
   libfswatch_cpp_HEADERS += c++/windows_monitor.hpp
+  libfswatch_cpp_HEADERS += c++/windows/win_handle.hpp
+  libfswatch_cpp_HEADERS += c++/windows/win_error_message.hpp
+  libfswatch_cpp_HEADERS += c++/windows/win_strings.hpp
+  libfswatch_cpp_HEADERS += c++/windows/win_paths.hpp
+  libfswatch_cpp_HEADERS += c++/windows/win_directory_change_event.hpp
 endif
 libfswatch_cpp_HEADERS += c++/poll_monitor.hpp
 libfswatch_cpp_HEADERS += c++/filter.hpp
