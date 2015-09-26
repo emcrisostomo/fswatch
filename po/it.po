@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: fswatch 1.4.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
 "POT-Creation-Date: 2015-09-26 18:35+0200\n"
-"PO-Revision-Date: 2015-09-26 19:18+0200\n"
+"PO-Revision-Date: 2015-09-27 00:27+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -61,7 +61,7 @@ msgstr "Esci da fswatch dopo aver ricevuto il primo gruppo di eventi.\n"
 
 #: src/fswatch.cpp:152
 msgid "Allow a monitor to overflow and report it as a change event.\n"
-msgstr "Permette a un monitor di andare in overflow e segnalarlo con un evento."
+msgstr "Permette a un monitor di andare in overflow e segnalarlo con un evento.\n"
 
 #: src/fswatch.cpp:153
 msgid "Print a marker at the end of every batch.\n"
