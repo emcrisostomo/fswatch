@@ -15,15 +15,16 @@
  */
 #include "win_paths.hpp"
 #include <sys/cygwin.h>
+#include "../libfswatch_exception.hpp"
 #include "../../gettext_defs.h"
+
+using namespace std;
 
 namespace fsw
 {
-  namespace win_strings
+  namespace win_paths
   {
-    using namespace std;
-
-    static wstring posix_to_win_w(string path)
+    wstring posix_to_win_w(string path)
     {
       void * raw_path = cygwin_create_path(CCP_POSIX_TO_WIN_W, path.c_str());
       if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));
@@ -35,7 +36,7 @@ namespace fsw
       return win_path;
     }
 
-    static string win_w_to_posix(wstring path)
+    string win_w_to_posix(wstring path)
     {
       void * raw_path = cygwin_create_path(CCP_WIN_W_TO_POSIX, path.c_str());
       if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));

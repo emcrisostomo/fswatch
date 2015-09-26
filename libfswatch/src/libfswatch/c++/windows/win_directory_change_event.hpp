@@ -17,19 +17,25 @@
 #  define	FSW_WIN_DIRECTORY_CHANGE_EVENT_H
 
 #  include <cstdlib>
+#  include <string>
+#  include <memory>
+#  include <vector>
 #  include <windows.h>
+#  include "win_handle.hpp"
+#  include "win_error_message.hpp"
+#  include "../event.hpp"
 
 namespace fsw
 {
   class directory_change_event
   {
   public:
-    wstring path;
+    std::wstring path;
     win_handle handle;
     size_t buffer_size;
     DWORD bytes_returned;
-    unique_ptr<void, decltype(free)*> buffer = {nullptr, free};
-    unique_ptr<OVERLAPPED, decltype(free)*> overlapped = {static_cast<OVERLAPPED *> (malloc(sizeof (OVERLAPPED))), free};
+    std::unique_ptr<void, decltype(free)*> buffer = {nullptr, free};
+    std::unique_ptr<OVERLAPPED, decltype(free)*> overlapped = {static_cast<OVERLAPPED *> (malloc(sizeof (OVERLAPPED))), free};
     win_error_message read_error;
 
     directory_change_event(size_t buffer_length = 16);
@@ -38,7 +44,7 @@ namespace fsw
     bool read_changes_async();
     bool try_read();
     void continue_read();
-    vector<event> get_events();
+    std::vector<event> get_events();
   };
 }
 

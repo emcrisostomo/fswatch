@@ -22,7 +22,7 @@ namespace fsw
   {
     using namespace std;
 
-    static string wstring_to_string(wchar_t * s)
+    string wstring_to_string(wchar_t * s)
     {
       int buf_size = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
       char buf[buf_size];
@@ -31,7 +31,7 @@ namespace fsw
       return string(buf);
     }
 
-    static string wstring_to_string(const wstring & s)
+    string wstring_to_string(const wstring & s)
     {
       return wstring_to_string((wchar_t *)s.c_str());
     }

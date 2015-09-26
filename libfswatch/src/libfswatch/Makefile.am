@@ -48,6 +48,7 @@ if USE_CYGWIN
   libfswatch_la_SOURCES += c++/windows/win_handle.cpp
   libfswatch_la_SOURCES += c++/windows/win_error_message.cpp
   libfswatch_la_SOURCES += c++/windows/win_strings.cpp
+  libfswatch_la_SOURCES += c++/windows/win_paths.cpp
   libfswatch_la_SOURCES += c++/windows/win_directory_change_event.cpp
 endif
 endif

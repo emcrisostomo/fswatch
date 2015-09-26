@@ -41,47 +41,13 @@
 #  include "./windows/win_error_message.hpp"
 #  include "./windows/win_strings.hpp"
 #  include "./windows/win_paths.hpp"
+#  include "./windows/win_directory_change_event.hpp"
 
 using namespace std;
 
 namespace fsw
 {
   REGISTER_MONITOR_IMPL(windows_monitor, windows_monitor_type);
-
-  struct win_flag_type
-  {
-    DWORD action;
-    vector<fsw_event_flag> types;
-  };
-
-  static vector<win_flag_type> create_flag_type_vector()
-  {
-    vector<win_flag_type> flags;
-    flags.push_back({FILE_ACTION_ADDED,            {fsw_event_flag::Created}});
-    flags.push_back({FILE_ACTION_REMOVED,          {fsw_event_flag::Removed}});
-    flags.push_back({FILE_ACTION_MODIFIED,         {fsw_event_flag::Updated}});
-    flags.push_back({FILE_ACTION_RENAMED_OLD_NAME, {fsw_event_flag::MovedFrom, fsw_event_flag::Renamed}});
-    flags.push_back({FILE_ACTION_RENAMED_NEW_NAME, {fsw_event_flag::MovedTo, fsw_event_flag::Renamed}});
-
-    return flags;
-  }
-
-  static const vector<win_flag_type> event_flag_type = create_flag_type_vector();
-
-  static vector<fsw_event_flag> decode_flags(DWORD flag)
-  {
-    set<fsw_event_flag> evt_flags_set;
-
-    for (const win_flag_type & event_type : event_flag_type)
-    {
-      if (flag == event_type.action)
-      {
-        for (const auto & type : event_type.types) evt_flags_set.insert(type);
-      }
-    }
-
-    return vector<fsw_event_flag>(evt_flags_set.begin(), evt_flags_set.end());
-  }
 
   struct windows_monitor_load
   {
@@ -108,7 +74,7 @@ namespace fsw
   {
     for (const auto & path : paths)
     {
-      load->win_paths.insert(posix_to_win_w(path));
+      load->win_paths.insert(win_paths::posix_to_win_w(path));
     }
   }
 
@@ -116,7 +82,7 @@ namespace fsw
   {
     for (const wstring & path : load->win_paths)
     {
-      FSW_LOGF(_("Creating event for %s.\n"), wstring_to_string(path).c_str());
+      FSW_LOGF(_("Creating event for %s.\n"), win_strings::wstring_to_string(path).c_str());
 
       HANDLE h = ::CreateEvent(nullptr,
                                TRUE,
@@ -125,7 +91,7 @@ namespace fsw
 
       if (h == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
-      FSW_LOGF(_("Event %d created for %s.\n"), h, wstring_to_string(path).c_str());
+      FSW_LOGF(_("Event %d created for %s.\n"), h, win_strings::wstring_to_string(path).c_str());
 
       load->event_by_path.emplace(path, h);
     }
@@ -133,7 +99,7 @@ namespace fsw
 
   bool windows_monitor::init_search_for_path(const wstring path)
   {
-    FSW_LOGF(_("Initializing search structures for %s.\n"), wstring_to_string(path).c_str());
+    FSW_LOGF(_("Initializing search structures for %s.\n"), win_strings::wstring_to_string(path).c_str());
 
     HANDLE h = ::CreateFileW(path.c_str(),
                              GENERIC_READ,
@@ -144,7 +110,7 @@ namespace fsw
 
     if (!win_handle::is_valid(h))
     {
-      fprintf(stderr, _("Invalid handle when opening %s.\n"), wstring_to_string(path).c_str());
+      fprintf(stderr, _("Invalid handle when opening %s.\n"), win_strings::wstring_to_string(path).c_str());
       return false;
     }
 
@@ -157,7 +123,7 @@ namespace fsw
 
     if (!dce.read_changes_async())
     {
-      FSW_LOGF("ReadDirectoryChangesW: %s\n", wstring_to_string(win_error_message::current()).c_str());
+      FSW_LOGF("ReadDirectoryChangesW: %s\n", win_strings::wstring_to_string(win_error_message::current()).c_str());
       return false;
     }
 
@@ -178,7 +144,7 @@ namespace fsw
 
   void windows_monitor::process_path(const wstring & path)
   {
-    FSW_LOGF(_("Processing %s.\n"), wstring_to_string(path).c_str());
+    FSW_LOGF(_("Processing %s.\n"), win_strings::wstring_to_string(path).c_str());
 
     // If the path is not currently watched, then initialize the search
     // structures.  If the initalization fails, skip the path altogether
@@ -226,7 +192,7 @@ namespace fsw
 
     if (!dce.read_changes_async())
     {
-      FSW_LOGF(_("ReadDirectoryChangesW: %s\n"), wstring_to_string(win_error_message::current()).c_str());
+      FSW_LOGF(_("ReadDirectoryChangesW: %s\n"), win_strings::wstring_to_string(win_error_message::current()).c_str());
       stop_search_for_path(path);
     }
   }

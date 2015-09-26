@@ -24,8 +24,8 @@ namespace fsw
 {
   namespace win_strings
   {
-    static std::string wstring_to_string(wchar_t * s);
-    static std::string wstring_to_string(const std::wstring & s);
+    std::string wstring_to_string(wchar_t * s);
+    std::string wstring_to_string(const std::wstring & s);
   }
 }
 

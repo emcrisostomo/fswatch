@@ -23,8 +23,8 @@ namespace fsw
 {
   namespace win_paths
   {
-    static std::wstring posix_to_win_w(std::string path);
-    static std::string win_w_to_posix(std::wstring path);
+    std::wstring posix_to_win_w(std::string path);
+    std::string win_w_to_posix(std::wstring path);
   }
 }
 #endif	/* FSW_WIN_PATHS_HPP */
