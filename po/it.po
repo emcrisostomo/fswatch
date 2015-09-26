@@ -61,7 +61,8 @@ msgstr "Esci da fswatch dopo aver ricevuto il primo gruppo di eventi.\n"
 
 #: src/fswatch.cpp:152
 msgid "Allow a monitor to overflow and report it as a change event.\n"
-msgstr "Permette a un monitor di andare in overflow e segnalarlo con un evento.\n"
+msgstr ""
+"Permette a un monitor di andare in overflow e segnalarlo con un evento.\n"
 
 #: src/fswatch.cpp:153
 msgid "Print a marker at the end of every batch.\n"
