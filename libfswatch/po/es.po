@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-09-25 14:04+0200\n"
-"PO-Revision-Date: 2015-09-25 14:07+0200\n"
+"POT-Creation-Date: 2015-09-27 01:14+0200\n"
+"PO-Revision-Date: 2015-09-27 01:25+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "Language: es\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/libfswatch/c++/event.cpp:74
+#: src/libfswatch/c++/event.cpp:75
 msgid "Unknown event type: "
 msgstr "Tipo evento desconocido: "
 
-#: src/libfswatch/c++/event.cpp:103
+#: src/libfswatch/c++/event.cpp:105
 msgid "Unknown event type."
 msgstr "Tipo evento desconocido."
 
@@ -78,7 +78,7 @@ msgid "Generic event: "
 msgstr "Evento genérico: "
 
 #: src/libfswatch/c++/inotify_monitor.cpp:305
-#: src/libfswatch/c++/windows_monitor.cpp:358
+#: src/libfswatch/c++/monitor.cpp:290
 msgid "Event queue overflow."
 msgstr "Cola de eventos saturada."
 
@@ -134,19 +134,19 @@ msgstr "Evento con EV_ERROR"
 msgid "Error: "
 msgstr "Error: "
 
-#: src/libfswatch/c++/monitor.cpp:61
+#: src/libfswatch/c++/monitor.cpp:62
 msgid "Callback cannot be null."
 msgstr "El callback no puede ser null."
 
-#: src/libfswatch/c++/monitor.cpp:69
+#: src/libfswatch/c++/monitor.cpp:75
 msgid "Latency cannot be negative."
 msgstr "La latencia no puede ser negativa."
 
-#: src/libfswatch/c++/monitor.cpp:102
+#: src/libfswatch/c++/monitor.cpp:108
 msgid "An error occurred during the compilation of "
 msgstr "Un error ocurrió durante la compilación de "
 
-#: src/libfswatch/c++/monitor.cpp:288
+#: src/libfswatch/c++/monitor.cpp:317
 msgid "Notifying events #: "
 msgstr "Notificando eventos #: "
 
@@ -158,95 +158,99 @@ msgstr "No se puede hacer stat() "
 msgid "Done scanning.\n"
 msgstr "Rastreo terminado.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:67
-#: src/libfswatch/c++/windows_monitor.cpp:79
-msgid "cygwin_create_path could not allocate memory to convert the path."
-msgstr "cygwin_create_path no pudo alocar memoria para convertir la ruta."
-
-#: src/libfswatch/c++/windows_monitor.cpp:138
-#: src/libfswatch/c++/windows_monitor.cpp:139
-msgid "::malloc failed."
-msgstr "::malloc falló."
-
-#: src/libfswatch/c++/windows_monitor.cpp:156
-#, c-format
-msgid "%p.\n"
-msgstr "%p.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:175
-#, c-format
-msgid "GetOverlappedResult: %s\n"
-msgstr "GetOverlappedResult: %s\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:182
-msgid "::ResetEvent failed."
-msgstr "::ResetEvent falló."
-
-#: src/libfswatch/c++/windows_monitor.cpp:184
-#, c-format
-msgid "Event %d reset.\n"
-msgstr "Evento %d restablecido.\n"
-
-#: src/libfswatch/c++/windows_monitor.cpp:217
-msgid "File name unexpectedly empty."
-msgstr "Nombre de fichero inesperadamente vacío."
-
-#: src/libfswatch/c++/windows_monitor.cpp:259
+#: src/libfswatch/c++/windows_monitor.cpp:85
 #, c-format
 msgid "Creating event for %s.\n"
 msgstr "Creando evento para %s.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:266
+#: src/libfswatch/c++/windows_monitor.cpp:92
 msgid "CreateEvent failed."
 msgstr "CreateEvent falló."
 
-#: src/libfswatch/c++/windows_monitor.cpp:268
+#: src/libfswatch/c++/windows_monitor.cpp:94
 #, c-format
 msgid "Event %d created for %s.\n"
 msgstr "Evento %d creado para %s.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:276
+#: src/libfswatch/c++/windows_monitor.cpp:102
 #, c-format
 msgid "Initializing search structures for %s.\n"
 msgstr "Inicializando estructuras de búsqueda para %s.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:287
+#: src/libfswatch/c++/windows_monitor.cpp:113
 #, c-format
 msgid "Invalid handle when opening %s.\n"
 msgstr "Handle invalido mientras se abre %s.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:291
+#: src/libfswatch/c++/windows_monitor.cpp:117
 #, c-format
 msgid "Open file handle: %d.\n"
 msgstr "Handle de fichero abierto: %d.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:321
+#: src/libfswatch/c++/windows_monitor.cpp:147
 #, c-format
 msgid "Processing %s.\n"
 msgstr "Procesando %s.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:332
+#: src/libfswatch/c++/windows_monitor.cpp:158
 msgid "Initialization failed."
 msgstr "Inicialización fallida."
 
-#: src/libfswatch/c++/windows_monitor.cpp:340
+#: src/libfswatch/c++/windows_monitor.cpp:166
 msgid "I/O incomplete.\n"
 msgstr "I/O incompleto.\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:354
+#: src/libfswatch/c++/windows_monitor.cpp:180
 #, c-format
 msgid "GetOverlappedResult returned %d bytes\n"
 msgstr "GetOverlappedResult devolvió %d bytes\n"
 
-#: src/libfswatch/c++/windows_monitor.cpp:367
+#: src/libfswatch/c++/windows_monitor.cpp:195
 #, c-format
 msgid "ReadDirectoryChangesW: %s\n"
 msgstr "ReadDirectoryChangesW: %s\n"
+
+#: src/libfswatch/c++/windows_monitor.cpp:210
+msgid "Invalid value: "
+msgstr "Valor inválido: "
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:75
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:76
+msgid "malloc failed."
+msgstr "malloc falló."
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:93
+#, c-format
+msgid "%p.\n"
+msgstr "%p.\n"
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:112
+#, c-format
+msgid "GetOverlappedResult: %s\n"
+msgstr "GetOverlappedResult: %s\n"
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:119
+msgid "ResetEvent failed."
+msgstr "ResetEvent falló."
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:121
+#, c-format
+msgid "Event %d reset.\n"
+msgstr "Evento %d restablecido.\n"
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:154
+msgid "File name unexpectedly empty."
+msgstr "Nombre de fichero inesperadamente vacío."
 
 #: src/libfswatch/c++/windows/win_handle.cpp:42
 #, c-format
 msgid "Closing handle: %d.\n"
 msgstr "Cerrando handle: %d.\n"
+
+#: src/libfswatch/c++/windows/win_paths.cpp:30
+#: src/libfswatch/c++/windows/win_paths.cpp:42
+msgid "cygwin_create_path could not allocate memory to convert the path."
+msgstr "cygwin_create_path no pudo alocar memoria para convertir la ruta."
 
 #~ msgid "Processing path: %s.\n"
 #~ msgstr "Procesando ruta: %s.\n"
