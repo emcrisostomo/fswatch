@@ -112,6 +112,16 @@ namespace fsw
     this->filters.push_back({regex, filter.type});
   }
 
+  void monitor::set_properties(map<string, string> options)
+  {
+    properties = options;
+  }
+
+  string monitor::get_property(string name)
+  {
+    return  properties[name];
+  }
+
   void monitor::set_filters(const vector<monitor_filter> &filters)
   {
     for (const monitor_filter &filter : filters)

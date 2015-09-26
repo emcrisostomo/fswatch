@@ -229,6 +229,7 @@ namespace fsw
     fsw_hash_set<wstring> win_paths;
     fsw_hash_map<wstring, directory_change_event> dce_by_path;
     fsw_hash_map<wstring, win_handle> event_by_path;
+    long buffer_size = 128;
   };
 
   windows_monitor::windows_monitor(vector<string> paths_to_monitor,
@@ -290,7 +291,7 @@ namespace fsw
 
     FSW_LOGF(_("Open file handle: %d.\n"), h);
 
-    directory_change_event dce(128);
+    directory_change_event dce(load->buffer_size);
     dce.path = path;
     dce.handle = h;
     dce.overlapped.get()->hEvent = load->event_by_path[path];
@@ -371,6 +372,15 @@ namespace fsw
     }
   }
 
+  void windows_monitor::configure_monitor()
+  {
+    string buffer_size_value = get_property("windows.ReadDirectoryChangesW.buffer.size")
+
+    if (buffer_size_value.empty()) return;
+
+    load->buffer_size = stol(buffer_size_value);
+  }
+
   void windows_monitor::run()
   {
     // Since the file handles are open with FILE_SHARE_DELETE, it may happen
@@ -380,6 +390,7 @@ namespace fsw
     // Unfortunately, the error reported by Windows is `Access denied',
     // preventing fswatch to report better messages to the user.
 
+    configure_monitor();
     initialize_windows_path_list();
     initialize_events();
 

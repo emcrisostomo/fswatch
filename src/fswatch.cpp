@@ -27,6 +27,7 @@
 #include <ctime>
 #include <cerrno>
 #include <vector>
+#include <map>
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c/error.h"
@@ -100,6 +101,7 @@ static string batch_marker = event::get_event_flag_name(fsw_event_flag::NoOp);
 static int format_flag = false;
 static string format;
 static string event_flag_separator = " ";
+static map<string, string> monitor_properties;
 
 /*
  * OPT_* variables are used as getopt_long values for long options that do not
@@ -110,6 +112,7 @@ static const int OPT_FORMAT = 129;
 static const int OPT_EVENT_FLAG_SEPARATOR = 130;
 static const int OPT_EVENT_TYPE = 131;
 static const int OPT_ALLOW_OVERFLOW = 132;
+static const int OPT_MONITOR_PROPERTY = 133;
 
 bool is_verbose()
 {
@@ -160,6 +163,8 @@ static void usage(ostream& stream)
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
   stream << " -M, --list-monitors   " << _("List the available monitors.\n");
   stream << " -m, --monitor=NAME    " << _("Use the specified monitor.\n");
+  stream << "     --monitor-property name=value\n";
+  stream << "                       " << _("Define the specified property.\n");
   stream << " -n, --numeric         " << _("Print a numeric event mask.\n");
   stream << " -o, --one-per-batch   " << _("Print a single message with the number of change events.\n");
   stream << " -r, --recursive       " << _("Recurse subdirectories.\n");
@@ -444,6 +449,7 @@ static void start_monitor(int argc, char ** argv, int optind)
     filter.extended = Eflag;
   }
 
+  active_monitor->set_properties(monitor_properties);
   active_monitor->set_allow_overflow(allow_overflow);
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
@@ -482,6 +488,7 @@ static void parse_opts(int argc, char ** argv)
     { "latency", required_argument, nullptr, 'l'},
     { "list-monitors", no_argument, nullptr, 'M'},
     { "monitor", required_argument, nullptr, 'm'},
+	{ "monitor-property", required_argument, nullptr, OPT_MONITOR_PROPERTY},
     { "numeric", no_argument, nullptr, 'n'},
     { "one-per-batch", no_argument, nullptr, 'o'},
     { "recursive", no_argument, nullptr, 'r'},
@@ -613,8 +620,22 @@ static void parse_opts(int argc, char ** argv)
       break;
 
     case OPT_ALLOW_OVERFLOW:
-    	allow_overflow = true;
-    	break;
+      allow_overflow = true;
+      break;
+
+    case OPT_MONITOR_PROPERTY:
+      {
+        string param(optarg);
+        size_t eq_pos = param.find_first_of("=");
+        if (eq_pos == string::npos)
+        {
+          cerr << _("Invalid property format.") << endl;
+          exit(FSW_ERR_INVALID_PROPERTY);
+        }
+
+        monitor_properties[param.substr(0, eq_pos)] = param.substr(eq_pos + 1);
+      }
+      break;
 
     case '?':
       usage(cerr);

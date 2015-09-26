@@ -41,6 +41,9 @@ namespace fsw
     virtual ~monitor();
     monitor(const monitor& orig) = delete;
     monitor& operator=(const monitor & that) = delete;
+
+    void set_properties(std::map<std::string, std::string> options);
+    std::string get_property(std::string name);
     void set_latency(double latency);
     void set_allow_overflow(bool overflow);
     void set_recursive(bool recursive);
@@ -65,6 +68,7 @@ namespace fsw
 
   protected:
     std::vector<std::string> paths;
+    std::map<std::string, std::string> properties;
     FSW_EVENT_CALLBACK * callback;
     void * context = nullptr;
     double latency = 1.0;
