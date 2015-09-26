@@ -374,11 +374,19 @@ namespace fsw
 
   void windows_monitor::configure_monitor()
   {
-    string buffer_size_value = get_property("windows.ReadDirectoryChangesW.buffer.size")
+    string buffer_size_value = get_property("windows.ReadDirectoryChangesW.buffer.size");
 
     if (buffer_size_value.empty()) return;
 
-    load->buffer_size = stol(buffer_size_value);
+    long parsed_value = strtol(buffer_size_value.c_str(), nullptr, 0);
+
+    if (parsed_value <= 0)
+    {
+      string msg = string(_("Invalid value: ")) + buffer_size_value;
+      throw libfsw_exception(msg.c_str());
+    }
+
+    load->buffer_size = parsed_value;
   }
 
   void windows_monitor::run()
