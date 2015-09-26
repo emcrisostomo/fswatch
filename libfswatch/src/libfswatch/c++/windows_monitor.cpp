@@ -36,54 +36,17 @@
 #  include <cstdio>
 #  include <unistd.h>
 #  include <fcntl.h>
-#  include <sys/cygwin.h>
 #  include <windows.h>
 #  include "./windows/win_handle.hpp"
 #  include "./windows/win_error_message.hpp"
+#  include "./windows/win_strings.hpp"
+#  include "./windows/win_paths.hpp"
 
 using namespace std;
 
 namespace fsw
 {
   REGISTER_MONITOR_IMPL(windows_monitor, windows_monitor_type);
-
-  static string wstring_to_string(wchar_t * s)
-  {
-    int buf_size = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
-    char buf[buf_size];
-    WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, buf_size, NULL, NULL);
-
-    return string(buf);
-  }
-
-  static string wstring_to_string(const wstring & s)
-  {
-    return wstring_to_string((wchar_t *)s.c_str());
-  }
-
-  static wstring posix_to_win_w(string path)
-  {
-    void * raw_path = ::cygwin_create_path(CCP_POSIX_TO_WIN_W, path.c_str());
-    if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));
-
-    wstring win_path(static_cast<wchar_t *>(raw_path));
-
-    ::free(raw_path);
-
-    return win_path;
-  }
-
-  static string win_w_to_posix(wstring path)
-  {
-    void * raw_path = ::cygwin_create_path(CCP_WIN_W_TO_POSIX, path.c_str());
-    if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));
-
-    string posix_path(static_cast<char *>(raw_path));
-
-    ::free(raw_path);
-
-    return posix_path;
-  }
 
   struct win_flag_type
   {
@@ -119,110 +82,6 @@ namespace fsw
 
     return vector<fsw_event_flag>(evt_flags_set.begin(), evt_flags_set.end());
   }
-
-  typedef struct directory_change_event
-  {
-    wstring path;
-    win_handle handle;
-    size_t buffer_size;
-    DWORD bytes_returned;
-    unique_ptr<void, decltype(::free)*> buffer = {nullptr, ::free};
-    unique_ptr<OVERLAPPED, decltype(::free)*> overlapped = {static_cast<OVERLAPPED *>(::malloc(sizeof(OVERLAPPED))), ::free};
-    win_error_message read_error;
-
-    directory_change_event(size_t buffer_length = 16) : handle{INVALID_HANDLE_VALUE},
-                                                        buffer_size{sizeof(FILE_NOTIFY_INFORMATION) * buffer_length},
-                                                        bytes_returned{}
-    {
-      buffer.reset(::malloc(buffer_size));
-      if (buffer.get() == nullptr) throw libfsw_exception(_("::malloc failed."));
-      if (overlapped.get() == nullptr) throw libfsw_exception(_("::malloc failed."));
-    }
-
-    bool is_io_incomplete()
-    {
-      return (read_error.get_error_code() == ERROR_IO_INCOMPLETE);
-    }
-
-    bool is_buffer_overflowed()
-    {
-      return (read_error.get_error_code() == ERROR_NOTIFY_ENUM_DIR);
-    }
-
-    bool read_changes_async()
-    {
-      continue_read();
-
-      FSW_LOGF(_("%p.\n"), this);
-
-      return ReadDirectoryChangesW((HANDLE)handle,
-                                   buffer.get(),
-                                   buffer_size,
-                                   TRUE,
-                                   FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
-                                   FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
-                                   &bytes_returned,
-                                   overlapped.get(),
-                                   nullptr);
-    }
-
-    bool try_read()
-    {
-      bool ret = GetOverlappedResult(handle, overlapped.get(), &bytes_returned, FALSE);
-
-      read_error = win_error_message::current();
-
-      FSW_LOGF(_("GetOverlappedResult: %s\n"), wstring_to_string((wstring)read_error).c_str());
-
-      return ret;
-    }
-
-    void continue_read()
-    {
-      if (!ResetEvent(overlapped.get()->hEvent)) throw libfsw_exception(_("::ResetEvent failed."));
-
-      FSW_LOGF(_("Event %d reset.\n"), overlapped.get()->hEvent);
-    }
-
-    vector<event> get_events()
-    {
-      // TO DO: We are relying on callers to know events are ready.
-      vector<event> events;
-
-      time_t curr_time;
-      time(&curr_time);
-
-      char * curr_entry = static_cast<char *>(buffer.get());
-
-      while (curr_entry != nullptr)
-      {
-        FILE_NOTIFY_INFORMATION * currEntry = reinterpret_cast<FILE_NOTIFY_INFORMATION *>(curr_entry);
-
-        if (currEntry->FileNameLength > 0)
-        {
-          // The FileName member of the FILE_NOTIFY_INFORMATION structure
-          // has the following characteristics:
-          //
-          //   * It's not NUL terminated.
-          //
-          //   * Its length is specified in bytes.
-          wstring file_name = path
-            + L"\\"
-            + wstring(currEntry->FileName, currEntry->FileNameLength/sizeof(wchar_t));
-
-          events.push_back({win_w_to_posix(file_name), curr_time, decode_flags(currEntry->Action)});
-        }
-        else
-        {
-          cerr << _("File name unexpectedly empty.") << endl;
-        }
-
-        curr_entry = (currEntry->NextEntryOffset == 0) ? nullptr : curr_entry + currEntry->NextEntryOffset;
-      }
-
-      return events;
-    }
-  } directory_change_event;
 
   struct windows_monitor_load
   {
