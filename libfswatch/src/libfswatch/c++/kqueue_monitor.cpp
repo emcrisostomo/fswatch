@@ -143,7 +143,7 @@ namespace fsw
     if (fd == -1)
     {
       string err = string(_("Cannot open ")) + path;
-      libfsw_perror(err.c_str());
+      fsw_log_perror(err.c_str());
 
       return false;
     }
@@ -252,7 +252,7 @@ namespace fsw
       if (!scan(path))
       {
         string err = _("Notice: ") + path + _(" cannot be found. Will retry later.\n");
-        libfsw_log(err.c_str());
+        FSW_ELOG(err.c_str());
       }
     }
   }
@@ -284,7 +284,7 @@ namespace fsw
 
     if (event_num == -1)
     {
-      ::perror("::kevent");
+      perror("::kevent");
       throw libfsw_exception(_("::kevent returned -1, invalid event number."));
     }
 
@@ -305,7 +305,7 @@ namespace fsw
 
       if (e.flags & EV_ERROR)
       {
-        ::perror(_("Event with EV_ERROR"));
+        perror(_("Event with EV_ERROR"));
         continue;
       }
 

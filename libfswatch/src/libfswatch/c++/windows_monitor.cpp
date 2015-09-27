@@ -82,7 +82,7 @@ namespace fsw
   {
     for (const wstring & path : load->win_paths)
     {
-      FSW_LOGF(_("Creating event for %s.\n"), win_strings::wstring_to_string(path).c_str());
+      FSW_ELOGF(_("Creating event for %s.\n"), win_strings::wstring_to_string(path).c_str());
 
       HANDLE h = ::CreateEvent(nullptr,
                                TRUE,
@@ -91,7 +91,7 @@ namespace fsw
 
       if (h == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
-      FSW_LOGF(_("Event %d created for %s.\n"), h, win_strings::wstring_to_string(path).c_str());
+      FSW_ELOGF(_("Event %d created for %s.\n"), h, win_strings::wstring_to_string(path).c_str());
 
       load->event_by_path.emplace(path, h);
     }
@@ -99,7 +99,7 @@ namespace fsw
 
   bool windows_monitor::init_search_for_path(const wstring path)
   {
-    FSW_LOGF(_("Initializing search structures for %s.\n"), win_strings::wstring_to_string(path).c_str());
+    FSW_ELOGF(_("Initializing search structures for %s.\n"), win_strings::wstring_to_string(path).c_str());
 
     HANDLE h = ::CreateFileW(path.c_str(),
                              GENERIC_READ,
@@ -114,7 +114,7 @@ namespace fsw
       return false;
     }
 
-    FSW_LOGF(_("Open file handle: %d.\n"), h);
+    FSW_ELOGF(_("Open file handle: %d.\n"), h);
 
     directory_change_event dce(load->buffer_size);
     dce.path = path;
@@ -123,7 +123,7 @@ namespace fsw
 
     if (!dce.read_changes_async())
     {
-      FSW_LOGF("ReadDirectoryChangesW: %s\n", win_strings::wstring_to_string(win_error_message::current()).c_str());
+      FSW_ELOGF("ReadDirectoryChangesW: %s\n", win_strings::wstring_to_string(win_error_message::current()).c_str());
       return false;
     }
 
@@ -144,7 +144,7 @@ namespace fsw
 
   void windows_monitor::process_path(const wstring & path)
   {
-    FSW_LOGF(_("Processing %s.\n"), win_strings::wstring_to_string(path).c_str());
+    FSW_ELOGF(_("Processing %s.\n"), win_strings::wstring_to_string(path).c_str());
 
     // If the path is not currently watched, then initialize the search
     // structures.  If the initalization fails, skip the path altogether
@@ -163,7 +163,7 @@ namespace fsw
     {
       if (dce.is_io_incomplete())
       {
-        FSW_LOG(_("I/O incomplete.\n"));
+        FSW_ELOG(_("I/O incomplete.\n"));
         return;
       }
 
@@ -177,7 +177,7 @@ namespace fsw
       return;
     }
 
-    FSW_LOGF(_("GetOverlappedResult returned %d bytes\n"), dce.bytes_returned);
+    FSW_ELOGF(_("GetOverlappedResult returned %d bytes\n"), dce.bytes_returned);
 
     if(dce.bytes_returned == 0)
     {
@@ -192,7 +192,7 @@ namespace fsw
 
     if (!dce.read_changes_async())
     {
-      FSW_LOGF(_("ReadDirectoryChangesW: %s\n"), win_strings::wstring_to_string(win_error_message::current()).c_str());
+      FSW_ELOGF(_("ReadDirectoryChangesW: %s\n"), win_strings::wstring_to_string(win_error_message::current()).c_str());
       stop_search_for_path(path);
     }
   }

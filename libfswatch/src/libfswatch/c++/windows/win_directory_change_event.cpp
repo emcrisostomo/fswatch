@@ -90,7 +90,7 @@ namespace fsw
   {
     continue_read();
 
-    FSW_LOGF(_("%p.\n"), this);
+    FSW_ELOGF(_("%p.\n"), this);
 
     return ReadDirectoryChangesW((HANDLE) handle,
                                  buffer.get(),
@@ -109,7 +109,7 @@ namespace fsw
 
     read_error = win_error_message::current();
 
-    FSW_LOGF(_("GetOverlappedResult: %s\n"), win_strings::wstring_to_string((wstring) read_error).c_str());
+    FSW_ELOGF(_("GetOverlappedResult: %s\n"), win_strings::wstring_to_string((wstring) read_error).c_str());
 
     return ret;
   }
@@ -118,7 +118,7 @@ namespace fsw
   {
     if (!ResetEvent(overlapped.get()->hEvent)) throw libfsw_exception(_("ResetEvent failed."));
 
-    FSW_LOGF(_("Event %d reset.\n"), overlapped.get()->hEvent);
+    FSW_ELOGF(_("Event %d reset.\n"), overlapped.get()->hEvent);
   }
 
   vector<event> directory_change_event::get_events()

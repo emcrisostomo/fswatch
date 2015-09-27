@@ -39,7 +39,7 @@ namespace fsw
   {
     if (is_valid())
     {
-      FSW_LOGF(_("Closing handle: %d.\n"), h);
+      FSW_ELOGF(_("Closing handle: %d.\n"), h);
       CloseHandle(h);
     }
   }

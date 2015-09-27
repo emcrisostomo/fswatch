@@ -315,7 +315,7 @@ namespace fsw
     {
       ostringstream log;
       log << _("Notifying events #: ") << filtered_events.size() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       callback(filtered_events, context);
     }

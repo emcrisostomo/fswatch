@@ -39,7 +39,7 @@ namespace fsw
       }
       else
       {
-        libfsw_perror("opendir");
+        fsw_log_perror("opendir");
       }
 
       return;
@@ -69,7 +69,7 @@ namespace fsw
     if (::lstat(path.c_str(), &fd_stat) != 0)
     {
       string err = string(_("Cannot stat() ")) + path;
-      libfsw_perror(err.c_str());
+      fsw_log_perror(err.c_str());
 
       return false;
     }

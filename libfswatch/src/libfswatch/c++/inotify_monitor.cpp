@@ -91,7 +91,7 @@ namespace fsw
     {
       ostringstream log;
       log << _("Removing: ") << inotify_desc_pair << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       if (::inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair))
       {
@@ -128,7 +128,7 @@ namespace fsw
 
       ostringstream log;
       log << _("Added: ") << path << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
     }
 
     return (inotify_desc != -1);
@@ -241,7 +241,7 @@ namespace fsw
     {
       ostringstream log;
       log << _("Generic event: ") << event->wd << "::" << filename_stream.str() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
     }
 
     /*
@@ -252,7 +252,7 @@ namespace fsw
     {
       ostringstream log;
       log << "IN_IGNORED: " << event->wd << "::" << filename_stream.str() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       impl->descriptors_to_remove.insert(event->wd);
     }
@@ -273,7 +273,7 @@ namespace fsw
     {
       ostringstream log;
       log << "IN_MOVE_SELF: " << event->wd << "::" << filename_stream.str() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       impl->watches_to_remove.insert(event->wd);
       impl->descriptors_to_remove.insert(event->wd);
@@ -292,7 +292,7 @@ namespace fsw
     {
       ostringstream log;
       log << "IN_DELETE_SELF: " << event->wd << "::" << filename_stream.str() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       impl->descriptors_to_remove.insert(event->wd);
     }
@@ -333,7 +333,7 @@ namespace fsw
       {
         ostringstream log;
         log << _("Removed: ") << *wtd << "\n";
-        libfsw_log(log.str().c_str());
+        FSW_ELOG(log.str().c_str());
       }
 
       impl->watches_to_remove.erase(wtd++);
@@ -407,7 +407,7 @@ namespace fsw
       {
         ostringstream log;
         log << _("Number of records: ") << record_num << "\n";
-        libfsw_log(log.str().c_str());
+        FSW_ELOG(log.str().c_str());
       }
 
       if (!record_num)

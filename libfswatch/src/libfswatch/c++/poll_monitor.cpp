@@ -199,9 +199,7 @@ namespace fsw
 
     while (true)
     {
-#ifdef DEBUG
-      libfsw_log(_("Done scanning.\n"));
-#endif
+      FSW_ELOG(_("Done scanning.\n"));
 
       ::sleep(latency < MIN_POLL_LATENCY ? MIN_POLL_LATENCY : latency);
 
