@@ -19,7 +19,6 @@
 #  include "monitor.hpp"
 #  include <string>
 #  include <vector>
-#  include <sys/stat.h>
 
 namespace fsw
 {
