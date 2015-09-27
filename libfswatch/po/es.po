@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-09-27 01:14+0200\n"
+"POT-Creation-Date: 2015-09-28 01:44+0200\n"
 "PO-Revision-Date: 2015-09-27 01:25+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -154,7 +154,7 @@ msgstr "Notificando eventos #: "
 msgid "Cannot stat() "
 msgstr "No se puede hacer stat() "
 
-#: src/libfswatch/c++/poll_monitor.cpp:203
+#: src/libfswatch/c++/poll_monitor.cpp:202
 msgid "Done scanning.\n"
 msgstr "Rastreo terminado.\n"
 
