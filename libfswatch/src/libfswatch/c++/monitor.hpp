@@ -39,10 +39,11 @@ namespace fsw
             FSW_EVENT_CALLBACK * callback,
             void * context = nullptr);
     virtual ~monitor();
+    
     monitor(const monitor& orig) = delete;
     monitor& operator=(const monitor & that) = delete;
 
-    void set_properties(std::map<std::string, std::string> options);
+    void set_properties(const std::map<std::string, std::string> & options);
     std::string get_property(std::string name);
     void set_latency(double latency);
     void set_allow_overflow(bool overflow);

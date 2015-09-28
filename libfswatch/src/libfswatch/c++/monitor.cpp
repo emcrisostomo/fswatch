@@ -112,7 +112,7 @@ namespace fsw
     this->filters.push_back({regex, filter.type});
   }
 
-  void monitor::set_properties(map<string, string> options)
+  void monitor::set_properties(const map<string, string> & options)
   {
     properties = options;
   }

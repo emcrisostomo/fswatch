@@ -21,11 +21,11 @@
 
 void * fsw_alloc(size_t size)
 {
-  return ::malloc(size);
+  return malloc(size);
 }
 
 void fsw_free(void * ptr)
 {
-  ::free(ptr);
+  free(ptr);
 }
 
