@@ -15,7 +15,7 @@
 #
 AUTOMAKE_OPTIONS = std-options
 bin_PROGRAMS = fswatch
-fswatch_SOURCES  = fswatch.hpp fswatch.cpp fswatch_log.hpp fswatch_log.cpp
+fswatch_SOURCES  = fswatch.hpp fswatch.cpp
 fswatch_SOURCES += gettext.h
 
 # Set include path for libfswatch

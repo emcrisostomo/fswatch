@@ -18,7 +18,6 @@
 #endif
 #include "gettext.h"
 #include "fswatch.hpp"
-#include "fswatch_log.hpp"
 #include <iostream>
 #include <sstream>
 #include <csignal>
@@ -32,6 +31,7 @@
 #include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c/error.h"
 #include "libfswatch/c/libfswatch.h"
+#include "libfswatch/c/libfswatch_log.h"
 #include "libfswatch/c++/libfswatch_exception.hpp"
 
 #ifdef HAVE_GETOPT_LONG
@@ -231,7 +231,7 @@ static void close_handler(int signal)
 {
   close_stream();
 
-  fsw_log(_("Done.\n"));
+  FSW_ELOG(_("Done.\n"));
   exit(FSW_EXIT_OK);
 }
 
@@ -280,7 +280,7 @@ static void register_signal_handlers()
 
   if (sigaction(SIGTERM, &action, nullptr) == 0)
   {
-    fsw_log(_("SIGTERM handler registered.\n"));
+    FSW_ELOG(_("SIGTERM handler registered.\n"));
   }
   else
   {
@@ -289,7 +289,7 @@ static void register_signal_handlers()
 
   if (sigaction(SIGABRT, &action, nullptr) == 0)
   {
-    fsw_log(_("SIGABRT handler registered.\n"));
+    FSW_ELOG(_("SIGABRT handler registered.\n"));
   }
   else
   {
@@ -298,7 +298,7 @@ static void register_signal_handlers()
 
   if (sigaction(SIGINT, &action, nullptr) == 0)
   {
-    fsw_log(_("SIGINT handler registered.\n"));
+    FSW_ELOG(_("SIGINT handler registered.\n"));
   }
   else
   {
@@ -422,9 +422,7 @@ static void start_monitor(int argc, char ** argv, int optind)
       ::free(real_path);
     }
 
-    fsw_log(_("Adding path: "));
-    fsw_log(path.c_str());
-    fsw_log("\n");
+    FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 
     paths.push_back(path);
   }
