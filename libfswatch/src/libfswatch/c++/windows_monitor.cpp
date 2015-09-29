@@ -169,7 +169,7 @@ namespace fsw
 
       if (dce.is_buffer_overflowed())
       {
-        notify_overflow();
+        notify_overflow(win_paths::win_w_to_posix(path));
       }
 
       stop_search_for_path(path);
@@ -181,7 +181,7 @@ namespace fsw
 
     if(dce.bytes_returned == 0)
     {
-      notify_overflow();
+      notify_overflow(win_paths::win_w_to_posix(path));
     }
     else
     {
