@@ -44,7 +44,7 @@ extern "C"
     IsDir = (1 << 10),
     IsSymLink = (1 << 11),
     Link = (1 << 12),
-	Overflow = (1 << 13)
+    Overflow = (1 << 13)
   };
 
   fsw_event_flag fsw_get_event_flag_by_name(const char * name);
