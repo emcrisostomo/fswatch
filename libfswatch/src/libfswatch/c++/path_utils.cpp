@@ -28,14 +28,13 @@ namespace fsw
 {
   void get_directory_children(const string &path, vector<string> &children)
   {
-    DIR *dir = ::opendir(path.c_str());
+    DIR *dir = opendir(path.c_str());
 
     if (!dir)
     {
       if (errno == EMFILE || errno == ENFILE)
       {
         perror("opendir");
-        // ::exit(FSW_EXIT_ENFILE);
       }
       else
       {
@@ -50,23 +49,23 @@ namespace fsw
       children.push_back(ent->d_name);
     }
 
-    ::closedir(dir);
+    closedir(dir);
   }
 
   bool read_link_path(const string &path, string &link_path)
   {
-    char *real_path = ::realpath(path.c_str(), nullptr);
+    char *real_path = realpath(path.c_str(), nullptr);
     link_path = (real_path ? real_path : path);
 
     bool ret = (real_path != nullptr);
-    ::free(real_path);
+    free(real_path);
 
     return ret;
   }
 
   bool stat_path(const string &path, struct stat &fd_stat)
   {
-    if (::lstat(path.c_str(), &fd_stat) != 0)
+    if (lstat(path.c_str(), &fd_stat) != 0)
     {
       string err = string(_("Cannot stat() ")) + path;
       fsw_log_perror(err.c_str());

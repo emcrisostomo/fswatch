@@ -84,10 +84,10 @@ namespace fsw
     {
       FSW_ELOGF(_("Creating event for %s.\n"), win_strings::wstring_to_string(path).c_str());
 
-      HANDLE h = ::CreateEvent(nullptr,
-                               TRUE,
-                               FALSE,
-                               nullptr);
+      HANDLE h = CreateEvent(nullptr,
+                             TRUE,
+                             FALSE,
+                             nullptr);
 
       if (h == NULL) throw libfsw_exception(_("CreateEvent failed."));
 
@@ -101,12 +101,12 @@ namespace fsw
   {
     FSW_ELOGF(_("Initializing search structures for %s.\n"), win_strings::wstring_to_string(path).c_str());
 
-    HANDLE h = ::CreateFileW(path.c_str(),
-                             GENERIC_READ,
-                             FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
-                             nullptr, OPEN_EXISTING,
-                             FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
-                             nullptr);
+    HANDLE h = CreateFileW(path.c_str(),
+                           GENERIC_READ,
+                           FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
+                           nullptr, OPEN_EXISTING,
+                           FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
+                           nullptr);
 
     if (!win_handle::is_valid(h))
     {
@@ -127,7 +127,7 @@ namespace fsw
       return false;
     }
 
-    load->dce_by_path[path] = std::move(dce);
+    load->dce_by_path[path] = move(dce);
 
     return true;
   }
@@ -179,7 +179,7 @@ namespace fsw
 
     FSW_ELOGF(_("GetOverlappedResult returned %d bytes\n"), dce.bytes_returned);
 
-    if(dce.bytes_returned == 0)
+    if (dce.bytes_returned == 0)
     {
       notify_overflow(win_paths::win_w_to_posix(path));
     }
@@ -229,7 +229,7 @@ namespace fsw
 
     while (true)
     {
-      ::sleep(latency);
+      sleep(latency);
 
       for (const auto & path : load->win_paths)
       {

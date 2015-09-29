@@ -65,7 +65,7 @@ namespace fsw
 
   void monitor::set_allow_overflow(bool overflow)
   {
-	  allow_overflow = overflow;
+    allow_overflow = overflow;
   }
 
   void monitor::set_latency(double latency)
@@ -88,7 +88,7 @@ namespace fsw
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(const std::vector<fsw_event_type_filter> &filters)
+  void monitor::set_event_type_filters(const vector<fsw_event_type_filter> &filters)
   {
     event_type_filters.clear();
 
@@ -103,7 +103,7 @@ namespace fsw
     if (!filter.case_sensitive) flags |= REG_ICASE;
     if (filter.extended) flags |= REG_EXTENDED;
 
-    if (::regcomp(&regex, filter.text.c_str(), flags))
+    if (regcomp(&regex, filter.text.c_str(), flags))
     {
       string err = _("An error occurred during the compilation of ") + filter.text;
       throw libfsw_exception(err, FSW_ERR_INVALID_REGEX);
@@ -119,7 +119,7 @@ namespace fsw
 
   string monitor::get_property(string name)
   {
-    return  properties[name];
+    return properties[name];
   }
 
   void monitor::set_filters(const vector<monitor_filter> &filters)
@@ -164,7 +164,7 @@ namespace fsw
 
     for (const auto &filter : filters)
     {
-      if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
+      if (regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
         if (filter.type == fsw_filter_type::filter_include) return true;
 
@@ -191,7 +191,7 @@ namespace fsw
   {
     for (auto &re : filters)
     {
-      ::regfree(&re.regex);
+      regfree(&re.regex);
     }
 
     filters.clear();
@@ -293,7 +293,9 @@ namespace fsw
     time_t curr_time;
     time(&curr_time);
 
-    notify_events({{path, curr_time, {fsw_event_flag::Overflow}}});
+    notify_events({
+      {path, curr_time,
+        {fsw_event_flag::Overflow}}});
   }
 
   void monitor::notify_events(const vector<event> &events) const
