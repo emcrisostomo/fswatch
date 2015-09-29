@@ -739,7 +739,7 @@ according to the list of filters of the monitor.
 @fnindex @code{monitor::notify_events}
 This function notifies that detection of the specified @code{events}.
 
-@item void notify_overflow() const
+@item void notify_overflow(const std::string & path) const
 @fnindex @code{monitor::notify_overflow}
 This function notifies that the monitor has overflowed.
 @emph{Overflowing} is a monitor-specific concept and not all monitors
