@@ -19,7 +19,6 @@
 #include "gettext.h"
 #include "fswatch.hpp"
 #include <iostream>
-#include <sstream>
 #include <csignal>
 #include <cstdlib>
 #include <cmath>
@@ -395,7 +394,7 @@ static void write_events(const vector<event> &events)
 
   if (_1flag)
   {
-    ::exit(FSW_EXIT_OK);
+    exit(FSW_EXIT_OK);
   }
 }
 
@@ -461,15 +460,13 @@ static void start_monitor(int argc, char ** argv, int optind)
 static void parse_opts(int argc, char ** argv)
 {
   int ch;
-  ostringstream short_options;
-
-  short_options << "01e:Ef:hi:Il:LMm:nortuvx";
+  string short_options = "01e:Ef:hi:Il:LMm:nortuvx";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
   static struct option long_options[] = {
-	{ "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
-	{ "print0", no_argument, nullptr, '0'},
+    { "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
+    { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
     { "event", required_argument, nullptr, OPT_EVENT_TYPE},
@@ -486,7 +483,7 @@ static void parse_opts(int argc, char ** argv)
     { "latency", required_argument, nullptr, 'l'},
     { "list-monitors", no_argument, nullptr, 'M'},
     { "monitor", required_argument, nullptr, 'm'},
-	{ "monitor-property", required_argument, nullptr, OPT_MONITOR_PROPERTY},
+    { "monitor-property", required_argument, nullptr, OPT_MONITOR_PROPERTY},
     { "numeric", no_argument, nullptr, 'n'},
     { "one-per-batch", no_argument, nullptr, 'o'},
     { "recursive", no_argument, nullptr, 'r'},
@@ -499,12 +496,12 @@ static void parse_opts(int argc, char ** argv)
 
   while ((ch = getopt_long(argc,
                            argv,
-                           short_options.str().c_str(),
+                           short_options.c_str(),
                            long_options,
                            &option_index)) != -1)
   {
 #else
-  while ((ch = getopt(argc, argv, short_options.str().c_str())) != -1)
+  while ((ch = getopt(argc, argv, short_options.c_str())) != -1)
   {
 #endif
 
@@ -533,7 +530,7 @@ static void parse_opts(int argc, char ** argv)
 
     case 'h':
       usage(cout);
-      ::exit(FSW_EXIT_OK);
+      exit(FSW_EXIT_OK);
 
     case 'i':
       filters.push_back({optarg, fsw_filter_type::filter_include});
@@ -560,7 +557,7 @@ static void parse_opts(int argc, char ** argv)
 
     case 'M':
       list_monitor_types(cout);
-      ::exit(FSW_EXIT_OK);
+      exit(FSW_EXIT_OK);
 
     case 'm':
       mflag = true;
@@ -613,7 +610,7 @@ static void parse_opts(int argc, char ** argv)
     case OPT_EVENT_TYPE:
       if (!parse_event_filter(optarg))
       {
-        ::exit(FSW_ERR_UNKNOWN_VALUE);
+        exit(FSW_ERR_UNKNOWN_VALUE);
       }
       break;
 
@@ -622,17 +619,17 @@ static void parse_opts(int argc, char ** argv)
       break;
 
     case OPT_MONITOR_PROPERTY:
+    {
+      string param(optarg);
+      size_t eq_pos = param.find_first_of("=");
+      if (eq_pos == string::npos)
       {
-        string param(optarg);
-        size_t eq_pos = param.find_first_of("=");
-        if (eq_pos == string::npos)
-        {
-          cerr << _("Invalid property format.") << endl;
-          exit(FSW_ERR_INVALID_PROPERTY);
-        }
-
-        monitor_properties[param.substr(0, eq_pos)] = param.substr(eq_pos + 1);
+        cerr << _("Invalid property format.") << endl;
+        exit(FSW_ERR_INVALID_PROPERTY);
       }
+
+      monitor_properties[param.substr(0, eq_pos)] = param.substr(eq_pos + 1);
+    }
       break;
 
     case '?':
@@ -647,20 +644,20 @@ static void parse_opts(int argc, char ** argv)
   if (version_flag)
   {
     print_version(cout);
-    ::exit(FSW_EXIT_OK);
+    exit(FSW_EXIT_OK);
   }
 
   // --format is incompatible with any other format option.
   if (format_flag && (tflag || xflag))
   {
     cerr << _("--format is incompatible with any other format option such as -t and -x.") << endl;
-    ::exit(FSW_EXIT_FORMAT);
+    exit(FSW_EXIT_FORMAT);
   }
 
   if (format_flag && oflag)
   {
     cerr << _("--format is incompatible with -o.") << endl;
-    ::exit(FSW_EXIT_FORMAT);
+    exit(FSW_EXIT_FORMAT);
   }
 
   // If no format was specified use:
@@ -675,7 +672,7 @@ static void parse_opts(int argc, char ** argv)
     if (printf_event_validate_format(format) < 0)
     {
       cerr << _("Invalid format.") << endl;
-      ::exit(FSW_EXIT_FORMAT);
+      exit(FSW_EXIT_FORMAT);
     }
   }
   else
@@ -787,13 +784,13 @@ int main(int argc, char ** argv)
   if (optind == argc)
   {
     cerr << _("Invalid number of arguments.") << endl;
-    ::exit(FSW_EXIT_UNK_OPT);
+    exit(FSW_EXIT_UNK_OPT);
   }
 
   if (mflag && !fsw::monitor_factory::exists_type(monitor_name))
   {
     cerr << _("Invalid monitor name.") << endl;
-    ::exit(FSW_EXIT_MONITOR_NAME);
+    exit(FSW_EXIT_MONITOR_NAME);
   }
 
   // configure and start the monitor
