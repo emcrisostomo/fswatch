@@ -19,6 +19,8 @@
 #include "gettext.h"
 #include "fswatch.hpp"
 #include <iostream>
+#include <string>
+#include <exception>
 #include <csignal>
 #include <cstdlib>
 #include <cmath>
@@ -72,7 +74,7 @@ static int printf_event(const string & fmt,
 
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
-static fsw::monitor *active_monitor = nullptr;
+static monitor *active_monitor = nullptr;
 static vector<monitor_filter> filters;
 static vector<fsw_event_type_filter> event_filters;
 static bool _0flag = false;
@@ -120,7 +122,7 @@ bool is_verbose()
 
 static void list_monitor_types(ostream& stream)
 {
-  for (const auto & type : fsw::monitor_factory::get_types())
+  for (const auto & type : monitor_factory::get_types())
   {
     stream << "  " << type << "\n";
   }
@@ -241,7 +243,7 @@ static bool parse_event_filter(const char * optarg)
     event_filters.push_back({event::get_event_flag_by_name(optarg)});
     return true;
   }
-  catch (fsw::libfsw_exception & ex)
+  catch (libfsw_exception & ex)
   {
     cerr << ex.what() << endl;
     return false;
@@ -427,13 +429,13 @@ static void start_monitor(int argc, char ** argv, int optind)
   }
 
   if (mflag)
-    active_monitor = fsw::monitor_factory::create_monitor(monitor_name,
-                                                          paths,
-                                                          process_events);
+    active_monitor = monitor_factory::create_monitor(monitor_name,
+                                                     paths,
+                                                     process_events);
   else
-    active_monitor = fsw::monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
-                                                          paths,
-                                                          process_events);
+    active_monitor = monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
+                                                     paths,
+                                                     process_events);
 
   /*
    * libfswatch supports case sensitivity and extended flags to be set on any
@@ -787,7 +789,7 @@ int main(int argc, char ** argv)
     exit(FSW_EXIT_UNK_OPT);
   }
 
-  if (mflag && !fsw::monitor_factory::exists_type(monitor_name))
+  if (mflag && !monitor_factory::exists_type(monitor_name))
   {
     cerr << _("Invalid monitor name.") << endl;
     exit(FSW_EXIT_MONITOR_NAME);

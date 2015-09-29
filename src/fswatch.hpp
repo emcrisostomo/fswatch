@@ -16,9 +16,6 @@
 #ifndef FSW_H
 #  define FSW_H
 
-#  include <exception>
-#  include <string>
-
 #  define FSW_EXIT_OK              0
 #  define FSW_EXIT_UNK_OPT         1
 #  define FSW_EXIT_USAGE           2
