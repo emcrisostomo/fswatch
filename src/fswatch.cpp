@@ -115,11 +115,6 @@ static const int OPT_EVENT_TYPE = 131;
 static const int OPT_ALLOW_OVERFLOW = 132;
 static const int OPT_MONITOR_PROPERTY = 133;
 
-bool is_verbose()
-{
-  return vflag;
-}
-
 static void list_monitor_types(ostream& stream)
 {
   for (const auto & type : monitor_factory::get_types())
@@ -250,23 +245,18 @@ static bool parse_event_filter(const char * optarg)
   }
 }
 
-static bool validate_latency(double latency, ostream &ost, ostream &est)
+static bool validate_latency(double latency)
 {
   if (lvalue == 0.0)
   {
-    est << _("Invalid value: ") << optarg << endl;
+    cerr << _("Invalid value: ") << optarg << endl;
     return false;
   }
 
   if (errno == ERANGE || lvalue == HUGE_VAL)
   {
-    est << _("Value out of range: ") << optarg << endl;
+    cerr << _("Value out of range: ") << optarg << endl;
     return false;
-  }
-
-  if (is_verbose())
-  {
-    ost << _("Latency set to: ") << lvalue << endl;
   }
 
   return true;
@@ -545,8 +535,8 @@ static void parse_opts(int argc, char ** argv)
     case 'l':
       lflag = true;
       lvalue = strtod(optarg, nullptr);
-
-      if (!validate_latency(lvalue, cout, cerr))
+    
+      if (!validate_latency(lvalue))
       {
         exit(FSW_EXIT_LATENCY);
       }

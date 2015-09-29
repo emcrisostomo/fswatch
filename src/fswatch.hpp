@@ -27,6 +27,4 @@
 #  define FSW_EXIT_MONITOR_NAME    8
 #  define FSW_EXIT_FORMAT          9
 
-bool is_verbose();
-
 #endif  /* FSW_H */
