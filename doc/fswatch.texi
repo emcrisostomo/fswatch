@@ -9,6 +9,11 @@
 
 @settitle fswatch @value{VERSION}
 
+@dircategory Individual utilities
+@direntry
+* fswatch: (fswatch).                Cross-platform file change monitor.
+@end direntry
+
 @c @finalout
 
 @smallbook

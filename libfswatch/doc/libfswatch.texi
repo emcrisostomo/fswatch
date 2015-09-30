@@ -9,6 +9,11 @@
 
 @settitle libfswatch @value{VERSION}
 
+@dircategory Software development
+@direntry
+* libfswatch: (libfswatch).          Cross-platform file change monitor.
+@end direntry
+
 @c @finalout
 
 @smallbook
