@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for libfswatch (version 1.6.0,
+30 September 2015), a cross-platform file change monitor C/C++ library
+with multiple backends, including Apple OS X File System Events
+API, *BSD kqueue, Linux inotify, Microsoft Windows and a
+stat-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'. -->
+<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>libfswatch 1.6.0: Top</title>
+
+<meta name="description" content="libfswatch 1.6.0: Top">
+<meta name="keywords" content="libfswatch 1.6.0: Top">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="../dir/index.html" rel="up" title="(dir)">
+<link href="History.html#History" rel="next" title="History">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space: nowrap}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: serif; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<h1 class="settitle" align="center">libfswatch 1.6.0</h1>
+
+
+
+
+
+
+
+
+
+
+<a name="SEC_Overview"></a>
+<h2 class="shortcontents-heading">Short Table of Contents</h2>
+
+<div class="shortcontents">
+<ul class="no-bullet">
+<li><a name="stoc-History-1" href="#toc-History-1">1 History</a></li>
+<li><a name="stoc-Introduction-1" href="#toc-Introduction-1">2 Introduction</a></li>
+<li><a name="stoc-The-C_002b_002b-API-1" href="#toc-The-C_002b_002b-API-1">3 The C++ <acronym>API</acronym></a></li>
+<li><a name="stoc-The-C-API-1" href="#toc-The-C-API-1">4 The C <acronym>API</acronym></a></li>
+<li><a name="stoc-GNU-Free-Documentation-License-1" href="#toc-GNU-Free-Documentation-License-1">Appendix A GNU Free Documentation License</a></li>
+<li><a name="stoc-Index-of-Functions-1" href="#toc-Index-of-Functions-1">Appendix B Index of Functions</a></li>
+<li><a name="stoc-Index-of-Data-Types-1" href="#toc-Index-of-Data-Types-1">Appendix C Index of Data Types</a></li>
+<li><a name="stoc-Index-of-Programs-1" href="#toc-Index-of-Programs-1">Appendix D Index of Programs</a></li>
+<li><a name="stoc-Index" href="#toc-Index">Index</a></li>
+</ul>
+</div>
+
+<a name="SEC_Contents"></a>
+<h2 class="contents-heading">Table of Contents</h2>
+
+<div class="contents">
+
+<ul class="no-bullet">
+  <li><a name="toc-History-1" href="History.html#History">1 History</a>
+  <ul class="no-bullet">
+    <li><a name="toc-4_003a0_003a1" href="History.html#g_t4_003a0_003a1">1.1 4:0:1</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Feature-Changes" href="History.html#Feature-Changes">1.1.1 Feature Changes</a></li>
+      <li><a name="toc-C_002b_002b-Interface-Changes" href="History.html#C_002b_002b-Interface-Changes">1.1.2 C++ Interface Changes</a></li>
+      <li><a name="toc-C-Interface-Changes" href="History.html#C-Interface-Changes">1.1.3 C Interface Changes</a></li>
+    </ul></li>
+    <li><a name="toc-3_003a0_003a0" href="History.html#g_t3_003a0_003a0">1.2 3:0:0</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Feature-Changes-1" href="History.html#Feature-Changes-1">1.2.1 Feature Changes</a></li>
+      <li><a name="toc-C_002b_002b-Interface-Changes-1" href="History.html#C_002b_002b-Interface-Changes-1">1.2.2 C++ Interface Changes</a></li>
+      <li><a name="toc-C-Interface-Changes-1" href="History.html#C-Interface-Changes-1">1.2.3 C Interface Changes</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a name="toc-Introduction-1" href="Introduction.html#Introduction">2 Introduction</a>
+  <ul class="no-bullet">
+    <li><a name="toc-Available-Bindings" href="Introduction.html#Available-Bindings">2.1 Available Bindings</a></li>
+    <li><a name="toc-Relation-between-fswatch-and-libfswatch" href="Introduction.html#Relation-between-fswatch-and-libfswatch">2.2 Relation between <code>fswatch</code> and <samp>libfswatch</samp></a></li>
+    <li><a name="toc-libtool_0027s-versioning-scheme" href="Introduction.html#libtool_0027s-versioning-scheme">2.3 <code>libtool</code>&rsquo;s versioning scheme</a></li>
+    <li><a name="toc-The-C-and-the-C_002b_002b-API" href="Introduction.html#The-C-and-the-C_002b_002b-API">2.4 The C and the C++ <acronym>API</acronym></a></li>
+    <li><a name="toc-Thread-Safety-1" href="Introduction.html#Thread-Safety-1">2.5 Thread Safety</a></li>
+    <li><a name="toc-Reporting-Bugs-and-Suggestions-1" href="Introduction.html#Reporting-Bugs-and-Suggestions-1">2.6 Reporting Bugs and Suggestions</a></li>
+  </ul></li>
+  <li><a name="toc-The-C_002b_002b-API-1" href="The-C_002b_002b-API.html#The-C_002b_002b-API">3 The C++ <acronym>API</acronym></a>
+  <ul class="no-bullet">
+    <li><a name="toc-Monitor-Discovery-1" href="The-C_002b_002b-API.html#Monitor-Discovery-1">3.1 Monitor Discovery</a></li>
+    <li><a name="toc-Monitor-Registration" href="The-C_002b_002b-API.html#Monitor-Registration">3.2 Monitor Registration</a></li>
+    <li><a name="toc-Monitors-1" href="The-C_002b_002b-API.html#Monitors-1">3.3 Monitors</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Business-Interface" href="The-C_002b_002b-API.html#Business-Interface">3.3.1 Business Interface</a></li>
+      <li><a name="toc-Implementing-Monitors" href="The-C_002b_002b-API.html#Implementing-Monitors">3.3.2 Implementing Monitors</a></li>
+      <li><a name="toc-The-Anatomy-of-a-Typical-Monitor" href="The-C_002b_002b-API.html#The-Anatomy-of-a-Typical-Monitor">3.3.3 The Anatomy of a Typical Monitor</a></li>
+    </ul></li>
+    <li><a name="toc-Events-1" href="The-C_002b_002b-API.html#Events-1">3.4 Events</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Looking-Up-Event-Types-by-Name" href="The-C_002b_002b-API.html#Looking-Up-Event-Types-by-Name">3.4.1 Looking Up Event Types by Name</a></li>
+      <li><a name="toc-Getting-the-Name-of-an-Event-Type" href="The-C_002b_002b-API.html#Getting-the-Name-of-an-Event-Type">3.4.2 Getting the Name of an Event Type</a></li>
+    </ul></li>
+    <li><a name="toc-Path-Filters" href="The-C_002b_002b-API.html#Path-Filters">3.5 Path Filters</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Filter-Types" href="The-C_002b_002b-API.html#Filter-Types">3.5.1 Filter Types</a></li>
+    </ul></li>
+    <li><a name="toc-Event-Type-Filters-1" href="The-C_002b_002b-API.html#Event-Type-Filters-1">3.6 Event Type Filters</a></li>
+  </ul></li>
+  <li><a name="toc-The-C-API-1" href="The-C-API.html#The-C-API">4 The C <acronym>API</acronym></a>
+  <ul class="no-bullet">
+    <li><a name="toc-Overview" href="The-C-API.html#Overview">4.1 Overview</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Translating-the-C_002b_002b-API" href="The-C-API.html#Translating-the-C_002b_002b-API">4.1.1 Translating the C++ <acronym>API</acronym></a></li>
+      <li><a name="toc-Thread-Safety-2" href="The-C-API.html#Thread-Safety-2">4.1.2 Thread Safety</a></li>
+    </ul></li>
+    <li><a name="toc-Library-Initialization" href="The-C-API.html#Library-Initialization">4.2 Library Initialization</a></li>
+    <li><a name="toc-Status-Codes-and-Errors-1" href="The-C-API.html#Status-Codes-and-Errors-1">4.3 Status Codes and Errors</a></li>
+    <li><a name="toc-Functions" href="The-C-API.html#Functions">4.4 Functions</a></li>
+    <li><a name="toc-Callbacks-1" href="The-C-API.html#Callbacks-1">4.5 Callbacks</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Context-Data-1" href="The-C-API.html#Context-Data-1">4.5.1 Context Data</a></li>
+    </ul></li>
+    <li><a name="toc-Memory-Management-Functions-1" href="The-C-API.html#Memory-Management-Functions-1">4.6 Memory Management Functions</a></li>
+    <li><a name="toc-Events-in-the-C-API-1" href="The-C-API.html#Events-in-the-C-API-1">4.7 Events in the C <acronym>API</acronym></a></li>
+    <li><a name="toc-Event-Flags-1" href="The-C-API.html#Event-Flags-1">4.8 Event Flags</a></li>
+    <li><a name="toc-Filters-in-the-C-API-1" href="The-C-API.html#Filters-in-the-C-API-1">4.9 Filters in the C <acronym>API</acronym></a></li>
+    <li><a name="toc-Monitor-Types" href="The-C-API.html#Monitor-Types">4.10 Monitor Types</a></li>
+    <li><a name="toc-Logging" href="The-C-API.html#Logging">4.11 Logging</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Logging-functions" href="The-C-API.html#Logging-functions">4.11.1 Logging functions</a></li>
+      <li><a name="toc-Logging-macros" href="The-C-API.html#Logging-macros">4.11.2 Logging macros</a></li>
+    </ul></li>
+    <li><a name="toc-Example" href="The-C-API.html#Example">4.12 Example</a></li>
+  </ul></li>
+  <li><a name="toc-GNU-Free-Documentation-License-1" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">Appendix A GNU Free Documentation License</a></li>
+  <li><a name="toc-Index-of-Functions-1" href="Index-of-Functions.html#Index-of-Functions">Appendix B Index of Functions</a></li>
+  <li><a name="toc-Index-of-Data-Types-1" href="Index-of-Data-Types.html#Index-of-Data-Types">Appendix C Index of Data Types</a></li>
+  <li><a name="toc-Index-of-Programs-1" href="Index-of-Programs.html#Index-of-Programs">Appendix D Index of Programs</a></li>
+  <li><a name="toc-Index" href="General-Index.html#General-Index">Index</a></li>
+</ul>
+</div>
+
+
+<a name="Top"></a>
+<div class="header">
+<p>
+Next: <a href="History.html#History" accesskey="n" rel="next">History</a>, Up: <a href="../dir/index.html" accesskey="u" rel="up">(dir)</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="libfswatch"></a>
+<h1 class="top">libfswatch</h1>
+<p>This manual is for <samp>libfswatch</samp> (version 1.6.0,
+30 September 2015), a cross-platform file change monitor C/C++ library
+with multiple backends, including Apple OS X File System Events
+<acronym>API</acronym>, *BSD kqueue, Linux inotify, Microsoft Windows and a
+<code>stat</code>-based backend.
+</p>
+<p>Copyright &copy; 2013-2015 Enrico M. Crisostomo
+</p>
+<blockquote>
+<p>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled &lsquo;GNU
+Free Documentation License&rsquo;.
+</p></blockquote>
+
+
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="History.html#History" accesskey="1">History</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Introduction.html#Introduction" accesskey="2">Introduction</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="The-C_002b_002b-API.html#The-C_002b_002b-API" accesskey="3">The C++ API</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="The-C-API.html#The-C-API" accesskey="4">The C API</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License" accesskey="5">GNU Free Documentation License</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Index-of-Functions.html#Index-of-Functions" accesskey="6">Index of Functions</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Index-of-Data-Types.html#Index-of-Data-Types" accesskey="7">Index of Data Types</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Index-of-Programs.html#Index-of-Programs" accesskey="8">Index of Programs</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="General-Index.html#General-Index" accesskey="9">General Index</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="History.html#History" accesskey="n" rel="next">History</a>, Up: <a href="../dir/index.html" accesskey="u" rel="up">(dir)</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

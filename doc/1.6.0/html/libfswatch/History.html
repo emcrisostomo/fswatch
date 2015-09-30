@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for libfswatch (version 1.6.0,
+30 September 2015), a cross-platform file change monitor C/C++ library
+with multiple backends, including Apple OS X File System Events
+API, *BSD kqueue, Linux inotify, Microsoft Windows and a
+stat-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'. -->
+<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>libfswatch 1.6.0: History</title>
+
+<meta name="description" content="libfswatch 1.6.0: History">
+<meta name="keywords" content="libfswatch 1.6.0: History">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="Introduction.html#Introduction" rel="next" title="Introduction">
+<link href="index.html#Top" rel="prev" title="Top">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space: nowrap}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: serif; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="History"></a>
+<div class="header">
+<p>
+Next: <a href="Introduction.html#Introduction" accesskey="n" rel="next">Introduction</a>, Previous: <a href="index.html#Top" accesskey="p" rel="prev">Top</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="History-1"></a>
+<h2 class="chapter">1 History</h2>
+<a name="g_t4_003a0_003a1"></a>
+<h3 class="section">1.1 4:0:1</h3>
+<a name="Feature-Changes"></a>
+<h4 class="subsection">1.1.1 Feature Changes</h4>
+<p>The changes introducted in <code>4:0:1</code> are the following:
+</p><ul>
+<li> <a name="index-monitor_002c-Windows"></a>
+A monitor for Microsoft Windows was added.
+
+</li><li> <a name="index-logging"></a>
+A logging function has been added to the library to log verbose
+messages.
+
+</li></ul>
+
+<a name="C_002b_002b-Interface-Changes"></a>
+<h4 class="subsection">1.1.2 C++ Interface Changes</h4>
+<ul>
+<li> <a name="index-windows_005fmonitor"></a>
+The <code>windows_monitor</code> class has been added to provide a monitor
+that uses the Windows <acronym>API</acronym>.
+
+</li></ul>
+
+<a name="C-Interface-Changes"></a>
+<h4 class="subsection">1.1.3 C Interface Changes</h4>
+<ul>
+<li> A family of functions and macros have been added to log diagnostic messages and conditionally print them only in verbose mode:
+<ul>
+<li> <a name="index-fsw_005flog"></a>
+<code>fsw_log</code>
+
+</li><li> <a name="index-fsw_005fflog"></a>
+<code>fsw_flog</code>
+
+</li><li> <a name="index-fsw_005flogf"></a>
+<code>fsw_logf</code>
+
+</li><li> <a name="index-fsw_005fflogf"></a>
+<code>fsw_flogf</code>
+
+</li><li> <a name="index-fsw_005flog_005fperror"></a>
+<code>fsw_log_perror</code>
+
+</li><li> <a name="index-FSW_005fLOG"></a>
+<code>FSW_LOG</code>
+
+</li><li> <a name="index-FSW_005fELOG"></a>
+<code>FSW_ELOG</code>
+
+</li><li> <a name="index-FSW_005fLOGF"></a>
+<code>FSW_LOGF</code>
+
+</li><li> <a name="index-FSW_005fELOGF"></a>
+<code>FSW_ELOGF</code>
+
+</li><li> <a name="index-FSW_005fFLOGF"></a>
+<code>FSW_FLOGF</code>
+
+</li></ul>
+</li></ul>
+
+
+
+<a name="g_t3_003a0_003a0"></a>
+<h3 class="section">1.2 3:0:0</h3>
+<a name="Feature-Changes-1"></a>
+<h4 class="subsection">1.2.1 Feature Changes</h4>
+<p>The changes introduced in <code>3:0:0</code> are the following:
+</p><ul>
+<li> <a name="index-filter_002c-by-event-type"></a>
+The possibility of filtering events by <em>event type</em> was added.
+
+</li><li> All the monitors were refactored and the callback invocation logic was
+moved to the base <code>monitor</code> class.
+
+</li><li> All the monitors were refactored and the filtering logic (both by path
+and event type) was moved to the base <code>monitor</code> class.
+</li></ul>
+
+<a name="C_002b_002b-Interface-Changes-1"></a>
+<h4 class="subsection">1.2.2 C++ Interface Changes</h4>
+<ul>
+<li> <a name="index-monitor_003a_003aadd_005fevent_005ftype_005ffilter"></a>
+Added the <code>monitor::add_event_type_filter</code> method to add an event
+type filter.
+
+</li><li> <a name="index-monitor_003a_003aset_005fevent_005ftype_005ffilters"></a>
+Added the <code>monitor::set_event_type_filters</code> method to set the
+event type filters.
+
+</li><li> <a name="index-monitor_003a_003anotify_005fevents"></a>
+Added the <code>monitor::notify_events</code> method to centralize event
+filtering and dispatching into the base monitor class.
+
+</li><li> <a name="index-event_003a_003aget_005fevent_005fflag_005fby_005fname"></a>
+Added the <code>event::get_event_flag_by_name</code> method to lookup an
+event type by name.
+
+</li><li> <a name="index-event_003a_003aget_005fevent"></a>
+Added the <code>event::get_event_flag_name</code> method to get the name of
+an event type.
+
+</li><li> <a name="index-ostream_0026-operator_003c_003c_0028ostream_0026-out_002c-const-fsw_005fevent_005fflag-flag_0029"></a>
+Added the overloaded <code>ostream&amp; operator&lt;&lt;(ostream&amp; out, const
+fsw_event_flag flag)</code> operator to simplify printing the name of an
+event type on a stream.
+
+</li></ul>
+
+<a name="C-Interface-Changes-1"></a>
+<h4 class="subsection">1.2.3 C Interface Changes</h4>
+<ul>
+<li> <a name="index-fsw_005fevent_005ftype_005ffilter"></a>
+Added the <code>fsw_event_type_filter</code> structure to represent a event
+type filter.
+
+</li><li> <a name="index-FSW_005fERR_005fUNKNOWN_005fVALUE"></a>
+Added the <code>FSW_ERR_UNKNOWN_VALUE</code> exit code.
+
+</li><li> <a name="index-fsw_005fadd_005fevent_005ftype_005ffilter"></a>
+Added the <code>fsw_add_event_type_filter</code> function to add an event
+type filter.
+
+</li><li> <a name="index-fsw_005fget_005fevent_005fflag_005fby_005fname"></a>
+Added the <code>fsw_get_event_flag_by_name</code> function to lookup an
+event type by name.
+
+</li><li> <a name="index-fsw_005fget_005fevent_005fflag_005fname"></a>
+Added the <code>fsw_get_event_flag_name</code> function to get the name of
+an event type.
+</li></ul>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="Introduction.html#Introduction" accesskey="n" rel="next">Introduction</a>, Previous: <a href="index.html#Top" accesskey="p" rel="prev">Top</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

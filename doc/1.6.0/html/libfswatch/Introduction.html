@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for libfswatch (version 1.6.0,
+30 September 2015), a cross-platform file change monitor C/C++ library
+with multiple backends, including Apple OS X File System Events
+API, *BSD kqueue, Linux inotify, Microsoft Windows and a
+stat-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'. -->
+<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>libfswatch 1.6.0: Introduction</title>
+
+<meta name="description" content="libfswatch 1.6.0: Introduction">
+<meta name="keywords" content="libfswatch 1.6.0: Introduction">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="The-C_002b_002b-API.html#The-C_002b_002b-API" rel="next" title="The C++ API">
+<link href="History.html#History" rel="prev" title="History">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space: nowrap}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: serif; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="Introduction"></a>
+<div class="header">
+<p>
+Next: <a href="The-C_002b_002b-API.html#The-C_002b_002b-API" accesskey="n" rel="next">The C++ API</a>, Previous: <a href="History.html#History" accesskey="p" rel="prev">History</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="Introduction-1"></a>
+<h2 class="chapter">2 Introduction</h2>
+<a name="index-fswatch-1"></a>
+<p><code>fswatch</code> is a cross-platform file change monitor currently
+supporting the following backends:
+</p>
+<ul>
+<li> <a name="index-FSEvents-monitor"></a>
+<a name="index-monitor_002c-FSEvents"></a>
+<a name="index-FSEvents"></a>
+<a name="index-Apple-OS-X"></a>
+A monitor based on the <em>FSEvents</em> <acronym>API</acronym> of Apple OS X.
+
+</li><li> <a name="index-kqueue-monitor"></a>
+<a name="index-monitor_002c-kqueue"></a>
+<a name="index-kqueue"></a>
+<a name="index-BSD"></a>
+<a name="index-FreeBSD"></a>
+<a name="index-Apple-OS-X-1"></a>
+A monitor based on <em>kqueue</em>, an event notification interface
+introduced in FreeBSD 4.1 and supported on most *BSD systems
+(including OS X).
+
+</li><li> <a name="index-inotify-monitor"></a>
+<a name="index-monitor_002c-inotify"></a>
+<a name="index-inotify"></a>
+<a name="index-Linux"></a>
+A monitor based on <em>inotify</em>, a Linux kernel subsystem that
+reports file system changes to applications.
+
+</li><li> <a name="index-Microsoft-Windows-monitor"></a>
+<a name="index-monitor_002c-Microsoft-Windows"></a>
+<a name="index-Microsoft-Windows"></a>
+<a name="index-ReadDirectoryChangesW"></a>
+A monitor based on the Microsoft Windows&rsquo; <code>ReadDirectoryChangesW</code>
+function and reads change events asynchronously.
+
+</li><li> <a name="index-poll-monitor"></a>
+A monitor which periodically stats the file system, saves file
+modification times in memory and manually calculates file system
+changes, which can work on any operating system where <code>stat</code> can
+be used.
+</li></ul>
+
+<a name="index-libfswatch"></a>
+<a name="index-fswatch"></a>
+<p>The first releases of <code>fswatch</code> were monolithic,
+self-contained binaries whose output was typically piped to other
+applications for processing.  Given the nature of the features
+provided by <code>fswatch</code>, however, we recognized the need to
+expose this functionality through a library and the <samp>libfswatch</samp>
+package was born.  <code>fswatch</code> is now built upon it and all its
+functionality is provided by the <samp>libfswatch</samp> library, with the
+exception perhaps of some formatting routines printing results to the
+standard output.
+</p>
+<p>The biggest issue we have faced while developing <code>fswatch</code> was
+abstracting the behaviour of different backends behind a common
+interface and <samp>libfswatch</samp> is the result of that effort.  Instead
+of using different <acronym>API</acronym>s, a programmer can use just one:
+<samp>libfswatch</samp>&rsquo;s.  The advantages of using <samp>libfswatch</samp> are
+many:
+</p>
+<ul>
+<li> Portability: <samp>libfswatch</samp> supports many backends, effectively
+giving support to a great number of operating systems, including Linux
+and *BSD Unix.
+
+</li><li> Ease of use: using <samp>libfswatch</samp> should be easier than using any
+of the <acronym>API</acronym>s it supports.
+</li></ul>
+
+<a name="Available-Bindings"></a>
+<h3 class="section">2.1 Available Bindings</h3>
+<p><samp>libfswatch</samp> is a C++ library with C bindings which makes it
+available to a wide range of programming languages.  If a programming
+language has C bindings, then <samp>libfswatch</samp> can be used from it.
+The C binding provides all the functionality provided by the C++
+implementation and it can be used as a fallback solution when the C++
+<acronym>API</acronym> cannot be used.
+</p>
+<a name="Relation-between-fswatch-and-libfswatch"></a>
+<h3 class="section">2.2 Relation between <code>fswatch</code> and <samp>libfswatch</samp></h3>
+<p>Although <code>fswatch</code> uses functionality provided by
+<samp>libfswatch</samp> and depends on it, <samp>libfswatch</samp> is currently a
+package nested into <code>fswatch</code>.  If either component is
+updated, the whole package is, as well as their version numbers are.
+From the <acronym>GNU</acronym> Build System point of view, the package version
+of <samp>libfswatch</samp> is always kept in sync with <code>fswatch</code>&rsquo;s.
+</p>
+<p>The library <acronym>API</acronym> version, however, <em>is not</em>, and it is
+the only piece of information that should be kept into account when
+linking against <samp>libfswatch</samp>.  Since we use <code>libtool</code> to
+build <samp>libfswatch</samp>, we adopt <code>libtool</code>&rsquo;s versioning
+scheme for library interface versions.
+</p>
+<a name="libtool_0027s-versioning-scheme"></a>
+<h3 class="section">2.3 <code>libtool</code>&rsquo;s versioning scheme</h3>
+<a name="index-libtool-1"></a>
+<a name="index-libtool"></a>
+<a name="index-versioning-scheme"></a>
+<a name="index-version"></a>
+<a name="index-version_002c-current"></a>
+<a name="index-version_002c-revision"></a>
+<a name="index-version_002c-age"></a>
+<p><code>libtool</code>&rsquo;s versioning scheme is described by three integers:
+</p>
+<div class="example">
+<pre class="example">current:revision:age
+</pre></div>
+
+<p>where:
+</p>
+<ul>
+<li> <code>current</code> is the most recent interface number implemented by the
+library.
+
+</li><li> <code>revision</code> is the implementation number of the current interface.
+
+</li><li> <code>age</code> is the difference between the newest and the oldest
+interface that the library implements.
+</li></ul>
+
+<a name="The-C-and-the-C_002b_002b-API"></a>
+<h3 class="section">2.4 The C and the C++ <acronym>API</acronym></h3>
+<p>The C <acronym>API</acronym> is built on top of the C++ <acronym>API</acronym> but the
+two are very different and the main difference reflect the differences
+between the two languages.
+</p>
+<a name="index-monitor"></a>
+<a name="index-callback"></a>
+<p>The C++ <acronym>API</acronym> centres on the concept of <em>monitor</em>, a
+class of objects modelling the functionality of the file monitoring
+<acronym>API</acronym>.  Different monitor types are modelled as different
+classes inheriting from the <code>fsw::monitor</code> abstract class, that
+is the type that defines the core monitoring <acronym>API</acronym>.
+<acronym>API</acronym> clients can pick the current platform&rsquo;s default monitor,
+or choose a specific implementation amongst the available ones,
+configure it and <em>run</em> it.  When running, a monitor gathers file
+system change events and communicates them back to the caller using a
+<em>callback</em>.
+</p>
+<a name="index-monitoring-session"></a>
+<a name="index-session-handle"></a>
+<p>The C <acronym>API</acronym>, on the other hand, centres on the concept of
+<em>monitoring session</em>.  A session internally wraps a monitor
+instance and represents an opaque C bridge to the C++ monitor
+<acronym>API</acronym>.  Sessions are identified by a <em>session handle</em> and
+they can be thought as a sort of C &lsquo;fa&ccedil;ade&rsquo; of the C++ monitor
+class.  In fact there is an evident similarity between the C library
+functions operating on a monitoring session and the methods of the
+<code>monitor</code> class.
+</p>
+<a name="Thread-Safety-1"></a>
+<h3 class="section">2.5 Thread Safety</h3>
+<a name="index-thread-safety"></a>
+<a name="Thread-Safety"></a><p>The C++ <acronym>API</acronym> does not deal with thread
+safety explicitely.  Rather, it leaves the responsibility of
+implementing a thread-safe use of the library to the callers.  The C++
+implementation has been designed in order to:
+</p>
+<ul>
+<li> Encapsulate all the state of a monitor into its class fields.
+
+</li><li> Perform no concurrent access control in methods or class fields.
+
+</li><li> Guarantee that functions and <em>static</em> methods are thread safe.
+</li></ul>
+
+<p>As a consequence, it is <em>not</em> thread-safe to access a monitor&rsquo;s
+member, be it a method or a field, from different threads
+concurrently.  The easiest way to implement thread-safety when using
+<samp>libfswatch</samp>, therefore, is segregating access to each monitor
+instance from a different thread.
+</p>
+<p>The C <acronym>API</acronym>, a layer above the C++ <acronym>API</acronym>, has been
+designed in order to provide the same basic guarantee:
+</p>
+<ul>
+<li> Concurrently manipulating different monitoring sessions is thread
+safe.
+
+</li><li> Concurrently manipulating the same monitoring session is <em>not</em>
+thread safe.
+</li></ul>
+
+<a name="index-C_002b_002b11"></a>
+<p>There is an additional limitation which affects the C library only:
+the C binding implementation internally uses <acronym>C++11</acronym> classes
+and keywords to provide the aforementioned guarantees.  If compiler or
+library support is not found when building <samp>libfswatch</samp> the
+library will still build, but those guarantees will <em>not</em> be
+honoured.  A warning such as the following will appear in
+<code>configure</code>&rsquo;s output to inform the user:
+</p>
+<div class="smallexample">
+<pre class="smallexample">configure: WARNING: libfswatch is not thread-safe because the current
+combination of compiler and libraries do not support the thread_local
+storage specifier.
+</pre></div>
+
+<a name="Reporting-Bugs-and-Suggestions-1"></a>
+<h3 class="section">2.6 Reporting Bugs and Suggestions</h3>
+<a name="Reporting-Bugs-and-Suggestions"></a><a name="index-bug"></a>
+<a name="index-bug-report"></a>
+<a name="index-GitHub-repository"></a>
+<a name="index-fswatch_002c-repository"></a>
+<a name="index-fswatch_002c-sources"></a>
+<p>If you find problems or have suggestions about this program or this
+manual, please report them as new issues in the official GitHub
+repository of <code>fswatch</code> at
+<a href="https://github.com/emcrisostomo/fswatch">https://github.com/emcrisostomo/fswatch</a>.  If you with you may
+contact the authors at the addresses listed in the <samp>AUTHORS</samp>
+file.
+</p>
+<p>When reporting a bug, please be sure to include as much detail as
+possible and sufficient information to reproduce it.
+</p>
+<hr>
+<div class="header">
+<p>
+Next: <a href="The-C_002b_002b-API.html#The-C_002b_002b-API" accesskey="n" rel="next">The C++ API</a>, Previous: <a href="History.html#History" accesskey="p" rel="prev">History</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

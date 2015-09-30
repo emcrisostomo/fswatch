@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for fswatch (version 1.6.0,
+30 September 2015), a cross-platform file change monitor with multiple
+backends, including Apple OS X File System Events API, *BSD kqueue,
+Linux inotify, Microsoft Windows and a stat-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'. -->
+<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>fswatch 1.6.0: History</title>
+
+<meta name="description" content="fswatch 1.6.0: History">
+<meta name="keywords" content="fswatch 1.6.0: History">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="Introduction.html#Introduction" rel="next" title="Introduction">
+<link href="index.html#Top" rel="prev" title="Top">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space: nowrap}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: serif; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="History"></a>
+<div class="header">
+<p>
+Next: <a href="Introduction.html#Introduction" accesskey="n" rel="next">Introduction</a>, Previous: <a href="index.html#Top" accesskey="p" rel="prev">Top</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="History-1"></a>
+<h2 class="chapter">1 History</h2>
+<a name="fswatch-1_002e6_002e0"></a>
+<h3 class="section">1.1 fswatch 1.6.0</h3>
+<ul>
+<li> <samp>fswatch</samp> can be build on Microsoft Windows using Cygwin.
+
+</li><li> A monitor for Microsoft Windows has been added.
+
+</li><li> <samp>fswatch</samp> can survive monitor overflows and notify them as a
+specially crafted change events (of type <code>Overflow</code>) if
+invoked with the <code>--allow-overflow</code> option.
+
+</li></ul>
+
+<a name="fswatch-1_002e5_002e1"></a>
+<h3 class="section">1.2 fswatch 1.5.1</h3>
+
+<ul>
+<li> <samp>fswatch-run</samp> scripts have been removed.
+
+</li><li> As a consequence of the <samp>fswatch-run</samp> removal, dependency on at
+least one supported shell (Zsh and Bash) have been removed from the
+currently supported ports:
+
+<ul>
+<li> Macports.
+
+</li><li> Homebrew.
+
+</li><li> FreeBSD.
+
+</li></ul>
+
+</li></ul>
+
+<a name="fswatch-1_002e5_002e0"></a>
+<h3 class="section">1.3 fswatch 1.5.0</h3>
+
+<ul>
+<li> <a name="index-event_002c-inception"></a>
+Added the <samp>--event</samp> option to allow filtering by event type.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e7"></a>
+<h3 class="section">1.4 fswatch 1.4.7</h3>
+
+<ul>
+<li> Fix bug in exclusion filter ordering (PR 75).
+
+</li><li> <samp>README.md</samp> improvements.
+
+</li><li> Documentation improvements.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e6"></a>
+<h3 class="section">1.5 fswatch 1.4.6</h3>
+
+<ul>
+<li> Fix issue 74: Assertion failed on fsw_destroy_session.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e5_002e3"></a>
+<h3 class="section">1.6 fswatch 1.4.5.3</h3>
+
+<ul>
+<li> Fix issue 67: 100% CPU usage while using libfswatch.  This issue only
+affects the inotify monitor, available only on Linux.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e5_002e2"></a>
+<h3 class="section">1.7 fswatch 1.4.5.2</h3>
+
+<ul>
+<li> Fix issue 66: Exclude items with poll_monitor not considered.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e5_002e1"></a>
+<h3 class="section">1.8 fswatch 1.4.5.1</h3>
+
+<ul>
+<li> Do not distribute wrapper scripts for shells which are not installed
+(the FreeBSD port system checks shebangs and complains).
+</li></ul>
+
+<a name="fswatch-1_002e4_002e5"></a>
+<h3 class="section">1.9 fswatch 1.4.5</h3>
+
+<ul>
+<li> Add custom record formats.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e4"></a>
+<h3 class="section">1.10 fswatch 1.4.4</h3>
+
+<ul>
+<li> Localize <samp>fswatch</samp> and <samp>libfswatch</samp> using GNU <code>gettext</code>.
+
+</li><li> Add Italian (<code>it</code>) localization.
+
+</li><li> Add Spanish (<code>es</code>) localization.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e3_002e2"></a>
+<h3 class="section">1.11 fswatch 1.4.3.2</h3>
+
+<ul>
+<li> Fix <samp>Makefile.am</samp> because of broken link when <var>DESTDIR</var>
+installs are performed.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e3_002e1"></a>
+<h3 class="section">1.12 fswatch 1.4.3.1</h3>
+
+<ul>
+<li> Fix bug in <samp>fswatch-run</samp> wrapper script for Zsh which caused last
+argument not to be split when passed to <samp>xargs</samp>.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e3"></a>
+<h3 class="section">1.13 fswatch 1.4.3</h3>
+
+<ul>
+<li> Add batch marker feature to delimit the boundaries of a batch of
+events.
+
+</li><li> Add Texinfo documentation.
+
+</li><li> <samp>libfswatch</samp> API is now versioned.
+
+</li><li> Improved Autoconf checks.
+
+</li><li> The inotify monitor now waits for events and honours the latency
+settings.
+
+</li><li> Automaticaly generate the ChangeLog using Git.
+
+</li><li> Update <samp>autogen.sh</samp> to honour some commonly used environment
+variables.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e2"></a>
+<h3 class="section">1.14 fswatch 1.4.2</h3>
+
+<ul>
+<li> The inotify monitor now provides the same functionality provided by
+all the other monitors.  Recursive directory monitoring is now
+implemented.
+
+</li><li> Version and revision is now determined dynamically from Git by
+ancillary scripts invoked by the GNU Build System.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e1_002e1"></a>
+<h3 class="section">1.15 fswatch 1.4.1.1</h3>
+
+<ul>
+<li> <samp>fswatch</samp> does not compile on OS X &lt; 10.9 because some required
+C++11 classes are not supported by the C++ runtime.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e1"></a>
+<h3 class="section">1.16 fswatch 1.4.1</h3>
+
+<ul>
+<li> <samp>fswatch</samp> does not compile on OS X &lt; 10.9 because some required
+C++11 classes are not supported by the C++ runtime.
+</li></ul>
+
+<a name="fswatch-1_002e4_002e0"></a>
+<h3 class="section">1.17 fswatch 1.4.0</h3>
+
+<ul>
+<li> The <samp>libfswatch</samp> library has been added with bindings for C and
+C++.
+
+</li><li> <samp>fswatch</samp> let users specify the monitor to use by name.
+</li></ul>
+
+<a name="fswatch-1_002e3_002e9"></a>
+<h3 class="section">1.18 fswatch 1.3.9</h3>
+
+<ul>
+<li> Fix Issue 23: Add <samp>--include</samp> option.
+
+</li><li> Fix Issue 25: Add <samp>--incluse</samp> option.
+
+</li><li> Paths can be included using <samp>-i</samp>/<samp>--include</samp> and
+providing a set of regular expressions.
+</li></ul>
+
+<a name="fswatch-1_002e3_002e8"></a>
+<h3 class="section">1.19 fswatch 1.3.8</h3>
+
+<ul>
+<li> Fix Issue 34: Diagnostic messages were output by the inotify monitor
+even if <samp>fswatch</samp> was not run in verbose mode.
+</li></ul>
+
+<a name="fswatch-1_002e3_002e7"></a>
+<h3 class="section">1.20 fswatch 1.3.7</h3>
+
+<ul>
+<li> Fix Issue 32: Problems building <samp>fswatch</samp> 1.3.6 on Mac v. 10.8.5.
+
+</li><li> Remove usages of C++11 initializer lists so that fswatch builds with
+older compiler.
+</li></ul>
+
+<a name="fswatch-1_002e3_002e6"></a>
+<h3 class="section">1.21 fswatch 1.3.6</h3>
+
+<ul>
+<li> Fix Issue 26: <samp>fswatch-run</samp> can&rsquo;t run a command with arguments.
+
+</li><li> <samp>fswatch-run</samp> scripts are provided for Zsh and Bash.
+
+</li><li> System is scanned during installation to check for Zsh and Bash
+availability.  Path of found shells is substituted in the
+corresponding scripts, otherwise the default <code>/bin/<var>shell</var></code>
+is used.
+
+</li><li> If a supported shell is found, the <samp>fswatch-run</samp> symbolic link is
+created in the installation directory to the corresponding script.
+The lookup order of the shells is:
+
+<ul>
+<li> Zsh.
+
+</li><li> Bash.
+
+</li></ul>
+
+</li></ul>
+
+<a name="fswatch-1_002e3_002e5"></a>
+<h3 class="section">1.22 fswatch 1.3.5</h3>
+
+<ul>
+<li> Fix Issue 27: Redirect usage text to standard error unless <samp>-h</samp>
+or <samp>--help</samp>.
+
+</li><li> Fix bug to write usage to standard error when invalid arguments are
+specified.
+</li></ul>
+
+<a name="fswatch-1_002e3_002e4"></a>
+<h3 class="section">1.23 fswatch 1.3.4</h3>
+
+<ul>
+<li> Fix bug in <samp>fswatch-run</samp> script to allow arguments to be passed to the
+command to run.
+</li></ul>
+
+<a name="fswatch-1_002e3_002e3"></a>
+<h3 class="section">1.24 fswatch 1.3.3</h3>
+
+<ul>
+<li> Add <samp>-o</samp>/<samp>--one-per-batch</samp> option to print a single
+message with the number of change events in the current batch.
+
+</li><li> Add <samp>fswatch-run</samp> shell script to mimic the behaviour of
+earlier <samp>fswatch</samp> versions and launch the specified command
+when change events are received.
+
+</li></ul>
+
+<a name="fswatch-1_002e3_002e2"></a>
+<h3 class="section">1.25 fswatch 1.3.2</h3>
+
+<ul>
+<li> <samp>fswatch</samp> has been merged with <code>fsw</code>.
+</li></ul>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="Introduction.html#Introduction" accesskey="n" rel="next">Introduction</a>, Previous: <a href="index.html#Top" accesskey="p" rel="prev">Top</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

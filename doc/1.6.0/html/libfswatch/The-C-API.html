@@ -1,0 +1,880 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for libfswatch (version 1.6.0,
+30 September 2015), a cross-platform file change monitor C/C++ library
+with multiple backends, including Apple OS X File System Events
+API, *BSD kqueue, Linux inotify, Microsoft Windows and a
+stat-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled `GNU
+Free Documentation License'. -->
+<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>libfswatch 1.6.0: The C API</title>
+
+<meta name="description" content="libfswatch 1.6.0: The C API">
+<meta name="keywords" content="libfswatch 1.6.0: The C API">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License" rel="next" title="GNU Free Documentation License">
+<link href="The-C_002b_002b-API.html#The-C_002b_002b-API" rel="prev" title="The C++ API">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space: nowrap}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: serif; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="The-C-API"></a>
+<div class="header">
+<p>
+Next: <a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License" accesskey="n" rel="next">GNU Free Documentation License</a>, Previous: <a href="The-C_002b_002b-API.html#The-C_002b_002b-API" accesskey="p" rel="prev">The C++ API</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="The-C-API-1"></a>
+<h2 class="chapter">4 The C <acronym>API</acronym></h2>
+<a name="Overview"></a>
+<h3 class="section">4.1 Overview</h3>
+<a name="index-monitoring-session-1"></a>
+<a name="index-FSW_005fHANDLE"></a>
+<a name="index-libfswatch_002eh"></a>
+<p>The C <acronym>API</acronym>, whose main header file is <code>libfswatch.h</code>, is
+a C-compatible lightweight wrapper around the C++ <acronym>API</acronym> that
+provides an easy to use binding to C clients.  The central type in the
+C <acronym>API</acronym> is the <em>monitoring session</em>, an opaque type
+identified by a handle of type <code>FSW_HANDLE</code> that can be
+manipulated using the C functions of this library.
+</p>
+<a name="index-fsw_005fadd_005fpath"></a>
+<a name="index-fsw_005fstart_005fmonitor"></a>
+<p>Session-modifying <acronym>API</acronym> calls (such as <code>fsw_add_path</code>)
+will take effect the next time a monitor is started with
+<code>fsw_start_monitor</code>.  Currently not all monitors supports being
+stopped, in which case <code>fsw_start_monitor</code> is a non-returning
+<acronym>API</acronym> call.
+</p>
+<a name="Translating-the-C_002b_002b-API"></a>
+<h4 class="subsection">4.1.1 Translating the C++ <acronym>API</acronym></h4>
+<a name="index-API_002c-conventions"></a>
+<p>The conventions used to translate C++ types into C types are rather
+common:
+</p>
+<ul>
+<li> <code>std::string</code> is represented as a &lsquo;<samp>NUL</samp>&rsquo;-terminated
+<code>char *</code>.
+
+</li><li> Lists are represented as arrays whose length is specified in a
+separate field: <code>flags_num</code> indicates how many elements are
+stored in the array pointed by <code>flags</code>.
+
+</li><li> More complex types are usually translated as a <code>struct</code>
+containing data fields and a set of functions to operate on it.
+
+</li></ul>
+
+<a name="Thread-Safety-2"></a>
+<h4 class="subsection">4.1.2 Thread Safety</h4>
+<a name="index-thread-safety-1"></a>
+<a name="index-thread_005flocal"></a>
+<p>If the compiler and the C++ library used to build <samp>libfswatch</samp>
+support the <code>thread_local</code> storage specified then this
+<acronym>API</acronym> is thread safe and a different state is maintained on a
+per-thread basis (see <a href="Introduction.html#Thread-Safety">Thread Safety</a>).
+</p>
+<p>Even when <code>thread_local</code> is not available, manipulating different
+monitoring sessions in different threads concurrently is thread safe,
+since they share no data.
+</p>
+<a name="Library-Initialization"></a>
+<h3 class="section">4.2 Library Initialization</h3>
+<a name="index-library_002c-initialization"></a>
+<a name="index-initialization"></a>
+<a name="index-fsw_005finit_005flibrary"></a>
+<p>Before calling any library method, the library must be initialized by
+calling the <code>fsw_init_library()</code> function:
+</p>
+<div class="example">
+<pre class="example">// Initialize the library
+FSW_STATUS ret = fsw_init_library();
+
+if (ret != FSW_OK)
+{
+  exit(1);
+}
+</pre></div>
+
+<a name="Status-Codes-and-Errors-1"></a>
+<h3 class="section">4.3 Status Codes and Errors</h3>
+<a name="index-status-codes"></a>
+<a name="index-error-codes"></a>
+<a name="index-FSW_005fOK"></a>
+<a name="index-FSW_005fSTATUS"></a>
+<a name="index-error_002eh"></a>
+<a name="Status-Codes-and-Errors"></a><p>Most <acronym>API</acronym> functions return a
+status code of type <code>FSW_STATUS</code> (<code>error.h</code> header) which
+can take any value specified in the <samp>error.h</samp> header.  A
+successful <acronym>API</acronym> call returns <code>FSW_OK</code> and the last error
+can be obtained calling the <code>fsw_last_error()</code> function.
+Currently, the following status codes are defined:
+</p>
+<dl compact="compact">
+<dt><code>FSW_OK</code></dt>
+<dt><code>0</code></dt>
+<dd><a name="index-FSW_005fOK-1"></a>
+<p>The operation completed successfully.
+</p>
+</dd>
+<dt><code>FSW_ERR_UNKNOWN_ERROR</code></dt>
+<dt><code>(1 &lt;&lt; 0)</code></dt>
+<dd><a name="index-FSW_005fERR_005fUNKNOWN_005fERROR"></a>
+<p>An error occurred.
+</p>
+</dd>
+<dt><code>FSW_ERR_SESSION_UNKNOWN</code></dt>
+<dt><code>(1 &lt;&lt; 1)</code></dt>
+<dd><a name="index-FSW_005fERR_005fSESSION_005fUNKNOWN"></a>
+<p>The session identified by the specified handle does not exist.
+</p>
+</dd>
+<dt><code>FSW_ERR_MONITOR_ALREADY_EXISTS</code></dt>
+<dt><code>(1 &lt;&lt; 2)</code></dt>
+<dd><a name="index-FSW_005fERR_005fMONITOR_005fALREADY_005fEXISTS"></a>
+<p>The session already contains a monitor.
+</p>
+</dd>
+<dt><code>FSW_ERR_MEMORY</code></dt>
+<dt><code>(1 &lt;&lt; 3)</code></dt>
+<dd><a name="index-FSW_005fERR_005fMEMORY"></a>
+<p>An error occurred while using a memory management routine.
+</p>
+</dd>
+<dt><code>FSW_ERR_UNKNOWN_MONITOR_TYPE</code></dt>
+<dt><code>(1 &lt;&lt; 4)</code></dt>
+<dd><a name="index-FSW_005fERR_005fUNKNOWN_005fMONITOR_005fTYPE"></a>
+<p>The specified monitor type does not exist.
+</p>
+</dd>
+<dt><code>FSW_ERR_CALLBACK_NOT_SET</code></dt>
+<dt><code>(1 &lt;&lt; 5)</code></dt>
+<dd><a name="index-FSW_005fERR_005fCALLBACK_005fNOT_005fSET"></a>
+<p>The callback is not set.
+</p>
+</dd>
+<dt><code>FSW_ERR_PATHS_NOT_SET</code></dt>
+<dt><code>(1 &lt;&lt; 6)</code></dt>
+<dd><a name="index-FSW_005fERR_005fPATHS_005fNOT_005fSET"></a>
+<p>The paths are not set.
+</p>
+</dd>
+<dt><code>FSW_ERR_UNKNOWN_MONITOR</code></dt>
+<dt><code>(1 &lt;&lt; 7)</code></dt>
+<dd><a name="index-FSW_005fERR_005fUNKNOWN_005fMONITOR"></a>
+<p>Unused.
+</p>
+</dd>
+<dt><code>FSW_ERR_MISSING_CONTEXT</code></dt>
+<dt><code>(1 &lt;&lt; 8)</code></dt>
+<dd><a name="index-FSW_005fERR_005fMISSING_005fCONTEXT"></a>
+<p>The callback context is missing.
+</p>
+</dd>
+<dt><code>FSW_ERR_INVALID_PATH</code></dt>
+<dt><code>(1 &lt;&lt; 9)</code></dt>
+<dd><a name="index-FSW_005fERR_005fINVALID_005fPATH"></a>
+<p>The path is invalid.
+</p>
+</dd>
+<dt><code>FSW_ERR_INVALID_CALLBACK</code></dt>
+<dt><code>(1 &lt;&lt; 10)</code></dt>
+<dd><a name="index-FSW_005fERR_005fINVALID_005fCALLBACK"></a>
+<p>The callback is invalid.
+</p>
+</dd>
+<dt><code>FSW_ERR_INVALID_LATENCY</code></dt>
+<dt><code>(1 &lt;&lt; 11)</code></dt>
+<dd><a name="index-FSW_005fERR_005fINVALID_005fLATENCY"></a>
+<p>The latency is invalid.
+</p>
+</dd>
+<dt><code>FSW_ERR_INVALID_REGEX</code></dt>
+<dt><code>(1 &lt;&lt; 12)</code></dt>
+<dd><a name="index-FSW_005fERR_005fINVALID_005fREGEX"></a>
+<p>The regular expression is invalid.
+</p>
+</dd>
+<dt><code>FSW_ERR_MONITOR_ALREADY_RUNNING</code></dt>
+<dt><code>(1 &lt;&lt; 13)</code></dt>
+<dd><a name="index-FSW_005fERR_005fMONITOR_005fALREADY_005fRUNNING"></a>
+<p>A monitor is already running in the specified session.
+</p>
+</dd>
+<dt><code>FSW_ERR_STALE_MONITOR_THREAD</code></dt>
+<dt><code>(1 &lt;&lt; 14)</code></dt>
+<dd><a name="index-FSW_005fERR_005fSTALE_005fMONITOR_005fTHREAD"></a>
+<p>Unused.
+</p>
+</dd>
+<dt><code>FSW_ERR_THREAD_FAULT</code></dt>
+<dt><code>(1 &lt;&lt; 15)</code></dt>
+<dd><a name="index-FSW_005fERR_005fTHREAD_005fFAULT"></a>
+<p>Unused.
+</p>
+</dd>
+<dt><code>FSW_ERR_UNSUPPORTED_OPERATION</code></dt>
+<dt><code>(1 &lt;&lt; 16)</code></dt>
+<dd><a name="index-FSW_005fERR_005fUNSUPPORTED_005fOPERATION"></a>
+<p>Unused.
+</p>
+</dd>
+<dt><code>FSW_ERR_UNKNOWN_VALUE</code></dt>
+<dt><code>(1 &lt;&lt; 17)</code></dt>
+<dd><a name="index-FSW_005fERR_005fUNKNOWN_005fVALUE-1"></a>
+<p>Unused.
+</p>
+</dd>
+<dt><code>FSW_ERR_INVALID_PROPERTY</code></dt>
+<dt><code>(1 &lt;&lt; 18)</code></dt>
+<dd><a name="index-FSW_005fERR_005fINVALID_005fPROPERTY"></a>
+<p>The specified property is invalid.
+</p>
+</dd>
+</dl>
+
+<a name="Functions"></a>
+<h3 class="section">4.4 Functions</h3>
+<a name="index-monitoring-session_002c-handle"></a>
+<a name="index-FSW_005fHANDLE-1"></a>
+<a name="index-libfswatch_002eh-1"></a>
+<p>The library <samp>libfswatch.h</samp> header file defines the functions
+listed in the following table.  As seen in See <a href="#Status-Codes-and-Errors">Status Codes and Errors</a>, functions return <code>FSW_OK</code> if they succeed, otherwise
+they return an error code.  Functions that modify an existing
+monitoring sessions accept the session handle of type
+<code>FSW_HANDLE</code>.
+</p>
+<dl compact="compact">
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_init_library()</code></dt>
+<dd><a name="index-fsw_005finit_005flibrary-1"></a>
+<p>This function initializes the libfswatch library and must be invoked
+before any other calls to the C or C++ <acronym>API</acronym>.  If the function
+succeeds, it returns <code>FSW_OK</code>, otherwise the initialization
+routine failed and the library will not be usable.
+</p>
+</dd>
+<dt><code>FSW_HANDLE</code></dt>
+<dt><code>fsw_init_session(const fsw_monitor_type type = system_default_monitor_type)</code></dt>
+<dd><a name="index-fsw_005finit_005fsession"></a>
+<p>This function creates a new monitor session using the specified
+monitor and returns an handle to it.  This function is the libfswatch
+<acronym>API</acronym> entry point.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_add_path(const FSW_HANDLE handle, const char * path)</code></dt>
+<dd><a name="index-fsw_005fadd_005fpath-1"></a>
+<p>Adds a path to watch to the specified session.  At least one path must
+be added to the current session in order for it to be valid.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_add_property(const FSW_HANDLE handle, const char * name, const char * value)</code></dt>
+<dd><a name="index-fsw_005fadd_005fproperty"></a>
+<p>This function adds a new key-value pair <code>(name, value)</code> in the
+monitor&rsquo;s property map.
+</p>
+
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow)</code></dt>
+<dd><a name="index-fsw_005fset_005fallow_005foverflow"></a>
+<p>Sets the allow overflow flag to the specified value.  If this flag is
+set, monitor buffer overflows will be reported as change events of
+type <code>fsw_event_flag::Overflow</code>.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)</code></dt>
+<dd><a name="index-fsw_005fset_005fcallback"></a>
+<p>Sets the callback the monitor invokes when some events are received
+(see <a href="#Callbacks">Callbacks</a>) and an optional pointer to context data
+(see <a href="#Context-Data">Context Data</a>).  The callback must be set in the current
+session in order for it to be valid.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_set_latency(const FSW_HANDLE handle, const double latency);</code></dt>
+<dd><a name="index-fsw_005fset_005flatency"></a>
+<p>Sets the latency of the monitor.  By default, the latency is set to 1
+second.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)</code></dt>
+<dd><a name="index-fsw_005fset_005frecursive"></a>
+<p>Determines whether the monitor recursively scans each watched path or
+not.  Recursive scanning is an optional feature which could not be
+implemented by all the monitors.  By default, recursive scanning is
+disabled.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_set_follow_symlinks(const FSW_HANDLE handle, const bool follow_symlinks)</code></dt>
+<dd><a name="index-fsw_005fset_005ffollow_005fsymlinks"></a>
+<p>Determines whether a symbolic link is followed or not.  By default,
+symbolic links are not followed.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_add_filter(const FSW_HANDLE handle,const fsw_cmonitor_filter filter)</code></dt>
+<dd><a name="index-fsw_005fadd_005ffilter"></a>
+<p>Adds a filter to the current session.  A filter (see <a href="The-C_002b_002b-API.html#Filters">Filters</a>) is a
+regular expression that, depending on whether the filter type is
+exclusion or not, must or must not be matched for an event path for
+the event to be accepted.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_add_event_type_filter(const FSW_HANDLE handle, const fsw_event_type_filter event_type)</code></dt>
+<dd><a name="index-fsw_005fadd_005fevent_005ftype_005ffilter-1"></a>
+<p>Adds an event type filter to the current session.  A filter
+(see <a href="The-C_002b_002b-API.html#Event-Type-Filters">Event Type Filters</a>) contains the <em>name</em> of the event
+type to include into the output.  A session may contain multiple event
+type filters.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_start_monitor(const FSW_HANDLE handle)</code></dt>
+<dd><a name="index-fsw_005fstart_005fmonitor-1"></a>
+<p>Starts the monitor if it is properly configured.  Depending on the
+type of monitor this call might return when a monitor is stopped or
+not.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_destroy_session(const FSW_HANDLE handle)</code></dt>
+<dd><a name="index-fsw_005fdestroy_005fsession"></a>
+<p>Destroys an existing session and invalidates its handle.
+</p>
+</dd>
+<dt><code>FSW_STATUS</code></dt>
+<dt><code>fsw_last_error()</code></dt>
+<dd><a name="index-fsw_005flast_005ferror"></a>
+<p>Gets the last error code.
+</p>
+</dd>
+<dt><code>bool</code></dt>
+<dt><code>fsw_is_verbose()</code></dt>
+<dd><a name="index-fsw_005fis_005fverbose"></a>
+<p>Check whether the verbose mode is active.
+</p>
+</dd>
+</dl>
+
+<a name="Callbacks-1"></a>
+<h3 class="section">4.5 Callbacks</h3>
+<a name="index-callback-1"></a>
+<a name="index-FSW_005fCEVENT_005fCALLBACK"></a>
+<a name="Callbacks"></a><p>When a monitor receives change events satisfying
+all the session criteria, a callback provided by the user is invoked
+and passed a copy of the events; a function pointer of type
+<code>FSW_CEVENT_CALLBACK</code> is used by the <acronym>API</acronym> as a callback:
+</p>
+<div class="example">
+<pre class="example">typedef void (*FSW_CEVENT_CALLBACK)(
+  fsw_cevent const * const events,
+  const unsigned int event_num,
+  void * data);
+</pre></div>
+
+<p>The callback is passed the following arguments:
+</p>
+<ul>
+<li> <a name="index-FSW_005fCEVENT_005fCALLBACK_003a_003aevents"></a>
+<code>events</code>, a const pointer to an array of events of type
+<code>const fsw_cevent</code>.
+
+</li><li> <a name="index-FSW_005fCEVENT_005fCALLBACK_003a_003aevent_005fnum"></a>
+<code>event_num</code>, the size of the <code>*events</code> array.
+
+</li><li> <a name="index-FSW_005fCEVENT_005fCALLBACK_003a_003adata"></a>
+<code>data</code>, a pointer to an optional user-provided context.
+</li></ul>
+
+<a name="index-fsw_005fcevent"></a>
+<p>The memory used by the <code>fsw_cevent</code> objects will be freed at the
+end of the callback invocation.  A callback should copy such data
+instead of storing a pointer to it.
+</p>
+<a name="Context-Data-1"></a>
+<h4 class="subsection">4.5.1 Context Data</h4>
+<a name="index-context"></a>
+<a name="index-context_002c-data"></a>
+<a name="Context-Data"></a><p>A <em>context</em> may be passed to the callback
+when events are received.  Context data may be useful to easily
+associate a &lsquo;state&rsquo; to each monitoring session.  A monitoring session
+does <em>not</em> acquire ownership of the context data pointer;
+therefore, the following are responsibilities of the caller:
+</p>
+<ul>
+<li> To keep the pointer valid throughout the life of a monitoring session
+that shares this pointer.
+
+</li><li> To free the pointed memory <em>after</em> when the pointer is not shared
+with any monitoring session any longer.
+</li></ul>
+
+<a name="Memory-Management-Functions-1"></a>
+<h3 class="section">4.6 Memory Management Functions</h3>
+<a name="index-memory-management"></a>
+<a name="index-memory-management_002c-functions"></a>
+<a name="index-libfswatch_005fmem_002eh"></a>
+<a name="Memory-Management-Functions"></a><p>The C <acronym>API</acronym> published by
+the <samp>libfswatch</samp> library contains some memory management
+routines.  These functions, defined in the <samp>libfswatch_mem.h</samp>
+header file, are the following:
+</p>
+<dl compact="compact">
+<dt><code><code>void * fsw_alloc(size_t size)</code></code></dt>
+<dd><a name="index-fsw_005falloc"></a>
+
+<p>This function allocates a chunk of memory of the specified <var>size</var>
+and returns a pointer to it.  If the memory could not be allocated,
+<code>nullptr</code> is returned instead.
+</p>
+</dd>
+<dt><code><code>void fsw_free(void * ptr)</code></code></dt>
+<dd><a name="index-fsw_005ffree"></a>
+
+<p>This function frees the memory pointed by <var>ptr</var>.
+</p>
+</dd>
+<dt><code><code>fsw_free</code></code></dt>
+</dl>
+
+<a name="Events-in-the-C-API-1"></a>
+<h3 class="section">4.7 Events in the C <acronym>API</acronym></h3>
+<a name="index-events-1"></a>
+<a name="index-events_002c-C-API"></a>
+<a name="index-fsw_005fcevent-1"></a>
+<a name="index-cevent_002eh"></a>
+<a name="Events-in-the-C-API"></a><p>The C <acronym>API</acronym> represents
+events as instances of the <code>fsw_cevent</code> structure
+(<code>cevent.h</code>) which is an exact translation of the
+<code>fsw:event</code> type (see <a href="The-C_002b_002b-API.html#Events">Events</a>) where C++ types and collections
+are represented by C friendly equivalent types:
+</p>
+<div class="example">
+<pre class="example">typedef struct fsw_cevent
+{
+  char * path;
+  time_t evt_time;
+  fsw_event_flag * flags;
+  unsigned int flags_num;
+} fsw_cevent;
+</pre></div>
+
+<a name="Event-Flags-1"></a>
+<h3 class="section">4.8 Event Flags</h3>
+<a name="index-event-type"></a>
+<a name="index-fsw_005fevent_005fflag"></a>
+<a name="index-cevent_002eh-1"></a>
+<a name="Event-Flags"></a><p>Events flags are <code>enum</code> values shared by
+both the C++ and the C <acronym>API</acronym> and they are defined in the
+<samp>cevent.h</samp> header.  The values of event flags are power of 2,
+that is numbers <em>f</em> in the form <em>f = 2^n</em> where <em>n</em> is
+an integer.  This representation makes it easy to combine flags into a
+bit mask and encode multiple events flags into a single integer.  The
+<code>fsw_event_flag</code> enumeration currently includes the following
+values:
+</p>
+<dl compact="compact">
+<dt><code>NoOp</code></dt>
+<dt><code>0</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aNoOp"></a>
+<p>This event flag is used as a marker.
+</p>
+</dd>
+<dt><code>PlatformSpecific</code></dt>
+<dt><code>1 &lt;&lt; 0</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aPlatformSpecific"></a>
+<p>This event flag represents a platform-specific flag that is not
+encoded as any other event flag by the <acronym>API</acronym>.
+</p>
+</dd>
+<dt><code>Created</code></dt>
+<dt><code>1 &lt;&lt; 1</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aCreated"></a>
+<p>This event flag represents a file creation creation event.
+</p>
+</dd>
+<dt><code>Updated</code></dt>
+<dt><code>1 &lt;&lt; 2</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aUpdated"></a>
+<p>This event flag represents a file update update event.
+</p>
+</dd>
+<dt><code>Removed</code></dt>
+<dt><code>1 &lt;&lt; 3</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aRemoved"></a>
+<p>This event flag represents a file removal event.
+</p>
+</dd>
+<dt><code>Renamed</code></dt>
+<dt><code>1 &lt;&lt; 4</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aRenamed"></a>
+<p>This event flag represents a file rename event.
+</p>
+</dd>
+<dt><code>OwnerModified</code></dt>
+<dt><code>1 &lt;&lt; 5</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aOwnerModified"></a>
+<p>This event flag represents a file owner modification event.
+</p>
+</dd>
+<dt><code>AttributeModified</code></dt>
+<dt><code>1 &lt;&lt; 6</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aAttributeModified"></a>
+<p>This event flag represents a file attribute modification event.
+</p>
+</dd>
+<dt><code>MovedFrom</code></dt>
+<dt><code>1 &lt;&lt; 7</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aMovedFrom"></a>
+<p>This event flag represents a file rename event.
+</p>
+</dd>
+<dt><code>MovedTo</code></dt>
+<dt><code>1 &lt;&lt; 8</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aMovedTo"></a>
+<p>This event flag represents a file rename event.
+</p>
+</dd>
+<dt><code>IsFile</code></dt>
+<dt><code>1 &lt;&lt; 9</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aIsFile"></a>
+<p>This event flag indicates that the modified object is a regular file.
+</p>
+</dd>
+<dt><code>IsDir</code></dt>
+<dt><code>1 &lt;&lt; 10</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aIsDir"></a>
+<p>This event flag indicates that the modified object is a directory.
+</p>
+</dd>
+<dt><code>IsSymLink</code></dt>
+<dt><code>1 &lt;&lt; 11</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aIsSymLink"></a>
+<p>This event flag indicates that the modified object is a symbolic link.
+</p>
+</dd>
+<dt><code>Link</code></dt>
+<dt><code>1 &lt;&lt; 12</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aLink"></a>
+<p>This event flag represents a file link event.
+</p>
+</dd>
+<dt><code>Overflow</code></dt>
+<dt><code>1 &lt;&lt; 13</code></dt>
+<dd><a name="index-fsw_005fevent_005fflag_003a_003aOverflow"></a>
+<p>This event flag represents a monitor buffer overflow.
+</p></dd>
+</dl>
+
+<p>A monitor implementation is required to map implementation-specific
+flags into <acronym>API</acronym> flags.  Sometimes, though, a perfect match is
+not possible and the following situation may arise:
+</p>
+<ul>
+<li> One platform-specific flags must be mapped into multiple <acronym>API</acronym>
+flags.
+
+</li><li> Multiple platform-specific flags must be mapped into a single
+<acronym>API</acronym> flag.
+
+</li><li> A mapping is not possible for some flags, in which case they should be
+mapped to the <code>PlatformSpecific</code> <acronym>API</acronym> flags.  The
+<acronym>API</acronym> currently offers no way to retain a platform-specific
+event flag value in this case.
+</li></ul>
+
+<p>The <samp>cevent.h</samp> header also defines the following utility functions:
+</p>
+<dl compact="compact">
+<dt><code>fsw_event_flag fsw_get_event_flag_by_name(const char * name);</code></dt>
+<dd><a name="index-fsw_005fget_005fevent_005fflag_005fby_005fname-1"></a>
+
+<p>This function looks for a <code>fsw_event_flag</code> instace with the
+specified <var>name</var>.  If a matching event type is not found, this
+function will return a negative number.
+</p>
+</dd>
+<dt><code>char * fsw_get_event_flag_name(const fsw_event_flag flag);</code></dt>
+<dd><a name="index-fsw_005fget_005fevent_005fflag_005fname-1"></a>
+
+<p>This function returns a <code>char *</code> pointer to the name of the
+specified event type, <var>flag</var>, or <code>nullptr</code> if an error
+occurs.  The memory pointed by the return value of this function
+should be freed with a call to <code>fsw_free</code> (see <a href="#Memory-Management-Functions">Memory Management Functions</a>).
+</p>
+</dd>
+</dl>
+
+<a name="Filters-in-the-C-API-1"></a>
+<h3 class="section">4.9 Filters in the C <acronym>API</acronym></h3>
+<a name="index-filter-1"></a>
+<a name="index-filter_002c-C-API"></a>
+<a name="index-fsw_005fcmonitor_005ffilter"></a>
+<a name="index-monitor_005ffilter-2"></a>
+<a name="index-fsw_005ffilter_005ftype"></a>
+<a name="index-cfilter_002eh-1"></a>
+<a name="Filters-in-the-C-API"></a><p>The C <acronym>API</acronym> represents
+filters (see <a href="The-C_002b_002b-API.html#Filters">Filters</a>) as instances of the
+<code>fsw_cmonitor_filter</code> structure, defined in the <code>cfilter.h</code>
+header.  This structure is a translation of the <code>monitor_filter</code>
+class using C equivalent types:
+</p>
+<a name="index-fsw_005ffilter_005ftype-1"></a>
+<a name="index-fsw_005ffilter_005ftype_003a_003afilter_005finclude"></a>
+<a name="index-fsw_005ffilter_005ftype_003a_003afilter_005fexclude"></a>
+<a name="index-fsw_005fcmonitor_005ffilter-1"></a>
+<a name="index-fsw_005fcmonitor_005ffilter_003a_003atext"></a>
+<a name="index-fsw_005fcmonitor_005ffilter_003a_003atype"></a>
+<a name="index-fsw_005fcmonitor_005ffilter_003a_003acase_005fsensitive"></a>
+<a name="index-fsw_005fcmonitor_005ffilter_003a_003aextended"></a>
+<div class="example">
+<pre class="example">enum fsw_filter_type
+{
+  filter_include,
+  filter_exclude
+};
+
+typedef struct fsw_cmonitor_filter
+{
+  char * text;
+  fsw_filter_type type;
+  bool case_sensitive;
+  bool extended;
+} fsw_cmonitor_filter;
+</pre></div>
+
+<a name="Monitor-Types"></a>
+<h3 class="section">4.10 Monitor Types</h3>
+<a name="index-monitor_002c-type"></a>
+<a name="index-monitor_002c-FSEvents-1"></a>
+<a name="index-monitor_002c-kqueue-1"></a>
+<a name="index-monitor_002c-inotify-1"></a>
+<a name="index-monitor_002c-default"></a>
+<a name="index-monitor_002c-poll"></a>
+<a name="index-fsw_005fmonitor_005ftype"></a>
+<a name="index-cmonitor_002eh"></a>
+<p>The <code>fsw_monitor_type</code> enumeration, defined in the
+<code>cmonitor.h</code> header, contains a list of monitor types built into
+the <code>libfswatch</code> library:
+</p>
+<a name="index-fsw_005fmonitor_005ftype-1"></a>
+<a name="index-fsw_005fmonitor_005ftype_003a_003asystem_005fdefault_005fmonitor_005ftype"></a>
+<a name="index-fsw_005fmonitor_005ftype_003a_003afsevents_005fmonitor_005ftype"></a>
+<a name="index-fsw_005fmonitor_005ftype_003a_003akqueue_005fmonitor_005ftype"></a>
+<a name="index-fsw_005fmonitor_005ftype_003a_003ainotify_005fmonitor_005ftype"></a>
+<a name="index-fsw_005fmonitor_005ftype_003a_003apoll_005fmonitor_005ftype"></a>
+<div class="example">
+<pre class="example">enum fsw_monitor_type
+{
+  system_default_monitor_type = 0,
+  fsevents_monitor_type,
+  kqueue_monitor_type,
+  inotify_monitor_type,
+  windows_monitor_type,
+  poll_monitor_type
+};
+</pre></div>
+
+<p>Members of this enumeration may be used with factory methods
+(see <a href="The-C_002b_002b-API.html#Monitor-Discovery">Monitor Discovery</a> provided by the <acronym>API</acronym> to request a
+monitor of a specific type.  The members of this enumeration must be
+known at compile time.
+</p>
+<a name="Logging"></a>
+<h3 class="section">4.11 Logging</h3>
+<a name="index-logging-1"></a>
+<p>The <samp>libfswatch</samp> library never writes any output to the standard
+streams, unless the <em>verbose</em> mode is set: in this mode,
+diagnostic information is written to standard error.  The library
+offers a set of logging functions to ease the task of conditionally
+writing both literal and formatted messages to the output, when the
+verbose flag is set.
+</p>
+<a name="Logging-functions"></a>
+<h4 class="subsection">4.11.1 Logging functions</h4>
+<a name="index-logging_002c-functions"></a>
+
+<dl compact="compact">
+<dt><code>void fsw_log(const char * msg)</code></dt>
+<dd><a name="index-fsw_005flog-1"></a>
+
+<p>This function prints the specified message <code>msg</code> literally to the
+standard output.
+</p>
+</dd>
+<dt><code>void fsw_flog(FILE * f, const char * msg)</code></dt>
+<dd><a name="index-fsw_005fflog-1"></a>
+
+<p>This function prints the specified message <code>msg</code> literally to the
+file <code>f</code>.
+</p>
+</dd>
+<dt><code>void fsw_logf(const char * format, ...);</code></dt>
+<dd><a name="index-fsw_005flogf-1"></a>
+
+<p>This function prints and formats the specified message <code>format</code>
+to the standard output.
+</p>
+
+</dd>
+<dt><code>void fsw_flogf(FILE * f, const char * format, ...)</code></dt>
+<dd><a name="index-fsw_005fflogf-1"></a>
+
+<p>This function prints and formats the specified message <code>format</code>
+to the file <code>f</code>.
+</p>
+</dd>
+<dt><code>void fsw_log_perror(const char * msg)</code></dt>
+<dd><a name="index-fsw_005flog_005fperror-1"></a>
+
+<p>This function prints and formats the specified message <code>msg</code>
+using <code>perror</code>.
+</p>
+</dd>
+</dl>
+
+<a name="Logging-macros"></a>
+<h4 class="subsection">4.11.2 Logging macros</h4>
+<a name="index-logging_002c-macros"></a>
+
+<p>The <samp>libfswatch</samp> library provides a set of macros that can be
+used to print diagnostic messages containing the name of the method
+where the macro is called from.  The format of a message <code>msg</code>
+printed using one of these macros from inside a function called
+<code>func</code> will be similar to:
+</p>
+<div class="example">
+<pre class="example">func: msg
+</pre></div>
+
+<dl compact="compact">
+<dt><code>FSW_LOG(msg)</code></dt>
+<dd><a name="index-FSW_005fLOG-1"></a>
+
+<p>This macro prints to standard output the name of the function this
+macro is called from followed by the message <code>msg</code>.
+</p>
+</dd>
+<dt><code>FSW_ELOG(msg)</code></dt>
+<dd><a name="index-FSW_005fELOG-1"></a>
+
+<p>This macro prints to standard error the name of the function this
+macro is called from followed by the message <code>msg</code>.
+</p>
+</dd>
+<dt><code>FSW_LOGF(msg, ...)</code></dt>
+<dd><a name="index-FSW_005fLOGF-1"></a>
+
+<p>This macro prints to standard output the name of the function this
+macro is called from followed by the message <code>msg</code>, formatted
+using the specified arguments.
+</p>
+</dd>
+<dt><code>FSW_ELOGF(msg, ...)</code></dt>
+<dd><a name="index-FSW_005fELOGF-1"></a>
+
+<p>This macro prints to standard error the name of the function this
+macro is called from followed by the message <code>msg</code>, formatted
+using the specified arguments.
+</p>
+</dd>
+<dt><code>FSW_FLOGF(f, msg, ...)</code></dt>
+<dd><a name="index-FSW_005fFLOGF-1"></a>
+
+<p>This macro prints to the specified file the name of the function this
+macro is called from followed by the message <code>msg</code>, formatted
+using the specified arguments.
+</p>
+</dd>
+</dl>
+
+<a name="Example"></a>
+<h3 class="section">4.12 Example</h3>
+<a name="index-monitoring-session_002c-example"></a>
+<p>This is a basic example of how a monitor session can be constructed
+and run using the C <acronym>API</acronym>.  To be valid, a session needs at
+least the following information:
+</p>
+<ul>
+<li> A <var>path</var> to watch.
+
+</li><li> A <var>callback</var> to process the events sent by the monitor.
+</li></ul>
+
+<p>The next code fragment shows how to create and start a basic
+monitoring session (error checking code was omitted):
+</p>
+<div class="example">
+<pre class="example">// Initialize the library
+fsw_init_library();
+
+// Use the default monitor.
+const FSW_HANDLE handle = fsw_init_session();
+fsw_add_path(handle, &quot;my/path&quot;);
+fsw_set_callback(handle, my_callback);
+
+fsw_start_monitor(handle);
+</pre></div>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License" accesskey="n" rel="next">GNU Free Documentation License</a>, Previous: <a href="The-C_002b_002b-API.html#The-C_002b_002b-API" accesskey="p" rel="prev">The C++ API</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
