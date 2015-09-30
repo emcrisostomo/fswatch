@@ -74,6 +74,11 @@ static fsw_hash_map<FSW_HANDLE, unique_ptr<mutex>> session_mutexes;
 static fsw_hash_map<FSW_HANDLE, mutex *> session_mutexes;
 #  endif
 static std::mutex session_mutex;
+
+#  define SESSION_GUARD \
+    std::lock_guard<std::mutex> session_lock(session_mutex);
+#else
+#  define SESSION_GUARD
 #endif
 
 static FSW_THREAD_LOCAL FSW_STATUS last_error;
@@ -168,9 +173,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
 
 FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
 {
-#ifdef HAVE_CXX_MUTEX
-  std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+  SESSION_GUARD;
 
   if (!srand_initialized)
   {
@@ -255,11 +258,9 @@ FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path)
 
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
-    FSW_SESSION * session = get_session(handle);
+    SESSION_GUARD;
 
+    FSW_SESSION * session = get_session(handle);
     session->paths.push_back(path);
   }
   catch (int error)
@@ -277,9 +278,8 @@ FSW_STATUS fsw_add_property(const FSW_HANDLE handle, const char * name, const ch
 
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
     session->properties[name] = value;
@@ -299,9 +299,8 @@ FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK c
 
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
     session->callback = callback;
@@ -319,9 +318,8 @@ FSW_STATUS fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_over
 {
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
     session->allow_overflow = allow_overflow;
@@ -341,9 +339,8 @@ FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency)
 
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
     session->latency = latency;
@@ -360,9 +357,8 @@ FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
 {
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
     session->recursive = recursive;
@@ -380,9 +376,8 @@ FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
 {
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
     session->follow_symlinks = follow_symlinks;
@@ -400,9 +395,8 @@ FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
 {
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
     session->event_type_filters.push_back(event_type);
@@ -420,9 +414,8 @@ FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
 {
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
     session->filters.push_back({filter.text, filter.type, filter.case_sensitive, filter.extended});
@@ -520,9 +513,8 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
 
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    std::lock_guard<std::mutex> session_lock(session_mutex);
-#endif
+    SESSION_GUARD;
+
     FSW_SESSION * session = get_session(handle);
 
 #ifdef HAVE_CXX_MUTEX
