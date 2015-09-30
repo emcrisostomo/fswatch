@@ -1,0 +1,13 @@
+Source: fswatch
+Maintainer: Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.6
+Build-Depends: debhelper (>= 9)
+
+Package: fswatch
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Cross-platform file change monitor with multiple backends.
+ Cross-platform file change monitor with multiple backends: OS X FSevents,
+ *BSD kqueue, Linux inotify, Windows and a stat()-based monitor.

@@ -1,0 +1,5 @@
+fswatch (1.6.0-1) UNRELEASED; urgency=medium
+
+  * Initial release. (Closes: #XXXXXX)
+
+ -- Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>  Wed, 30 Sep 2015 15:58:30 +0200
