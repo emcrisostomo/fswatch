@@ -1,5 +1,5 @@
-fswatch (1.6.0-1) UNRELEASED; urgency=medium
+fswatch (1.6.1-1) UNRELEASED; urgency=medium
 
   * Initial release. (Closes: #XXXXXX)
 
- -- Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>  Wed, 30 Sep 2015 15:58:30 +0200
+ -- Enrico M. Crisostomo <enrico@debian.local.lan>  Wed, 30 Sep 2015 21:05:44 +0200
