@@ -3,7 +3,7 @@ Maintainer: Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.6
-Build-Depends: debhelper (>= 9)
+Build-Depends: debhelper (>= 9), autoconf (>= 2.69), automake (>= 1.14), libtool (>= 2.4.2)
 
 Package: fswatch
 Architecture: amd64
