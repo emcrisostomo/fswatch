@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,23 +13,33 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW_H
-#  define FSW_H
+#ifndef FSW_WINDOWS_ERROR_MESSAGE_H
+#  define FSW_WINDOWS_ERROR_MESSAGE_H
 
-#  include <exception>
 #  include <string>
+#  include <windows.h>
 
-#  define FSW_EXIT_OK              0
-#  define FSW_EXIT_UNK_OPT         1
-#  define FSW_EXIT_USAGE           2
-#  define FSW_EXIT_LATENCY         3
-#  define FSW_EXIT_STREAM          4
-#  define FSW_EXIT_ERROR           5
-#  define FSW_EXIT_ENFILE          6
-#  define FSW_EXIT_OPT             7
-#  define FSW_EXIT_MONITOR_NAME    8
-#  define FSW_EXIT_FORMAT          9
+namespace fsw
+{
+  class win_error_message
+  {
+  public:
+    static win_error_message current();
 
-bool is_verbose();
+    win_error_message(DWORD err_code);
+    win_error_message();
 
-#endif  /* FSW_H */
+    DWORD get_error_code() const;
+
+    std::wstring get_message() const;
+
+    operator std::wstring() const;
+
+  private:
+    mutable bool initialized = false;
+    mutable std::wstring msg;
+    DWORD err_code;
+  };
+}
+
+#endif  /* FSW_WINDOWS_ERROR_MESSAGE_H */

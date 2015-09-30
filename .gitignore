@@ -1,3 +1,17 @@
+# Binaries
+fswatch
+fswatch.exe
+.libs
+*.lo
+*.o
+
+# Documentation
+fswatch.pdf
+libfswatch.pdf
+
+# Distribution files
+*.tar.gz
+
 # GNU Build System
 autom4te.cache/
 
@@ -11,6 +25,8 @@ autom4te.cache/
 nbproject/
 
 # GNU Build System
+autoscan.log
+configure.scan
 .deps
 Makefile
 Makefile.in
@@ -20,6 +36,7 @@ config.*
 configure
 libtool
 stamp-h1
+.dirstamp
 
 # libtool
 **/m4/libtool.m4
@@ -27,6 +44,7 @@ stamp-h1
 **/m4/ltsugar.m4
 **/m4/ltversion.m4
 **/m4/lt~obsolete.m4
+*.la
 
 # gettext
 **/ABOUT-NLS
@@ -47,6 +65,9 @@ stamp-h1
 **/po/insert-header.sin
 **/po/quot.sed
 **/po/remove-potcdate.sin
+**/po/stamp-po
+**/po/*.insert-header
+**/po/remove-potcdate.sed
 POTFILES
 
 # M4 macros required by gettext and added by autopoint
@@ -84,6 +105,7 @@ POTFILES
 stamp-vti
 version.texi
 *.info
+*.t2p
 
 # Template files
 build-aux/create-pot-template.sh

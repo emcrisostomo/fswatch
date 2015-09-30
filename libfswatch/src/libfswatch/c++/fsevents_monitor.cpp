@@ -17,12 +17,12 @@
 #  include "libfswatch_config.h"
 #endif
 
-#include "fsevents_monitor.h"
+#include "fsevents_monitor.hpp"
 #include "gettext_defs.h"
-#include "libfswatch_exception.h"
+#include "libfswatch_exception.hpp"
+#include "event.hpp"
 #include "c/libfswatch_log.h"
 #include <iostream>
-#include "event.h"
 
 using namespace std;
 
@@ -76,13 +76,13 @@ namespace fsw
   {
     if (stream)
     {
-      libfsw_log(_("Stopping event stream...\n"));
+      FSW_ELOG(_("Stopping event stream...\n"));
       FSEventStreamStop(stream);
 
-      libfsw_log(_("Invalidating event stream...\n"));
+      FSW_ELOG(_("Invalidating event stream...\n"));
       FSEventStreamInvalidate(stream);
 
-      libfsw_log(_("Releasing event stream...\n"));
+      FSW_ELOG(_("Releasing event stream...\n"));
       FSEventStreamRelease(stream);
     }
 
@@ -123,7 +123,7 @@ namespace fsw
     context->release = nullptr;
     context->copyDescription = nullptr;
 
-    libfsw_log(_("Creating FSEvent stream...\n"));
+    FSW_ELOG(_("Creating FSEvent stream...\n"));
     stream = FSEventStreamCreate(NULL,
                                  &fsevents_monitor::fsevents_callback,
                                  context,
@@ -137,15 +137,15 @@ namespace fsw
       throw libfsw_exception(_("Event stream could not be created."));
     }
 
-    libfsw_log(_("Scheduling stream with run loop...\n"));
+    FSW_ELOG(_("Scheduling stream with run loop...\n"));
     FSEventStreamScheduleWithRunLoop(stream,
                                      CFRunLoopGetCurrent(),
                                      kCFRunLoopDefaultMode);
 
-    libfsw_log(_("Starting event stream...\n"));
+    FSW_ELOG(_("Starting event stream...\n"));
     FSEventStreamStart(stream);
 
-    libfsw_log(_("Starting run loop...\n"));
+    FSW_ELOG(_("Starting run loop...\n"));
     CFRunLoopRun();
   }
 

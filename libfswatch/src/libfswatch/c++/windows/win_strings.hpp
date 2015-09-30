@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,16 +13,20 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "fswatch_log.h"
-#include "fswatch.h"
-#include <iostream>
 
-using namespace std;
+#ifndef FSW_WIN_STRINGS_H
+#  define	FSW_WIN_STRINGS_H
 
-void fsw_log(const char * msg)
+#  include <string>
+#  include <cwchar>
+
+namespace fsw
 {
-  if (is_verbose())
+  namespace win_strings
   {
-    cout << msg;
+    std::string wstring_to_string(wchar_t * s);
+    std::string wstring_to_string(const std::wstring & s);
   }
 }
+
+#endif	/* FSW_WIN_STRINGS_H */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,19 +13,18 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CONFIG_H
-#  include "libfswatch_config.h"
-#endif
-#include "libfswatch_mem.h"
-#include <cstdlib>
+#ifndef FSW_H
+#  define FSW_H
 
-void * fsw_alloc(size_t size)
-{
-  return malloc(size);
-}
+#  define FSW_EXIT_OK              0
+#  define FSW_EXIT_UNK_OPT         1
+#  define FSW_EXIT_USAGE           2
+#  define FSW_EXIT_LATENCY         3
+#  define FSW_EXIT_STREAM          4
+#  define FSW_EXIT_ERROR           5
+#  define FSW_EXIT_ENFILE          6
+#  define FSW_EXIT_OPT             7
+#  define FSW_EXIT_MONITOR_NAME    8
+#  define FSW_EXIT_FORMAT          9
 
-void fsw_free(void * ptr)
-{
-  free(ptr);
-}
-
+#endif  /* FSW_H */

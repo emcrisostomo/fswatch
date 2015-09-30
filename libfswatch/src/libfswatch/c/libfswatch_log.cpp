@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -15,22 +15,53 @@
  */
 #include "libfswatch.h"
 #include "libfswatch_log.h"
-#include <iostream>
-#include <cstdio>
+#include <cstdarg>
 
 using namespace std;
 
-void libfsw_log(const char * msg)
+void fsw_log(const char * msg)
 {
   if (fsw_is_verbose())
   {
-    cout << msg;
+    printf("%s", msg);
   }
 }
 
-void libfsw_perror(const char * msg)
+void fsw_flog(FILE * f, const char * msg)
 {
-  // TODO
+  if (fsw_is_verbose())
+  {
+    fprintf(f, "%s", msg);
+  }
+}
+
+
+void fsw_logf(const char * format, ...)
+{
+  if (!fsw_is_verbose()) return;
+
+  va_list args;
+  va_start(args, format);
+
+  vfprintf(stdout, format, args);
+
+  va_end(args);
+}
+
+void fsw_flogf(FILE * f, const char * format, ...)
+{
+  if (!fsw_is_verbose()) return;
+
+  va_list args;
+  va_start(args, format);
+
+  vfprintf(f, format, args);
+
+  va_end(args);
+}
+
+void fsw_log_perror(const char * msg)
+{
   if (fsw_is_verbose())
   {
     perror(msg);

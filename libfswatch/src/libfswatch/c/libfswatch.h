@@ -107,6 +107,17 @@ extern "C"
   FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path);
 
   /*
+   * Adds the specified monitor property.
+   */
+  FSW_STATUS fsw_add_property(const FSW_HANDLE handle, const char * name, const char * value);
+  
+  /*
+   * Sets the allow overflow flag of the monitor.  When this flag is set, a
+   * monitor is allowed to overflow and report it as a change event.
+   */
+  FSW_STATUS fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow);
+
+  /*
    * Sets the callback the monitor invokes when some events are received.  The
    * callback must be set in the current session in order for it to be valid.
    *
@@ -137,7 +148,7 @@ extern "C"
 
   /*
    * Adds an event type filter to the current session.
-   * 
+   *
    * See cfilter.h for the definition of fsw_event_type_filter.
    */
   FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
@@ -173,6 +184,11 @@ extern "C"
    * Check whether the verbose mode is active.
    */
   bool fsw_is_verbose();
+
+  /*
+   * Set the verbose mode.
+   */
+  void fsw_set_verbose(bool verbose);
 
 #  ifdef __cplusplus
 }

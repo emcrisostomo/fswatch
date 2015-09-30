@@ -16,7 +16,7 @@
 #ifndef FSW_INOTIFY_MONITOR_H
 #  define FSW_INOTIFY_MONITOR_H
 
-#  include "monitor.h"
+#  include "monitor.hpp"
 #  include <sys/inotify.h>
 #  include <string>
 #  include <vector>

@@ -5,7 +5,25 @@ README
 `fswatch`, the main `libfswatch` frontend.  The library provides both C and C++
 bindings.
 
-The library is currently documented by its header files.
+`libfswatch` provides the following [documentation]:
+
+  * Texinfo documentation, included with the distribution.
+  * HTML documentation.
+  * PDF documentation.
+  * A [wiki] page.
+  * A man page.
+
+`libfswatch` official documentation is provided in Texinfo format.  This is the
+most comprehensive source of information about `libfswatch` and the only
+authoritative one.  The man page, in particular, is a stub that suggests the
+user to use the info page instead.
+
+If you are installing `libfswatch` using a package manager and you would like
+the PDF manual to be bundled into the package, please send a feature request to
+the package maintainer.
+
+[documentation]: http://emcrisostomo.github.io/fswatch/doc
+[wiki]: https://github.com/emcrisostomo/fswatch/wiki
 
 Bug Reports
 -----------

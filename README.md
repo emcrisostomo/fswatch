@@ -12,6 +12,8 @@ kinds of monitors:
     4.1 (and supported on most *BSD systems, including OS X).
   * A monitor based on _inotify_, a Linux kernel subsystem that reports file
     system changes to applications.
+  * A monitor based on _ReadDirectoryChangesW_, a Microsoft Windows API that
+    reports changes to a directory.
   * A monitor which periodically stats the file system, saves file modification
     times in memory, and manually calculates file system changes (which works
     anywhere `stat (2)` can be used).
@@ -62,9 +64,14 @@ The limitations of `fswatch` depend largely on the monitor being used:
     notification which can be handled to gracefully recover.  `fswatch`
     currently throws an exception if a queue overflow occurs.  Future versions
     will handle the overflow by emitting proper notifications.
-  * The **poll** monitor, available on any platform, only relies on available
-    CPU and memory to perform its task.  The performance of this monitor
-    degrades linearly with the number of files being watched.
+  * The **Windows** monitor can only establish a watch _directories_, not files.
+    To watch a file, its parent directory must be watched in order to receive
+    change events for all the directory's children, _recursively_ at any depth.
+    Optionally, change events can be filtered to include only changes to the
+    desired file.
+  * The **poll** monitor, available on any platform, only relies on
+    available CPU and memory to perform its task.  The performance of this
+    monitor degrades linearly with the number of files being watched.
 
 Usage recommendations are as follows:
 
@@ -79,6 +86,7 @@ Usage recommendations are as follows:
   * If feasible, watch directories instead of files.  Properly crafting the
     receiving side of the events to deal with directories may sensibly reduce
     the monitor resource consumption.
+  * On Windows, use the `windows` monitor.
   * If none of the above applies, use the poll monitor.  The authors' experience
     indicates that `fswatch` requires approximately 150 MB of RAM memory to
     observe a hierarchy of 500.000 files with a minimum path length of 32

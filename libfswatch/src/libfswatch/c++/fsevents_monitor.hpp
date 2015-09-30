@@ -16,7 +16,7 @@
 #ifndef FSW_FSEVENT_MONITOR_H
 #  define FSW_FSEVENT_MONITOR_H
 
-#  include "monitor.h"
+#  include "monitor.hpp"
 #  include <CoreServices/CoreServices.h>
 
 namespace fsw

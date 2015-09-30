@@ -42,8 +42,28 @@ endif
 if USE_INOTIFY
   libfswatch_la_SOURCES += c++/inotify_monitor.cpp
 endif
+if USE_WINDOWS
+if USE_CYGWIN
+  libfswatch_la_SOURCES += c++/windows_monitor.cpp
+  libfswatch_la_SOURCES += c++/windows/win_handle.cpp
+  libfswatch_la_SOURCES += c++/windows/win_handle.hpp
+  libfswatch_la_SOURCES += c++/windows/win_error_message.cpp
+  libfswatch_la_SOURCES += c++/windows/win_error_message.hpp
+  libfswatch_la_SOURCES += c++/windows/win_strings.cpp
+  libfswatch_la_SOURCES += c++/windows/win_strings.hpp
+  libfswatch_la_SOURCES += c++/windows/win_paths.cpp
+  libfswatch_la_SOURCES += c++/windows/win_paths.hpp
+  libfswatch_la_SOURCES += c++/windows/win_directory_change_event.cpp
+  libfswatch_la_SOURCES += c++/windows/win_directory_change_event.hpp
+endif
+endif
 
-libfswatch_la_LDFLAGS = -version-info $(LIBFSWATCH_API_VERSION)
+libfswatch_la_LDFLAGS  = -version-info $(LIBFSWATCH_API_VERSION)
+libfswatch_la_LDFLAGS += @LTLIBINTL@
+
+if OS_CYGWIN
+  libfswatch_la_LDFLAGS += -no-undefined
+endif
 
 if USE_FSEVENTS
   libfswatch_la_LDFLAGS += -framework CoreServices
@@ -63,20 +83,23 @@ libfswatch_c_HEADERS += c/error.h
 libfswatch_c_HEADERS += c/libfswatch_log.h
 
 # Distribute C++ headers conditionally adding available backends.
-libfswatch_cpp_HEADERS  = c++/monitor.h
-libfswatch_cpp_HEADERS += c++/libfswatch_map.h
-libfswatch_cpp_HEADERS += c++/libfswatch_set.h
-libfswatch_cpp_HEADERS += c++/path_utils.h
+libfswatch_cpp_HEADERS  = c++/monitor.hpp
+libfswatch_cpp_HEADERS += c++/libfswatch_map.hpp
+libfswatch_cpp_HEADERS += c++/libfswatch_set.hpp
+libfswatch_cpp_HEADERS += c++/path_utils.hpp
 if USE_FSEVENTS
-  libfswatch_cpp_HEADERS += c++/fsevents_monitor.h
+  libfswatch_cpp_HEADERS += c++/fsevents_monitor.hpp
 endif
 if USE_KQUEUE
-  libfswatch_cpp_HEADERS += c++/kqueue_monitor.h
+  libfswatch_cpp_HEADERS += c++/kqueue_monitor.hpp
 endif
 if USE_INOTIFY
-  libfswatch_cpp_HEADERS += c++/inotify_monitor.h
+  libfswatch_cpp_HEADERS += c++/inotify_monitor.hpp
 endif
-libfswatch_cpp_HEADERS += c++/poll_monitor.h
-libfswatch_cpp_HEADERS += c++/filter.h
-libfswatch_cpp_HEADERS += c++/event.h
-libfswatch_cpp_HEADERS += c++/libfswatch_exception.h
+if USE_WINDOWS
+  libfswatch_cpp_HEADERS += c++/windows_monitor.hpp
+endif
+libfswatch_cpp_HEADERS += c++/poll_monitor.hpp
+libfswatch_cpp_HEADERS += c++/filter.hpp
+libfswatch_cpp_HEADERS += c++/event.hpp
+libfswatch_cpp_HEADERS += c++/libfswatch_exception.hpp

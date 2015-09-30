@@ -13,19 +13,37 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CONFIG_H
-#  include "libfswatch_config.h"
-#endif
-#include "libfswatch_mem.h"
-#include <cstdlib>
+#ifndef FSW_WINDOWS_HANDLE_H
+#  define FSW_WINDOWS_HANDLE_H
 
-void * fsw_alloc(size_t size)
+#  include <windows.h>
+
+namespace fsw
 {
-  return malloc(size);
+  class win_handle
+  {
+  public:
+    static bool is_valid(const HANDLE & handle);
+
+    win_handle();
+    win_handle(HANDLE handle);
+
+    virtual ~win_handle();
+
+    operator HANDLE() const;
+
+    bool is_valid() const;
+
+    win_handle(const win_handle&) = delete;
+    win_handle& operator=(const win_handle&) = delete;
+
+    win_handle(win_handle&& other) noexcept;
+    win_handle& operator=(win_handle&& other) noexcept;
+
+    win_handle& operator=(const HANDLE& handle);
+  private:
+    HANDLE h;
+  };
 }
 
-void fsw_free(void * ptr)
-{
-  free(ptr);
-}
-
+#endif  /* FSW_WINDOWS_HANDLE_H */

@@ -17,19 +17,23 @@
 #  include "config.h"
 #endif
 #include "gettext.h"
-#include "fswatch.h"
-#include "fswatch_log.h"
+#include "fswatch.hpp"
 #include <iostream>
-#include <sstream>
+#include <string>
+#include <exception>
 #include <csignal>
 #include <cstdlib>
 #include <cmath>
 #include <ctime>
 #include <cerrno>
 #include <vector>
-#include "libfswatch/c++/monitor.h"
+#include <map>
+#include "libfswatch/c++/event.hpp"
+#include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c/error.h"
-#include "libfswatch/c++/libfswatch_exception.h"
+#include "libfswatch/c/libfswatch.h"
+#include "libfswatch/c/libfswatch_log.h"
+#include "libfswatch/c++/libfswatch_exception.hpp"
 
 #ifdef HAVE_GETOPT_LONG
 #  include <getopt.h>
@@ -70,11 +74,12 @@ static int printf_event(const string & fmt,
 
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
-static fsw::monitor *active_monitor = nullptr;
+static monitor *active_monitor = nullptr;
 static vector<monitor_filter> filters;
 static vector<fsw_event_type_filter> event_filters;
 static bool _0flag = false;
 static bool _1flag = false;
+static bool allow_overflow = false;
 static int batch_marker_flag = false;
 static bool Eflag = false;
 static bool fflag = false;
@@ -93,10 +98,11 @@ static bool xflag = false;
 static double lvalue = 1.0;
 static string monitor_name;
 static string tformat = "%c";
-static string batch_marker = fsw::event::get_event_flag_name(fsw_event_flag::NoOp);
+static string batch_marker = event::get_event_flag_name(fsw_event_flag::NoOp);
 static int format_flag = false;
 static string format;
 static string event_flag_separator = " ";
+static map<string, string> monitor_properties;
 
 /*
  * OPT_* variables are used as getopt_long values for long options that do not
@@ -106,15 +112,12 @@ static const int OPT_BATCH_MARKER = 128;
 static const int OPT_FORMAT = 129;
 static const int OPT_EVENT_FLAG_SEPARATOR = 130;
 static const int OPT_EVENT_TYPE = 131;
-
-bool is_verbose()
-{
-  return vflag;
-}
+static const int OPT_ALLOW_OVERFLOW = 132;
+static const int OPT_MONITOR_PROPERTY = 133;
 
 static void list_monitor_types(ostream& stream)
 {
-  for (const auto & type : fsw::monitor_factory::get_types())
+  for (const auto & type : monitor_factory::get_types())
   {
     stream << "  " << type << "\n";
   }
@@ -142,23 +145,22 @@ static void usage(ostream& stream)
   stream << _("Options:\n");
   stream << " -0, --print0          " << _("Use the ASCII NUL character (0) as line separator.\n");
   stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
+  stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
   stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
-#  ifdef HAVE_REGCOMP
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
-#  endif
   stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
   stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
   stream << " -h, --help            " << _("Show this message.\n");
-#  ifdef HAVE_REGCOMP
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
   stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
-#  endif
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
   stream << " -M, --list-monitors   " << _("List the available monitors.\n");
   stream << " -m, --monitor=NAME    " << _("Use the specified monitor.\n");
+  stream << "     --monitor-property name=value\n";
+  stream << "                       " << _("Define the specified property.\n");
   stream << " -n, --numeric         " << _("Print a numeric event mask.\n");
   stream << " -o, --one-per-batch   " << _("Print a single message with the number of change events.\n");
   stream << " -r, --recursive       " << _("Recurse subdirectories.\n");
@@ -171,17 +173,7 @@ static void usage(ostream& stream)
   stream << "                       " << _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
-  string option_string = "[";
-  option_string += "01";
-#  ifdef HAVE_REGCOMP
-  option_string += "eE";
-#  endif
-  option_string += "fh";
-#  ifdef HAVE_REGCOMP
-  option_string += "i";
-#  endif
-  option_string += "lLMmnortuvx";
-  option_string += "]";
+  string option_string = "[01eEfhilLMmnortuvx]";
 
   stream << PACKAGE_STRING << "\n\n";
   stream << "Syntax:\n";
@@ -190,16 +182,12 @@ static void usage(ostream& stream)
   stream << "Usage:\n";
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1  Exit fswatch after the first set of events is received.\n";
-#  ifdef HAVE_REGCOMP
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
-#  endif
   stream << " -f  Print the event time stamp with the specified format.\n";
   stream << " -h  Show this message.\n";
-#  ifdef HAVE_REGCOMP
   stream << " -i  Use case insensitive regular expressions.\n";
   stream << " -i  Include paths matching REGEX.\n";
-#  endif
   stream << " -l  Set the latency.\n";
   stream << " -M  List the available monitors.\n";
   stream << " -m  Use the specified monitor.\n";
@@ -239,7 +227,7 @@ static void close_handler(int signal)
 {
   close_stream();
 
-  fsw_log(_("Done.\n"));
+  FSW_ELOG(_("Done.\n"));
   exit(FSW_EXIT_OK);
 }
 
@@ -250,30 +238,25 @@ static bool parse_event_filter(const char * optarg)
     event_filters.push_back({event::get_event_flag_by_name(optarg)});
     return true;
   }
-  catch (fsw::libfsw_exception & ex)
+  catch (libfsw_exception & ex)
   {
     cerr << ex.what() << endl;
     return false;
   }
 }
 
-static bool validate_latency(double latency, ostream &ost, ostream &est)
+static bool validate_latency(double latency)
 {
   if (lvalue == 0.0)
   {
-    est << _("Invalid value: ") << optarg << endl;
+    cerr << _("Invalid value: ") << optarg << endl;
     return false;
   }
 
   if (errno == ERANGE || lvalue == HUGE_VAL)
   {
-    est << _("Value out of range: ") << optarg << endl;
+    cerr << _("Value out of range: ") << optarg << endl;
     return false;
-  }
-
-  if (is_verbose())
-  {
-    ost << _("Latency set to: ") << lvalue << endl;
   }
 
   return true;
@@ -288,7 +271,7 @@ static void register_signal_handlers()
 
   if (sigaction(SIGTERM, &action, nullptr) == 0)
   {
-    fsw_log(_("SIGTERM handler registered.\n"));
+    FSW_ELOG(_("SIGTERM handler registered.\n"));
   }
   else
   {
@@ -297,7 +280,7 @@ static void register_signal_handlers()
 
   if (sigaction(SIGABRT, &action, nullptr) == 0)
   {
-    fsw_log(_("SIGABRT handler registered.\n"));
+    FSW_ELOG(_("SIGABRT handler registered.\n"));
   }
   else
   {
@@ -306,7 +289,7 @@ static void register_signal_handlers()
 
   if (sigaction(SIGINT, &action, nullptr) == 0)
   {
-    fsw_log(_("SIGINT handler registered.\n"));
+    FSW_ELOG(_("SIGINT handler registered.\n"));
   }
   else
   {
@@ -403,7 +386,7 @@ static void write_events(const vector<event> &events)
 
   if (_1flag)
   {
-    ::exit(FSW_EXIT_OK);
+    exit(FSW_EXIT_OK);
   }
 }
 
@@ -430,21 +413,19 @@ static void start_monitor(int argc, char ** argv, int optind)
       ::free(real_path);
     }
 
-    fsw_log(_("Adding path: "));
-    fsw_log(path.c_str());
-    fsw_log("\n");
+    FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 
     paths.push_back(path);
   }
 
   if (mflag)
-    active_monitor = fsw::monitor_factory::create_monitor(monitor_name,
-                                                          paths,
-                                                          process_events);
+    active_monitor = monitor_factory::create_monitor(monitor_name,
+                                                     paths,
+                                                     process_events);
   else
-    active_monitor = fsw::monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
-                                                          paths,
-                                                          process_events);
+    active_monitor = monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
+                                                     paths,
+                                                     process_events);
 
   /*
    * libfswatch supports case sensitivity and extended flags to be set on any
@@ -457,6 +438,8 @@ static void start_monitor(int argc, char ** argv, int optind)
     filter.extended = Eflag;
   }
 
+  active_monitor->set_properties(monitor_properties);
+  active_monitor->set_allow_overflow(allow_overflow);
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
   active_monitor->set_event_type_filters(event_filters);
@@ -469,37 +452,30 @@ static void start_monitor(int argc, char ** argv, int optind)
 static void parse_opts(int argc, char ** argv)
 {
   int ch;
-  ostringstream short_options;
-
-  short_options << "01f:hl:LMm:nortuvx";
-#ifdef HAVE_REGCOMP
-  short_options << "e:Ei:I";
-#endif
+  string short_options = "01e:Ef:hi:Il:LMm:nortuvx";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
   static struct option long_options[] = {
+    { "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
     { "event", required_argument, nullptr, OPT_EVENT_TYPE},
     { "event-flags", no_argument, nullptr, 'x'},
     { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
-#  ifdef HAVE_REGCOMP
     { "exclude", required_argument, nullptr, 'e'},
     { "extended", no_argument, nullptr, 'E'},
-#  endif
     { "follow-links", no_argument, nullptr, 'L'},
     { "format", required_argument, nullptr, OPT_FORMAT},
     { "format-time", required_argument, nullptr, 'f'},
     { "help", no_argument, nullptr, 'h'},
-#  ifdef HAVE_REGCOMP
     { "include", required_argument, nullptr, 'i'},
     { "insensitive", no_argument, nullptr, 'I'},
-#  endif
     { "latency", required_argument, nullptr, 'l'},
     { "list-monitors", no_argument, nullptr, 'M'},
     { "monitor", required_argument, nullptr, 'm'},
+    { "monitor-property", required_argument, nullptr, OPT_MONITOR_PROPERTY},
     { "numeric", no_argument, nullptr, 'n'},
     { "one-per-batch", no_argument, nullptr, 'o'},
     { "recursive", no_argument, nullptr, 'r'},
@@ -512,12 +488,12 @@ static void parse_opts(int argc, char ** argv)
 
   while ((ch = getopt_long(argc,
                            argv,
-                           short_options.str().c_str(),
+                           short_options.c_str(),
                            long_options,
                            &option_index)) != -1)
   {
 #else
-  while ((ch = getopt(argc, argv, short_options.str().c_str())) != -1)
+  while ((ch = getopt(argc, argv, short_options.c_str())) != -1)
   {
 #endif
 
@@ -531,7 +507,6 @@ static void parse_opts(int argc, char ** argv)
       _1flag = true;
       break;
 
-#ifdef HAVE_REGCOMP
     case 'e':
       filters.push_back({optarg, fsw_filter_type::filter_exclude});
       break;
@@ -539,7 +514,6 @@ static void parse_opts(int argc, char ** argv)
     case 'E':
       Eflag = true;
       break;
-#endif
 
     case 'f':
       fflag = true;
@@ -548,9 +522,8 @@ static void parse_opts(int argc, char ** argv)
 
     case 'h':
       usage(cout);
-      ::exit(FSW_EXIT_OK);
+      exit(FSW_EXIT_OK);
 
-#ifdef HAVE_REGCOMP
     case 'i':
       filters.push_back({optarg, fsw_filter_type::filter_include});
       break;
@@ -558,13 +531,12 @@ static void parse_opts(int argc, char ** argv)
     case 'I':
       Iflag = true;
       break;
-#endif
 
     case 'l':
       lflag = true;
       lvalue = strtod(optarg, nullptr);
-
-      if (!validate_latency(lvalue, cout, cerr))
+    
+      if (!validate_latency(lvalue))
       {
         exit(FSW_EXIT_LATENCY);
       }
@@ -577,7 +549,7 @@ static void parse_opts(int argc, char ** argv)
 
     case 'M':
       list_monitor_types(cout);
-      ::exit(FSW_EXIT_OK);
+      exit(FSW_EXIT_OK);
 
     case 'm':
       mflag = true;
@@ -630,33 +602,54 @@ static void parse_opts(int argc, char ** argv)
     case OPT_EVENT_TYPE:
       if (!parse_event_filter(optarg))
       {
-        ::exit(FSW_ERR_UNKNOWN_VALUE);
+        exit(FSW_ERR_UNKNOWN_VALUE);
       }
       break;
-      
+
+    case OPT_ALLOW_OVERFLOW:
+      allow_overflow = true;
+      break;
+
+    case OPT_MONITOR_PROPERTY:
+    {
+      string param(optarg);
+      size_t eq_pos = param.find_first_of("=");
+      if (eq_pos == string::npos)
+      {
+        cerr << _("Invalid property format.") << endl;
+        exit(FSW_ERR_INVALID_PROPERTY);
+      }
+
+      monitor_properties[param.substr(0, eq_pos)] = param.substr(eq_pos + 1);
+    }
+      break;
+
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
     }
   }
 
+  // Set verbose mode for libfswatch.
+  fsw_set_verbose(vflag);
+
   if (version_flag)
   {
     print_version(cout);
-    ::exit(FSW_EXIT_OK);
+    exit(FSW_EXIT_OK);
   }
 
   // --format is incompatible with any other format option.
   if (format_flag && (tflag || xflag))
   {
     cerr << _("--format is incompatible with any other format option such as -t and -x.") << endl;
-    ::exit(FSW_EXIT_FORMAT);
+    exit(FSW_EXIT_FORMAT);
   }
 
   if (format_flag && oflag)
   {
     cerr << _("--format is incompatible with -o.") << endl;
-    ::exit(FSW_EXIT_FORMAT);
+    exit(FSW_EXIT_FORMAT);
   }
 
   // If no format was specified use:
@@ -671,7 +664,7 @@ static void parse_opts(int argc, char ** argv)
     if (printf_event_validate_format(format) < 0)
     {
       cerr << _("Invalid format.") << endl;
-      ::exit(FSW_EXIT_FORMAT);
+      exit(FSW_EXIT_FORMAT);
     }
   }
   else
@@ -783,13 +776,13 @@ int main(int argc, char ** argv)
   if (optind == argc)
   {
     cerr << _("Invalid number of arguments.") << endl;
-    ::exit(FSW_EXIT_UNK_OPT);
+    exit(FSW_EXIT_UNK_OPT);
   }
 
-  if (mflag && !fsw::monitor_factory::exists_type(monitor_name))
+  if (mflag && !monitor_factory::exists_type(monitor_name))
   {
     cerr << _("Invalid monitor name.") << endl;
-    ::exit(FSW_EXIT_MONITOR_NAME);
+    exit(FSW_EXIT_MONITOR_NAME);
   }
 
   // configure and start the monitor

@@ -41,6 +41,7 @@ extern "C"
 #  define FSW_ERR_THREAD_FAULT              (1 << 15)
 #  define FSW_ERR_UNSUPPORTED_OPERATION     (1 << 16)
 #  define FSW_ERR_UNKNOWN_VALUE             (1 << 17)
+#  define FSW_ERR_INVALID_PROPERTY          (1 << 18)
 
 #  ifdef __cplusplus
 }

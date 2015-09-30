@@ -17,28 +17,30 @@
 #  include "libfswatch_config.h"
 #endif
 #include "gettext_defs.h"
-#include "monitor.h"
-#include "libfswatch_exception.h"
+#include "monitor.hpp"
+#include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
 #include <cstdlib>
-#ifdef HAVE_REGCOMP
-#  include <regex.h>
-#endif
+#include <regex.h>
 #include <iostream>
 #include <sstream>
+#include <time.h>
 /*
  * Conditionally include monitor headers for default construction.
  */
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
-#  include "fsevents_monitor.h"
+#  include "fsevents_monitor.hpp"
 #endif
 #if defined(HAVE_SYS_EVENT_H)
-#  include "kqueue_monitor.h"
+#  include "kqueue_monitor.hpp"
 #endif
 #if defined(HAVE_SYS_INOTIFY_H)
-#  include "inotify_monitor.h"
+#  include "inotify_monitor.hpp"
 #endif
-#include "poll_monitor.h"
+#if defined(HAVE_WINDOWS)
+#  include "windows_monitor.hpp"
+#endif
+#include "poll_monitor.hpp"
 
 using namespace std;
 
@@ -46,10 +48,8 @@ namespace fsw
 {
   struct compiled_monitor_filter
   {
-#ifdef HAVE_REGCOMP
     regex_t regex;
     fsw_filter_type type;
-#endif
   };
 
   monitor::monitor(vector<string> paths,
@@ -61,6 +61,11 @@ namespace fsw
     {
       throw libfsw_exception(_("Callback cannot be null."), FSW_ERR_CALLBACK_NOT_SET);
     }
+  }
+
+  void monitor::set_allow_overflow(bool overflow)
+  {
+    allow_overflow = overflow;
   }
 
   void monitor::set_latency(double latency)
@@ -83,7 +88,7 @@ namespace fsw
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(const std::vector<fsw_event_type_filter> &filters)
+  void monitor::set_event_type_filters(const vector<fsw_event_type_filter> &filters)
   {
     event_type_filters.clear();
 
@@ -98,7 +103,7 @@ namespace fsw
     if (!filter.case_sensitive) flags |= REG_ICASE;
     if (filter.extended) flags |= REG_EXTENDED;
 
-    if (::regcomp(&regex, filter.text.c_str(), flags))
+    if (regcomp(&regex, filter.text.c_str(), flags))
     {
       string err = _("An error occurred during the compilation of ") + filter.text;
       throw libfsw_exception(err, FSW_ERR_INVALID_REGEX);
@@ -107,14 +112,27 @@ namespace fsw
     this->filters.push_back({regex, filter.type});
   }
 
+  void monitor::set_property(const std::string & name, const std::string & value)
+  {
+    properties[name] = value;
+  }
+
+  void monitor::set_properties(const map<string, string> & options)
+  {
+    properties = options;
+  }
+
+  string monitor::get_property(string name)
+  {
+    return properties[name];
+  }
+
   void monitor::set_filters(const vector<monitor_filter> &filters)
   {
-#ifdef HAVE_REGCOMP
     for (const monitor_filter &filter : filters)
     {
       add_filter(filter);
     }
-#endif
   }
 
   void monitor::set_follow_symlinks(bool follow)
@@ -147,12 +165,11 @@ namespace fsw
 
   bool monitor::accept_path(const char *path) const
   {
-#ifdef HAVE_REGCOMP
     bool is_excluded = false;
 
     for (const auto &filter : filters)
     {
-      if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
+      if (regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
         if (filter.type == fsw_filter_type::filter_include) return true;
 
@@ -161,7 +178,6 @@ namespace fsw
     }
 
     if (is_excluded) return false;
-#endif
 
     return true;
   }
@@ -178,14 +194,12 @@ namespace fsw
 
   monitor::~monitor()
   {
-#ifdef HAVE_REGCOMP
     for (auto &re : filters)
     {
-      ::regfree(&re.regex);
+      regfree(&re.regex);
     }
 
     filters.clear();
-#endif
   }
 
   static monitor * create_default_monitor(vector<string> paths,
@@ -198,6 +212,8 @@ namespace fsw
     return new kqueue_monitor(paths, callback, context);
 #elif defined(HAVE_SYS_INOTIFY_H)
     return new inotify_monitor(paths, callback, context);
+#elif defined(HAVE_WINDOWS)
+    return new windows_monitor(paths, callback, context);
 #else
     return new poll_monitor(paths, callback, context);
 #endif
@@ -234,6 +250,13 @@ namespace fsw
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
 #endif
 
+    case windows_monitor_type:
+#if defined(HAVE_WINDOWS)
+      return new windows_monitor(paths, callback, context);
+#else
+      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
+#endif
+
     case poll_monitor_type:
       return new poll_monitor(paths, callback, context);
 
@@ -254,7 +277,7 @@ namespace fsw
   {
     // If there is nothing to filter, just return the original vector.
     if (event_type_filters.size() == 0) return evt.get_flags();
-    
+
     vector<fsw_event_flag> filtered_flags;
 
     for (auto const & flag : evt.get_flags())
@@ -263,6 +286,19 @@ namespace fsw
     }
 
     return filtered_flags;
+  }
+
+  void monitor::notify_overflow(const string & path) const
+  {
+    if (!allow_overflow)
+    {
+      throw libfsw_exception(_("Event queue overflow."));
+    }
+
+    time_t curr_time;
+    time(&curr_time);
+
+    notify_events({{path, curr_time, {fsw_event_flag::Overflow}}});
   }
 
   void monitor::notify_events(const vector<event> &events) const
@@ -284,7 +320,7 @@ namespace fsw
     {
       ostringstream log;
       log << _("Notifying events #: ") << filtered_events.size() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       callback(filtered_events, context);
     }
