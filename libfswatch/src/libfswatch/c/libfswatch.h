@@ -107,6 +107,11 @@ extern "C"
   FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path);
 
   /*
+   * Adds the specified monitor property.
+   */
+  FSW_STATUS fsw_add_property(const FSW_HANDLE handle, const char * name, const char * value);
+  
+  /*
    * Sets the allow overflow flag of the monitor.  When this flag is set, a
    * monitor is allowed to overflow and report it as a change event.
    */

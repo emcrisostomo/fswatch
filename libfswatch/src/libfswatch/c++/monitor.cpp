@@ -112,6 +112,11 @@ namespace fsw
     this->filters.push_back({regex, filter.type});
   }
 
+  void monitor::set_property(const std::string & name, const std::string & value)
+  {
+    properties[name] = value;
+  }
+
   void monitor::set_properties(const map<string, string> & options)
   {
     properties = options;
@@ -293,9 +298,7 @@ namespace fsw
     time_t curr_time;
     time(&curr_time);
 
-    notify_events({
-      {path, curr_time,
-        {fsw_event_flag::Overflow}}});
+    notify_events({{path, curr_time, {fsw_event_flag::Overflow}}});
   }
 
   void monitor::notify_events(const vector<event> &events) const

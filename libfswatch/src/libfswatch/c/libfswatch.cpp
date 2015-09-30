@@ -27,6 +27,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <memory>
+#include <vector>
+#include <map>
 #include "libfswatch.h"
 #include "../c++/libfswatch_map.hpp"
 #include "../c++/filter.hpp"
@@ -49,6 +51,7 @@ typedef struct FSW_SESSION
   bool follow_symlinks;
   vector<monitor_filter> filters;
   vector<fsw_event_type_filter> event_type_filters;
+  map<string, string> properties;
   void * data;
 #ifdef HAVE_CXX_MUTEX
   atomic<bool> running;
@@ -75,10 +78,9 @@ static std::mutex session_mutex;
 
 static FSW_THREAD_LOCAL FSW_STATUS last_error;
 
-// Default library callback.
+// Forward declarations.
 static FSW_EVENT_CALLBACK libfsw_cpp_callback_proxy;
 static FSW_SESSION * get_session(const FSW_HANDLE handle);
-
 static int create_monitor(FSW_HANDLE handle, const fsw_monitor_type type);
 static FSW_STATUS fsw_set_last_error(const int error);
 
@@ -131,7 +133,6 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
 
     strncpy(cevt->path, path.c_str(), path.length());
     cevt->path[path.length()] = '\0';
-
     cevt->evt_time = evt.get_time();
 
     const vector<fsw_event_flag> flags = evt.get_flags();
@@ -269,6 +270,28 @@ FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path)
   return fsw_set_last_error(FSW_OK);
 }
 
+FSW_STATUS fsw_add_property(const FSW_HANDLE handle, const char * name, const char * value)
+{
+  if (!name || !value)
+    return fsw_set_last_error(FSW_ERR_INVALID_PROPERTY);
+
+  try
+  {
+#ifdef HAVE_CXX_MUTEX
+    std::lock_guard<std::mutex> session_lock(session_mutex);
+#endif
+    FSW_SESSION * session = get_session(handle);
+
+    session->properties[name] = value;
+  }
+  catch (int error)
+  {
+    return fsw_set_last_error(error);
+  }
+
+  return fsw_set_last_error(FSW_OK);
+}
+
 FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
 {
   if (!callback)
@@ -353,7 +376,7 @@ FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
 }
 
 FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
-                            const bool follow_symlinks)
+                                   const bool follow_symlinks)
 {
   try
   {
@@ -393,7 +416,7 @@ FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
 }
 
 FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
-                   const fsw_cmonitor_filter filter)
+                          const fsw_cmonitor_filter filter)
 {
   try
   {

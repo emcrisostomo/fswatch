@@ -1264,6 +1264,13 @@ Adds a path to watch to the specified session.  At least one path must
 be added to the current session in order for it to be valid.
 
 @item FSW_STATUS
+@itemx fsw_add_property(const FSW_HANDLE handle, const char * name, const char * value)
+@fnindex @code{fsw_add_property}
+This function adds a new key-value pair @code{(name, value)} in the
+monitor's property map.
+
+
+@item FSW_STATUS
 @itemx fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow)
 @fnindex @code{fsw_set_allow_overflow}
 Sets the allow overflow flag to the specified value.  If this flag is
