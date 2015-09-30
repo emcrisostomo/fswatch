@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: libfswatch 1.6.0.develop\n"
+"Project-Id-Version: libfswatch 1.6.0\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-09-25 14:24+0200\n"
+"POT-Creation-Date: 2015-09-30 12:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/libfswatch/c++/event.cpp:74
+#: src/libfswatch/c++/event.cpp:75
 msgid "Unknown event type: "
 msgstr ""
 
-#: src/libfswatch/c++/event.cpp:103
+#: src/libfswatch/c++/event.cpp:105
 msgid "Unknown event type."
 msgstr ""
 
@@ -61,45 +61,40 @@ msgstr ""
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:83
+#: src/libfswatch/c++/inotify_monitor.cpp:84
 msgid "Cannot initialize inotify."
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:93
+#: src/libfswatch/c++/inotify_monitor.cpp:94
 msgid "Removing: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:130
+#: src/libfswatch/c++/inotify_monitor.cpp:131
 msgid "Added: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:243
+#: src/libfswatch/c++/inotify_monitor.cpp:244
 msgid "Generic event: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:305
-#: src/libfswatch/c++/windows_monitor.cpp:358
-msgid "Event queue overflow."
-msgstr ""
-
-#: src/libfswatch/c++/inotify_monitor.cpp:335
+#: src/libfswatch/c++/inotify_monitor.cpp:336
 msgid "Removed: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:394
+#: src/libfswatch/c++/inotify_monitor.cpp:395
 msgid "::select() on inotify descriptor encountered an error."
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:409
+#: src/libfswatch/c++/inotify_monitor.cpp:410
 msgid "Number of records: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:415
-msgid "::read() on inotify descriptor read 0 records."
+#: src/libfswatch/c++/inotify_monitor.cpp:416
+msgid "read() on inotify descriptor read 0 records."
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:421
-msgid "::read() on inotify descriptor returned -1."
+#: src/libfswatch/c++/inotify_monitor.cpp:422
+msgid "read() on inotify descriptor returned -1."
 msgstr ""
 
 #: src/libfswatch/c++/kqueue_monitor.cpp:145
@@ -134,116 +129,124 @@ msgstr ""
 msgid "Error: "
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:61
+#: src/libfswatch/c++/monitor.cpp:62
 msgid "Callback cannot be null."
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:69
+#: src/libfswatch/c++/monitor.cpp:75
 msgid "Latency cannot be negative."
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:102
+#: src/libfswatch/c++/monitor.cpp:108
 msgid "An error occurred during the compilation of "
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:288
+#: src/libfswatch/c++/monitor.cpp:295
+msgid "Event queue overflow."
+msgstr ""
+
+#: src/libfswatch/c++/monitor.cpp:322
 msgid "Notifying events #: "
 msgstr ""
 
-#: src/libfswatch/c++/path_utils.cpp:71
+#: src/libfswatch/c++/path_utils.cpp:70
 msgid "Cannot stat() "
 msgstr ""
 
-#: src/libfswatch/c++/poll_monitor.cpp:203
+#: src/libfswatch/c++/poll_monitor.cpp:202
 msgid "Done scanning.\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:67
-#: src/libfswatch/c++/windows_monitor.cpp:79
-msgid "cygwin_create_path could not allocate memory to convert the path."
-msgstr ""
-
-#: src/libfswatch/c++/windows_monitor.cpp:138
-#: src/libfswatch/c++/windows_monitor.cpp:139
-msgid "::malloc failed."
-msgstr ""
-
-#: src/libfswatch/c++/windows_monitor.cpp:156
-#, c-format
-msgid "%p.\n"
-msgstr ""
-
-#: src/libfswatch/c++/windows_monitor.cpp:175
-#, c-format
-msgid "GetOverlappedResult: %s\n"
-msgstr ""
-
-#: src/libfswatch/c++/windows_monitor.cpp:182
-msgid "::ResetEvent failed."
-msgstr ""
-
-#: src/libfswatch/c++/windows_monitor.cpp:184
-#, c-format
-msgid "Event %d reset.\n"
-msgstr ""
-
-#: src/libfswatch/c++/windows_monitor.cpp:217
-msgid "File name unexpectedly empty."
-msgstr ""
-
-#: src/libfswatch/c++/windows_monitor.cpp:259
+#: src/libfswatch/c++/windows_monitor.cpp:85
 #, c-format
 msgid "Creating event for %s.\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:266
+#: src/libfswatch/c++/windows_monitor.cpp:92
 msgid "CreateEvent failed."
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:268
+#: src/libfswatch/c++/windows_monitor.cpp:94
 #, c-format
 msgid "Event %d created for %s.\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:276
+#: src/libfswatch/c++/windows_monitor.cpp:102
 #, c-format
 msgid "Initializing search structures for %s.\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:287
+#: src/libfswatch/c++/windows_monitor.cpp:113
 #, c-format
 msgid "Invalid handle when opening %s.\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:291
+#: src/libfswatch/c++/windows_monitor.cpp:117
 #, c-format
 msgid "Open file handle: %d.\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:321
+#: src/libfswatch/c++/windows_monitor.cpp:147
 #, c-format
 msgid "Processing %s.\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:332
+#: src/libfswatch/c++/windows_monitor.cpp:158
 msgid "Initialization failed."
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:340
+#: src/libfswatch/c++/windows_monitor.cpp:166
 msgid "I/O incomplete.\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:354
+#: src/libfswatch/c++/windows_monitor.cpp:180
 #, c-format
 msgid "GetOverlappedResult returned %d bytes\n"
 msgstr ""
 
-#: src/libfswatch/c++/windows_monitor.cpp:367
+#: src/libfswatch/c++/windows_monitor.cpp:195
 #, c-format
 msgid "ReadDirectoryChangesW: %s\n"
+msgstr ""
+
+#: src/libfswatch/c++/windows_monitor.cpp:210
+msgid "Invalid value: "
+msgstr ""
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:75
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:76
+msgid "malloc failed."
+msgstr ""
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:93
+#, c-format
+msgid "%p.\n"
+msgstr ""
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:112
+#, c-format
+msgid "GetOverlappedResult: %s\n"
+msgstr ""
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:119
+msgid "ResetEvent failed."
+msgstr ""
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:121
+#, c-format
+msgid "Event %d reset.\n"
+msgstr ""
+
+#: src/libfswatch/c++/windows/win_directory_change_event.cpp:154
+msgid "File name unexpectedly empty."
 msgstr ""
 
 #: src/libfswatch/c++/windows/win_handle.cpp:42
 #, c-format
 msgid "Closing handle: %d.\n"
+msgstr ""
+
+#: src/libfswatch/c++/windows/win_paths.cpp:30
+#: src/libfswatch/c++/windows/win_paths.cpp:42
+msgid "cygwin_create_path could not allocate memory to convert the path."
 msgstr ""

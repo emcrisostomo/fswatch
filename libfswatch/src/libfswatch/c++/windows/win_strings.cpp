@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2015 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,9 +13,27 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FSW_LOG_H
-#  define FSW_LOG_H
+#include "win_strings.hpp"
+#include <windows.h>
 
-void fsw_log(const char * msg);
+namespace fsw
+{
+  namespace win_strings
+  {
+    using namespace std;
 
-#endif  /* FSW_LOG_H */
+    string wstring_to_string(wchar_t * s)
+    {
+      int buf_size = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
+      char buf[buf_size];
+      WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, buf_size, NULL, NULL);
+
+      return string(buf);
+    }
+
+    string wstring_to_string(const wstring & s)
+    {
+      return wstring_to_string((wchar_t *)s.c_str());
+    }
+  }
+}

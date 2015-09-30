@@ -64,11 +64,11 @@ The limitations of `fswatch` depend largely on the monitor being used:
     notification which can be handled to gracefully recover.  `fswatch`
     currently throws an exception if a queue overflow occurs.  Future versions
     will handle the overflow by emitting proper notifications.
-  * The **Windows** monitor can only watch _directories_, not files.  To watch a
-    file, its parent directory must be watched and change events must be
-    filtered to include only changes to the desired file.  Furthermore, the
-    Windows monitor always looks for changes to a directory and any of its
-    children.
+  * The **Windows** monitor can only establish a watch _directories_, not files.
+    To watch a file, its parent directory must be watched in order to receive
+    change events for all the directory's children, _recursively_ at any depth.
+    Optionally, change events can be filtered to include only changes to the
+    desired file.
   * The **poll** monitor, available on any platform, only relies on
     available CPU and memory to perform its task.  The performance of this
     monitor degrades linearly with the number of files being watched.
@@ -120,7 +120,7 @@ there.
 Building from Source
 --------------------
 
-A user who whishes to build `fswatch` should get a [release tarball][release].
+A user who wishes to build `fswatch` should get a [release tarball][release].
 A release tarball contains everything a user needs to build `fswatch` on his
 system, following the instructions detailed in the Installation section below
 and the `INSTALL` file.

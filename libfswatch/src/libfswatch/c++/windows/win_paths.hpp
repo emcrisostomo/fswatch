@@ -13,19 +13,19 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CONFIG_H
-#  include "libfswatch_config.h"
-#endif
-#include "libfswatch_mem.h"
-#include <cstdlib>
 
-void * fsw_alloc(size_t size)
-{
-  return malloc(size);
-}
+#ifndef FSW_WIN_PATHS_HPP
+#  define	FSW_WIN_PATHS_HPP
 
-void fsw_free(void * ptr)
+#  include <string>
+
+namespace fsw
 {
-  free(ptr);
+  namespace win_paths
+  {
+    std::wstring posix_to_win_w(std::string path);
+    std::string win_w_to_posix(std::wstring path);
+  }
 }
+#endif	/* FSW_WIN_PATHS_HPP */
 

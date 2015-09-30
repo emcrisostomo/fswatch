@@ -40,8 +40,8 @@ namespace fsw
 {
   struct kqueue_monitor_load
   {
-    fsw_hash_map<std::string, int> descriptors_by_file_name;
-    fsw_hash_map<int, std::string> file_names_by_descriptor;
+    fsw_hash_map<string, int> descriptors_by_file_name;
+    fsw_hash_map<int, string> file_names_by_descriptor;
     fsw_hash_set<int> descriptors_to_remove;
     fsw_hash_set<int> descriptors_to_rescan;
     fsw_hash_map<int, mode_t> file_modes;
@@ -80,7 +80,7 @@ namespace fsw
 
   kqueue_monitor::~kqueue_monitor()
   {
-    if (kq != -1) ::close(kq);
+    if (kq != -1) close(kq);
     delete load;
   }
 
@@ -138,12 +138,12 @@ namespace fsw
     o_flags |= O_RDONLY;
 #  endif
 
-    int fd = ::open(path.c_str(), o_flags);
+    int fd = open(path.c_str(), o_flags);
 
     if (fd == -1)
     {
       string err = string(_("Cannot open ")) + path;
-      libfsw_perror(err.c_str());
+      fsw_log_perror(err.c_str());
 
       return false;
     }
@@ -194,7 +194,7 @@ namespace fsw
     load->file_names_by_descriptor.erase(fd);
     load->descriptors_by_file_name.erase(name);
     load->file_modes.erase(fd);
-    ::close(fd);
+    close(fd);
   }
 
   void kqueue_monitor::remove_watch(const string &path)
@@ -203,7 +203,7 @@ namespace fsw
     load->descriptors_by_file_name.erase(path);
     load->file_names_by_descriptor.erase(fd);
     load->file_modes.erase(fd);
-    ::close(fd);
+    close(fd);
   }
 
   void kqueue_monitor::remove_deleted()
@@ -252,7 +252,7 @@ namespace fsw
       if (!scan(path))
       {
         string err = _("Notice: ") + path + _(" cannot be found. Will retry later.\n");
-        libfsw_log(err.c_str());
+        FSW_ELOG(err.c_str());
       }
     }
   }
@@ -261,11 +261,11 @@ namespace fsw
   {
     if (kq != -1) throw libfsw_exception(_("kqueue already running."));
 
-    kq = ::kqueue();
+    kq = kqueue();
 
     if (kq == -1)
     {
-      perror("::kqueue()");
+      perror("kqueue()");
       throw libfsw_exception(_("kqueue failed."));
     }
   }
@@ -275,24 +275,24 @@ namespace fsw
   {
     struct timespec ts = create_timespec_from_latency(latency);
 
-    int event_num = ::kevent(kq,
-                             &changes[0],
-                             changes.size(),
-                             &event_list[0],
-                             event_list.size(),
-                             &ts);
+    int event_num = kevent(kq,
+                           &changes[0],
+                           changes.size(),
+                           &event_list[0],
+                           event_list.size(),
+                           &ts);
 
     if (event_num == -1)
     {
-      ::perror("::kevent");
+      perror("kevent");
       throw libfsw_exception(_("::kevent returned -1, invalid event number."));
     }
 
     return event_num;
   }
 
-  void kqueue_monitor::process_events(const vector<struct ::kevent> &changes,
-                                      const vector<struct ::kevent> &event_list,
+  void kqueue_monitor::process_events(const vector<struct kevent> &changes,
+                                      const vector<struct kevent> &event_list,
                                       int event_num)
   {
     time_t curr_time;
@@ -301,11 +301,11 @@ namespace fsw
 
     for (auto i = 0; i < event_num; ++i)
     {
-      struct ::kevent e = event_list[i];
+      struct kevent e = event_list[i];
 
       if (e.flags & EV_ERROR)
       {
-        ::perror(_("Event with EV_ERROR"));
+        perror(_("Event with EV_ERROR"));
         continue;
       }
 
@@ -362,7 +362,7 @@ namespace fsw
       // scan the root paths to check whether someone is missing
       scan_root_paths();
 
-      vector<struct ::kevent> changes;
+      vector<struct kevent> changes;
       vector<struct kevent> event_list;
 
       for (const pair<int, string> &fd_path : load->file_names_by_descriptor)
@@ -387,7 +387,7 @@ namespace fsw
        */
       if (!changes.size())
       {
-        ::sleep(latency);
+        sleep(latency);
         continue;
       }
 

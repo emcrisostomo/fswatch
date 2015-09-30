@@ -41,7 +41,7 @@ namespace fsw
 {
   typedef struct poll_monitor::poll_monitor_data
   {
-    fsw_hash_map<std::string, poll_monitor::watched_file_info> tracked_files;
+    fsw_hash_map<string, poll_monitor::watched_file_info> tracked_files;
   }
   poll_monitor_data;
 
@@ -159,7 +159,7 @@ namespace fsw
 
     for (auto &removed : previous_data->tracked_files)
     {
-        events.push_back({removed.first, curr_time, flags});
+      events.push_back({removed.first, curr_time, flags});
     }
   }
 
@@ -199,11 +199,9 @@ namespace fsw
 
     while (true)
     {
-#ifdef DEBUG
-      libfsw_log(_("Done scanning.\n"));
-#endif
+      FSW_ELOG(_("Done scanning.\n"));
 
-      ::sleep(latency < MIN_POLL_LATENCY ? MIN_POLL_LATENCY : latency);
+      sleep(latency < MIN_POLL_LATENCY ? MIN_POLL_LATENCY : latency);
 
       time(&curr_time);
 

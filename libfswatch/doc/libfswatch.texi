@@ -110,24 +110,45 @@ that uses the Windows @acronym{API}.
 A family of functions and macros have been added to log diagnostic messages and conditionally print them only in verbose mode:
 @itemize
 @item
-@fnindex @code{libfsw_logf}
-@code{libfsw_logf}
+@fnindex @code{fsw_log}
+@code{fsw_log}
 
 @item
-@fnindex @code{libfsw_log}
-@code{libfsw_log}
+@fnindex @code{fsw_flog}
+@code{fsw_flog}
 
 @item
-@fnindex @code{libfsw_perror}
-@code{libfsw_perror}
+@fnindex @code{fsw_logf}
+@code{fsw_logf}
+
+@item
+@fnindex @code{fsw_flogf}
+@code{fsw_flogf}
+
+@item
+@fnindex @code{fsw_log_perror}
+@code{fsw_log_perror}
 
 @item
 @fnindex @code{FSW_LOG}
 @code{FSW_LOG}
 
 @item
+@fnindex @code{FSW_ELOG}
+@code{FSW_ELOG}
+
+@item
 @fnindex @code{FSW_LOGF}
 @code{FSW_LOGF}
+
+@item
+@fnindex @code{FSW_ELOGF}
+@code{FSW_ELOGF}
+
+@item
+@fnindex @code{FSW_FLOGF}
+@code{FSW_FLOGF}
+
 @end itemize
 @end itemize
 
@@ -277,17 +298,17 @@ The biggest issue we have faced while developing @command{fswatch} was
 abstracting the behaviour of different backends behind a common
 interface and @file{libfswatch} is the result of that effort.  Instead
 of using different @acronym{API}s, a programmer can use just one:
-@file{libfswatch}'s.  The advantages of using @code{libfswatch} are
+@file{libfswatch}'s.  The advantages of using @file{libfswatch} are
 many:
 
 @itemize
 @item
-Portability: @code{libfswatch} supports many backends, effectively
+Portability: @file{libfswatch} supports many backends, effectively
 giving support to a great number of operating systems, including Linux
 and *BSD Unix.
 
 @item
-Ease of use: using @code{libfswatch} should be easier than using any
+Ease of use: using @file{libfswatch} should be easier than using any
 of the @acronym{API}s it supports.
 @end itemize
 
@@ -565,19 +586,28 @@ public:
   monitor(std::vector<std::string> paths,
           FSW_EVENT_CALLBACK * callback,
           void * context = nullptr);
+  virtual ~monitor();
+
   monitor(const monitor& orig) = delete;
   monitor& operator=(const monitor & that) = delete;
 
-  virtual ~monitor();
-
+  void set_properties(
+    std::map<std::string, std::string> options);
+  std::string get_property(std::string name);
   void set_latency(double latency);
+  void set_allow_overflow(bool overflow);
   void set_recursive(bool recursive);
   void add_filter(const monitor_filter &filter);
-  void set_filters(const std::vector<monitor_filter> &filters);
+  void set_filters(
+    const std::vector<monitor_filter> &filters);
   void set_follow_symlinks(bool follow);
   void * get_context() const;
   void set_context(void * context);
   void start();
+  void add_event_type_filter(
+    const fsw_event_type_filter &filter);
+  void set_event_type_filters(
+    const std::vector<fsw_event_type_filter> &filters);
 @}
 @end example
 
@@ -600,6 +630,23 @@ It is disegned for extension.
 The business interface of the @code{monitor} class is the following:
 
 @table @code
+@item void set_properties(std::map<std::string, std::string> options);
+@fnindex @code{monitor::set_properties}
+
+This function sets a map of monitor-specific properties.
+
+@item std::string get_property(std::string name);
+@fnindex @code{monitor::get_property}
+
+This function returns the property named @code{name}.
+
+@item void set_allow_overflow(bool allow_overflow);
+@fnindex @code{monitor::set_allow_overflow}
+
+This function sets the allow overflow flag to the specified value.  If
+this flag is set, then the monitor will report a monitor buffer
+overflow as a change event of type @code{fsw_event_flag::Overflow}.
+
 @item void set_latency(double latency);
 @fnindex @code{monitor::set_latency}
 
@@ -663,13 +710,6 @@ event type filter list of the current monitor.
 This function sets the event type filter list of the current monitor,
 substituting existing filters if any.
 
-@item void notify_events(const std::vector<event> &events) const;
-@fnindex @code{monitor::notify_events}
-
-This function applies all the filters configured in the current
-monitor to the specified list of events.  If the resulting filtered
-list is not empty it notifies it to the configured callback.
-
 @end table
 
 @subsection Implementing Monitors
@@ -680,6 +720,11 @@ list is not empty it notifies it to the configured callback.
 functions:
 
 @table @code
+@item bool accept_event_type(fsw_event_flag event_type) const
+@fnindex @code{monitor::accept_event_type}
+This function checks whether the specified @code{event_type} can be
+accepted according to the list of event type filters of the monitor.
+
 @item bool accept_path(const std::string &path) const
 @fnindex @code{monitor::accept_path}
 This function checks whether the specified @code{path} can be accepted
@@ -689,6 +734,22 @@ according to the list of filters of the monitor.
 @fnindex @code{monitor::accept_path}
 This function checks whether the specified @code{path} can be accepted
 according to the list of filters of the monitor.
+
+@item void notify_events(const std::vector<event> &events) const
+@fnindex @code{monitor::notify_events}
+This function notifies that detection of the specified @code{events}.
+
+@item void notify_overflow(const std::string & path) const
+@fnindex @code{monitor::notify_overflow}
+This function notifies that the monitor has overflowed.
+@emph{Overflowing} is a monitor-specific concept and not all monitors
+experience this behaviour.
+
+@item std::vector<fsw_event_flag> filter_flags(const event &evt) const
+@fnindex @code{monitor::filter_flags}
+This function filters the list of flags of an event @code{evt} using
+the list of event type filters of the monitor.  If no filters are set,
+all the flags are returned.
 
 @item virtual void run() = 0
 @fnindex @code{monitor::run}
@@ -794,6 +855,7 @@ public:
         time_t evt_time,
         std::vector<fsw_event_flag> flags);
   virtual ~event();
+
   std::string get_path() const;
   time_t get_time() const;
   std::vector<fsw_event_flag> get_flags() const;
@@ -1161,6 +1223,11 @@ Unused.
 @fnindex @code{FSW_ERR_UNKNOWN_VALUE}
 Unused.
 
+@item FSW_ERR_INVALID_PROPERTY
+@itemx (1 << 18)
+@fnindex @code{FSW_ERR_INVALID_PROPERTY}
+The specified property is invalid.
+
 @end table
 
 @section Functions
@@ -1195,6 +1262,20 @@ monitor and returns an handle to it.  This function is the libfswatch
 @fnindex @code{fsw_add_path}
 Adds a path to watch to the specified session.  At least one path must
 be added to the current session in order for it to be valid.
+
+@item FSW_STATUS
+@itemx fsw_add_property(const FSW_HANDLE handle, const char * name, const char * value)
+@fnindex @code{fsw_add_property}
+This function adds a new key-value pair @code{(name, value)} in the
+monitor's property map.
+
+
+@item FSW_STATUS
+@itemx fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow)
+@fnindex @code{fsw_set_allow_overflow}
+Sets the allow overflow flag to the specified value.  If this flag is
+set, monitor buffer overflows will be reported as change events of
+type @code{fsw_event_flag::Overflow}.
 
 @item FSW_STATUS
 @itemx fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
@@ -1326,7 +1407,7 @@ with any monitoring session any longer.
 @cpindex memory management, functions
 @pgindex @file{libfswatch_mem.h}
 @anchor{Memory Management Functions} The C @acronym{API} published by
-the @code{libfswatch} library contains some memory management
+the @file{libfswatch} library contains some memory management
 routines.  These functions, defined in the @file{libfswatch_mem.h}
 header file, are the following:
 
@@ -1451,6 +1532,11 @@ This event flag indicates that the modified object is a symbolic link.
 @itemx 1 << 12
 @fnindex @code{fsw_event_flag::Link}
 This event flag represents a file link event.
+
+@item Overflow
+@itemx 1 << 13
+@fnindex @code{fsw_event_flag::Overflow}
+This event flag represents a monitor buffer overflow.
 @end table
 
 A monitor implementation is required to map implementation-specific
@@ -1566,6 +1652,101 @@ Members of this enumeration may be used with factory methods
 (@pxref{Monitor Discovery} provided by the @acronym{API} to request a
 monitor of a specific type.  The members of this enumeration must be
 known at compile time.
+
+@section Logging
+@cpindex logging
+The @file{libfswatch} library never writes any output to the standard
+streams, unless the @emph{verbose} mode is set: in this mode,
+diagnostic information is written to standard error.  The library
+offers a set of logging functions to ease the task of conditionally
+writing both literal and formatted messages to the output, when the
+verbose flag is set.
+
+@subsection Logging functions
+@cpindex logging, functions
+
+@table @code
+@item void fsw_log(const char * msg)
+@fnindex @code{fsw_log}
+
+This function prints the specified message @code{msg} literally to the
+standard output.
+
+@item void fsw_flog(FILE * f, const char * msg)
+@fnindex @code{fsw_flog}
+
+This function prints the specified message @code{msg} literally to the
+file @code{f}.
+
+@item void fsw_logf(const char * format, ...);
+@fnindex @code{fsw_logf}
+
+This function prints and formats the specified message @code{format}
+to the standard output.
+
+
+@item void fsw_flogf(FILE * f, const char * format, ...)
+@fnindex @code{fsw_flogf}
+
+This function prints and formats the specified message @code{format}
+to the file @code{f}.
+
+@item void fsw_log_perror(const char * msg)
+@fnindex @code{fsw_log_perror}
+
+This function prints and formats the specified message @code{msg}
+using @code{perror}.
+
+@end table
+
+@subsection Logging macros
+@cpindex logging, macros
+
+The @file{libfswatch} library provides a set of macros that can be
+used to print diagnostic messages containing the name of the method
+where the macro is called from.  The format of a message @code{msg}
+printed using one of these macros from inside a function called
+@code{func} will be similar to:
+
+@example
+func: msg
+@end example
+
+@table @code
+@item FSW_LOG(msg)
+@fnindex @code{FSW_LOG}
+
+This macro prints to standard output the name of the function this
+macro is called from followed by the message @code{msg}.
+
+@item FSW_ELOG(msg)
+@fnindex @code{FSW_ELOG}
+
+This macro prints to standard error the name of the function this
+macro is called from followed by the message @code{msg}.
+
+@item FSW_LOGF(msg, ...)
+@fnindex @code{FSW_LOGF}
+
+This macro prints to standard output the name of the function this
+macro is called from followed by the message @code{msg}, formatted
+using the specified arguments.
+
+@item FSW_ELOGF(msg, ...)
+@fnindex @code{FSW_ELOGF}
+
+This macro prints to standard error the name of the function this
+macro is called from followed by the message @code{msg}, formatted
+using the specified arguments.
+
+@item FSW_FLOGF(f, msg, ...)
+@fnindex @code{FSW_FLOGF}
+
+This macro prints to the specified file the name of the function this
+macro is called from followed by the message @code{msg}, formatted
+using the specified arguments.
+
+@end table
 
 @section Example
 @cpindex monitoring session, example

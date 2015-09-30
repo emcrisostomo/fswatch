@@ -19,7 +19,6 @@
 #  include "monitor.hpp"
 #  include <string>
 #  include <vector>
-#  include <sys/stat.h>
 
 namespace fsw
 {
@@ -41,6 +40,7 @@ namespace fsw
     windows_monitor(const windows_monitor& orig) = delete;
     windows_monitor& operator=(const windows_monitor & that) = delete;
 
+    void configure_monitor();
     void initialize_windows_path_list();
     void initialize_events();
     bool init_search_for_path(const std::wstring path);

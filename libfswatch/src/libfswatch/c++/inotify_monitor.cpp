@@ -36,6 +36,7 @@ using namespace std;
 
 namespace fsw
 {
+
   struct inotify_monitor_impl
   {
     int inotify_monitor_handle = -1;
@@ -75,11 +76,11 @@ namespace fsw
     monitor(paths_to_monitor, callback, context),
     impl(new inotify_monitor_impl())
   {
-    impl->inotify_monitor_handle = ::inotify_init();
+    impl->inotify_monitor_handle = inotify_init();
 
     if (impl->inotify_monitor_handle == -1)
     {
-      ::perror("inotify_init");
+      perror("inotify_init");
       throw libfsw_exception(_("Cannot initialize inotify."));
     }
   }
@@ -91,18 +92,18 @@ namespace fsw
     {
       ostringstream log;
       log << _("Removing: ") << inotify_desc_pair << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
-      if (::inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair))
+      if (inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair))
       {
-        ::perror("inotify_rm_watch");
+        perror("inotify_rm_watch");
       }
     }
 
     // close inotify
     if (impl->inotify_monitor_handle > 0)
     {
-      ::close(impl->inotify_monitor_handle);
+      close(impl->inotify_monitor_handle);
     }
 
     delete impl;
@@ -112,13 +113,13 @@ namespace fsw
                                   const struct stat &fd_stat)
   {
     // TODO: Consider optionally adding the IN_EXCL_UNLINK flag.
-    int inotify_desc = ::inotify_add_watch(impl->inotify_monitor_handle,
-                                           path.c_str(),
-                                           IN_ALL_EVENTS);
+    int inotify_desc = inotify_add_watch(impl->inotify_monitor_handle,
+                                         path.c_str(),
+                                         IN_ALL_EVENTS);
 
     if (inotify_desc == -1)
     {
-      ::perror("inotify_add_watch");
+      perror("inotify_add_watch");
     }
     else
     {
@@ -128,7 +129,7 @@ namespace fsw
 
       ostringstream log;
       log << _("Added: ") << path << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
     }
 
     return (inotify_desc != -1);
@@ -241,7 +242,7 @@ namespace fsw
     {
       ostringstream log;
       log << _("Generic event: ") << event->wd << "::" << filename_stream.str() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
     }
 
     /*
@@ -252,7 +253,7 @@ namespace fsw
     {
       ostringstream log;
       log << "IN_IGNORED: " << event->wd << "::" << filename_stream.str() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       impl->descriptors_to_remove.insert(event->wd);
     }
@@ -265,15 +266,15 @@ namespace fsw
      *
      * Beware that a race condition exists which may result in events go
      * unnoticed when a watched file x is removed and a new file named x is
-     * created thereafter.  In this case, fswatch could be blocked on ::read
-     * and it would not have any chance to create a new watch descriptor for x
-     * until an event is received and ::read unblocks.
+     * created thereafter.  In this case, fswatch could be blocked on read and
+     * it would not have any chance to create a new watch descriptor for x until
+     *  an event is received and read unblocks.
      */
     if (event->mask & IN_MOVE_SELF)
     {
       ostringstream log;
       log << "IN_MOVE_SELF: " << event->wd << "::" << filename_stream.str() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       impl->watches_to_remove.insert(event->wd);
       impl->descriptors_to_remove.insert(event->wd);
@@ -292,7 +293,7 @@ namespace fsw
     {
       ostringstream log;
       log << "IN_DELETE_SELF: " << event->wd << "::" << filename_stream.str() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       impl->descriptors_to_remove.insert(event->wd);
     }
@@ -302,7 +303,7 @@ namespace fsw
   {
     if (event->mask & IN_Q_OVERFLOW)
     {
-      throw libfsw_exception(_("Event queue overflow."));
+      notify_overflow(impl->wd_to_path[event->wd]);
     }
 
     preprocess_dir_event(event);
@@ -325,15 +326,15 @@ namespace fsw
 
     while (wtd != impl->watches_to_remove.end())
     {
-      if (::inotify_rm_watch(impl->inotify_monitor_handle, *wtd) != 0)
+      if (inotify_rm_watch(impl->inotify_monitor_handle, *wtd) != 0)
       {
-        ::perror("inotify_rm_watch");
+        perror("inotify_rm_watch");
       }
       else
       {
         ostringstream log;
         log << _("Removed: ") << *wtd << "\n";
-        libfsw_log(log.str().c_str());
+        FSW_ELOG(log.str().c_str());
       }
 
       impl->watches_to_remove.erase(wtd++);
@@ -366,7 +367,7 @@ namespace fsw
       // If no files can be watched, sleep and repeat the loop.
       if (!impl->watched_descriptors.size())
       {
-        ::sleep(latency);
+        sleep(latency);
         continue;
       }
 
@@ -379,15 +380,15 @@ namespace fsw
       FD_ZERO(&set);
       FD_SET(impl->inotify_monitor_handle, &set);
       double sec;
-      double frac = ::modf(this->latency, &sec);
+      double frac = modf(this->latency, &sec);
       timeout.tv_sec = sec;
       timeout.tv_usec = 1000 * 1000 * frac;
 
-      int rv = ::select(impl->inotify_monitor_handle + 1,
-                        &set,
-                        nullptr,
-                        nullptr,
-                        &timeout);
+      int rv = select(impl->inotify_monitor_handle + 1,
+                      &set,
+                      nullptr,
+                      nullptr,
+                      &timeout);
 
       if (rv == -1)
       {
@@ -400,25 +401,25 @@ namespace fsw
         continue;
       }
 
-      ssize_t record_num = ::read(impl->inotify_monitor_handle,
-                                  buffer,
-                                  BUFFER_SIZE);
+      ssize_t record_num = read(impl->inotify_monitor_handle,
+                                buffer,
+                                BUFFER_SIZE);
 
       {
         ostringstream log;
         log << _("Number of records: ") << record_num << "\n";
-        libfsw_log(log.str().c_str());
+        FSW_ELOG(log.str().c_str());
       }
 
       if (!record_num)
       {
-        throw libfsw_exception(_("::read() on inotify descriptor read 0 records."));
+        throw libfsw_exception(_("read() on inotify descriptor read 0 records."));
       }
 
       if (record_num == -1)
       {
-        ::perror("read()");
-        throw libfsw_exception(_("::read() on inotify descriptor returned -1."));
+        perror("read()");
+        throw libfsw_exception(_("read() on inotify descriptor returned -1."));
       }
 
       time(&impl->curr_time);
@@ -439,7 +440,7 @@ namespace fsw
         impl->events.clear();
       }
 
-      ::sleep(latency);
+      sleep(latency);
     }
   }
 }

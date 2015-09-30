@@ -24,6 +24,7 @@
 #include <regex.h>
 #include <iostream>
 #include <sstream>
+#include <time.h>
 /*
  * Conditionally include monitor headers for default construction.
  */
@@ -62,6 +63,11 @@ namespace fsw
     }
   }
 
+  void monitor::set_allow_overflow(bool overflow)
+  {
+    allow_overflow = overflow;
+  }
+
   void monitor::set_latency(double latency)
   {
     if (latency < 0)
@@ -82,7 +88,7 @@ namespace fsw
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(const std::vector<fsw_event_type_filter> &filters)
+  void monitor::set_event_type_filters(const vector<fsw_event_type_filter> &filters)
   {
     event_type_filters.clear();
 
@@ -97,13 +103,28 @@ namespace fsw
     if (!filter.case_sensitive) flags |= REG_ICASE;
     if (filter.extended) flags |= REG_EXTENDED;
 
-    if (::regcomp(&regex, filter.text.c_str(), flags))
+    if (regcomp(&regex, filter.text.c_str(), flags))
     {
       string err = _("An error occurred during the compilation of ") + filter.text;
       throw libfsw_exception(err, FSW_ERR_INVALID_REGEX);
     }
 
     this->filters.push_back({regex, filter.type});
+  }
+
+  void monitor::set_property(const std::string & name, const std::string & value)
+  {
+    properties[name] = value;
+  }
+
+  void monitor::set_properties(const map<string, string> & options)
+  {
+    properties = options;
+  }
+
+  string monitor::get_property(string name)
+  {
+    return properties[name];
   }
 
   void monitor::set_filters(const vector<monitor_filter> &filters)
@@ -148,7 +169,7 @@ namespace fsw
 
     for (const auto &filter : filters)
     {
-      if (::regexec(&filter.regex, path, 0, nullptr, 0) == 0)
+      if (regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
         if (filter.type == fsw_filter_type::filter_include) return true;
 
@@ -175,7 +196,7 @@ namespace fsw
   {
     for (auto &re : filters)
     {
-      ::regfree(&re.regex);
+      regfree(&re.regex);
     }
 
     filters.clear();
@@ -267,6 +288,19 @@ namespace fsw
     return filtered_flags;
   }
 
+  void monitor::notify_overflow(const string & path) const
+  {
+    if (!allow_overflow)
+    {
+      throw libfsw_exception(_("Event queue overflow."));
+    }
+
+    time_t curr_time;
+    time(&curr_time);
+
+    notify_events({{path, curr_time, {fsw_event_flag::Overflow}}});
+  }
+
   void monitor::notify_events(const vector<event> &events) const
   {
     vector<event> filtered_events;
@@ -286,7 +320,7 @@ namespace fsw
     {
       ostringstream log;
       log << _("Notifying events #: ") << filtered_events.size() << "\n";
-      libfsw_log(log.str().c_str());
+      FSW_ELOG(log.str().c_str());
 
       callback(filtered_events, context);
     }
