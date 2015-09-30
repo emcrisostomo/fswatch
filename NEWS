@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 1.6.1:
+
+  * Texinfo documentation now includes @dircategory and @direntry tags to be
+    compatible with install-info.
+
 New in 1.6.0:
 
   * fswatch can now be built on Microsoft Windows using Cygwin.
