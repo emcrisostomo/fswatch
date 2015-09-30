@@ -4,9 +4,14 @@ NEWS
 New in 1.6.0:
 
   * libfswatch can now be built on Microsoft Windows using Cygwin.
+
   * A monitor for Microsoft Windows has been added.
-  * libfswatch can report monitor buffer overflows (which cannot be avoided
-    with certain monitors) as regular events for callers to recover gracefully.
+
+  * libfswatch can report monitor buffer overflows (which cannot be avoided with
+    certain monitors) as regular events for callers to recover gracefully.
+
+  * Monitor can be customized by passing monitor-specific configuration
+    properties.
 
 New in 1.5.1:
 
@@ -15,6 +20,7 @@ New in 1.5.1:
 New in 1.5.0:
 
   * Fix issue 46: Allow filtering by event type.
+
   * Fix issue 83: Callback invocation should be moved into fsw::monitor.
 
 New in 1.4.7:
@@ -37,29 +43,40 @@ New in 1.4.5.2:
 New in 1.4.4:
 
   * Localize fswatch and libfswatch using GNU gettext.
+
   * Add Italian (it) localization.
+
   * Add Spanish (es) localization.
 
 New in 1.4.3:
 
   * Add Texinfo documentation.
+
   * libfswatch API is now versioned.
+
   * Improved Autoconf checks.
+
   * The inotify monitor now waits for events and honours the latency settings.
+
   * Automaticaly generate the ChangeLog using Git.
+
   * Update autogen.sh to honour some commonly used environment variables.
 
 New in 1.4.2:
 
   * The inotify monitor now provides the same functionality provided by all the
     other monitors.  Recursive directory monitoring is now implemented.
+
   * Version and revision is now determined dynamically from Git by ancillary
     scripts invoked by the GNU Build System.
 
 New in 1.4.0:
 
   * The libfswatch library has been added with bindings for C and C++.
+
   * Move monitors to separate library.
+
   * Provide a libtool-configured library exposing the functionality of fswatch
     monitors.
+
   * Provide C and C++ headers and bindings.
