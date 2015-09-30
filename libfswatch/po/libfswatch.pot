@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.6.0\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-09-28 01:44+0200\n"
+"POT-Creation-Date: 2015-09-30 12:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,45 +61,40 @@ msgstr ""
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:83
+#: src/libfswatch/c++/inotify_monitor.cpp:84
 msgid "Cannot initialize inotify."
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:93
+#: src/libfswatch/c++/inotify_monitor.cpp:94
 msgid "Removing: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:130
+#: src/libfswatch/c++/inotify_monitor.cpp:131
 msgid "Added: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:243
+#: src/libfswatch/c++/inotify_monitor.cpp:244
 msgid "Generic event: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:305
-#: src/libfswatch/c++/monitor.cpp:290
-msgid "Event queue overflow."
-msgstr ""
-
-#: src/libfswatch/c++/inotify_monitor.cpp:335
+#: src/libfswatch/c++/inotify_monitor.cpp:336
 msgid "Removed: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:394
+#: src/libfswatch/c++/inotify_monitor.cpp:395
 msgid "::select() on inotify descriptor encountered an error."
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:409
+#: src/libfswatch/c++/inotify_monitor.cpp:410
 msgid "Number of records: "
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:415
-msgid "::read() on inotify descriptor read 0 records."
+#: src/libfswatch/c++/inotify_monitor.cpp:416
+msgid "read() on inotify descriptor read 0 records."
 msgstr ""
 
-#: src/libfswatch/c++/inotify_monitor.cpp:421
-msgid "::read() on inotify descriptor returned -1."
+#: src/libfswatch/c++/inotify_monitor.cpp:422
+msgid "read() on inotify descriptor returned -1."
 msgstr ""
 
 #: src/libfswatch/c++/kqueue_monitor.cpp:145
@@ -146,11 +141,15 @@ msgstr ""
 msgid "An error occurred during the compilation of "
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:317
+#: src/libfswatch/c++/monitor.cpp:295
+msgid "Event queue overflow."
+msgstr ""
+
+#: src/libfswatch/c++/monitor.cpp:322
 msgid "Notifying events #: "
 msgstr ""
 
-#: src/libfswatch/c++/path_utils.cpp:71
+#: src/libfswatch/c++/path_utils.cpp:70
 msgid "Cannot stat() "
 msgstr ""
 

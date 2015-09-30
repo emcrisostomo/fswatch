@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-09-28 01:44+0200\n"
-"PO-Revision-Date: 2015-09-27 01:26+0200\n"
+"POT-Creation-Date: 2015-09-30 12:21+0200\n"
+"PO-Revision-Date: 2015-09-30 12:24+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -61,46 +61,41 @@ msgstr "Facendo partire il ciclo di esecuzione...\n"
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "Il contesto del callback non può essere convertita a fsevents_monitor."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:83
+#: src/libfswatch/c++/inotify_monitor.cpp:84
 msgid "Cannot initialize inotify."
 msgstr "Non si può inizializzare inotify."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:93
+#: src/libfswatch/c++/inotify_monitor.cpp:94
 msgid "Removing: "
 msgstr "Eliminando: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:130
+#: src/libfswatch/c++/inotify_monitor.cpp:131
 msgid "Added: "
 msgstr "Aggiunto: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:243
+#: src/libfswatch/c++/inotify_monitor.cpp:244
 msgid "Generic event: "
 msgstr "Evento generico: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:305
-#: src/libfswatch/c++/monitor.cpp:290
-msgid "Event queue overflow."
-msgstr "La coda degli eventi è andata in overflow."
-
-#: src/libfswatch/c++/inotify_monitor.cpp:335
+#: src/libfswatch/c++/inotify_monitor.cpp:336
 msgid "Removed: "
 msgstr "Eliminato: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:394
+#: src/libfswatch/c++/inotify_monitor.cpp:395
 msgid "::select() on inotify descriptor encountered an error."
 msgstr "::select() sul descrittore inotify è andata in errore."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:409
+#: src/libfswatch/c++/inotify_monitor.cpp:410
 msgid "Number of records: "
 msgstr "Numero di registri: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:415
-msgid "::read() on inotify descriptor read 0 records."
-msgstr "::read() sul descrittore inotify ha trovato 0 registri."
+#: src/libfswatch/c++/inotify_monitor.cpp:416
+msgid "read() on inotify descriptor read 0 records."
+msgstr "read() sul descrittore inotify ha trovato 0 registri."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:421
-msgid "::read() on inotify descriptor returned -1."
-msgstr "::read() sul descrittore inotify ha ritornato -1."
+#: src/libfswatch/c++/inotify_monitor.cpp:422
+msgid "read() on inotify descriptor returned -1."
+msgstr "read() sul descrittore inotify ha ritornato -1."
 
 #: src/libfswatch/c++/kqueue_monitor.cpp:145
 msgid "Cannot open "
@@ -146,11 +141,15 @@ msgstr "La latenza non può essere negativa."
 msgid "An error occurred during the compilation of "
 msgstr "Si è prodotto un errore durante la compilazione di "
 
-#: src/libfswatch/c++/monitor.cpp:317
+#: src/libfswatch/c++/monitor.cpp:295
+msgid "Event queue overflow."
+msgstr "La coda degli eventi è andata in overflow."
+
+#: src/libfswatch/c++/monitor.cpp:322
 msgid "Notifying events #: "
 msgstr "Notificando eventi #: "
 
-#: src/libfswatch/c++/path_utils.cpp:71
+#: src/libfswatch/c++/path_utils.cpp:70
 msgid "Cannot stat() "
 msgstr "Non posso eseguire stat() "
 
