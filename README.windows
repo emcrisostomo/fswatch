@@ -1,0 +1,90 @@
+README.windows
+**************
+
+Introduction
+============
+
+This file describes the steps required to build fswatch on Windows.  fswatch was
+born as a POSIX application and the Windows monitor has been developed trying to
+reduce the dependencies on the Windows API at a minimum.  To fulfill this goal,
+a dependency to Cygwin has been introduced.
+
+Windows has historically provided multiple versions of the same API for single
+byte and multibyte character sets.  We have decided to only support the
+multibyte API: the Windows monitor will thus not build on Windows system
+supporting only the single-byte APIs.  In this case, the only available monitor
+on the Windows OS will be the poll monitor.
+
+Cygwin
+======
+
+Cygwin is a required dependency and must be installed to provide the toolchain
+and the libraries required by fswatch.  The current Cygwin distribution can be
+downloaded at:
+
+    https://cygwin.com
+
+Cygwin is a modular environment and the following componentes are required to
+successfully build fswatch:
+
+  * GNU GCC C++ compiler.
+
+  * GNU Autoconf.
+
+  * GNU Automake.
+
+  * GNU Autoconf.
+
+  * GNU libtool.
+
+The following are optional:
+
+  * GNU gettext (optional)
+
+Windows SDK
+===========
+
+The Windows SDK is required to successfully build fswatch since it ships the
+headers and the libraries required to build Windows applications.  Please,
+consult your Windows documentation to get the latest SDK for your platform.
+
+GNU Build System
+================
+
+For further instruction on building the GNU Build System from scratch, please
+check the README.gnu-build-system file.
+
+Localization and gettext
+========================
+
+fswatch is localizable and locale support requires GNU gettext to be available
+at build time.
+
+Depending on gettext installation path, configure may not be able to find
+<libintl.h> or libintl.  In this case, you will need to instruct configure about
+their location:
+
+  $ CPPFLAGS="-I/path/to/include" LDFLAGS="-L/path/to/lib" ./configure
+
+If configure detects that gettext is available, you will find a message such as:
+
+  checking whether to use NLS... yes
+
+or, which is equivalent, config.h will contain the following definition:
+
+  #define ENABLE_NLS 1
+
+-----
+
+Copyright (c) 2014-2015 Enrico M. Crisostomo
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.
