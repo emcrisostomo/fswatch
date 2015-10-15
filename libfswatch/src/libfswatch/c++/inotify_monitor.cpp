@@ -147,17 +147,18 @@ namespace fsw
      * true to allow watching a file when first invoked on a node.
      */
     if (!accept_non_dirs && !S_ISDIR(fd_stat.st_mode)) return;
-    else if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+
+    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
       string link_path;
       if (read_link_path(path, link_path))
-        scan(link_path/*, fn */, accept_non_dirs);
+        scan(link_path, accept_non_dirs);
 
       return;
     }
 
     if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return;
-    if (!add_watch(path, fd_stat /*, fn */)) return;
+    if (!add_watch(path, fd_stat)) return;
     if (!recursive || !S_ISDIR(fd_stat.st_mode)) return;
 
     vector<string> children;
@@ -170,7 +171,7 @@ namespace fsw
       /*
        * Scan children but only watch directories.
        */
-      scan(path + "/" + child /*, fn */, false);
+      scan(path + "/" + child, false);
     }
   }
 
