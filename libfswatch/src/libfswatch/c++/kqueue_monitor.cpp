@@ -170,10 +170,12 @@ namespace fsw
       return false;
     }
 
-    if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return true;
+    bool is_dir = S_ISDIR(fd_stat.st_mode);
+    
+    if (!is_dir && !accept_path(path)) return true;
     if (!add_watch(path, fd_stat)) return false;
     if (!recursive) return true;
-    if (!S_ISDIR(fd_stat.st_mode)) return true;
+    if (!is_dir) return true;
 
     vector<string> children;
     get_directory_children(path, children);
