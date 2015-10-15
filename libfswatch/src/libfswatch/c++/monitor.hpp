@@ -49,6 +49,7 @@ namespace fsw
     void set_latency(double latency);
     void set_allow_overflow(bool overflow);
     void set_recursive(bool recursive);
+    void set_directory_only(bool directory_only);
     void add_filter(const monitor_filter &filter);
     void set_filters(const std::vector<monitor_filter> &filters);
     void set_follow_symlinks(bool follow);
@@ -77,6 +78,7 @@ namespace fsw
     bool allow_overflow = false;
     bool recursive = false;
     bool follow_symlinks = false;
+    bool directory_only = false;
 
   private:
 #  ifdef HAVE_CXX_MUTEX

@@ -83,6 +83,11 @@ namespace fsw
     this->recursive = recursive;
   }
 
+  void monitor::set_directory_only(bool directory_only)
+  {
+    this->directory_only = directory_only;
+  }
+
   void monitor::add_event_type_filter(const fsw_event_type_filter &filter)
   {
     this->event_type_filters.push_back(filter);
