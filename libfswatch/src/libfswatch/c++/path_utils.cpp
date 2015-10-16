@@ -67,8 +67,7 @@ namespace fsw
   {
     if (lstat(path.c_str(), &fd_stat) != 0)
     {
-      string err = string(_("Cannot stat() ")) + path;
-      fsw_log_perror(err.c_str());
+      FSW_ELOGF(_("Cannot stat() %s.\n"), path.c_str());
 
       return false;
     }

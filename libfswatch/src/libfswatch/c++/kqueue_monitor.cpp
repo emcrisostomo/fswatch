@@ -169,8 +169,7 @@ namespace fsw
 
     if (fd == -1)
     {
-      string err = string(_("Cannot open ")) + path;
-      fsw_log_perror(err.c_str());
+      FSW_ELOGF(_("Cannot open %s"), path.c_str());
 
       return false;
     }
@@ -260,8 +259,7 @@ namespace fsw
 
       if (!scan(path))
       {
-        string err = _("Notice: ") + path + _(" cannot be found. Will retry later.\n");
-        FSW_ELOG(err.c_str());
+        FSW_ELOGF(_("%s cannot be found. Will retry later.\n"), path.c_str());
       }
     }
   }
