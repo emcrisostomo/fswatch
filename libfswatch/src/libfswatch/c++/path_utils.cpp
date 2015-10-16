@@ -26,6 +26,7 @@ using namespace std;
 
 namespace fsw
 {
+
   void get_directory_children(const string &path, vector<string> &children)
   {
     DIR *dir = opendir(path.c_str());
@@ -67,7 +68,7 @@ namespace fsw
   {
     if (lstat(path.c_str(), &fd_stat) != 0)
     {
-      FSW_ELOGF(_("Cannot stat() %s.\n"), path.c_str());
+      fsw_logf_perror(_("Cannot stat %s"), path.c_str());
 
       return false;
     }

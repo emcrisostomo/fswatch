@@ -169,7 +169,7 @@ namespace fsw
 
     if (fd == -1)
     {
-      FSW_ELOGF(_("Cannot open %s"), path.c_str());
+      fsw_logf_perror(_("Cannot open %s"), path.c_str());
 
       return false;
     }

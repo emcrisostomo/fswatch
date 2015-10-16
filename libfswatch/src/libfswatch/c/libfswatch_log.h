@@ -45,6 +45,12 @@ void fsw_flogf(FILE * f, const char * format, ...);
  */
 void fsw_log_perror(const char * msg);
 
+/*
+ * Prints the specified message using perror.  The message string format
+ * conforms with printf.
+ */
+void fsw_logf_perror(const char * format, ...);
+
 #  define FSW_LOG(msg)           fsw_logf("%s: ", __func__);          fsw_log(msg)
 #  define FSW_ELOG(msg)          fsw_flogf(stderr, "%s: ", __func__); fsw_flog(stderr, msg)
 #  define FSW_LOGF(msg, ...)     fsw_logf("%s: ", __func__);          fsw_logf(msg, __VA_ARGS__)
