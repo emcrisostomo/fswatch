@@ -157,10 +157,9 @@ namespace fsw
     int o_flags = 0;
 #  ifdef O_SYMLINK
     o_flags |= O_SYMLINK;
-#  elif defined(O_NOFOLLOW)
-    o_flags |= O_NOFOLLOW;
 #  endif
 #  ifdef O_EVTONLY
+    // The descriptor is requested for event notifications only.
     o_flags |= O_EVTONLY;
 #  else
     o_flags |= O_RDONLY;
