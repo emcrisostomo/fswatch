@@ -38,13 +38,41 @@ using namespace std;
 
 namespace fsw
 {
+
   struct kqueue_monitor_load
   {
     fsw_hash_map<string, int> descriptors_by_file_name;
     fsw_hash_map<int, string> file_names_by_descriptor;
+    fsw_hash_map<int, mode_t> file_modes;
     fsw_hash_set<int> descriptors_to_remove;
     fsw_hash_set<int> descriptors_to_rescan;
-    fsw_hash_map<int, mode_t> file_modes;
+
+    void add_watch(int fd, const string & path, const struct stat &fd_stat)
+    {
+      descriptors_by_file_name[path] = fd;
+      file_names_by_descriptor[fd] = path;
+      file_modes[fd] = fd_stat.st_mode;
+    }
+
+    void remove_watch(int fd)
+    {
+      string name = file_names_by_descriptor[fd];
+      file_names_by_descriptor.erase(fd);
+      descriptors_by_file_name.erase(name);
+      file_modes.erase(fd);
+
+      close(fd);
+    }
+
+    void remove_watch(const string & path)
+    {
+      int fd = descriptors_by_file_name[path];
+      descriptors_by_file_name.erase(path);
+      file_names_by_descriptor.erase(fd);
+      file_modes.erase(fd);
+
+      close(fd);
+    }
   };
 
   typedef struct KqueueFlagType
@@ -149,9 +177,7 @@ namespace fsw
     }
 
     // if the descriptor could be opened, track it
-    load->descriptors_by_file_name[path] = fd;
-    load->file_names_by_descriptor[fd] = path;
-    load->file_modes[fd] = fd_stat.st_mode;
+    load->add_watch(fd, path, fd_stat);
 
     return true;
   }
@@ -171,7 +197,7 @@ namespace fsw
     }
 
     bool is_dir = S_ISDIR(fd_stat.st_mode);
-    
+
     if (!is_dir && !accept_path(path)) return true;
     if (!add_watch(path, fd_stat)) return false;
     if (!recursive) return true;
@@ -190,32 +216,13 @@ namespace fsw
     return true;
   }
 
-  void kqueue_monitor::remove_watch(int fd)
-  {
-    string name = load->file_names_by_descriptor[fd];
-    load->file_names_by_descriptor.erase(fd);
-    load->descriptors_by_file_name.erase(name);
-    load->file_modes.erase(fd);
-    close(fd);
-  }
-
-  void kqueue_monitor::remove_watch(const string &path)
-  {
-    int fd = load->descriptors_by_file_name[path];
-    load->descriptors_by_file_name.erase(path);
-    load->file_names_by_descriptor.erase(fd);
-    load->file_modes.erase(fd);
-    close(fd);
-  }
-
   void kqueue_monitor::remove_deleted()
   {
     auto fd = load->descriptors_to_remove.begin();
 
     while (fd != load->descriptors_to_remove.end())
     {
-      remove_watch(*fd);
-
+      load->remove_watch(*fd);
       load->descriptors_to_remove.erase(fd++);
     }
   }
@@ -238,7 +245,8 @@ namespace fsw
       // If the descriptor which has vanished is a directory, we don't bother
       // EV_DELETEing all its children the event from kqueue for the same
       // reason.
-      remove_watch(fd_path);
+      load->remove_watch(fd_path);
+
       scan(fd_path);
 
       load->descriptors_to_rescan.erase(fd++);
