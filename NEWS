@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 1.7.0.develop:
+
+  * Feature 98: Add (-d, --directories) option to request the monitor to watch
+    directories only during a recursive scan.
+
 New in 1.6.1:
 
   * Texinfo documentation now includes @dircategory and @direntry tags to be
