@@ -202,8 +202,7 @@ namespace fsw
     if (!recursive) return true;
     if (!is_dir) return true;
 
-    vector<string> children;
-    get_directory_children(path, children);
+    vector<string> children = get_directory_children(path);
 
     for (string &child : children)
     {
