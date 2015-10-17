@@ -159,6 +159,7 @@ namespace fsw
       return;
     }
 
+    if (!is_dir && directory_only && !accept_non_dirs) return;
     if (!is_dir && !accept_path(path)) return;
     if (!add_watch(path, fd_stat)) return;
     if (!recursive || !is_dir) return;

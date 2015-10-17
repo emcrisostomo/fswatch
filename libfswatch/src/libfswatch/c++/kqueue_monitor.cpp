@@ -180,7 +180,7 @@ namespace fsw
     return true;
   }
 
-  bool kqueue_monitor::scan(const string &path)
+  bool kqueue_monitor::scan(const string &path, bool is_root_path)
   {
     struct stat fd_stat;
     if (!stat_path(path, fd_stat)) return false;
@@ -196,7 +196,7 @@ namespace fsw
 
     bool is_dir = S_ISDIR(fd_stat.st_mode);
 
-    if (!is_dir && directory_only) return true;
+    if (!is_dir && !is_root_path && directory_only) return true;
     if (!is_dir && !accept_path(path)) return true;
     if (!add_watch(path, fd_stat)) return false;
     if (!recursive) return true;
@@ -204,11 +204,11 @@ namespace fsw
 
     vector<string> children = get_directory_children(path);
 
-    for (string &child : children)
+    for (string & child : children)
     {
       if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
-      scan(path + "/" + child);
+      scan(path + "/" + child, false);
     }
 
     return true;
