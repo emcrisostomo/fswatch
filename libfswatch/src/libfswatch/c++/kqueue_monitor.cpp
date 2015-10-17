@@ -196,6 +196,7 @@ namespace fsw
 
     bool is_dir = S_ISDIR(fd_stat.st_mode);
 
+    if (!is_dir && directory_only) return true;
     if (!is_dir && !accept_path(path)) return true;
     if (!add_watch(path, fd_stat)) return false;
     if (!recursive) return true;
@@ -292,7 +293,7 @@ namespace fsw
     if (event_num == -1)
     {
       perror("kevent");
-      throw libfsw_exception(_("::kevent returned -1, invalid event number."));
+      throw libfsw_exception(_("kevent returned -1, invalid event number."));
     }
 
     return event_num;
