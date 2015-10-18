@@ -26,8 +26,10 @@ using namespace std;
 
 namespace fsw
 {
-  void get_directory_children(const string &path, vector<string> &children)
+
+  vector<string> get_directory_children(const string &path)
   {
+    vector<string> children;
     DIR *dir = opendir(path.c_str());
 
     if (!dir)
@@ -41,7 +43,7 @@ namespace fsw
         fsw_log_perror("opendir");
       }
 
-      return;
+      return children;
     }
 
     while (struct dirent * ent = readdir(dir))
@@ -50,6 +52,8 @@ namespace fsw
     }
 
     closedir(dir);
+
+    return children;
   }
 
   bool read_link_path(const string &path, string &link_path)
@@ -67,8 +71,7 @@ namespace fsw
   {
     if (lstat(path.c_str(), &fd_stat) != 0)
     {
-      string err = string(_("Cannot stat() ")) + path;
-      fsw_log_perror(err.c_str());
+      fsw_logf_perror(_("Cannot stat %s"), path.c_str());
 
       return false;
     }

@@ -87,6 +87,16 @@ Free Documentation License'.
 
 @node History
 @chapter History
+
+@section fswatch 1.7.0
+@itemize
+@item
+Add the @option{-d}/@option{--directories} option to request the
+monitor to watch directories only during a recursive scan.
+
+@end itemize
+
+
 @section fswatch 1.6.0
 @itemize
 @item
@@ -996,6 +1006,15 @@ monitor buffer overflows are reported as change events of type
 
 Print a marker at the end of every batch.
 
+@opsummary{directories}
+@item --directories
+@itemx -d
+
+Request the monitor to watch directories only during a recursive scan.
+This feature helps reducing the number of open file descriptors if a
+generic change event for a directory is acceptable instead of events
+on directory children.
+
 @opsummary{exclude}
 @item --exclude
 @itemx -e
@@ -1684,16 +1703,34 @@ In this case, the @samp{kqueue_monitor} is manually chosen.
 monitor by monitor basis.  The semantics of the (@option{--recursive},
 @option{-r}) option is: recursively scan subdirectories.  However,
 implementations may silently add `@emph{if the monitor does not do so
-already}'.
+already}'.  Since each monitor uses a different @acronym{API}, its
+behaviour depends on that of the backing @acronym{API}, and it is
+monitor-specific.
 
-Since each monitor uses a different @acronym{API}, its behaviour
-depends on that of the backing @acronym{API}, and it is
-monitor-specific.  The OS X FSEvents @acronym{API}, for example, will
-always recurse subdirectories when monitoring a directory.  In this
-case, even though @option{-r} is not specified, the monitor will
-monitor a directory's children nonetheless and there is no way to
-avoid it@footnote{But manually filtering out events based on paths,
-but @command{fswatch} does not do so @emph{by design}.}.
+@itemize
+@item
+The OS X @emph{FSEvents} @acronym{API} will always recurse
+subdirectories when monitoring a directory.  In this case, even though
+@option{-r} is not specified, the monitor will monitor a directory's
+children nonetheless and there is no way to avoid it@footnote{But
+manually filtering out events based on paths, but @command{fswatch}
+does not do so @emph{by design}.}.
+
+@item
+The @emph{kqueue} monitor opens a file descriptor for each watched
+file.  When @option{-r} is used and a directory is watched,
+@file{fswatch} will walk the file system hierarchy rooted at the
+directory and will open a file descriptor for each children to
+establish a watch on it.
+
+@item
+The @emph{inotify} and @code{ReadDirectoryChangesW} @acronym{API}
+returns change events for first-level children of a directory.  When
+the @option{-r} option is not specified, change events for a watched
+directory's children are received.  When the @option{-r} is specified,
+the monitor will walk the file system hierarchy rooted at the watched
+directory and will establish a watch on every directory object found.
+@end itemize
 
 In general, users should always use the @option{-r} option according
 to its semantics, no matter what the monitor does.  The only case when
@@ -1706,6 +1743,24 @@ specifically designed to behave like this.
 The authors think this is not a problem.  If you think this behaviour
 can be improved, please fill a bug report (@pxref{Reporting Bugs and
 Suggestions}).
+
+@subsection Recursively Watching Directories
+@cpindex monitor, recursive scanning, directories
+Some monitors such as the @emph{kqueue} monitor require a file
+descriptor to be open for each watched file system object.  This
+imposes a limitation on the maximum number of files that can be
+watched by @file{fswatch}.  Before version 1.7, a user could only
+overcome this problem by increasing the maximum number of open file
+handles on its system.
+
+@file{fswatch} 1.7.0 introduced a new option,
+@option{-d}/@option{--directories}; when this option is used with a
+monitor that supports it, only directory objects will be watched
+during recursive scans.  When a change occurs on a file, instead of
+reporting @emph{which} file has changed and how, @file{fswatch} will
+report a change event on the parent directory: this way, the number of
+required open file handles decreases at the expense of change event
+information granularity.
 
 @section Monitor Tunables
 @cpindex monitor, tunable
@@ -1801,9 +1856,10 @@ monitor.
 
 @subsection Peculiarities
 @cpindex monitor, FSEvents, peculiarities
-The (@option{--recursive}, @option{-r}) option has no effect when used
-with the FSEvents monitor since the FSEvents @acronym{API} already
-monitors a directory's children by default.  There is no overhead nor
+The (@option{--recursive}, @option{-r}) and (@option{--directories},
+@option{-d}) options have no effect when used with the FSEvents
+monitor since the FSEvents @acronym{API} already monitors a
+directory's children by default.  There is no overhead nor
 resource-consumption issue with this behaviour, but users processing
 the output must be aware that for each directory @emph{multiple}
 events may be generated by its children.
@@ -1839,6 +1895,9 @@ you cannot reduce the number of observed items, either:
 @item
 Consider raising the number of maximum open file descriptors (check
 your OS' documentation).
+
+@item
+Consider using the (@option{--directories}, @option{-d}) option.
 
 @item
 Consider using another monitor.
@@ -1941,6 +2000,9 @@ The Windows @acronym{API} lets user watch @emph{directory}, not
 underlying monitor as they are: as a consequence, if a path
 corresponds to a file, the monitor will emit an error and will not be
 able to watch it.
+
+For the same reasons, the (@option{--directories}/@option{-d}) has no
+effect when using this monitor.
 
 @subsubsection Recursivity
 The Windows @acronym{API} will return change events related to a

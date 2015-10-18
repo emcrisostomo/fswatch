@@ -81,6 +81,7 @@ static bool _0flag = false;
 static bool _1flag = false;
 static bool allow_overflow = false;
 static int batch_marker_flag = false;
+static bool dflag = false;
 static bool Eflag = false;
 static bool fflag = false;
 static bool Iflag = false;
@@ -148,6 +149,7 @@ static void usage(ostream& stream)
   stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
   stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
+  stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
   stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
@@ -182,6 +184,7 @@ static void usage(ostream& stream)
   stream << "Usage:\n";
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1  Exit fswatch after the first set of events is received.\n";
+  stream << " -d  Watch directories only.\n";
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
   stream << " -f  Print the event time stamp with the specified format.\n";
@@ -442,6 +445,7 @@ static void start_monitor(int argc, char ** argv, int optind)
   active_monitor->set_allow_overflow(allow_overflow);
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
+  active_monitor->set_directory_only(dflag);
   active_monitor->set_event_type_filters(event_filters);
   active_monitor->set_filters(filters);
   active_monitor->set_follow_symlinks(Lflag);
@@ -452,7 +456,7 @@ static void start_monitor(int argc, char ** argv, int optind)
 static void parse_opts(int argc, char ** argv)
 {
   int ch;
-  string short_options = "01e:Ef:hi:Il:LMm:nortuvx";
+  string short_options = "01de:Ef:hi:Il:LMm:nortuvx";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
@@ -461,6 +465,7 @@ static void parse_opts(int argc, char ** argv)
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
+    { "directories", no_argument, nullptr, 'd'},
     { "event", required_argument, nullptr, OPT_EVENT_TYPE},
     { "event-flags", no_argument, nullptr, 'x'},
     { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
@@ -505,6 +510,10 @@ static void parse_opts(int argc, char ** argv)
 
     case '1':
       _1flag = true;
+      break;
+
+    case 'd':
+      dflag = true;
       break;
 
     case 'e':

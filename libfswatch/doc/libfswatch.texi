@@ -85,8 +85,46 @@ Free Documentation License'.
 
 @node History
 @chapter History
+
+@section 5:0:2
+@subsection Feature Changes
+The changes introduced in @code{5:0:2} are the following:
+
+@itemize
+@item
+@cpindex monitor, recursive, directory only
+The possibility of watching for directories only during a recursive
+scan.  This feature helps reducing the number of open file descriptors
+if a generic change event for a directory is acceptable instead of
+events on directory children.
+@end itemize
+
+@subsection C++ Interface Changes
+
+@itemize
+@item
+@fnindex @code{monitor::set_directory_only}
+Added the @code{monitor::set_directory_only} method to set a flag to
+only watch directories during a recursive scan.
+@end itemize
+
+@subsection C Interface Changes
+
+@itemize
+@item
+@fnindex @code{fsw_set_directory_only}
+Added the @code{fsw_set_directory_only} function to set a flag to only
+watch directories during a recursive scan.
+
+@item
+@fnindex @code{fsw_logf_perror}
+Added the @code{fsw_logf_perror} function to log a
+@code{printf}-compatible message using @code{perror}.
+@end itemize
+
 @section 4:0:1
 @subsection Feature Changes
+
 The changes introducted in @code{4:0:1} are the following:
 @itemize
 @item
@@ -602,6 +640,7 @@ public:
   void set_latency(double latency);
   void set_allow_overflow(bool overflow);
   void set_recursive(bool recursive);
+  void set_directory_only(bool directory_only);
   void add_filter(const monitor_filter &filter);
   void set_filters(
     const std::vector<monitor_filter> &filters);
@@ -665,6 +704,16 @@ is enforced depends on a monitor implementation.
 This function sets the @code{recursive} flag of the monitor to
 indicate whether the monitor should recursively observe the contents
 of directories.
+
+@item void set_directory_only(bool directory_only);
+@fnindex @code{monitor::set_directory_only}
+
+This function sets the directory only flag to the specified value.  If
+this flag is set, then the monitor will only watch directories during
+a recursive scan.  This functionality is only supported by monitors
+whose backend fires change events on a directory when one its children
+is changed.  If a monitor backend does not support this functionality,
+the flag is ignored.
 
 @item void add_filter(const monitor_filter &filter);
 @fnindex @code{monitor::add_filter}
@@ -1274,7 +1323,6 @@ be added to the current session in order for it to be valid.
 This function adds a new key-value pair @code{(name, value)} in the
 monitor's property map.
 
-
 @item FSW_STATUS
 @itemx fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow)
 @fnindex @code{fsw_set_allow_overflow}
@@ -1303,6 +1351,16 @@ Determines whether the monitor recursively scans each watched path or
 not.  Recursive scanning is an optional feature which could not be
 implemented by all the monitors.  By default, recursive scanning is
 disabled.
+
+@item FSW_STATUS
+@itemx fsw_set_directory_only(const FSW_HANDLE handle, const bool directory_only)
+@fnindex @code{fsw_set_directory_only}
+Sets the directory only flag to the specified value.  If this flag is
+set, then the monitor will only watch directories during a recursive
+scan.  This functionality is only supported by monitors whose backend
+fires change events on a directory when one its children is changed.
+If a monitor backend does not support this functionality, the flag is
+ignored.
 
 @item FSW_STATUS
 @itemx fsw_set_follow_symlinks(const FSW_HANDLE handle, const bool follow_symlinks)
@@ -1699,8 +1757,14 @@ to the file @code{f}.
 @item void fsw_log_perror(const char * msg)
 @fnindex @code{fsw_log_perror}
 
-This function prints and formats the specified message @code{msg}
-using @code{perror}.
+This function prints the specified message @code{msg} using
+@code{perror}.
+
+@item void fsw_logf_perror(const char * format, ...)
+@fnindex @code{fsw_logf_perror}
+
+This function prints the @code{printf}-compatible message using
+@code{perror}.
 
 @end table
 

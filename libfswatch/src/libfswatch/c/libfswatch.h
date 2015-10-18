@@ -140,6 +140,12 @@ extern "C"
   FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive);
 
   /*
+   * Determines whether the monitor only watches a directory when performing a
+   * recursive scan.  By default, a monitor accepts all kinds of files.
+   */
+  FSW_STATUS fsw_set_directory_only(const FSW_HANDLE handle, const bool directory_only);
+
+  /*
    * Determines whether a symbolic link is followed or not.  By default, a
    * symbolic link are not followed.
    */
