@@ -140,16 +140,6 @@ namespace fsw
     struct stat fd_stat;
     if (!stat_path(path, fd_stat)) return;
 
-    bool is_dir = S_ISDIR(fd_stat.st_mode);
-    
-    /*
-     * When watching a directory the inotify API will return change events of
-     * first-level children.  Therefore, we do not need to manually add a watch
-     * for a child unless it is a directory.  By default, accept_non_dirs is
-     * true to allow watching a file when first invoked on a node.
-     */
-    if (!accept_non_dirs && !is_dir) return;
-
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
       string link_path;
@@ -158,6 +148,19 @@ namespace fsw
 
       return;
     }
+
+    bool is_dir = S_ISDIR(fd_stat.st_mode);
+
+    /*
+     * When watching a directory the inotify API will return change events of
+     * first-level children.  Therefore, we do not need to manually add a watch
+     * for a child unless it is a directory.  By default, accept_non_dirs is
+     * true to allow watching a file when first invoked on a node.
+     * 
+     * For the same reason, the directory_only flag is ignored and treated as if
+     * it were always set to true.
+     */
+    if (!accept_non_dirs && !is_dir) return;
 
     if (!is_dir && directory_only && !accept_non_dirs) return;
     if (!is_dir && !accept_path(path)) return;
