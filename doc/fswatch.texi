@@ -29,7 +29,7 @@
 This manual is for @command{fswatch} (version @value{VERSION},
 @value{UPDATED}), a cross-platform file change monitor with multiple
 backends, including Apple OS X File System Events API, *BSD kqueue,
-Linux inotify, Microsoft Windows and a @command{stat}-based backend.
+Linux inotify, Microsoft Windows and a @command{stat()}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
@@ -88,9 +88,10 @@ Free Documentation License'.
 @node History
 @chapter History
 
-@section fswatch 1.7.0
+@section fswatch 1.7.0.develop
 @itemize
 @item
+@opindex directories@r{, inception}
 Add the @option{-d}/@option{--directories} option to request the
 monitor to watch directories only during a recursive scan.
 
@@ -107,8 +108,8 @@ A monitor for Microsoft Windows has been added.
 
 @item
 @file{fswatch} can survive monitor overflows and notify them as a
-specially crafted change events (of type @command{Overflow}) if
-invoked with the @command{--allow-overflow} option.
+specially crafted change event (of type @command{Overflow}) if invoked
+with the @option{--allow-overflow} option.
 
 @end itemize
 
@@ -116,25 +117,30 @@ invoked with the @command{--allow-overflow} option.
 
 @itemize
 @item
+@pgindex @command{fswatch-run}
 @file{fswatch-run} scripts have been removed.
 
 @item
+@cpindex Bash
+@cpindex Zsh
 As a consequence of the @file{fswatch-run} removal, dependency on at
 least one supported shell (Zsh and Bash) have been removed from the
 currently supported ports:
 
 @itemize
 @item
+@cpindex Macports
 Macports.
 
 @item
+@cpindex Homebrew
 Homebrew.
 
 @item
+@cpindex FreeBSD
 FreeBSD.
 
 @end itemize
-
 @end itemize
 
 @section fswatch 1.5.0
@@ -162,15 +168,15 @@ Documentation improvements.
 
 @itemize
 @item
-Fix issue 74: Assertion failed on fsw_destroy_session.
+Fix issue 74: Assertion failed on @code{fsw_destroy_session}.
 @end itemize
 
 @section fswatch 1.4.5.3
 
 @itemize
 @item
-Fix issue 67: 100% CPU usage while using libfswatch.  This issue only
-affects the inotify monitor, available only on Linux.
+Fix issue 67: 100% CPU usage while using @file{libfswatch}.  This
+issue only affects the inotify monitor, available only on Linux.
 @end itemize
 
 @section fswatch 1.4.5.2
@@ -439,8 +445,8 @@ function and reads change events asynchronously.
 @fnindex @command{stat}
 A monitor which periodically stats the file system, saves file
 modification times in memory and manually calculates file system
-changes, which can work on any operating system where stat (2) can be
-used.
+changes, which can work on any operating system where @code{stat()}
+can be used.
 @end itemize
 
 @command{fswatch} should build and work correctly on any system
