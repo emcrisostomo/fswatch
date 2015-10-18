@@ -2001,6 +2001,9 @@ underlying monitor as they are: as a consequence, if a path
 corresponds to a file, the monitor will emit an error and will not be
 able to watch it.
 
+For the same reasons, the (@option{--directories}/@option{-d}) has no
+effect when using this monitor.
+
 @subsubsection Recursivity
 The Windows @acronym{API} will return change events related to a
 watched directory and any children of its, at any depth.  Essentially,
