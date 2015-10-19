@@ -105,6 +105,24 @@ AS_VAR_IF([ac_cv_header_sys_event_h], ["yes"], [
 
 AM_CONDITIONAL([USE_KQUEUE], [test "x${KQUEUE_AVAILABLE}" = "xyes"])
 
+# Check for Solaris/Illumos File Events Notification API.
+AC_CHECK_HEADERS([port.h])
+AS_VAR_IF([ac_cv_header_port_h], ["yes"], [
+  AS_VAR_SET([FEN_AVAILABLE], ["yes"])
+  AC_CHECK_DECLS(
+    [port_create],
+    [],
+    [AS_VAR_SET([FEN_AVAILABLE], ["no"])],
+    [
+      AC_INCLUDES_DEFAULT
+      [#include <port.h>]
+    ]
+  )
+  AC_CHECK_LIB([c], [port_create], [], [AS_VAR_SET([FEN_AVAILABLE], ["no"])])
+])
+
+AM_CONDITIONAL([USE_FEN], [test "x${FEN_AVAILABLE}" = "xyes"])
+
 # Check for Linux inotify.
 AC_CHECK_HEADERS([sys/inotify.h])
 AS_VAR_IF([ac_cv_header_sys_inotify_h], ["yes"], [

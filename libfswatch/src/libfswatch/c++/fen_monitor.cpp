@@ -17,7 +17,7 @@
 #  include "libfswatch_config.h"
 #endif
 
-#ifdef HAVE_SYS_EVENT_H
+#ifdef HAVE_PORT_H
 
 #  include "gettext_defs.h"
 #  include "fen_monitor.hpp"
@@ -88,4 +88,4 @@ namespace fsw
   }
 }
 
-#endif  /* HAVE_SYS_EVENT_H */
+#endif  /* HAVE_PORT_H */

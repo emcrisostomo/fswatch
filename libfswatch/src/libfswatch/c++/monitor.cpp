@@ -34,7 +34,7 @@
 #if defined(HAVE_SYS_EVENT_H)
 #  include "kqueue_monitor.hpp"
 #endif
-#if defined(HAVE_FEN_H)
+#if defined(HAVE_PORT_H)
 #  include "fen_monitor.hpp"
 #endif
 #if defined(HAVE_SYS_INOTIFY_H)
@@ -218,7 +218,7 @@ namespace fsw
     return new fsevents_monitor(paths, callback, context);
 #elif defined(HAVE_SYS_EVENT_H)
     return new kqueue_monitor(paths, callback, context);
-#elif defined(HAVE_FEN_H)
+#elif defined(HAVE_PORT_H)
     return new fen_monitor(paths, callback, context);
 #elif defined(HAVE_SYS_INOTIFY_H)
     return new inotify_monitor(paths, callback, context);
@@ -254,7 +254,7 @@ namespace fsw
 #endif
 
     case fen_monitor_type:
-#if defined(HAVE_FEN_H)
+#if defined(HAVE_PORT_H)
       return new fen_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
