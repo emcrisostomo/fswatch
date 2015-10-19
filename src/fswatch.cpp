@@ -544,7 +544,7 @@ static void parse_opts(int argc, char ** argv)
     case 'l':
       lflag = true;
       lvalue = strtod(optarg, nullptr);
-    
+
       if (!validate_latency(lvalue))
       {
         exit(FSW_EXIT_LATENCY);
