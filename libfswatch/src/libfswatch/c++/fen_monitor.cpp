@@ -63,7 +63,6 @@ namespace fsw
 
   fen_monitor::~fen_monitor()
   {
-    if (kq != -1) close(kq);
     delete load;
   }
 
