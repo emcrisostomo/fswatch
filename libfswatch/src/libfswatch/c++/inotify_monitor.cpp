@@ -20,6 +20,9 @@
 #include "gettext_defs.h"
 #include "inotify_monitor.hpp"
 #include <limits.h>
+#ifdef __sun
+#  define NAME_MAX         255    /* # chars in a file name */
+#endif
 #include <unistd.h>
 #include <stdio.h>
 #include <sstream>
