@@ -170,8 +170,7 @@ namespace fsw
     if (!add_watch(path, fd_stat)) return;
     if (!recursive || !is_dir) return;
 
-    vector<string> children;
-    get_directory_children(path, children);
+    vector<string> children = get_directory_children(path);
 
     for (const string &child : children)
     {
