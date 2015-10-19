@@ -66,7 +66,7 @@ void fsw_logf_perror(const char * format, ...)
   if (!fsw_is_verbose()) return;
 
   size_t current_buffer_size = 0;
-  int required_chars = 512;
+  size_t required_chars = 512;
 
   vector<char> buffer;
 
