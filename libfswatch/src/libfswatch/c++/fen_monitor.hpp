@@ -23,6 +23,7 @@
 namespace fsw
 {
   struct fen_monitor_load;
+  struct fen_info;
 
   class fen_monitor : public monitor
   {
@@ -30,7 +31,7 @@ namespace fsw
 
   public:
     fen_monitor(std::vector<std::string> paths,
-                FSW_EVENT_CALLBACK * callback,
+                FSW_EVENT_CALLBACK *callback,
                 void * context = nullptr);
     virtual ~fen_monitor();
 
@@ -39,6 +40,12 @@ namespace fsw
   private:
     fen_monitor(const fen_monitor& orig) = delete;
     fen_monitor& operator=(const fen_monitor & that) = delete;
+
+    void scan_root_paths();
+    bool scan(const std::string &path, bool is_root_path = true);
+    bool is_path_watched(const std::string &path) const;
+    bool add_watch(const std::string & path, const struct stat &fd_stat);
+    void process_events(struct fen_info *obj, int events);
 
     // pimpl
     fen_monitor_load * load;
