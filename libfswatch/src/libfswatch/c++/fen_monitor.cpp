@@ -190,7 +190,7 @@ namespace fsw
 
     if (port_associate(load->port,
                        PORT_SOURCE_FILE,
-                       (uintptr_t)fobjp,
+                       reinterpret_cast<uintptr_t>(fobjp),
                        finfo->events,
                        static_cast<void *>(finfo)) != 0)
     {
@@ -314,14 +314,39 @@ namespace fsw
 
     // The File Events Notification API requires the caller to associate a file path
     // each time an event is retrieved.
-    load->descriptors_to_rescan.insert(finfo);
+    if (event_flags & FILE_DELETE) load->descriptors_to_remove.insert(finfo);
+    else load->descriptors_to_rescan.insert(finfo);
 
     notify_events(events);
   }
 
+  void fen_monitor::rescan_removed()
+  {
+    FSW_ELOG(_("Processing deleted descriptors."));
+
+    auto fd = load->descriptors_to_remove.begin();
+
+    while (fd != load->descriptors_to_remove.end())
+    {
+      struct fen_info *finfo = *fd;
+      string path = finfo->fobj.fo_name;
+
+      load->remove_watch(finfo->fobj.fo_name);
+
+      if (!port_dissociate(load->port,
+                           PORT_SOURCE_FILE,
+                           reinterpret_cast<uintptr_t>(&finfo->fobj)) != 0)
+      {
+        perror("port_dissociate()");
+      }
+
+      fd++;
+    }
+  }
+
   void fen_monitor::rescan_pending()
   {
-    FSW_ELOG(_("Rescanning pending descriptores."));
+    FSW_ELOG(_("Rescanning pending descriptors."));
 
     auto fd = load->descriptors_to_rescan.begin();
 
@@ -355,6 +380,7 @@ namespace fsw
 
     while (true)
     {
+      rescan_removed();
       rescan_pending();
 
       scan_root_paths();
