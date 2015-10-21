@@ -55,6 +55,11 @@ namespace fsw
       }
     }
 
+    ~fen_monitor_load()
+    {
+      if (!port) close(port);
+    }
+
     void close_fen()
     {
       close(port);
@@ -329,7 +334,6 @@ namespace fsw
     while (fd != load->descriptors_to_remove.end())
     {
       struct fen_info *finfo = *fd;
-      string path = finfo->fobj.fo_name;
 
       load->remove_watch(finfo->fobj.fo_name);
 
