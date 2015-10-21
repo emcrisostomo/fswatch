@@ -45,7 +45,9 @@ namespace fsw
     bool scan(const std::string &path, bool is_root_path = true);
     bool is_path_watched(const std::string &path) const;
     bool add_watch(const std::string & path, const struct stat &fd_stat);
+    void associate_port(struct fen_info *finfo, const struct stat &fd_stat);
     void process_events(struct fen_info *obj, int events);
+    void rescan_pending();
 
     // pimpl
     fen_monitor_load * load;

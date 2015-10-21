@@ -43,8 +43,6 @@ namespace fsw
   {
     int port;
     fsw_hash_map<string, struct fen_info *> descriptors_by_file_name;
-    fsw_hash_map<struct fen_info *, string> file_names_by_descriptor;
-    fsw_hash_map<struct fen_info *, mode_t> file_modes;
     fsw_hash_set<struct fen_info *> descriptors_to_remove;
     fsw_hash_set<struct fen_info *> descriptors_to_rescan;
 
@@ -62,11 +60,23 @@ namespace fsw
       close(port);
     }
 
-    void add_watch(struct fen_info * fd, const string & path, const struct stat &fd_stat)
+    void add_watch(struct fen_info *fd, const string &path, const struct stat &fd_stat)
     {
       descriptors_by_file_name[path] = fd;
-      file_names_by_descriptor[fd] = path;
-      file_modes[fd] = fd_stat.st_mode;
+    }
+
+    void remove_watch(const string &path)
+    {
+      descriptors_by_file_name.erase(path);
+    }
+
+    struct fen_info * get_descriptor_by_name(const string &path)
+    {
+      auto res = descriptors_by_file_name.find(path);
+
+      if (res == descriptors_by_file_name.end()) return nullptr;
+
+      return res->second;
     }
   };
 
@@ -85,15 +95,16 @@ namespace fsw
   static vector<FenFlagType> create_flag_type_vector()
   {
     vector<FenFlagType> flags;
-    flags.push_back({FILE_ACCESS, fsw_event_flag::PlatformSpecific});
-    flags.push_back({FILE_MODIFIED, fsw_event_flag::Updated});
-    flags.push_back({FILE_ATTRIB, fsw_event_flag::AttributeModified});
-    flags.push_back({FILE_DELETE, fsw_event_flag::Removed});
-    flags.push_back({FILE_ACCESS, fsw_event_flag::PlatformSpecific});
-    flags.push_back({FILE_RENAME_TO, fsw_event_flag::MovedTo});
+    flags.push_back({FILE_ACCESS,      fsw_event_flag::PlatformSpecific});
+    flags.push_back({FILE_MODIFIED,    fsw_event_flag::Updated});
+    flags.push_back({FILE_ATTRIB,      fsw_event_flag::AttributeModified});
+    flags.push_back({FILE_DELETE,      fsw_event_flag::Removed});
+    flags.push_back({FILE_ACCESS,      fsw_event_flag::PlatformSpecific});
+    flags.push_back({FILE_RENAME_TO,   fsw_event_flag::MovedTo});
     flags.push_back({FILE_RENAME_FROM, fsw_event_flag::MovedFrom});
-    flags.push_back({UNMOUNTED, fsw_event_flag::PlatformSpecific});
-    flags.push_back({MOUNTEDOVER, fsw_event_flag::PlatformSpecific});
+    flags.push_back({FILE_TRUNC,       fsw_event_flag::PlatformSpecific});
+    flags.push_back({UNMOUNTED,        fsw_event_flag::PlatformSpecific});
+    flags.push_back({MOUNTEDOVER,      fsw_event_flag::PlatformSpecific});
 
     return flags;
   }
@@ -168,31 +179,9 @@ namespace fsw
     return x.tv_sec < y.tv_sec;
   }
 
-  bool fen_monitor::add_watch(const string &path, const struct stat &fd_stat)
+  void fen_monitor::associate_port(struct fen_info *finfo, const struct stat &fd_stat)
   {
-    // check if the path is already watched and if it is,
-    // skip it and return false.
-    if (is_path_watched(path))
-    {
-      return false;
-    }
-
-    struct fen_info *finfo = static_cast<struct fen_info *>(malloc(sizeof(struct fen_info)));
-    if (!finfo)
-    {
-      perror("malloc()");
-      throw libfsw_exception(_("Cannot allocate memory"));
-    }
-
-    if (!(finfo->fobj.fo_name = strdup(path.c_str())))
-    {
-      free(finfo);
-      perror("strdup()");
-      throw libfsw_exception(_("Cannot allocate memory"));
-    }
-
-    // FILE_NOFOLLOW is currently not used because links are followed manually.
-    finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_ACCESS;
+    FSW_ELOG(_("Associating %s.\n"));
 
     struct file_obj *fobjp = &finfo->fobj;
     finfo->fobj.fo_atime = fd_stat.st_atim;
@@ -213,6 +202,45 @@ namespace fsw
 
       throw libfsw_exception(_("Could not associate port."));
     }
+  }
+
+  bool fen_monitor::add_watch(const string &path, const struct stat &fd_stat)
+  {
+    // check if the path is already watched and if it is,
+    // skip it and return false.
+    if (is_path_watched(path))
+    {
+      return false;
+    }
+
+    FSW_ELOGF(_("Adding %s to list of watched paths.\n"), path.c_str());
+
+    struct fen_info *finfo = load->get_descriptor_by_name(path);
+
+    if (finfo == nullptr)
+    {
+      FSW_ELOG(_("Allocating fen_info.\n"));
+
+      finfo = static_cast<struct fen_info *>(malloc(sizeof(struct fen_info)));
+
+      if (!finfo)
+      {
+        perror("malloc()");
+        throw libfsw_exception(_("Cannot allocate memory"));
+      }
+
+      if (!(finfo->fobj.fo_name = strdup(path.c_str())))
+      {
+        free(finfo);
+        perror("strdup()");
+        throw libfsw_exception(_("Cannot allocate memory"));
+      }
+    }
+
+    // FILE_NOFOLLOW is currently not used because links are followed manually.
+    finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_TRUNC; // | FILE_ACCESS
+
+    associate_port(finfo, fd_stat);
 
     // if the descriptor could be opened, track it
     load->add_watch(finfo, path, fd_stat);
@@ -228,7 +256,11 @@ namespace fsw
   bool fen_monitor::scan(const string &path, bool is_root_path)
   {
     struct stat fd_stat;
-    if (!stat_path(path, fd_stat)) return false;
+    if (!stat_path(path, fd_stat))
+    {
+      load->remove_watch(path);
+      return false;
+    }
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
@@ -243,9 +275,9 @@ namespace fsw
 
     if (!is_dir && !is_root_path && directory_only) return true;
     if (!is_dir && !accept_path(path)) return true;
-    if (!add_watch(path, fd_stat)) return false;
-    if (!recursive) return true;
+    if (!add_watch(path, fd_stat)) if (!is_dir) return false;
     if (!is_dir) return true;
+    if (!recursive) return true;
 
     vector<string> children = get_directory_children(path);
 
@@ -276,11 +308,45 @@ namespace fsw
   {
     time_t curr_time;
     time(&curr_time);
-    vector<event> events;
 
+    vector<event> events;
     events.push_back({finfo->fobj.fo_name, curr_time, decode_flags(event_flags)});
 
+    // The File Events Notification API requires the caller to associate a file path
+    // each time an event is retrieved.
+    load->descriptors_to_rescan.insert(finfo);
+
     notify_events(events);
+  }
+
+  void fen_monitor::rescan_pending()
+  {
+    FSW_ELOG(_("Rescanning pending descriptores."));
+
+    auto fd = load->descriptors_to_rescan.begin();
+
+    while (fd != load->descriptors_to_rescan.end())
+    {
+      struct fen_info *finfo = *fd;
+      string path = finfo->fobj.fo_name;
+      struct stat fd_stat;
+
+      if (!stat_path(path, fd_stat))
+      {
+        FSW_ELOGF(_("File does not exist: %s.\n"), path.c_str());
+
+        load->remove_watch(path);
+        fd++;
+
+        continue;
+      }
+
+      associate_port(finfo, fd_stat);
+
+      scan(path);
+
+      load->descriptors_to_rescan.erase(fd++);
+    }
   }
 
   void fen_monitor::run()
@@ -289,6 +355,8 @@ namespace fsw
 
     while (true)
     {
+      rescan_pending();
+
       scan_root_paths();
 
       port_event_t pe;
