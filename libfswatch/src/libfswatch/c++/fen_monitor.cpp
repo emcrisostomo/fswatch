@@ -39,12 +39,18 @@ using namespace std;
 
 namespace fsw
 {
+  struct fen_info
+  {
+    struct file_obj fobj;
+    int events;
+  };
+
   struct fen_monitor_load
   {
     int port;
     fsw_hash_map<string, struct fen_info *> descriptors_by_file_name;
     fsw_hash_set<struct fen_info *> descriptors_to_remove;
-    fsw_hash_set<struct fen_info *> descriptors_to_rescan;
+    fsw_hash_set<string> paths_to_rescan;
 
     void initialize_fen()
     {
@@ -66,17 +72,25 @@ namespace fsw
       port = 0;
     }
 
-    void add_watch(struct fen_info *fd, const string &path, const struct stat &fd_stat)
+    void add_watch(struct fen_info *fd, const string& path, const struct stat& fd_stat)
     {
       descriptors_by_file_name[path] = fd;
     }
 
-    void remove_watch(const string &path)
+    void remove_watch(const string& path)
     {
+      struct fen_info *finfo = descriptors_by_file_name[path];
+
+      if (finfo)
+      {
+        free(finfo->fobj.fo_name);
+        free(finfo);
+      }
+
       descriptors_by_file_name.erase(path);
     }
 
-    struct fen_info * get_descriptor_by_name(const string &path)
+    struct fen_info * get_descriptor_by_name(const string& path)
     {
       auto res = descriptors_by_file_name.find(path);
 
@@ -84,12 +98,6 @@ namespace fsw
 
       return res->second;
     }
-  };
-
-  struct fen_info
-  {
-    struct file_obj fobj;
-    int events;
   };
 
   typedef struct FenFlagType
@@ -158,7 +166,7 @@ namespace fsw
     return ts;
   }
 
-  static int timespec_subtract (timespec &result, timespec &x, timespec &y)
+  static int timespec_subtract(timespec& result, timespec& x, timespec& y)
   {
     /* Perform the carry for the later subtraction by updating y. */
     if (x.tv_nsec < y.tv_nsec)
@@ -184,9 +192,9 @@ namespace fsw
     return x.tv_sec < y.tv_sec;
   }
 
-  void fen_monitor::associate_port(struct fen_info *finfo, const struct stat &fd_stat)
+  bool fen_monitor::associate_port(struct fen_info *finfo, const struct stat &fd_stat)
   {
-    FSW_ELOG(_("Associating %s.\n"));
+    FSW_ELOGF(_("Associating %s.\n"), finfo->fobj.fo_name);
 
     struct file_obj *fobjp = &finfo->fobj;
     finfo->fobj.fo_atime = fd_stat.st_atim;
@@ -199,14 +207,13 @@ namespace fsw
                        finfo->events,
                        static_cast<void *>(finfo)) != 0)
     {
-      // Add error processing as required, file may have been
-      // deleted or moved.
+      // File may have been deleted or moved while processing the event.
       perror("port_associate()");
-      free(finfo->fobj.fo_name);
-      free(finfo);
-
-      throw libfsw_exception(_("Could not associate port to path."));
+      load->remove_watch(finfo->fobj.fo_name);
+      return false;
     }
+
+    return true;
   }
 
   bool fen_monitor::add_watch(const string &path, const struct stat &fd_stat)
@@ -243,23 +250,22 @@ namespace fsw
     }
 
     // FILE_NOFOLLOW is currently not used because links are followed manually.
-    finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_TRUNC; // | FILE_ACCESS;
+    finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_TRUNC | FILE_ACCESS;
     if (!follow_symlinks) finfo->events |= FILE_NOFOLLOW;
 
-    associate_port(finfo, fd_stat);
-
     // if the descriptor could be opened, track it
-    load->add_watch(finfo, path, fd_stat);
+    if (associate_port(finfo, fd_stat)) { load->add_watch(finfo, path, fd_stat); }
 
     return true;
   }
 
-  bool fen_monitor::is_path_watched(const string & path) const
+  bool fen_monitor::is_path_watched(const string& path) const
   {
-    return load->descriptors_by_file_name.find(path) != load->descriptors_by_file_name.end();
+    return (load->descriptors_by_file_name.find(path) != load->descriptors_by_file_name.end())
+      && (load->paths_to_rescan.find(path) == load->paths_to_rescan.end());
   }
 
-  bool fen_monitor::scan(const string &path, bool is_root_path)
+  bool fen_monitor::scan(const string& path, bool is_root_path)
   {
     struct stat fd_stat;
     if (!stat_path(path, fd_stat))
@@ -272,25 +278,24 @@ namespace fsw
 
     if (!is_dir && !is_root_path && directory_only) return true;
     if (!is_dir && !accept_path(path)) return true;
-    if (!add_watch(path, fd_stat)) if (!is_dir) return false;
-    if (!is_dir) return true;
+    if (!is_dir) return add_watch(path, fd_stat);
     if (!recursive) return true;
 
     vector<string> children = get_directory_children(path);
 
-    for (string & child : children)
+    for (string& child : children)
     {
       if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
       scan(path + "/" + child, false);
     }
 
-    return true;
+    return add_watch(path, fd_stat);
   }
 
   void fen_monitor::scan_root_paths()
   {
-    for (string &path : paths)
+    for (string& path : paths)
     {
       if (is_path_watched(path)) continue;
 
@@ -312,22 +317,20 @@ namespace fsw
     // The File Events Notification API requires the caller to associate a file path
     // each time an event is retrieved.
     if (event_flags & FILE_DELETE) load->descriptors_to_remove.insert(finfo);
-    else load->descriptors_to_rescan.insert(finfo);
+    else load->paths_to_rescan.insert(finfo->fobj.fo_name);
 
     notify_events(events);
   }
 
   void fen_monitor::rescan_removed()
   {
-    FSW_ELOG(_("Processing deleted descriptors."));
+    FSW_ELOG(_("Processing deleted descriptors.\n"));
 
     auto fd = load->descriptors_to_remove.begin();
 
     while (fd != load->descriptors_to_remove.end())
     {
       struct fen_info *finfo = *fd;
-
-      load->remove_watch(finfo->fobj.fo_name);
 
       if (!port_dissociate(load->port,
                            PORT_SOURCE_FILE,
@@ -336,37 +339,24 @@ namespace fsw
         perror("port_dissociate()");
       }
 
-      fd++;
+      load->remove_watch(finfo->fobj.fo_name);
+      load->descriptors_to_remove.erase(fd++);
     }
   }
 
   void fen_monitor::rescan_pending()
   {
-    FSW_ELOG(_("Rescanning pending descriptors."));
+    FSW_ELOG(_("Rescanning pending descriptors.\n"));
 
-    auto fd = load->descriptors_to_rescan.begin();
+    auto path = load->paths_to_rescan.begin();
 
-    while (fd != load->descriptors_to_rescan.end())
+    while (path != load->paths_to_rescan.end())
     {
-      struct fen_info *finfo = *fd;
-      string path = finfo->fobj.fo_name;
-      struct stat fd_stat;
+      FSW_ELOGF(_("Rescanning %s.\n"), path->c_str());
 
-      if (!stat_path(path, fd_stat))
-      {
-        FSW_ELOGF(_("File does not exist: %s.\n"), path.c_str());
+      scan(*path);
 
-        load->remove_watch(path);
-        fd++;
-
-        continue;
-      }
-
-      associate_port(finfo, fd_stat);
-
-      scan(path);
-
-      load->descriptors_to_rescan.erase(fd++);
+      load->paths_to_rescan.erase(path++);
     }
   }
 

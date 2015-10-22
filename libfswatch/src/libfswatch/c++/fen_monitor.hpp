@@ -32,20 +32,20 @@ namespace fsw
   public:
     fen_monitor(std::vector<std::string> paths,
                 FSW_EVENT_CALLBACK *callback,
-                void * context = nullptr);
+                void *context = nullptr);
     virtual ~fen_monitor();
 
     void run();
 
   private:
     fen_monitor(const fen_monitor& orig) = delete;
-    fen_monitor& operator=(const fen_monitor & that) = delete;
+    fen_monitor& operator=(const fen_monitor& that) = delete;
 
     void scan_root_paths();
-    bool scan(const std::string &path, bool is_root_path = true);
-    bool is_path_watched(const std::string &path) const;
-    bool add_watch(const std::string & path, const struct stat &fd_stat);
-    void associate_port(struct fen_info *finfo, const struct stat &fd_stat);
+    bool scan(const std::string& path, bool is_root_path = true);
+    bool is_path_watched(const std::string& path) const;
+    bool add_watch(const std::string& path, const struct stat& fd_stat);
+    bool associate_port(struct fen_info *finfo, const struct stat& fd_stat);
     void process_events(struct fen_info *obj, int events);
     void rescan_removed();
     void rescan_pending();
