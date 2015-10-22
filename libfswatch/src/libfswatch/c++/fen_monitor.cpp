@@ -104,7 +104,6 @@ namespace fsw
     flags.push_back({FILE_MODIFIED,    fsw_event_flag::Updated});
     flags.push_back({FILE_ATTRIB,      fsw_event_flag::AttributeModified});
     flags.push_back({FILE_DELETE,      fsw_event_flag::Removed});
-    flags.push_back({FILE_ACCESS,      fsw_event_flag::PlatformSpecific});
     flags.push_back({FILE_RENAME_TO,   fsw_event_flag::MovedTo});
     flags.push_back({FILE_RENAME_FROM, fsw_event_flag::MovedFrom});
     flags.push_back({FILE_TRUNC,       fsw_event_flag::PlatformSpecific});
@@ -201,11 +200,11 @@ namespace fsw
     {
       // Add error processing as required, file may have been
       // deleted or moved.
-      perror("Failed to register file");
+      perror("port_associate()");
       free(finfo->fobj.fo_name);
       free(finfo);
 
-      throw libfsw_exception(_("Could not associate port."));
+      throw libfsw_exception(_("Could not associate port to path."));
     }
   }
 
@@ -243,7 +242,7 @@ namespace fsw
     }
 
     // FILE_NOFOLLOW is currently not used because links are followed manually.
-    finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_TRUNC; // | FILE_ACCESS
+    finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_TRUNC; // | FILE_ACCESS;
 
     associate_port(finfo, fd_stat);
 
