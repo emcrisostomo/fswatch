@@ -183,7 +183,7 @@ namespace fsw
   bool kqueue_monitor::scan(const string &path, bool is_root_path)
   {
     struct stat fd_stat;
-    if (!stat_path(path, fd_stat)) return false;
+    if (!lstat_path(path, fd_stat)) return false;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {

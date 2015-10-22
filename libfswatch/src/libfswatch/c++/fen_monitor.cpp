@@ -244,6 +244,7 @@ namespace fsw
 
     // FILE_NOFOLLOW is currently not used because links are followed manually.
     finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_TRUNC; // | FILE_ACCESS;
+    if (!follow_symlinks) finfo->events |= FILE_NOFOLLOW;
 
     associate_port(finfo, fd_stat);
 
@@ -264,15 +265,6 @@ namespace fsw
     if (!stat_path(path, fd_stat))
     {
       load->remove_watch(path);
-      return false;
-    }
-
-    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
-    {
-      string link_path;
-      if (read_link_path(path, link_path))
-        return scan(link_path);
-
       return false;
     }
 

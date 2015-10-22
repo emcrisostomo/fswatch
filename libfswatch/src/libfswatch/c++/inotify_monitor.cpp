@@ -141,7 +141,7 @@ namespace fsw
   void inotify_monitor::scan(const string &path, const bool accept_non_dirs)
   {
     struct stat fd_stat;
-    if (!stat_path(path, fd_stat)) return;
+    if (!lstat_path(path, fd_stat)) return;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
@@ -159,7 +159,7 @@ namespace fsw
      * first-level children.  Therefore, we do not need to manually add a watch
      * for a child unless it is a directory.  By default, accept_non_dirs is
      * true to allow watching a file when first invoked on a node.
-     * 
+     *
      * For the same reason, the directory_only flag is ignored and treated as if
      * it were always set to true.
      */
