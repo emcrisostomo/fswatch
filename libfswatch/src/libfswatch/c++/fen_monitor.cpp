@@ -57,12 +57,13 @@ namespace fsw
 
     ~fen_monitor_load()
     {
-      if (!port) close(port);
+      close_fen();
     }
 
     void close_fen()
     {
-      close(port);
+      if (!port) close(port);
+      port = 0;
     }
 
     void add_watch(struct fen_info *fd, const string &path, const struct stat &fd_stat)
