@@ -148,6 +148,11 @@ namespace fsw
     follow_symlinks = follow;
   }
 
+  void monitor::set_watch_access(bool access)
+  {
+    watch_access = access;
+  }
+
   bool monitor::accept_event_type(fsw_event_flag event_type) const
   {
     // If no filters are set, then accept the event.

@@ -79,6 +79,7 @@ static vector<monitor_filter> filters;
 static vector<fsw_event_type_filter> event_filters;
 static bool _0flag = false;
 static bool _1flag = false;
+static bool aflag = false;
 static bool allow_overflow = false;
 static int batch_marker_flag = false;
 static bool dflag = false;
@@ -127,7 +128,7 @@ static void list_monitor_types(ostream& stream)
 static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2014-2015 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << "Copyright (C) 2013-2015 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
   stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
   stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
@@ -149,6 +150,7 @@ static void usage(ostream& stream)
   stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
   stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
+  stream << " -a, --access          " << _("Watch file accesses.\n");
   stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
@@ -175,15 +177,16 @@ static void usage(ostream& stream)
   stream << "                       " << _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
-  string option_string = "[01deEfhilLMmnortuvx]";
+  string option_string = "[01adeEfhilLMmnortuvx]";
 
   stream << PACKAGE_STRING << "\n\n";
-  stream << "Syntax:\n";
+  stream << _("Usage:\n");
   stream << PACKAGE_NAME << " " << option_string << " path ...\n";
   stream << "\n";
-  stream << "Usage:\n";
+  stream << _("Options:\n");
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1  Exit fswatch after the first set of events is received.\n";
+  stream << " -a  Watch file accesses.\n";
   stream << " -d  Watch directories only.\n";
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
@@ -449,6 +452,7 @@ static void start_monitor(int argc, char ** argv, int optind)
   active_monitor->set_event_type_filters(event_filters);
   active_monitor->set_filters(filters);
   active_monitor->set_follow_symlinks(Lflag);
+  active_monitor->set_watch_access(aflag);
 
   active_monitor->start();
 }
@@ -456,7 +460,7 @@ static void start_monitor(int argc, char ** argv, int optind)
 static void parse_opts(int argc, char ** argv)
 {
   int ch;
-  string short_options = "01de:Ef:hi:Il:LMm:nortuvx";
+  string short_options = "01ade:Ef:hi:Il:LMm:nortuvx";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
@@ -464,6 +468,7 @@ static void parse_opts(int argc, char ** argv)
     { "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
     { "print0", no_argument, nullptr, '0'},
     { "one-event", no_argument, nullptr, '1'},
+    { "access", no_argument, nullptr, 'a'},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
     { "directories", no_argument, nullptr, 'd'},
     { "event", required_argument, nullptr, OPT_EVENT_TYPE},
@@ -510,6 +515,10 @@ static void parse_opts(int argc, char ** argv)
 
     case '1':
       _1flag = true;
+      break;
+
+    case 'a':
+      aflag = true;
       break;
 
     case 'd':

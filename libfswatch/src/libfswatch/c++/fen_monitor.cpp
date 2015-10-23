@@ -250,7 +250,8 @@ namespace fsw
     }
 
     // FILE_NOFOLLOW is currently not used because links are followed manually.
-    finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_TRUNC | FILE_ACCESS;
+    finfo->events = FILE_MODIFIED | FILE_ATTRIB | FILE_TRUNC;
+    if (watch_access) finfo->events |= FILE_ACCESS;
     if (!follow_symlinks) finfo->events |= FILE_NOFOLLOW;
 
     // if the descriptor could be opened, track it
