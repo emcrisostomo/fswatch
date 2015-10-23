@@ -175,7 +175,7 @@ static void usage(ostream& stream)
   stream << "                       " << _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
-  string option_string = "[01eEfhilLMmnortuvx]";
+  string option_string = "[01deEfhilLMmnortuvx]";
 
   stream << PACKAGE_STRING << "\n\n";
   stream << "Syntax:\n";
@@ -189,12 +189,12 @@ static void usage(ostream& stream)
   stream << " -E  Use extended regular expressions.\n";
   stream << " -f  Print the event time stamp with the specified format.\n";
   stream << " -h  Show this message.\n";
-  stream << " -i  Use case insensitive regular expressions.\n";
   stream << " -i  Include paths matching REGEX.\n";
+  stream << " -I  Use case insensitive regular expressions.\n";
   stream << " -l  Set the latency.\n";
-  stream << " -M  List the available monitors.\n";
-  stream << " -m  Use the specified monitor.\n";
   stream << " -L  Follow symbolic links.\n";
+  stream << " -m  Use the specified monitor.\n";
+  stream << " -M  List the available monitors.\n";
   stream << " -n  Print a numeric event masks.\n";
   stream << " -o  Print a single message with the number of change events in the current\n";
   stream << "     batch.\n";
