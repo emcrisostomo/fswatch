@@ -255,6 +255,11 @@ Bug Reports
 
 Bug reports can be sent directly to the authors.
 
+Contact the Authors
+-------------------
+
+The author can be contacted on IRC, using the Freenode `#fswatch` channel.
+
 -----
 
 Copyright (c) 2014-2015 Enrico M. Crisostomo

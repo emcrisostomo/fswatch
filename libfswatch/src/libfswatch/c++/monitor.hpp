@@ -58,6 +58,7 @@ namespace fsw
     void start();
     void add_event_type_filter(const fsw_event_type_filter &filter);
     void set_event_type_filters(const std::vector<fsw_event_type_filter> &filters);
+    void set_watch_access(bool access);
 
   protected:
     bool accept_event_type(fsw_event_flag event_type) const;
@@ -79,6 +80,7 @@ namespace fsw
     bool recursive = false;
     bool follow_symlinks = false;
     bool directory_only = false;
+    bool watch_access = false;
 
   private:
 #  ifdef HAVE_CXX_MUTEX

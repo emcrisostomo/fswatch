@@ -27,9 +27,12 @@ dist_doc_DATA  = README.bsd
 dist_doc_DATA += README.codestyle
 dist_doc_DATA += README.freebsd
 dist_doc_DATA += README.gnu-build-system
+dist_doc_DATA += README.illumos
 dist_doc_DATA += README.md
 dist_doc_DATA += README.linux
 dist_doc_DATA += README.osx
+dist_doc_DATA += README.smartos
+dist_doc_DATA += README.solaris
 dist_doc_DATA += README.windows
 dist_doc_DATA += ABOUT-NLS AUTHORS CONTRIBUTING.md COPYING LICENSE NEWS
 

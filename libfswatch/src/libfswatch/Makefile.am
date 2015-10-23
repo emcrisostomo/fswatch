@@ -39,6 +39,9 @@ endif
 if USE_KQUEUE
   libfswatch_la_SOURCES += c++/kqueue_monitor.cpp
 endif
+if USE_FEN
+  libfswatch_la_SOURCES += c++/fen_monitor.cpp
+endif
 if USE_INOTIFY
   libfswatch_la_SOURCES += c++/inotify_monitor.cpp
 endif
@@ -92,6 +95,9 @@ if USE_FSEVENTS
 endif
 if USE_KQUEUE
   libfswatch_cpp_HEADERS += c++/kqueue_monitor.hpp
+endif
+if USE_FEN
+  libfswatch_cpp_HEADERS += c++/fen_monitor.hpp
 endif
 if USE_INOTIFY
   libfswatch_cpp_HEADERS += c++/inotify_monitor.hpp

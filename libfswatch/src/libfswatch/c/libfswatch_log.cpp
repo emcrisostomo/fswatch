@@ -89,7 +89,7 @@ void fsw_logf_perror(const char * format, ...)
       break;
     }
   }
-  while (required_chars > current_buffer_size);
+  while ((size_t)required_chars > current_buffer_size);
 
   perror(&buffer[0]);
 }

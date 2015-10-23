@@ -1,0 +1,111 @@
+README.smartos
+**************
+
+Introduction
+============
+
+This file describes the steps required to build this bundle on SmartOS.  A
+complete C/C++ toolchain for SmartOS is provided on the base-multiarch image.
+
+The user is currently using the following image for the development of fswatch
+on SmartOS:
+
+    UUID:    9250f5a8-6e9c-11e5-9cdb-67fab8707bfd
+    NAME:    base-multiarch
+    VERSION: 15.3.0
+
+Setting Up a Development Zone
+=============================
+
+A development zone can be setup using the following procedure:
+
+  * Search for the latest base-multiarch image:
+
+        $ imgadm avail | grep base-multiarch
+        9250f5a8-6e9c-11e5-9cdb-67fab8707bfd  base-multiarch            15.3.0      smartos  2015-10-09T15:44:05Z
+
+  * Install the latest image available:
+
+        $ imgadm import 9250f5a8-6e9c-11e5-9cdb-67fab8707bfd
+
+  * Create a zone manifest called development.json.  A simple zone manifest
+    template is the following:
+
+        {
+          "brand": "joyent",
+          "image_uuid": "9250f5a8-6e9c-11e5-9cdb-67fab8707bfd",
+          "alias": "development",
+          "hostname": "development",
+          "max_physical_memory": 4096,
+          "quota": 10,
+          "resolvers": ["8.8.8.8", "8.8.4.4"],
+          "nics": [
+            {
+              "nic_tag": "admin",
+              "ip": "dhcp"
+            }
+          ]
+        }
+
+  * Install a zone using the specified image and manifest:
+
+        $ vmadm create -f development.json
+
+Prerequisites
+=============
+
+The following packages must be installed on the zone where fswatch is built:
+
+  * autoconf
+
+  * automake
+
+  * gettext
+
+  * libtool
+
+  * gcc49
+
+  * git
+
+  * gmake
+
+  * gtexinfo
+
+Packages can be installed using pkgin:
+
+    $ pkgin update
+    $ pkgin install package ...
+
+Installation
+============
+
+See the INSTALL file for detailed information about how to configure and install
+fswatch.
+
+fswatch is a C++ program and a C++ compiler compliant with the C++11 standard is
+required to compile it.  Check the documentation of your distribution to learn
+how to install the required software.
+
+The configure script enforces an ordered compiler search list and clang++ will
+be used first if available.  If you do not like this choice and wish to use
+another compiler set the value of the CXX environment variable to the name of
+your compiler binary.  If, for example, you wish to use the g++ compiler, then
+use this command to configure the build:
+
+    $ ./configure CXX=g++
+
+-----
+
+Copyright (c) 2015 Enrico M. Crisostomo
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.
