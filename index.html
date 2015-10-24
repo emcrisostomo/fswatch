@@ -4,7 +4,7 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="fswatch : A cross-platform file change monitor with multiple backends: Apple OS X File System Events API, *BSD kqueue, Linux inotify and a stat-based backend.">
+    <meta name="description" content="fswatch : A cross-platform file change monitor with multiple backends: Apple OS X File System Events API, *BSD kqueue, Solaris/Illumos File Events Notification, Linux inotify and a stat-based backend.">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -40,7 +40,9 @@ kinds of monitors:</p>
 <li>A monitor based on <em>kqueue</em>, an event notification interface introduced in
 FreeBSD 4.1 and supported on most *BSD systems (including OS X).</li>
 <li>A monitor based on <em>inotify</em>, a Linux kernel subsystem that reports file
-system changes to applications.</li>
+  system changes to applications.</li>
+<li>A monitor based on <em>File Events Notification</em>, a Solaris/Illumos
+kernel API that reports file events.</li>
 <li>A monitor which periodically stats the file system, saves file modification
 times in memory and manually calculates file system changes, which can work
 on any operating system where <code>stat (2)</code> can be used.</li>
