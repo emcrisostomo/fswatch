@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-09-30 12:21+0200\n"
-"PO-Revision-Date: 2015-09-30 12:24+0200\n"
+"POT-Creation-Date: 2015-10-24 12:58+0200\n"
+"PO-Revision-Date: 2015-10-24 13:08+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -24,6 +24,52 @@ msgstr "Tipo evento sconosciuto: "
 #: src/libfswatch/c++/event.cpp:105
 msgid "Unknown event type."
 msgstr "Tipo evento sconosciuto."
+
+#: src/libfswatch/c++/fen_monitor.cpp:60
+msgid "An error occurred while creating a port."
+msgstr "Si è prodotto un errore durante la creazione del port."
+
+#: src/libfswatch/c++/fen_monitor.cpp:197
+#, c-format
+msgid "Associating %s.\n"
+msgstr "Associando %s.\n"
+
+#: src/libfswatch/c++/fen_monitor.cpp:228
+#, c-format
+msgid "Adding %s to list of watched paths.\n"
+msgstr "Aggiungendo %s alla lista di path osservati.\n"
+
+#: src/libfswatch/c++/fen_monitor.cpp:234
+msgid "Allocating fen_info.\n"
+msgstr "Allocando fen_info.\n"
+
+#: src/libfswatch/c++/fen_monitor.cpp:241
+#: src/libfswatch/c++/fen_monitor.cpp:248
+msgid "Cannot allocate memory"
+msgstr "Non si può allocare memoria"
+
+#: src/libfswatch/c++/fen_monitor.cpp:305
+#: src/libfswatch/c++/kqueue_monitor.cpp:262
+#, c-format
+msgid "%s cannot be found. Will retry later.\n"
+msgstr "%s non può essere trovato. Si riproverà più tardi.\n"
+
+#: src/libfswatch/c++/fen_monitor.cpp:328
+msgid "Processing deleted descriptors.\n"
+msgstr "Processando descrittori eliminati.\n"
+
+#: src/libfswatch/c++/fen_monitor.cpp:350
+msgid "Rescanning pending descriptors.\n"
+msgstr "Scansione dei descrittori in sospeso.\n"
+
+#: src/libfswatch/c++/fen_monitor.cpp:356
+#, c-format
+msgid "Rescanning %s.\n"
+msgstr "Nuova scansione di %s.\n"
+
+#: src/libfswatch/c++/fen_monitor.cpp:385
+msgid "Event from unexpected source"
+msgstr "Evento da sorgente inattesa"
 
 #: src/libfswatch/c++/fsevents_monitor.cpp:79
 msgid "Stopping event stream...\n"
@@ -61,67 +107,60 @@ msgstr "Facendo partire il ciclo di esecuzione...\n"
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "Il contesto del callback non può essere convertita a fsevents_monitor."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:84
+#: src/libfswatch/c++/inotify_monitor.cpp:87
 msgid "Cannot initialize inotify."
 msgstr "Non si può inizializzare inotify."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:94
+#: src/libfswatch/c++/inotify_monitor.cpp:97
 msgid "Removing: "
 msgstr "Eliminando: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:131
+#: src/libfswatch/c++/inotify_monitor.cpp:134
 msgid "Added: "
 msgstr "Aggiunto: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:244
+#: src/libfswatch/c++/inotify_monitor.cpp:253
 msgid "Generic event: "
 msgstr "Evento generico: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:336
+#: src/libfswatch/c++/inotify_monitor.cpp:345
 msgid "Removed: "
 msgstr "Eliminato: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:395
+#: src/libfswatch/c++/inotify_monitor.cpp:404
 msgid "::select() on inotify descriptor encountered an error."
 msgstr "::select() sul descrittore inotify è andata in errore."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:410
+#: src/libfswatch/c++/inotify_monitor.cpp:419
 msgid "Number of records: "
 msgstr "Numero di registri: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:416
+#: src/libfswatch/c++/inotify_monitor.cpp:425
 msgid "read() on inotify descriptor read 0 records."
 msgstr "read() sul descrittore inotify ha trovato 0 registri."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:422
+#: src/libfswatch/c++/inotify_monitor.cpp:431
 msgid "read() on inotify descriptor returned -1."
 msgstr "read() sul descrittore inotify ha ritornato -1."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:145
-msgid "Cannot open "
-msgstr "Non si può aprire "
+#: src/libfswatch/c++/kqueue_monitor.cpp:172
+#, c-format
+msgid "Cannot open %s"
+msgstr "Non si può aprire %s"
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:254
-msgid "Notice: "
-msgstr "Avviso: "
-
-#: src/libfswatch/c++/kqueue_monitor.cpp:254
-msgid " cannot be found. Will retry later.\n"
-msgstr " non può essere trovato. Si riproverà più tardi.\n"
-
-#: src/libfswatch/c++/kqueue_monitor.cpp:262
+#: src/libfswatch/c++/kqueue_monitor.cpp:269
 msgid "kqueue already running."
 msgstr "Si sta già eseguando kqueue."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:269
+#: src/libfswatch/c++/kqueue_monitor.cpp:276
 msgid "kqueue failed."
 msgstr "kqueue ha fallito."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:288
-msgid "::kevent returned -1, invalid event number."
-msgstr "::kevent ha ritornato -1, numero di eventi invalido."
+#: src/libfswatch/c++/kqueue_monitor.cpp:295
+msgid "kevent returned -1, invalid event number."
+msgstr "kevent ha ritornato -1, numero di eventi invalido."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:308
+#: src/libfswatch/c++/kqueue_monitor.cpp:315
 msgid "Event with EV_ERROR"
 msgstr "Evento con EV_ERROR"
 
@@ -129,31 +168,37 @@ msgstr "Evento con EV_ERROR"
 msgid "Error: "
 msgstr "Errore: "
 
-#: src/libfswatch/c++/monitor.cpp:62
+#: src/libfswatch/c++/monitor.cpp:65
 msgid "Callback cannot be null."
 msgstr "Il callback non può essere nullo."
 
-#: src/libfswatch/c++/monitor.cpp:75
+#: src/libfswatch/c++/monitor.cpp:78
 msgid "Latency cannot be negative."
 msgstr "La latenza non può essere negativa."
 
-#: src/libfswatch/c++/monitor.cpp:108
+#: src/libfswatch/c++/monitor.cpp:116
 msgid "An error occurred during the compilation of "
 msgstr "Si è prodotto un errore durante la compilazione di "
 
-#: src/libfswatch/c++/monitor.cpp:295
+#: src/libfswatch/c++/monitor.cpp:317
 msgid "Event queue overflow."
 msgstr "La coda degli eventi è andata in overflow."
 
-#: src/libfswatch/c++/monitor.cpp:322
+#: src/libfswatch/c++/monitor.cpp:344
 msgid "Notifying events #: "
 msgstr "Notificando eventi #: "
 
-#: src/libfswatch/c++/path_utils.cpp:70
-msgid "Cannot stat() "
-msgstr "Non posso eseguire stat() "
+#: src/libfswatch/c++/path_utils.cpp:74
+#, c-format
+msgid "Cannot stat %s"
+msgstr "Non posso eseguire stat() di %s"
 
-#: src/libfswatch/c++/poll_monitor.cpp:202
+#: src/libfswatch/c++/path_utils.cpp:86
+#, c-format
+msgid "Cannot lstat %s"
+msgstr "Non posso eseguire lstat() di %s"
+
+#: src/libfswatch/c++/poll_monitor.cpp:201
 msgid "Done scanning.\n"
 msgstr "Scansione terminata.\n"
 
@@ -252,5 +297,5 @@ msgid "cygwin_create_path could not allocate memory to convert the path."
 msgstr ""
 "cygwin_create_path non ha potuto allocare memoria per convertire il path."
 
-#~ msgid "Processing path: %s.\n"
-#~ msgstr "Processando path: %s.\n"
+#~ msgid "Notice: "
+#~ msgstr "Avviso: "
