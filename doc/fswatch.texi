@@ -75,7 +75,7 @@ Free Documentation License'.
 @end ifnottex
 
 @menu
-* History::                                    History
+* Version History::                            Version History
 * Introduction::                               Introduction
 * Tutorial Introduction to @command{fswatch}:: Tutorial Introduction to @code{fswatch}
 * Invoking @command{fswatch}::                 Invoking @code{fswatch}
@@ -88,13 +88,14 @@ Free Documentation License'.
 * General Index::                              General Index
 @end menu
 
-@node History
-@chapter History
+@node Version History
+@chapter Version History
 
-@section fswatch 1.7.0.develop
+@section 1.7.0.develop
 @itemize
 @item
-Fix issue 35: Support Solaris/Illumos File Events Notification @acronym{API}.
+Fix issue 35: Support Solaris/Illumos File Events Notification
+@acronym{API}.
 
 @item
 @opindex directories@r{, inception}
@@ -109,10 +110,10 @@ Fix issue 99: A monitor using the File Events Notification
 Fix issue 101: Add flag to watch file accesses.
 @end itemize
 
-@section fswatch 1.6.0
+@section 1.6.0
 @itemize
 @item
-@file{fswatch} can be built on Microsoft Windows using Cygwin.
+@command{fswatch} can be built on Microsoft Windows using Cygwin.
 
 @item
 A monitor for Microsoft Windows has been added.
@@ -120,12 +121,12 @@ A monitor for Microsoft Windows has been added.
 @item
 @fnindex @code{fsw_event_flag::Overflow}
 @opindex allow-overflow@r{, inception}
-@file{fswatch} can survive monitor overflows and notify them as a
+@command{fswatch} can survive monitor overflows and notify them as a
 specially crafted change event (of type @command{Overflow}) if invoked
 with the @option{--allow-overflow} option.
 @end itemize
 
-@section fswatch 1.5.1
+@section 1.5.1
 
 @itemize
 @item
@@ -139,7 +140,7 @@ As a consequence of the @file{fswatch-run} removal, dependency on at
 least one supported shell (Zsh and Bash) has been removed.
 @end itemize
 
-@section fswatch 1.5.0
+@section 1.5.0
 
 @itemize
 @item
@@ -147,7 +148,7 @@ least one supported shell (Zsh and Bash) has been removed.
 Added the @option{--event} option to allow filtering by event type.
 @end itemize
 
-@section fswatch 1.4.7
+@section 1.4.7
 
 @itemize
 @item
@@ -161,7 +162,7 @@ Fix bug in exclusion filter ordering (PR 75).
 Documentation improvements.
 @end itemize
 
-@section fswatch 1.4.6
+@section 1.4.6
 
 @itemize
 @item
@@ -169,7 +170,7 @@ Documentation improvements.
 Fix issue 74: Assertion failed on @code{fsw_destroy_session}.
 @end itemize
 
-@section fswatch 1.4.5.3
+@section 1.4.5.3
 
 @itemize
 @item
@@ -177,7 +178,7 @@ Fix issue 67: 100% @acronym{CPU} usage while using @file{libfswatch}.
 This issue only affects the @emph{inotify} monitor.
 @end itemize
 
-@section fswatch 1.4.5.2
+@section 1.4.5.2
 
 @itemize
 @item
@@ -185,7 +186,7 @@ Fix issue 66: Exclude items with @command{poll_monitor} not
 considered.
 @end itemize
 
-@section fswatch 1.4.5.1
+@section 1.4.5.1
 
 @itemize
 @item
@@ -194,21 +195,21 @@ Do not distribute wrapper scripts for shells which are not installed
 (the FreeBSD port system checks shebangs and complains).
 @end itemize
 
-@section fswatch 1.4.5
+@section 1.4.5
 
 @itemize
 @item
 Add custom record formats.
 @end itemize
 
-@section fswatch 1.4.4
+@section 1.4.4
 
 @itemize
 @item
 @cpindex @acronym{GNU} gettext
 @cpindex gettext
 @pgindex gettext
-Localize @file{fswatch} and @file{libfswatch} using @acronym{GNU}
+Localize @command{fswatch} and @file{libfswatch} using @acronym{GNU}
 @code{gettext}.
 
 @item
@@ -218,7 +219,7 @@ Add Spanish (@code{es}) localization.
 Add Italian (@code{it}) localization.
 @end itemize
 
-@section fswatch 1.4.3.2
+@section 1.4.3.2
 
 @itemize
 @item
@@ -227,7 +228,7 @@ Fix @file{Makefile.am} because of broken link when @var{DESTDIR}
 installs are performed.
 @end itemize
 
-@section fswatch 1.4.3.1
+@section 1.4.3.1
 
 @itemize
 @item
@@ -238,7 +239,7 @@ Fix bug in @file{fswatch-run} wrapper script for Zsh which caused last
 argument not to be split when passed to @file{xargs}.
 @end itemize
 
-@section fswatch 1.4.3
+@section 1.4.3
 
 @itemize
 @item
@@ -272,7 +273,7 @@ Update @file{autogen.sh} to honour some commonly used environment
 variables.
 @end itemize
 
-@section fswatch 1.4.2
+@section 1.4.2
 
 @itemize
 @item
@@ -287,27 +288,27 @@ Version and revision is now determined dynamically using Git by
 ancillary scripts invoked by the @acronym{GNU} Build System.
 @end itemize
 
-@section fswatch 1.4.1.1
+@section 1.4.1.1
 
 @itemize
 @item
 @cpindex Apple OS X
 @cpindex C++11
-@file{fswatch} does not compile on OS X < 10.9 because some required
-C++11 classes are not supported by its C++ runtime.
+@command{fswatch} does not compile on OS X < 10.9 because some
+required C++11 classes are not supported by its C++ runtime.
 @end itemize
 
-@section fswatch 1.4.1
+@section 1.4.1
 
 @itemize
 @item
 @cpindex Apple OS X
 @cpindex C++11
-@file{fswatch} does not compile on OS X < 10.9 because some required
-C++11 classes are not supported by its C++ runtime.
+@command{fswatch} does not compile on OS X < 10.9 because some
+required C++11 classes are not supported by its C++ runtime.
 @end itemize
 
-@section fswatch 1.4.0
+@section 1.4.0
 
 @itemize
 @item
@@ -317,10 +318,10 @@ The @file{libfswatch} library has been added with bindings for C and
 C++.
 
 @item
-@file{fswatch} let users specify the monitor to use by name.
+@command{fswatch} let users specify the monitor to use by name.
 @end itemize
 
-@section fswatch 1.3.9
+@section 1.3.9
 
 @itemize
 @item
@@ -337,28 +338,29 @@ Paths can be included using @option{-i}/@option{--include} and
 providing a set of regular expressions.
 @end itemize
 
-@section fswatch 1.3.8
+@section 1.3.8
 
 @itemize
 @item
 Fix Issue 34: Diagnostic messages were output by the @emph{inotify}
-monitor even if @file{fswatch} was not run in verbose mode.
+monitor even if @command{fswatch} was not run in verbose mode.
 @end itemize
 
-@section fswatch 1.3.7
+@section 1.3.7
 
 @itemize
 @item
-Fix Issue 32: Problems building @file{fswatch} 1.3.6 on Mac v. 10.8.5.
+Fix Issue 32: Problems building @command{fswatch} 1.3.6 on Mac
+v. 10.8.5.
 
 @item
 @cpindex C++11
 @cpindex C++, initializer list
-Remove usages of C++11 initializer lists so that @file{fswatch} builds
-with older compilers.
+Remove usages of C++11 initializer lists so that @command{fswatch}
+builds with older compilers.
 @end itemize
 
-@section fswatch 1.3.6
+@section 1.3.6
 
 @itemize
 @item
@@ -399,7 +401,7 @@ Bash.
 
 @end itemize
 
-@section fswatch 1.3.5
+@section 1.3.5
 
 @itemize
 @item
@@ -411,7 +413,7 @@ Fix bug to write usage to standard error when invalid arguments are
 specified.
 @end itemize
 
-@section fswatch 1.3.4
+@section 1.3.4
 
 @itemize
 @item
@@ -420,7 +422,7 @@ Fix bug in @file{fswatch-run} script to allow arguments to be passed
 to the command to run.
 @end itemize
 
-@section fswatch 1.3.3
+@section 1.3.3
 
 @itemize
 @item
@@ -436,42 +438,54 @@ when change events are received.
 
 @end itemize
 
-@section fswatch 1.3.2
+@section 1.3.2
 
 @itemize
 @item
 @pgindex fsw
 @cpindex @code{fsw}
-@file{fswatch} has been merged with @code{fsw}.
+@command{fswatch} has been merged with @code{fsw}.
 @end itemize
 
 @node Introduction
 @chapter Introduction
 @command{fswatch} is a file change monitor that receives notifications
 when the contents of the specified files or directories are modified.
-@command{fswatch} implements four kinds of monitors:
+@command{fswatch} implements the following kinds of monitors:
 
 @itemize
 @item
 @cpindex File System Events, see FSEvents
 @cpindex FSEvents, API
 @cpindex monitor, FSEvents
-A monitor based on the File System Events API of Apple OS X.
+@cpindex Apple OS X
+A monitor based on the @emph{File System Events} @acronym{API}
+(FSEvents) of Apple OS X.
 
 @item
 @cpindex FreeBSD
 @cpindex BSD
 @cpindex kqueue
 @cpindex monitor, kqueue
-A monitor based on kqueue, an event notification interface introduced
-in FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+@cpindex Apple OS X
+A monitor based on @emph{kqueue}, an event notification interface
+introduced in FreeBSD 4.1 and supported on most *BSD systems
+(including OS X).
+
+@item
+@cpindex Solaris
+@cpindex Illumos
+@cpindex File Events Notifications
+@cpindex monitor, fse
+A monitor based on the @emph{File Events Notification} @acronym{API}
+of the Solaris kernel nad its derivatives, such as Illumos.
 
 @item
 @cpindex inotify
 @cpindex Linux
 @cpindex monitor, inotify
-A monitor based on inotify, a Linux kernel subsystem that reports file
-system changes to applications.
+A monitor based on @emph{inotify}, a Linux kernel subsystem that
+reports file system changes to applications.
 
 @item
 @cpindex Microsoft Windows monitor
@@ -479,15 +493,15 @@ system changes to applications.
 @cpindex Microsoft Windows
 @fnindex @code{ReadDirectoryChangesW}
 A monitor based on the Microsoft Windows' @code{ReadDirectoryChangesW}
-function and reads change events asynchronously.
+function.
 
 @item
 @cpindex monitor, poll
 @fnindex @command{stat}
 A monitor which periodically stats the file system, saves file
 modification times in memory and manually calculates file system
-changes, which can work on any operating system where @code{stat()}
-can be used.
+changes, which can work on any operating system where the
+@code{stat()} function can be used.
 @end itemize
 
 @command{fswatch} should build and work correctly on any system
@@ -498,8 +512,9 @@ shipping either of the aforementioned APIs.
 @pgindex @command{fswatch}
 @cpindex @command{fswatch}, initial version
 @cpindex FSEvents
+@cpindex Apple OS X
 Alan @sc{Dipert} wrote the first implementation of @command{fswatch}
-in 2009.  This version ran exclusively on OS X and relied on the
+in 2009.  This version ran exclusively on Apple OS X and relied on the
 @emph{FSEvents} API to get change events from the OS.
 
 @pgindex @command{fsw}
@@ -513,16 +528,19 @@ aiming at providing not only a drop-in replacement for
 system change events APIs, including:
 @itemize
 @item
-OS X FSEvents.
+OS X @emph{FSEvents}.
 
 @item
-*BSD kqueue.
+*BSD @emph{kqueue}.
 
 @item
-Linux inotify.
+Solaris' @emph{File Events Notification}.
 
 @item
-Microsoft Windows.
+Linux @emph{inotify}.
+
+@item
+Microsoft Windows @code{ReadDirectoryChangesW}.
 
 @end itemize
 
@@ -545,6 +563,7 @@ frozen and its documentation updated to redirect users to
 @cpindex GitHub
 @cpindex @command{fswatch}, repository
 @cpindex @command{fswatch}, source code
+@flindex AUTHORS
 If you find problems or have suggestions about this program or this
 manual, please report them as new issues in the official GitHub
 repository of @command{fswatch} at
@@ -573,21 +592,22 @@ where @command{fswatch} is useful:
 A common use case is @emph{detecting} file system changes in a set of
 file system objects@footnote{In the context of this manual (unless
 specified otherwise), @emph{file system object} refers undistinctively
-to @emph{files} and @emph{directories}.} where @emph{details} of a
-change are irrelevant.  This mode of operation is called @emph{bulk
-mode} and @command{fswatch} will only dump a single event record per
-batch@footnote{A @emph{batch} is an iteration of @command{fswatch}
-scanning logic, whose frequency is @math{\nu = l^{-1}}, where @math{l}
-is the @emph{latency}.}  containing the number of affected file system
-objects.  No other details are avaible in the event record.
+to @emph{files}, @emph{directories} and @emph{symbolic links}.} where
+the @emph{details} of a change are irrelevant.  This mode of operation
+is called @emph{bulk mode} and @command{fswatch} will only dump a
+single event record per batch@footnote{A @emph{batch} is an iteration
+of @command{fswatch} scanning logic, whose frequency is @math{\nu =
+l^{-1}}, where @math{l} is the @emph{latency}.}  containing the number
+of affected file system objects.  No other details are avaible in the
+event record.
 
 @pgindex @command{rsync}
 The most common application of this mode of operation is performing a
 bulk action on all the observed file system objects, such as a
 synchronization with @command{rsync}, which will serve us as an
-example.  In this case, the detection of a change triggers the
-execution of a synchronization script, no matter its kind nor the
-specific object the event affects.
+example.  In this case, a change event triggers the execution of a
+synchronization script, no matter the event type kind nor the object
+the event affects.
 
 To run @command{fswatch} in batch mode, the (@option{-o},
 @option{--one-per-batch}) must be used:
@@ -1766,7 +1786,7 @@ does not do so @emph{by design}.}.
 @item
 The @emph{kqueue} monitor opens a file descriptor for each watched
 file.  When @option{-r} is used and a directory is watched,
-@file{fswatch} will walk the file system hierarchy rooted at the
+@command{fswatch} will walk the file system hierarchy rooted at the
 directory and will open a file descriptor for each children to
 establish a watch on it.
 
@@ -1796,15 +1816,15 @@ Suggestions}).
 Some monitors such as the @emph{kqueue} monitor require a file
 descriptor to be open for each watched file system object.  This
 imposes a limitation on the maximum number of files that can be
-watched by @file{fswatch}.  Before version 1.7, a user could only
+watched by @command{fswatch}.  Before version 1.7, a user could only
 overcome this problem by increasing the maximum number of open file
 handles on its system.
 
-@file{fswatch} 1.7.0 introduced a new option,
+@command{fswatch} 1.7.0 introduced a new option,
 @option{-d}/@option{--directories}; when this option is used with a
 monitor that supports it, only directory objects will be watched
 during recursive scans.  When a change occurs on a file, instead of
-reporting @emph{which} file has changed and how, @file{fswatch} will
+reporting @emph{which} file has changed and how, @command{fswatch} will
 report a change event on the parent directory: this way, the number of
 required open file handles decreases at the expense of change event
 information granularity.
@@ -1812,7 +1832,7 @@ information granularity.
 @section Monitor Tunables
 @cpindex monitor, tunable
 Some monitors may accept monitor-specific parameters to tune their
-behaviour.  At this purpose, @file{fswatch} offers a mechanism to pass
+behaviour.  At this purpose, @command{fswatch} offers a mechanism to pass
 key-value pair which are literally passed to the underlying monitor.
 A key-value pair @code{(k, v)} can be passed to a monitor using the
 @code{--monitor-property} option:
@@ -1976,9 +1996,9 @@ generated faster than they are read from the queue.  In any case, the
 application is guaranteed to receive an overflow notification which
 can be handled to gracefully recover.
 
-By default, the @file{fswatch} process is terminated after the
+By default, the @command{fswatch} process is terminated after the
 notification is sent by throwing an exception.  Using the
-@command{--allow-overflow} option makes @file{fswatch} emit a change
+@command{--allow-overflow} option makes @command{fswatch} emit a change
 event of type @command{Overflow} without exiting.
 
 @subsubsection Duplicate Events
@@ -2027,7 +2047,7 @@ Another source of overflow is the size of the buffer passed to
 Windows, this buffer's size can be tuned by the user.  The custom
 @code{windows.ReadDirectoryChangesW.buffer.size} property can be used
 to programmatically set the size of the buffer (in bytes) when
-@file{fswatch} is invoked, as shown in the following example where a 4
+@command{fswatch} is invoked, as shown in the following example where a 4
 kilobytes buffer is used:
 
 @example
@@ -2036,14 +2056,14 @@ $ fswatch --monitor-property \
     ~
 @end example
 
-By default, the @file{fswatch} process is terminated after the
+By default, the @command{fswatch} process is terminated after the
 notification is sent by throwing an exception.  Using the
-@command{--allow-overflow} option makes @file{fswatch} emit a change
+@command{--allow-overflow} option makes @command{fswatch} emit a change
 event of type @command{Overflow} without exiting.
 
 @subsubsection Directory Watching
 The Windows @acronym{API} lets user watch @emph{directory}, not
-@emph{files}.  @file{fswatch} currently passes path arguments to the
+@emph{files}.  @command{fswatch} currently passes path arguments to the
 underlying monitor as they are: as a consequence, if a path
 corresponds to a file, the monitor will emit an error and will not be
 able to watch it.
