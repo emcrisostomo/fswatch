@@ -21,6 +21,7 @@
 @include value.texi
 
 @defcodeindex op
+@defcodeindex fl
 
 @paragraphindent 2
 @c %**end of header
@@ -82,6 +83,7 @@ Free Documentation License'.
 * GNU Free Documentation License::             GNU Free Documentation License
 * Index of Functions::                         Index of Functions
 * Index of Programs::                          Index of Programs
+* Index of Files::                             Index of Files
 * Index of Command Line Options::              Index of Command Line Options
 * General Index::                              General Index
 @end menu
@@ -92,26 +94,35 @@ Free Documentation License'.
 @section fswatch 1.7.0.develop
 @itemize
 @item
+Fix issue 35: Support Solaris/Illumos File Events Notification @acronym{API}.
+
+@item
 @opindex directories@r{, inception}
-Add the @option{-d}/@option{--directories} option to request the
-monitor to watch directories only during a recursive scan.
+Fix issue 98: Add (@option{-d}, @option{--directories}) option to
+request the monitor to watch directories only during a recursive scan.
 
+@item
+Fix issue 99: A monitor using the File Events Notification
+@acronym{API} of the Solaris/Illumos kernel has been added.
+
+@item
+Fix issue 101: Add flag to watch file accesses.
 @end itemize
-
 
 @section fswatch 1.6.0
 @itemize
 @item
-@file{fswatch} can be build on Microsoft Windows using Cygwin.
+@file{fswatch} can be built on Microsoft Windows using Cygwin.
 
 @item
 A monitor for Microsoft Windows has been added.
 
 @item
+@fnindex @code{fsw_event_flag::Overflow}
+@opindex allow-overflow@r{, inception}
 @file{fswatch} can survive monitor overflows and notify them as a
 specially crafted change event (of type @command{Overflow}) if invoked
 with the @option{--allow-overflow} option.
-
 @end itemize
 
 @section fswatch 1.5.1
@@ -125,23 +136,7 @@ with the @option{--allow-overflow} option.
 @cpindex Bash
 @cpindex Zsh
 As a consequence of the @file{fswatch-run} removal, dependency on at
-least one supported shell (Zsh and Bash) have been removed from the
-currently supported ports:
-
-@itemize
-@item
-@cpindex Macports
-Macports.
-
-@item
-@cpindex Homebrew
-Homebrew.
-
-@item
-@cpindex FreeBSD
-FreeBSD.
-
-@end itemize
+least one supported shell (Zsh and Bash) has been removed.
 @end itemize
 
 @section fswatch 1.5.0
@@ -159,6 +154,7 @@ Added the @option{--event} option to allow filtering by event type.
 Fix bug in exclusion filter ordering (PR 75).
 
 @item
+@flindex README.md
 @file{README.md} improvements.
 
 @item
@@ -169,6 +165,7 @@ Documentation improvements.
 
 @itemize
 @item
+@fnindex fsw_destroy_session
 Fix issue 74: Assertion failed on @code{fsw_destroy_session}.
 @end itemize
 
@@ -176,21 +173,23 @@ Fix issue 74: Assertion failed on @code{fsw_destroy_session}.
 
 @itemize
 @item
-Fix issue 67: 100% CPU usage while using @file{libfswatch}.  This
-issue only affects the inotify monitor, available only on Linux.
+Fix issue 67: 100% @acronym{CPU} usage while using @file{libfswatch}.
+This issue only affects the @emph{inotify} monitor.
 @end itemize
 
 @section fswatch 1.4.5.2
 
 @itemize
 @item
-Fix issue 66: Exclude items with poll_monitor not considered.
+Fix issue 66: Exclude items with @command{poll_monitor} not
+considered.
 @end itemize
 
 @section fswatch 1.4.5.1
 
 @itemize
 @item
+@cpindex FreeBSD
 Do not distribute wrapper scripts for shells which are not installed
 (the FreeBSD port system checks shebangs and complains).
 @end itemize
@@ -206,19 +205,24 @@ Add custom record formats.
 
 @itemize
 @item
-Localize @file{fswatch} and @file{libfswatch} using GNU @code{gettext}.
-
-@item
-Add Italian (@code{it}) localization.
+@cpindex @acronym{GNU} gettext
+@cpindex gettext
+@pgindex gettext
+Localize @file{fswatch} and @file{libfswatch} using @acronym{GNU}
+@code{gettext}.
 
 @item
 Add Spanish (@code{es}) localization.
+
+@item
+Add Italian (@code{it}) localization.
 @end itemize
 
 @section fswatch 1.4.3.2
 
 @itemize
 @item
+@flindex Makefile.am
 Fix @file{Makefile.am} because of broken link when @var{DESTDIR}
 installs are performed.
 @end itemize
@@ -227,6 +231,9 @@ installs are performed.
 
 @itemize
 @item
+@pgindex fswatch-run
+@pgindex xargs
+@cpindex Zsh
 Fix bug in @file{fswatch-run} wrapper script for Zsh which caused last
 argument not to be split when passed to @file{xargs}.
 @end itemize
@@ -235,6 +242,7 @@ argument not to be split when passed to @file{xargs}.
 
 @itemize
 @item
+@cpindex batch marker, inception
 Add batch marker feature to delimit the boundaries of a batch of
 events.
 
@@ -242,19 +250,24 @@ events.
 Add Texinfo documentation.
 
 @item
-@file{libfswatch} API is now versioned.
+@file{libfswatch} @acronym{API} is now versioned.
 
 @item
+@cpindex Autoconf
 Improved Autoconf checks.
 
 @item
-The inotify monitor now waits for events and honours the latency
-settings.
+The @emph{inotify} monitor now waits for events and honours the
+latency settings.
 
 @item
-Automaticaly generate the ChangeLog using Git.
+@flindex ChangeLog
+@cpindex Git
+@pgindex git
+Automaticaly generate the @file{ChangeLog} file using Git.
 
 @item
+@flindex autogen.sh
 Update @file{autogen.sh} to honour some commonly used environment
 variables.
 @end itemize
@@ -263,35 +276,43 @@ variables.
 
 @itemize
 @item
-The inotify monitor now provides the same functionality provided by
-all the other monitors.  Recursive directory monitoring is now
-implemented.
+The @emph{inotify} monitor now provides the same functionality
+provided by all the other monitors.  Recursive directory monitoring is
+now implemented.
 
 @item
-Version and revision is now determined dynamically from Git by
-ancillary scripts invoked by the GNU Build System.
+@cpindex Git
+@pgindex git
+Version and revision is now determined dynamically using Git by
+ancillary scripts invoked by the @acronym{GNU} Build System.
 @end itemize
 
 @section fswatch 1.4.1.1
 
 @itemize
 @item
+@cpindex Apple OS X
+@cpindex C++11
 @file{fswatch} does not compile on OS X < 10.9 because some required
-C++11 classes are not supported by the C++ runtime.
+C++11 classes are not supported by its C++ runtime.
 @end itemize
 
 @section fswatch 1.4.1
 
 @itemize
 @item
+@cpindex Apple OS X
+@cpindex C++11
 @file{fswatch} does not compile on OS X < 10.9 because some required
-C++11 classes are not supported by the C++ runtime.
+C++11 classes are not supported by its C++ runtime.
 @end itemize
 
 @section fswatch 1.4.0
 
 @itemize
 @item
+@cpindex C++
+@cpindex C
 The @file{libfswatch} library has been added with bindings for C and
 C++.
 
@@ -303,12 +324,15 @@ C++.
 
 @itemize
 @item
+@opindex include@r{, inception}
 Fix Issue 23: Add @option{--include} option.
 
 @item
-Fix Issue 25: Add @option{--incluse} option.
+@opindex include@r{, inception}
+Fix Issue 25: Add @option{--include} option.
 
 @item
+@opindex include
 Paths can be included using @option{-i}/@option{--include} and
 providing a set of regular expressions.
 @end itemize
@@ -317,8 +341,8 @@ providing a set of regular expressions.
 
 @itemize
 @item
-Fix Issue 34: Diagnostic messages were output by the inotify monitor
-even if @file{fswatch} was not run in verbose mode.
+Fix Issue 34: Diagnostic messages were output by the @emph{inotify}
+monitor even if @file{fswatch} was not run in verbose mode.
 @end itemize
 
 @section fswatch 1.3.7
@@ -328,26 +352,37 @@ even if @file{fswatch} was not run in verbose mode.
 Fix Issue 32: Problems building @file{fswatch} 1.3.6 on Mac v. 10.8.5.
 
 @item
-Remove usages of C++11 initializer lists so that fswatch builds with
-older compiler.
+@cpindex C++11
+@cpindex C++, initializer list
+Remove usages of C++11 initializer lists so that @file{fswatch} builds
+with older compilers.
 @end itemize
 
 @section fswatch 1.3.6
 
 @itemize
 @item
-Fix Issue 26: @file{fswatch-run} can't run a command with arguments.
+@pgindex fswatch-run
+Fix Issue 26: @file{fswatch-run} cannot run a command with arguments.
 
 @item
+@pgindex fswatch-run
+@cpindex Zsh
+@cpindex Bash
 @file{fswatch-run} scripts are provided for Zsh and Bash.
 
 @item
+@cpindex Zsh
+@cpindex Bash
 System is scanned during installation to check for Zsh and Bash
 availability.  Path of found shells is substituted in the
 corresponding scripts, otherwise the default @code{/bin/@var{shell}}
 is used.
 
 @item
+@pgindex fswatch-run
+@cpindex Zsh
+@cpindex Bash
 If a supported shell is found, the @file{fswatch-run} symbolic link is
 created in the installation directory to the corresponding script.
 The lookup order of the shells is:
@@ -380,18 +415,21 @@ specified.
 
 @itemize
 @item
-Fix bug in @file{fswatch-run} script to allow arguments to be passed to the
-command to run.
+@pgindex fswatch-run
+Fix bug in @file{fswatch-run} script to allow arguments to be passed
+to the command to run.
 @end itemize
 
 @section fswatch 1.3.3
 
 @itemize
 @item
+@opindex one-per-batch@r{, inception}
 Add @option{-o}/@option{--one-per-batch} option to print a single
 message with the number of change events in the current batch.
 
 @item
+@pgindex fswatch-run
 Add @option{fswatch-run} shell script to mimic the behaviour of
 earlier @option{fswatch} versions and launch the specified command
 when change events are received.
@@ -402,6 +440,8 @@ when change events are received.
 
 @itemize
 @item
+@pgindex fsw
+@cpindex @code{fsw}
 @file{fswatch} has been merged with @code{fsw}.
 @end itemize
 
@@ -2165,6 +2205,12 @@ from frequent disk access.
 @appendix Index of Programs
 
 @printindex pg
+
+@c Print file index
+@node Index of Files
+@appendix Index of Files
+
+@printindex fl
 
 @c Print option index
 @node Index of Command Line Options
