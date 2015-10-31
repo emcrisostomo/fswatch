@@ -27,8 +27,8 @@
 This manual is for @file{libfswatch} (version @value{VERSION},
 @value{UPDATED}), a cross-platform file change monitor C/C++ library
 with multiple backends, including Apple OS X File System Events
-@acronym{API}, *BSD kqueue, Linux inotify, Microsoft Windows and a
-@code{stat}-based backend.
+@acronym{API}, *BSD kqueue, Solaris/Illumos File Events Notifications,
+Linux inotify, Microsoft Windows and a @code{stat()}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
