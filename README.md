@@ -121,13 +121,13 @@ Building from Source
 --------------------
 
 A user who wishes to build `fswatch` should get a [release tarball][release].
-A release tarball contains everything a user needs to build `fswatch` on his
+A release tarball contains everything a user needs to build `fswatch` on their
 system, following the instructions detailed in the Installation section below
 and the `INSTALL` file.
 
 A developer who wishes to modify `fswatch` should get the sources (either from a
 source tarball or cloning the repository) and have the GNU Build System
-installed on his machine.  Please read `README.gnu-build-system` to get further
+installed on their machine.  Please read `README.gnu-build-system` to get further
 details about how to bootstrap `fswatch` from sources on your machine.
 
 Getting a copy of the source repository is not recommended unless you are a
