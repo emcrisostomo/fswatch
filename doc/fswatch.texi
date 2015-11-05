@@ -29,9 +29,10 @@
 @copying
 This manual is for @command{fswatch} (version @value{VERSION},
 @value{UPDATED}), a cross-platform file change monitor with multiple
-backends, including Apple OS X File System Events @acronym{API}, *BSD
-kqueue, Solaris/Illumos File Events Notifications, Linux inotify,
-Microsoft Windows and a @command{stat()}-based backend.
+backends, including Apple OS X @emph{File System Events}, *BSD
+@emph{kqueue}, Solaris/Illumos @emph{File Events Notifications}, Linux
+@emph{inotify}, Microsoft Windows @code{ReadDirectoryChangesW} and a
+@code{stat()}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
@@ -77,8 +78,8 @@ Free Documentation License'.
 @menu
 * Version History::                            Version History
 * Introduction::                               Introduction
-* Tutorial Introduction to @command{fswatch}:: Tutorial Introduction to @code{fswatch}
-* Invoking @command{fswatch}::                 Invoking @code{fswatch}
+* Tutorial Introduction to @command{fswatch}:: Tutorial Introduction to @command{fswatch}
+* Invoking @command{fswatch}::                 Invoking @command{fswatch}
 * Monitors::                                   Monitors
 * GNU Free Documentation License::             GNU Free Documentation License
 * Index of Functions::                         Index of Functions
@@ -131,12 +132,12 @@ with the @option{--allow-overflow} option.
 @itemize
 @item
 @pgindex @command{fswatch-run}
-@file{fswatch-run} scripts have been removed.
+@command{fswatch-run} scripts have been removed.
 
 @item
 @cpindex Bash
 @cpindex Zsh
-As a consequence of the @file{fswatch-run} removal, dependency on at
+As a consequence of the @command{fswatch-run} removal, dependency on at
 least one supported shell (Zsh and Bash) has been removed.
 @end itemize
 
@@ -235,7 +236,7 @@ installs are performed.
 @pgindex fswatch-run
 @pgindex xargs
 @cpindex Zsh
-Fix bug in @file{fswatch-run} wrapper script for Zsh which caused last
+Fix bug in @command{fswatch-run} wrapper script for Zsh which caused last
 argument not to be split when passed to @file{xargs}.
 @end itemize
 
@@ -365,13 +366,13 @@ builds with older compilers.
 @itemize
 @item
 @pgindex fswatch-run
-Fix Issue 26: @file{fswatch-run} cannot run a command with arguments.
+Fix Issue 26: @command{fswatch-run} cannot run a command with arguments.
 
 @item
 @pgindex fswatch-run
 @cpindex Zsh
 @cpindex Bash
-@file{fswatch-run} scripts are provided for Zsh and Bash.
+@command{fswatch-run} scripts are provided for Zsh and Bash.
 
 @item
 @cpindex Zsh
@@ -385,7 +386,7 @@ is used.
 @pgindex fswatch-run
 @cpindex Zsh
 @cpindex Bash
-If a supported shell is found, the @file{fswatch-run} symbolic link is
+If a supported shell is found, the @command{fswatch-run} symbolic link is
 created in the installation directory to the corresponding script.
 The lookup order of the shells is:
 
@@ -418,7 +419,7 @@ specified.
 @itemize
 @item
 @pgindex fswatch-run
-Fix bug in @file{fswatch-run} script to allow arguments to be passed
+Fix bug in @command{fswatch-run} script to allow arguments to be passed
 to the command to run.
 @end itemize
 
@@ -432,8 +433,8 @@ message with the number of change events in the current batch.
 
 @item
 @pgindex fswatch-run
-Add @option{fswatch-run} shell script to mimic the behaviour of
-earlier @option{fswatch} versions and launch the specified command
+Add @command{fswatch-run} shell script to mimic the behaviour of
+earlier @command{fswatch} versions and launch the specified command
 when change events are received.
 
 @end itemize
