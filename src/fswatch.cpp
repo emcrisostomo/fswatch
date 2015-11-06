@@ -50,7 +50,6 @@ using namespace fsw;
 static void print_event_flags(const event & evt);
 static void print_event_path(const event & evt);
 static void print_event_timestamp(const event & evt);
-
 static int printf_event_validate_format(const string & fmt);
 
 struct printf_event_callbacks
@@ -465,34 +464,34 @@ static void parse_opts(int argc, char ** argv)
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
   static struct option long_options[] = {
-    { "access", no_argument, nullptr, 'a'},
-    { "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
-    { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
-    { "directories", no_argument, nullptr, 'd'},
-    { "event", required_argument, nullptr, OPT_EVENT_TYPE},
-    { "event-flags", no_argument, nullptr, 'x'},
+    { "access",               no_argument,       nullptr, 'a'},
+    { "allow-overflow",       no_argument,       nullptr, OPT_ALLOW_OVERFLOW},
+    { "batch-marker",         optional_argument, nullptr, OPT_BATCH_MARKER},
+    { "directories",          no_argument,       nullptr, 'd'},
+    { "event",                required_argument, nullptr, OPT_EVENT_TYPE},
+    { "event-flags",          no_argument,       nullptr, 'x'},
     { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
-    { "exclude", required_argument, nullptr, 'e'},
-    { "extended", no_argument, nullptr, 'E'},
-    { "follow-links", no_argument, nullptr, 'L'},
-    { "format", required_argument, nullptr, OPT_FORMAT},
-    { "format-time", required_argument, nullptr, 'f'},
-    { "help", no_argument, nullptr, 'h'},
-    { "include", required_argument, nullptr, 'i'},
-    { "insensitive", no_argument, nullptr, 'I'},
-    { "latency", required_argument, nullptr, 'l'},
-    { "list-monitors", no_argument, nullptr, 'M'},
-    { "monitor", required_argument, nullptr, 'm'},
-    { "monitor-property", required_argument, nullptr, OPT_MONITOR_PROPERTY},
-    { "numeric", no_argument, nullptr, 'n'},
-    { "one-per-batch", no_argument, nullptr, 'o'},
-    { "one-event", no_argument, nullptr, '1'},
-    { "print0", no_argument, nullptr, '0'},
-    { "recursive", no_argument, nullptr, 'r'},
-    { "timestamp", no_argument, nullptr, 't'},
-    { "utc-time", no_argument, nullptr, 'u'},
-    { "verbose", no_argument, nullptr, 'v'},
-    { "version", no_argument, &version_flag, true},
+    { "exclude",              required_argument, nullptr, 'e'},
+    { "extended",             no_argument,       nullptr, 'E'},
+    { "follow-links",         no_argument,       nullptr, 'L'},
+    { "format",               required_argument, nullptr, OPT_FORMAT},
+    { "format-time",          required_argument, nullptr, 'f'},
+    { "help",                 no_argument,       nullptr, 'h'},
+    { "include",              required_argument, nullptr, 'i'},
+    { "insensitive",          no_argument,       nullptr, 'I'},
+    { "latency",              required_argument, nullptr, 'l'},
+    { "list-monitors",        no_argument,       nullptr, 'M'},
+    { "monitor",              required_argument, nullptr, 'm'},
+    { "monitor-property",     required_argument, nullptr, OPT_MONITOR_PROPERTY},
+    { "numeric",              no_argument,       nullptr, 'n'},
+    { "one-per-batch",        no_argument,       nullptr, 'o'},
+    { "one-event",            no_argument,       nullptr, '1'},
+    { "print0",               no_argument,       nullptr, '0'},
+    { "recursive",            no_argument,       nullptr, 'r'},
+    { "timestamp",            no_argument,       nullptr, 't'},
+    { "utc-time",             no_argument,       nullptr, 'u'},
+    { "verbose",              no_argument,       nullptr, 'v'},
+    { "version",              no_argument,       &version_flag, true},
     { nullptr, 0, nullptr, 0}
   };
 
