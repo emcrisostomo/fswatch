@@ -465,10 +465,8 @@ static void parse_opts(int argc, char ** argv)
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
   static struct option long_options[] = {
-    { "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
-    { "print0", no_argument, nullptr, '0'},
-    { "one-event", no_argument, nullptr, '1'},
     { "access", no_argument, nullptr, 'a'},
+    { "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
     { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
     { "directories", no_argument, nullptr, 'd'},
     { "event", required_argument, nullptr, OPT_EVENT_TYPE},
@@ -488,6 +486,8 @@ static void parse_opts(int argc, char ** argv)
     { "monitor-property", required_argument, nullptr, OPT_MONITOR_PROPERTY},
     { "numeric", no_argument, nullptr, 'n'},
     { "one-per-batch", no_argument, nullptr, 'o'},
+    { "one-event", no_argument, nullptr, '1'},
+    { "print0", no_argument, nullptr, '0'},
     { "recursive", no_argument, nullptr, 'r'},
     { "timestamp", no_argument, nullptr, 't'},
     { "utc-time", no_argument, nullptr, 'u'},
