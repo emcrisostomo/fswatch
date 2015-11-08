@@ -29,9 +29,9 @@
 @copying
 This manual is for @command{fswatch} (version @value{VERSION},
 @value{UPDATED}), a cross-platform file change monitor with multiple
-backends, including Apple OS X @emph{File System Events}, *BSD
-@emph{kqueue}, Solaris/Illumos @emph{File Events Notifications}, Linux
-@emph{inotify}, Microsoft Windows @code{ReadDirectoryChangesW} and a
+backends: Apple OS X @emph{File System Events}, *BSD @emph{kqueue},
+Solaris/Illumos @emph{File Events Notification}, Linux @emph{inotify},
+Microsoft Windows @code{ReadDirectoryChangesW} and a
 @code{stat()}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo

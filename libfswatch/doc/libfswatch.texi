@@ -19,16 +19,18 @@
 @smallbook
 
 @defcodeindex op
+@defcodeindex fl
 
 @paragraphindent 2
 @c %**end of header
 
 @copying
 This manual is for @file{libfswatch} (version @value{VERSION},
-@value{UPDATED}), a cross-platform file change monitor C/C++ library
-with multiple backends, including Apple OS X File System Events
-@acronym{API}, *BSD kqueue, Solaris/Illumos File Events Notifications,
-Linux inotify, Microsoft Windows and a @code{stat()}-based backend.
+@value{UPDATED}), a cross-platform C/C++ file change monitor library
+with multiple backends: Apple OS X @emph{File System Events}, *BSD
+@emph{kqueue}, Solaris/Illumos @emph{File Events Notification}, Linux
+@emph{inotify}, Microsoft Windows @code{ReadDirectoryChangesW} and a
+@code{stat()}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
@@ -80,6 +82,7 @@ Free Documentation License'.
 * Index of Functions::
 * Index of Data Types::
 * Index of Programs::
+* Index of Files::
 * General Index::
 @end menu
 
@@ -92,6 +95,12 @@ The changes introduced in @code{5:0:2} are the following:
 
 @itemize
 @item
+@cpindex monitor, File Events Notification, inception
+@cpindex File Events Notification
+A monitor based on the Solaris/Illumos File Events Notification
+@acronym{API} has been added.
+
+@item
 @cpindex monitor, recursive, directory only
 The possibility of watching for directories only during a recursive
 scan.  This feature helps reducing the number of open file descriptors
@@ -102,6 +111,12 @@ events on directory children.
 @subsection C++ Interface Changes
 
 @itemize
+@item
+@fnindex @code{fsw::fen_monitor}
+Added the @code{fsw::fen_monitor} class has been added to provide a
+monitor based on the Solaris/Illumos File Events Notification
+@acronym{API}.
+
 @item
 @fnindex @code{monitor::set_directory_only}
 Added the @code{monitor::set_directory_only} method to set a flag to
@@ -302,6 +317,14 @@ introduced in FreeBSD 4.1 and supported on most *BSD systems
 (including OS X).
 
 @item
+@cpindex File Events Notification monitor
+@cpindex monitor, File Events Notification
+@cpindex Solaris
+@cpindex Illumos
+A monitor based on @emph{File Events Notification}, an event
+notification @acronym{API} of the Solaris/Illumos kernel.
+
+@item
 @cpindex inotify monitor
 @cpindex monitor, inotify
 @cpindex inotify
@@ -340,15 +363,15 @@ standard output.
 The biggest issue we have faced while developing @command{fswatch} was
 abstracting the behaviour of different backends behind a common
 interface and @file{libfswatch} is the result of that effort.  Instead
-of using different @acronym{API}s, a programmer can use just one:
-@file{libfswatch}'s.  The advantages of using @file{libfswatch} are
-many:
+of using different @acronym{API}s, a programmer can use just one: the
+@acronym{API} of @file{libfswatch}.  The advantages of using
+@file{libfswatch} are many:
 
 @itemize
 @item
 Portability: @file{libfswatch} supports many backends, effectively
-giving support to a great number of operating systems, including Linux
-and *BSD Unix.
+giving support to a great number of operating systems, including
+Solaris, *BSD Unix and Linux.
 
 @item
 Ease of use: using @file{libfswatch} should be easier than using any
@@ -409,8 +432,8 @@ interface that the library implements.
 
 @section The C and the C++ @acronym{API}
 The C @acronym{API} is built on top of the C++ @acronym{API} but the
-two are very different and the main difference reflect the differences
-between the two languages.
+two are very different, to reflect the fundamental differences between
+the two languages.
 
 @cpindex monitor
 @cpindex callback
@@ -439,7 +462,7 @@ functions operating on a monitoring session and the methods of the
 @section Thread Safety
 @cpindex thread safety
 @anchor{Thread Safety} The C++ @acronym{API} does not deal with thread
-safety explicitely.  Rather, it leaves the responsibility of
+safety explicitly.  Rather, it leaves the responsibility of
 implementing a thread-safe use of the library to the callers.  The C++
 implementation has been designed in order to:
 
@@ -454,6 +477,7 @@ Perform no concurrent access control in methods or class fields.
 Guarantee that functions and @emph{static} methods are thread safe.
 @end itemize
 
+@noindent
 As a consequence, it is @emph{not} thread-safe to access a monitor's
 member, be it a method or a field, from different threads
 concurrently.  The easiest way to implement thread-safety when using
@@ -495,25 +519,24 @@ storage specifier.
 @cpindex GitHub repository
 @cpindex @command{fswatch}, repository
 @cpindex @command{fswatch}, sources
+@flindex AUTHORS
+@flindex CONTRIBUTING.md
 If you find problems or have suggestions about this program or this
 manual, please report them as new issues in the official GitHub
 repository of @command{fswatch} at
-@uref{https://github.com/emcrisostomo/fswatch}.  If you with you may
-contact the authors at the addresses listed in the @file{AUTHORS}
-file.
-
-When reporting a bug, please be sure to include as much detail as
-possible and sufficient information to reproduce it.
+@uref{https://github.com/emcrisostomo/fswatch}.  Please, read the
+@file{CONTRIBUTING.md} file for detailed instructions on how to
+contribute to @command{fswatch}.
 
 @node The C++ API
 @chapter The C++ @acronym{API}
-The C++ @acronym{API} provides users an easy to use, object-oriented,
-common and intuitive interface to a wide range of file monitoring
-@acronym{API}s.  This @acronym{API} provides a common facade to a set
-of heterogeneous @acronym{API}s that not only greatly simplifies their
-usage, but provides an indirection layer that makes applications more
-portable: as far as there is an available monitor in another platform,
-an existing application will @emph{just} work.
+The C++ @acronym{API} provides users an easy to use, object-oriented
+interface to a wide range of file monitoring @acronym{API}s.  This
+@acronym{API} provides a common facade to a set of heterogeneous
+@acronym{API}s that not only greatly simplifies their usage, but
+provides an indirection layer that makes applications more portable:
+as far as there is an available monitor in another platform, an
+existing application will @emph{just} work.
 
 In reality, a monitor may have platform-specific behaviours that
 should be taken into account when writing portable applications using
@@ -522,7 +545,8 @@ portable applications that are truly independent of the file
 monitoring @acronym{API} they may be using.  However, monitors try to
 `compensate' for any behavioural difference across implementations.
 
-The typical @acronym{API} usage pattern is similar to the following:
+The typical usage pattern of this @acronym{API} is similar to the
+following:
 
 @itemize
 @item
@@ -549,7 +573,7 @@ particular instance.  The @code{monitor_factory} is an object factory
 class that provides basic monitor @emph{registration} and
 @emph{discovery} functionality: @acronym{API} clients can query the
 monitor registry to get a list of available monitors and get an
-instance of a monitor by @emph{type} or @emph{name}.
+instance of a monitor either by @emph{type} or by @emph{name}.
 
 @tpindex @code{monitor_factory}
 The @code{monitor_factory} class provides the following methods:
@@ -1873,6 +1897,12 @@ following index.
 @appendix Index of Programs
 
 @printindex pg
+
+@c Print file index
+@node Index of Files
+@appendix Index of Files
+
+@printindex fl
 
 @node General Index
 @unnumbered Index
