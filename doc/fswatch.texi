@@ -92,7 +92,7 @@ Free Documentation License'.
 @node Version History
 @chapter Version History
 
-@section 1.7.0.develop
+@section 1.7.0
 @itemize
 @item
 Fix issue 35: Support Solaris/Illumos File Events Notification
