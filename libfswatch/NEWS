@@ -1,7 +1,7 @@
 NEWS
 ****
 
-New in 1.7.0.develop:
+New in 1.7.0:
 
   * Issue 35: Support Solaris/Illumos File Events Notification API.
 
