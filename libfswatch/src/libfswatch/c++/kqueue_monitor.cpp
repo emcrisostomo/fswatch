@@ -38,13 +38,41 @@ using namespace std;
 
 namespace fsw
 {
+
   struct kqueue_monitor_load
   {
     fsw_hash_map<string, int> descriptors_by_file_name;
     fsw_hash_map<int, string> file_names_by_descriptor;
+    fsw_hash_map<int, mode_t> file_modes;
     fsw_hash_set<int> descriptors_to_remove;
     fsw_hash_set<int> descriptors_to_rescan;
-    fsw_hash_map<int, mode_t> file_modes;
+
+    void add_watch(int fd, const string & path, const struct stat &fd_stat)
+    {
+      descriptors_by_file_name[path] = fd;
+      file_names_by_descriptor[fd] = path;
+      file_modes[fd] = fd_stat.st_mode;
+    }
+
+    void remove_watch(int fd)
+    {
+      string name = file_names_by_descriptor[fd];
+      file_names_by_descriptor.erase(fd);
+      descriptors_by_file_name.erase(name);
+      file_modes.erase(fd);
+
+      close(fd);
+    }
+
+    void remove_watch(const string & path)
+    {
+      int fd = descriptors_by_file_name[path];
+      descriptors_by_file_name.erase(path);
+      file_names_by_descriptor.erase(fd);
+      file_modes.erase(fd);
+
+      close(fd);
+    }
   };
 
   typedef struct KqueueFlagType
@@ -129,10 +157,9 @@ namespace fsw
     int o_flags = 0;
 #  ifdef O_SYMLINK
     o_flags |= O_SYMLINK;
-#  elif defined(O_NOFOLLOW)
-    o_flags |= O_NOFOLLOW;
 #  endif
 #  ifdef O_EVTONLY
+    // The descriptor is requested for event notifications only.
     o_flags |= O_EVTONLY;
 #  else
     o_flags |= O_RDONLY;
@@ -142,24 +169,21 @@ namespace fsw
 
     if (fd == -1)
     {
-      string err = string(_("Cannot open ")) + path;
-      fsw_log_perror(err.c_str());
+      fsw_logf_perror(_("Cannot open %s"), path.c_str());
 
       return false;
     }
 
     // if the descriptor could be opened, track it
-    load->descriptors_by_file_name[path] = fd;
-    load->file_names_by_descriptor[fd] = path;
-    load->file_modes[fd] = fd_stat.st_mode;
+    load->add_watch(fd, path, fd_stat);
 
     return true;
   }
 
-  bool kqueue_monitor::scan(const string &path)
+  bool kqueue_monitor::scan(const string &path, bool is_root_path)
   {
     struct stat fd_stat;
-    if (!stat_path(path, fd_stat)) return false;
+    if (!lstat_path(path, fd_stat)) return false;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
@@ -170,40 +194,24 @@ namespace fsw
       return false;
     }
 
-    if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return true;
+    bool is_dir = S_ISDIR(fd_stat.st_mode);
+
+    if (!is_dir && !is_root_path && directory_only) return true;
+    if (!is_dir && !accept_path(path)) return true;
     if (!add_watch(path, fd_stat)) return false;
     if (!recursive) return true;
-    if (!S_ISDIR(fd_stat.st_mode)) return true;
+    if (!is_dir) return true;
 
-    vector<string> children;
-    get_directory_children(path, children);
+    vector<string> children = get_directory_children(path);
 
-    for (string &child : children)
+    for (string & child : children)
     {
       if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
-      scan(path + "/" + child);
+      scan(path + "/" + child, false);
     }
 
     return true;
-  }
-
-  void kqueue_monitor::remove_watch(int fd)
-  {
-    string name = load->file_names_by_descriptor[fd];
-    load->file_names_by_descriptor.erase(fd);
-    load->descriptors_by_file_name.erase(name);
-    load->file_modes.erase(fd);
-    close(fd);
-  }
-
-  void kqueue_monitor::remove_watch(const string &path)
-  {
-    int fd = load->descriptors_by_file_name[path];
-    load->descriptors_by_file_name.erase(path);
-    load->file_names_by_descriptor.erase(fd);
-    load->file_modes.erase(fd);
-    close(fd);
   }
 
   void kqueue_monitor::remove_deleted()
@@ -212,8 +220,7 @@ namespace fsw
 
     while (fd != load->descriptors_to_remove.end())
     {
-      remove_watch(*fd);
-
+      load->remove_watch(*fd);
       load->descriptors_to_remove.erase(fd++);
     }
   }
@@ -236,7 +243,8 @@ namespace fsw
       // If the descriptor which has vanished is a directory, we don't bother
       // EV_DELETEing all its children the event from kqueue for the same
       // reason.
-      remove_watch(fd_path);
+      load->remove_watch(fd_path);
+
       scan(fd_path);
 
       load->descriptors_to_rescan.erase(fd++);
@@ -251,8 +259,7 @@ namespace fsw
 
       if (!scan(path))
       {
-        string err = _("Notice: ") + path + _(" cannot be found. Will retry later.\n");
-        FSW_ELOG(err.c_str());
+        FSW_ELOGF(_("%s cannot be found. Will retry later.\n"), path.c_str());
       }
     }
   }
@@ -285,7 +292,7 @@ namespace fsw
     if (event_num == -1)
     {
       perror("kevent");
-      throw libfsw_exception(_("::kevent returned -1, invalid event number."));
+      throw libfsw_exception(_("kevent returned -1, invalid event number."));
     }
 
     return event_num;

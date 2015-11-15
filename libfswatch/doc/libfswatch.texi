@@ -19,16 +19,18 @@
 @smallbook
 
 @defcodeindex op
+@defcodeindex fl
 
 @paragraphindent 2
 @c %**end of header
 
 @copying
 This manual is for @file{libfswatch} (version @value{VERSION},
-@value{UPDATED}), a cross-platform file change monitor C/C++ library
-with multiple backends, including Apple OS X File System Events
-@acronym{API}, *BSD kqueue, Linux inotify, Microsoft Windows and a
-@code{stat}-based backend.
+@value{UPDATED}), a cross-platform C/C++ file change monitor library
+with multiple backends: Apple OS X @emph{File System Events}, *BSD
+@emph{kqueue}, Solaris/Illumos @emph{File Events Notification}, Linux
+@emph{inotify}, Microsoft Windows @code{ReadDirectoryChangesW} and a
+@code{stat()}-based backend.
 
 Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
 
@@ -80,13 +82,64 @@ Free Documentation License'.
 * Index of Functions::
 * Index of Data Types::
 * Index of Programs::
+* Index of Files::
 * General Index::
 @end menu
 
 @node History
 @chapter History
+
+@section 5:0:2
+@subsection Feature Changes
+The changes introduced in @code{5:0:2} are the following:
+
+@itemize
+@item
+@cpindex monitor, File Events Notification, inception
+@cpindex File Events Notification
+A monitor based on the Solaris/Illumos File Events Notification
+@acronym{API} has been added.
+
+@item
+@cpindex monitor, recursive, directory only
+The possibility of watching for directories only during a recursive
+scan.  This feature helps reducing the number of open file descriptors
+if a generic change event for a directory is acceptable instead of
+events on directory children.
+@end itemize
+
+@subsection C++ Interface Changes
+
+@itemize
+@item
+@fnindex @code{fsw::fen_monitor}
+Added the @code{fsw::fen_monitor} class has been added to provide a
+monitor based on the Solaris/Illumos File Events Notification
+@acronym{API}.
+
+@item
+@fnindex @code{monitor::set_directory_only}
+Added the @code{monitor::set_directory_only} method to set a flag to
+only watch directories during a recursive scan.
+@end itemize
+
+@subsection C Interface Changes
+
+@itemize
+@item
+@fnindex @code{fsw_set_directory_only}
+Added the @code{fsw_set_directory_only} function to set a flag to only
+watch directories during a recursive scan.
+
+@item
+@fnindex @code{fsw_logf_perror}
+Added the @code{fsw_logf_perror} function to log a
+@code{printf}-compatible message using @code{perror}.
+@end itemize
+
 @section 4:0:1
 @subsection Feature Changes
+
 The changes introducted in @code{4:0:1} are the following:
 @itemize
 @item
@@ -264,6 +317,14 @@ introduced in FreeBSD 4.1 and supported on most *BSD systems
 (including OS X).
 
 @item
+@cpindex File Events Notification monitor
+@cpindex monitor, File Events Notification
+@cpindex Solaris
+@cpindex Illumos
+A monitor based on @emph{File Events Notification}, an event
+notification @acronym{API} of the Solaris/Illumos kernel.
+
+@item
 @cpindex inotify monitor
 @cpindex monitor, inotify
 @cpindex inotify
@@ -302,15 +363,15 @@ standard output.
 The biggest issue we have faced while developing @command{fswatch} was
 abstracting the behaviour of different backends behind a common
 interface and @file{libfswatch} is the result of that effort.  Instead
-of using different @acronym{API}s, a programmer can use just one:
-@file{libfswatch}'s.  The advantages of using @file{libfswatch} are
-many:
+of using different @acronym{API}s, a programmer can use just one: the
+@acronym{API} of @file{libfswatch}.  The advantages of using
+@file{libfswatch} are many:
 
 @itemize
 @item
 Portability: @file{libfswatch} supports many backends, effectively
-giving support to a great number of operating systems, including Linux
-and *BSD Unix.
+giving support to a great number of operating systems, including
+Solaris, *BSD Unix and Linux.
 
 @item
 Ease of use: using @file{libfswatch} should be easier than using any
@@ -371,8 +432,8 @@ interface that the library implements.
 
 @section The C and the C++ @acronym{API}
 The C @acronym{API} is built on top of the C++ @acronym{API} but the
-two are very different and the main difference reflect the differences
-between the two languages.
+two are very different, to reflect the fundamental differences between
+the two languages.
 
 @cpindex monitor
 @cpindex callback
@@ -401,7 +462,7 @@ functions operating on a monitoring session and the methods of the
 @section Thread Safety
 @cpindex thread safety
 @anchor{Thread Safety} The C++ @acronym{API} does not deal with thread
-safety explicitely.  Rather, it leaves the responsibility of
+safety explicitly.  Rather, it leaves the responsibility of
 implementing a thread-safe use of the library to the callers.  The C++
 implementation has been designed in order to:
 
@@ -416,6 +477,7 @@ Perform no concurrent access control in methods or class fields.
 Guarantee that functions and @emph{static} methods are thread safe.
 @end itemize
 
+@noindent
 As a consequence, it is @emph{not} thread-safe to access a monitor's
 member, be it a method or a field, from different threads
 concurrently.  The easiest way to implement thread-safety when using
@@ -457,25 +519,24 @@ storage specifier.
 @cpindex GitHub repository
 @cpindex @command{fswatch}, repository
 @cpindex @command{fswatch}, sources
+@flindex AUTHORS
+@flindex CONTRIBUTING.md
 If you find problems or have suggestions about this program or this
 manual, please report them as new issues in the official GitHub
 repository of @command{fswatch} at
-@uref{https://github.com/emcrisostomo/fswatch}.  If you with you may
-contact the authors at the addresses listed in the @file{AUTHORS}
-file.
-
-When reporting a bug, please be sure to include as much detail as
-possible and sufficient information to reproduce it.
+@uref{https://github.com/emcrisostomo/fswatch}.  Please, read the
+@file{CONTRIBUTING.md} file for detailed instructions on how to
+contribute to @command{fswatch}.
 
 @node The C++ API
 @chapter The C++ @acronym{API}
-The C++ @acronym{API} provides users an easy to use, object-oriented,
-common and intuitive interface to a wide range of file monitoring
-@acronym{API}s.  This @acronym{API} provides a common facade to a set
-of heterogeneous @acronym{API}s that not only greatly simplifies their
-usage, but provides an indirection layer that makes applications more
-portable: as far as there is an available monitor in another platform,
-an existing application will @emph{just} work.
+The C++ @acronym{API} provides users an easy to use, object-oriented
+interface to a wide range of file monitoring @acronym{API}s.  This
+@acronym{API} provides a common facade to a set of heterogeneous
+@acronym{API}s that not only greatly simplifies their usage, but
+provides an indirection layer that makes applications more portable:
+as far as there is an available monitor in another platform, an
+existing application will @emph{just} work.
 
 In reality, a monitor may have platform-specific behaviours that
 should be taken into account when writing portable applications using
@@ -484,7 +545,8 @@ portable applications that are truly independent of the file
 monitoring @acronym{API} they may be using.  However, monitors try to
 `compensate' for any behavioural difference across implementations.
 
-The typical @acronym{API} usage pattern is similar to the following:
+The typical usage pattern of this @acronym{API} is similar to the
+following:
 
 @itemize
 @item
@@ -511,7 +573,7 @@ particular instance.  The @code{monitor_factory} is an object factory
 class that provides basic monitor @emph{registration} and
 @emph{discovery} functionality: @acronym{API} clients can query the
 monitor registry to get a list of available monitors and get an
-instance of a monitor by @emph{type} or @emph{name}.
+instance of a monitor either by @emph{type} or by @emph{name}.
 
 @tpindex @code{monitor_factory}
 The @code{monitor_factory} class provides the following methods:
@@ -602,6 +664,7 @@ public:
   void set_latency(double latency);
   void set_allow_overflow(bool overflow);
   void set_recursive(bool recursive);
+  void set_directory_only(bool directory_only);
   void add_filter(const monitor_filter &filter);
   void set_filters(
     const std::vector<monitor_filter> &filters);
@@ -665,6 +728,16 @@ is enforced depends on a monitor implementation.
 This function sets the @code{recursive} flag of the monitor to
 indicate whether the monitor should recursively observe the contents
 of directories.
+
+@item void set_directory_only(bool directory_only);
+@fnindex @code{monitor::set_directory_only}
+
+This function sets the directory only flag to the specified value.  If
+this flag is set, then the monitor will only watch directories during
+a recursive scan.  This functionality is only supported by monitors
+whose backend fires change events on a directory when one its children
+is changed.  If a monitor backend does not support this functionality,
+the flag is ignored.
 
 @item void add_filter(const monitor_filter &filter);
 @fnindex @code{monitor::add_filter}
@@ -1274,7 +1347,6 @@ be added to the current session in order for it to be valid.
 This function adds a new key-value pair @code{(name, value)} in the
 monitor's property map.
 
-
 @item FSW_STATUS
 @itemx fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow)
 @fnindex @code{fsw_set_allow_overflow}
@@ -1303,6 +1375,16 @@ Determines whether the monitor recursively scans each watched path or
 not.  Recursive scanning is an optional feature which could not be
 implemented by all the monitors.  By default, recursive scanning is
 disabled.
+
+@item FSW_STATUS
+@itemx fsw_set_directory_only(const FSW_HANDLE handle, const bool directory_only)
+@fnindex @code{fsw_set_directory_only}
+Sets the directory only flag to the specified value.  If this flag is
+set, then the monitor will only watch directories during a recursive
+scan.  This functionality is only supported by monitors whose backend
+fires change events on a directory when one its children is changed.
+If a monitor backend does not support this functionality, the flag is
+ignored.
 
 @item FSW_STATUS
 @itemx fsw_set_follow_symlinks(const FSW_HANDLE handle, const bool follow_symlinks)
@@ -1699,8 +1781,14 @@ to the file @code{f}.
 @item void fsw_log_perror(const char * msg)
 @fnindex @code{fsw_log_perror}
 
-This function prints and formats the specified message @code{msg}
-using @code{perror}.
+This function prints the specified message @code{msg} using
+@code{perror}.
+
+@item void fsw_logf_perror(const char * format, ...)
+@fnindex @code{fsw_logf_perror}
+
+This function prints the @code{printf}-compatible message using
+@code{perror}.
 
 @end table
 
@@ -1809,6 +1897,12 @@ following index.
 @appendix Index of Programs
 
 @printindex pg
+
+@c Print file index
+@node Index of Files
+@appendix Index of Files
+
+@printindex fl
 
 @node General Index
 @unnumbered Index

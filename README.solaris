@@ -1,0 +1,57 @@
+README.solaris
+**************
+
+Introduction
+============
+
+This file describes the steps required to build this bundle on a supported
+system running the Solaris or the Illumos kernel.  See README for more
+information about the tested configurations.
+
+When Illumos was created, the Solaris kernel already included the File Events
+Notification API.  Hence, the fen_monitor should be available on any system
+running Solaris (> 10) or an Illumos kernel.
+
+Additionally, a Solaris/Illumos system should be able to use the following
+monitors:
+
+  * inotify_monitor, depending on the kernel version.
+
+  * poll_monitor.
+
+So far, however, the author has only tested this release on SmartOS.  Feedback
+on different Solaris/Illumos systems is much appreciated and will benefit other
+users as well.
+
+Installation
+============
+
+See the INSTALL file for detailed information about how to configure and install
+fswatch.
+
+fswatch is a C++ program and a C++ compiler compliant with the C++11 standard is
+required to compile it.  Check the documentation of your distribution to learn
+how to install the required software.
+
+The configure script enforces an ordered compiler search list and clang++ will
+be used first if available.  If you do not like this choice and wish to use
+another compiler set the value of the CXX environment variable to the name of
+your compiler binary.  If, for example, you wish to use the g++ compiler, then
+use this command to configure the build:
+
+    $ ./configure CXX=g++
+
+-----
+
+Copyright (c) 2015 Enrico M. Crisostomo
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.

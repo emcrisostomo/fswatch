@@ -49,6 +49,7 @@ namespace fsw
     void set_latency(double latency);
     void set_allow_overflow(bool overflow);
     void set_recursive(bool recursive);
+    void set_directory_only(bool directory_only);
     void add_filter(const monitor_filter &filter);
     void set_filters(const std::vector<monitor_filter> &filters);
     void set_follow_symlinks(bool follow);
@@ -57,6 +58,7 @@ namespace fsw
     void start();
     void add_event_type_filter(const fsw_event_type_filter &filter);
     void set_event_type_filters(const std::vector<fsw_event_type_filter> &filters);
+    void set_watch_access(bool access);
 
   protected:
     bool accept_event_type(fsw_event_flag event_type) const;
@@ -77,6 +79,8 @@ namespace fsw
     bool allow_overflow = false;
     bool recursive = false;
     bool follow_symlinks = false;
+    bool directory_only = false;
+    bool watch_access = false;
 
   private:
 #  ifdef HAVE_CXX_MUTEX

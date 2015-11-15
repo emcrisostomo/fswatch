@@ -1,6 +1,18 @@
 NEWS
 ****
 
+New in 1.7.0:
+
+  * Issue 35: Support Solaris/Illumos File Events Notification API.
+
+  * Issue 98: Add (-d, --directories) option to request the monitor to watch
+    directories only during a recursive scan.
+
+  * Issue 99: A monitor using the File Events Notification API of the
+    Solaris/Illumos kernel has been added.
+
+  * Issue 101: Add flag to watch file accesses.
+
 New in 1.6.1:
 
   * Texinfo documentation now includes @dircategory and @direntry tags to be

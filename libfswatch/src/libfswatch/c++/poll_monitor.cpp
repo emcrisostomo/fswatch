@@ -125,7 +125,7 @@ namespace fsw
   void poll_monitor::scan(const string &path, poll_monitor_scan_callback fn)
   {
     struct stat fd_stat;
-    if (!stat_path(path, fd_stat)) return;
+    if (!lstat_path(path, fd_stat)) return;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
@@ -141,8 +141,7 @@ namespace fsw
     if (!recursive) return;
     if (!S_ISDIR(fd_stat.st_mode)) return;
 
-    vector<string> children;
-    get_directory_children(path, children);
+    vector<string> children = get_directory_children(path);
 
     for (string &child : children)
     {

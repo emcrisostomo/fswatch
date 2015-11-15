@@ -35,7 +35,8 @@ extern "C"
     kqueue_monitor_type,
     inotify_monitor_type,
     windows_monitor_type,
-    poll_monitor_type
+    poll_monitor_type,
+    fen_monitor_type
   };
 
 #  ifdef __cplusplus

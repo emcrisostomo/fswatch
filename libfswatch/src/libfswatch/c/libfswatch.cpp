@@ -48,6 +48,7 @@ typedef struct FSW_SESSION
   double latency;
   bool allow_overflow;
   bool recursive;
+  bool directory_only;
   bool follow_symlinks;
   vector<monitor_filter> filters;
   vector<fsw_event_type_filter> event_type_filters;
@@ -371,6 +372,24 @@ FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
   return fsw_set_last_error(FSW_OK);
 }
 
+FSW_STATUS fsw_set_directory_only(const FSW_HANDLE handle, const bool directory_only)
+{
+  try
+  {
+    SESSION_GUARD;
+
+    FSW_SESSION * session = get_session(handle);
+
+    session->directory_only = directory_only;
+  }
+  catch (int error)
+  {
+    return fsw_set_last_error(error);
+  }
+
+  return fsw_set_last_error(FSW_OK);
+}
+
 FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
                                    const bool follow_symlinks)
 {
@@ -487,6 +506,7 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
     session->monitor->set_follow_symlinks(session->follow_symlinks);
     if (session->latency) session->monitor->set_latency(session->latency);
     session->monitor->set_recursive(session->recursive);
+    session->monitor->set_directory_only(session->directory_only);
 
 #ifdef HAVE_CXX_MUTEX
     session->running.store(true, memory_order_release);

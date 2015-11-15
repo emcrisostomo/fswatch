@@ -34,6 +34,9 @@
 #if defined(HAVE_SYS_EVENT_H)
 #  include "kqueue_monitor.hpp"
 #endif
+#if defined(HAVE_PORT_H)
+#  include "fen_monitor.hpp"
+#endif
 #if defined(HAVE_SYS_INOTIFY_H)
 #  include "inotify_monitor.hpp"
 #endif
@@ -81,6 +84,11 @@ namespace fsw
   void monitor::set_recursive(bool recursive)
   {
     this->recursive = recursive;
+  }
+
+  void monitor::set_directory_only(bool directory_only)
+  {
+    this->directory_only = directory_only;
   }
 
   void monitor::add_event_type_filter(const fsw_event_type_filter &filter)
@@ -138,6 +146,11 @@ namespace fsw
   void monitor::set_follow_symlinks(bool follow)
   {
     follow_symlinks = follow;
+  }
+
+  void monitor::set_watch_access(bool access)
+  {
+    watch_access = access;
   }
 
   bool monitor::accept_event_type(fsw_event_flag event_type) const
@@ -210,6 +223,8 @@ namespace fsw
     return new fsevents_monitor(paths, callback, context);
 #elif defined(HAVE_SYS_EVENT_H)
     return new kqueue_monitor(paths, callback, context);
+#elif defined(HAVE_PORT_H)
+    return new fen_monitor(paths, callback, context);
 #elif defined(HAVE_SYS_INOTIFY_H)
     return new inotify_monitor(paths, callback, context);
 #elif defined(HAVE_WINDOWS)
@@ -239,6 +254,13 @@ namespace fsw
     case kqueue_monitor_type:
 #if defined(HAVE_SYS_EVENT_H)
       return new kqueue_monitor(paths, callback, context);
+#else
+      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
+#endif
+
+    case fen_monitor_type:
+#if defined(HAVE_PORT_H)
+      return new fen_monitor(paths, callback, context);
 #else
       throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
 #endif

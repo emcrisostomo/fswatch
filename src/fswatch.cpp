@@ -50,7 +50,6 @@ using namespace fsw;
 static void print_event_flags(const event & evt);
 static void print_event_path(const event & evt);
 static void print_event_timestamp(const event & evt);
-
 static int printf_event_validate_format(const string & fmt);
 
 struct printf_event_callbacks
@@ -79,8 +78,10 @@ static vector<monitor_filter> filters;
 static vector<fsw_event_type_filter> event_filters;
 static bool _0flag = false;
 static bool _1flag = false;
+static bool aflag = false;
 static bool allow_overflow = false;
 static int batch_marker_flag = false;
+static bool dflag = false;
 static bool Eflag = false;
 static bool fflag = false;
 static bool Iflag = false;
@@ -126,7 +127,7 @@ static void list_monitor_types(ostream& stream)
 static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2014-2015 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << "Copyright (C) 2013-2015 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
   stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
   stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
@@ -148,6 +149,8 @@ static void usage(ostream& stream)
   stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
   stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
+  stream << " -a, --access          " << _("Watch file accesses.\n");
+  stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
   stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
@@ -173,25 +176,27 @@ static void usage(ostream& stream)
   stream << "                       " << _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
-  string option_string = "[01eEfhilLMmnortuvx]";
+  string option_string = "[01adeEfhilLMmnortuvx]";
 
   stream << PACKAGE_STRING << "\n\n";
-  stream << "Syntax:\n";
+  stream << _("Usage:\n");
   stream << PACKAGE_NAME << " " << option_string << " path ...\n";
   stream << "\n";
-  stream << "Usage:\n";
+  stream << _("Options:\n");
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1  Exit fswatch after the first set of events is received.\n";
+  stream << " -a  Watch file accesses.\n";
+  stream << " -d  Watch directories only.\n";
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
   stream << " -f  Print the event time stamp with the specified format.\n";
   stream << " -h  Show this message.\n";
-  stream << " -i  Use case insensitive regular expressions.\n";
   stream << " -i  Include paths matching REGEX.\n";
+  stream << " -I  Use case insensitive regular expressions.\n";
   stream << " -l  Set the latency.\n";
-  stream << " -M  List the available monitors.\n";
-  stream << " -m  Use the specified monitor.\n";
   stream << " -L  Follow symbolic links.\n";
+  stream << " -m  Use the specified monitor.\n";
+  stream << " -M  List the available monitors.\n";
   stream << " -n  Print a numeric event masks.\n";
   stream << " -o  Print a single message with the number of change events in the current\n";
   stream << "     batch.\n";
@@ -442,9 +447,11 @@ static void start_monitor(int argc, char ** argv, int optind)
   active_monitor->set_allow_overflow(allow_overflow);
   active_monitor->set_latency(lvalue);
   active_monitor->set_recursive(rflag);
+  active_monitor->set_directory_only(dflag);
   active_monitor->set_event_type_filters(event_filters);
   active_monitor->set_filters(filters);
   active_monitor->set_follow_symlinks(Lflag);
+  active_monitor->set_watch_access(aflag);
 
   active_monitor->start();
 }
@@ -452,37 +459,39 @@ static void start_monitor(int argc, char ** argv, int optind)
 static void parse_opts(int argc, char ** argv)
 {
   int ch;
-  string short_options = "01e:Ef:hi:Il:LMm:nortuvx";
+  string short_options = "01ade:Ef:hi:Il:LMm:nortuvx";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
   static struct option long_options[] = {
-    { "allow-overflow", no_argument, nullptr, OPT_ALLOW_OVERFLOW},
-    { "print0", no_argument, nullptr, '0'},
-    { "one-event", no_argument, nullptr, '1'},
-    { "batch-marker", optional_argument, nullptr, OPT_BATCH_MARKER},
-    { "event", required_argument, nullptr, OPT_EVENT_TYPE},
-    { "event-flags", no_argument, nullptr, 'x'},
+    { "access",               no_argument,       nullptr, 'a'},
+    { "allow-overflow",       no_argument,       nullptr, OPT_ALLOW_OVERFLOW},
+    { "batch-marker",         optional_argument, nullptr, OPT_BATCH_MARKER},
+    { "directories",          no_argument,       nullptr, 'd'},
+    { "event",                required_argument, nullptr, OPT_EVENT_TYPE},
+    { "event-flags",          no_argument,       nullptr, 'x'},
     { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
-    { "exclude", required_argument, nullptr, 'e'},
-    { "extended", no_argument, nullptr, 'E'},
-    { "follow-links", no_argument, nullptr, 'L'},
-    { "format", required_argument, nullptr, OPT_FORMAT},
-    { "format-time", required_argument, nullptr, 'f'},
-    { "help", no_argument, nullptr, 'h'},
-    { "include", required_argument, nullptr, 'i'},
-    { "insensitive", no_argument, nullptr, 'I'},
-    { "latency", required_argument, nullptr, 'l'},
-    { "list-monitors", no_argument, nullptr, 'M'},
-    { "monitor", required_argument, nullptr, 'm'},
-    { "monitor-property", required_argument, nullptr, OPT_MONITOR_PROPERTY},
-    { "numeric", no_argument, nullptr, 'n'},
-    { "one-per-batch", no_argument, nullptr, 'o'},
-    { "recursive", no_argument, nullptr, 'r'},
-    { "timestamp", no_argument, nullptr, 't'},
-    { "utc-time", no_argument, nullptr, 'u'},
-    { "verbose", no_argument, nullptr, 'v'},
-    { "version", no_argument, &version_flag, true},
+    { "exclude",              required_argument, nullptr, 'e'},
+    { "extended",             no_argument,       nullptr, 'E'},
+    { "follow-links",         no_argument,       nullptr, 'L'},
+    { "format",               required_argument, nullptr, OPT_FORMAT},
+    { "format-time",          required_argument, nullptr, 'f'},
+    { "help",                 no_argument,       nullptr, 'h'},
+    { "include",              required_argument, nullptr, 'i'},
+    { "insensitive",          no_argument,       nullptr, 'I'},
+    { "latency",              required_argument, nullptr, 'l'},
+    { "list-monitors",        no_argument,       nullptr, 'M'},
+    { "monitor",              required_argument, nullptr, 'm'},
+    { "monitor-property",     required_argument, nullptr, OPT_MONITOR_PROPERTY},
+    { "numeric",              no_argument,       nullptr, 'n'},
+    { "one-per-batch",        no_argument,       nullptr, 'o'},
+    { "one-event",            no_argument,       nullptr, '1'},
+    { "print0",               no_argument,       nullptr, '0'},
+    { "recursive",            no_argument,       nullptr, 'r'},
+    { "timestamp",            no_argument,       nullptr, 't'},
+    { "utc-time",             no_argument,       nullptr, 'u'},
+    { "verbose",              no_argument,       nullptr, 'v'},
+    { "version",              no_argument,       &version_flag, true},
     { nullptr, 0, nullptr, 0}
   };
 
@@ -505,6 +514,14 @@ static void parse_opts(int argc, char ** argv)
 
     case '1':
       _1flag = true;
+      break;
+
+    case 'a':
+      aflag = true;
+      break;
+
+    case 'd':
+      dflag = true;
       break;
 
     case 'e':
@@ -535,7 +552,7 @@ static void parse_opts(int argc, char ** argv)
     case 'l':
       lflag = true;
       lvalue = strtod(optarg, nullptr);
-    
+
       if (!validate_latency(lvalue))
       {
         exit(FSW_EXIT_LATENCY);

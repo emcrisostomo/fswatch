@@ -43,10 +43,8 @@ namespace fsw
     kqueue_monitor& operator=(const kqueue_monitor & that) = delete;
 
     void initialize_kqueue();
-    bool scan(const std::string &path);
+    bool scan(const std::string &path, bool is_root_path = true);
     bool add_watch(const std::string &path, const struct stat &fd_stat);
-    void remove_watch(const std::string &path);
-    void remove_watch(int fd);
     bool is_path_watched(const std::string &path) const;
     void remove_deleted();
     void rescan_pending();
