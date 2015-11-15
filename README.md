@@ -10,6 +10,8 @@ kinds of monitors:
   * A monitor based on the _File System Events API_ of Apple OS X.
   * A monitor based on _kqueue_, a notification interface introduced in FreeBSD
     4.1 (and supported on most *BSD systems, including OS X).
+  * A monitor based on the _File Events Notification_ API of the Solaris kernel
+    and its derivatives.
   * A monitor based on _inotify_, a Linux kernel subsystem that reports file
     system changes to applications.
   * A monitor based on _ReadDirectoryChangesW_, a Microsoft Windows API that
