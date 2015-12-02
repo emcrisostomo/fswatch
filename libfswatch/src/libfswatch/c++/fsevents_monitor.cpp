@@ -87,11 +87,6 @@ namespace fsw
     stream = nullptr;
   }
 
-  void fsevents_monitor::set_numeric_event(bool numeric)
-  {
-    numeric_event = numeric;
-  }
-
   void fsevents_monitor::run()
   {
     if (stream) return;

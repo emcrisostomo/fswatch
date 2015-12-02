@@ -32,7 +32,6 @@ namespace fsw
     virtual ~fsevents_monitor();
 
     void run();
-    void set_numeric_event(bool numeric);
 
   private:
     fsevents_monitor(const fsevents_monitor& orig) = delete;
@@ -46,7 +45,6 @@ namespace fsw
                                   const FSEventStreamEventId eventIds[]);
 
     FSEventStreamRef stream = nullptr;
-    bool numeric_event = false;
   };
 }
 
