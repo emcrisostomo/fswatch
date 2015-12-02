@@ -15,8 +15,11 @@ libfswatch.pdf
 # GNU Build System
 autom4te.cache/
 
-# JetBrains IDEA
-.idea
+# IntelliJ IDEA
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dataSources.*
+out/*
 
 # Eclipse CDT
 .autotools
