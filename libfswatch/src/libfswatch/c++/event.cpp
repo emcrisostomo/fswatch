@@ -47,7 +47,7 @@ namespace fsw
     return evt_flags;
   }
 
-  fsw_event_flag event::get_event_flag_by_name(const string &name)
+  fsw_event_flag event::get_event_flag_by_name(const string& name)
   {
 #define FSW_MAKE_PAIR_FROM_NAME(p) {#p, p}
     static const map<string, fsw_event_flag> flag_by_names = {
@@ -77,7 +77,7 @@ namespace fsw
     return flag->second;
   }
 
-  string event::get_event_flag_name(const fsw_event_flag &flag)
+  string event::get_event_flag_name(const fsw_event_flag& flag)
   {
 #define FSW_MAKE_PAIR_FROM_NAME(p) {p, #p}
     static const map<fsw_event_flag, string> names_by_flag = {
