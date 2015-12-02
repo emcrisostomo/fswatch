@@ -45,10 +45,15 @@
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
         <codeStyleSettings language="ObjectiveC">
+          <option name="BLANK_LINES_BEFORE_IMPORTS" value="0" />
+          <option name="BLANK_LINES_AFTER_IMPORTS" value="0" />
+          <option name="BLANK_LINES_AROUND_METHOD_IN_INTERFACE" value="0" />
           <option name="BRACE_STYLE" value="2" />
           <option name="CLASS_BRACE_STYLE" value="2" />
           <option name="ELSE_ON_NEW_LINE" value="true" />
           <option name="CATCH_ON_NEW_LINE" value="true" />
+          <option name="INDENT_CASE_FROM_SWITCH" value="false" />
+          <option name="SPACE_BEFORE_CLASS_LBRACE" value="false" />
           <indentOptions>
             <option name="INDENT_SIZE" value="2" />
             <option name="CONTINUATION_INDENT_SIZE" value="2" />
@@ -58,6 +63,5 @@
       </value>
     </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="BSD" />
   </component>
 </project>
