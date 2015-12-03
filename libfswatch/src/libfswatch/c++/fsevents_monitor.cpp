@@ -64,8 +64,8 @@ namespace fsw
   REGISTER_MONITOR_IMPL(fsevents_monitor, fsevents_monitor_type);
 
   fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
-                                     FSW_EVENT_CALLBACK * callback,
-                                     void * context) :
+                                     FSW_EVENT_CALLBACK *callback,
+                                     void *context) :
     monitor(paths_to_monitor, callback, context)
   {
   }
@@ -146,7 +146,7 @@ namespace fsw
   {
     vector<fsw_event_flag> evt_flags;
 
-    for (const FSEventFlagType & type : event_flag_type)
+    for (const FSEventFlagType& type : event_flag_type)
     {
       if (flag & type.flag)
       {

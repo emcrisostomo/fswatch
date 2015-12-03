@@ -27,7 +27,7 @@ namespace fsw
   public:
     // TODO default code value should be taken from an error header
     libfsw_exception(std::string cause, int code = FSW_ERR_UNKNOWN_ERROR);
-    virtual const char * what() const noexcept;
+    virtual const char *what() const noexcept;
     virtual int error_code() const noexcept;
     virtual ~libfsw_exception() noexcept;
 

@@ -25,7 +25,7 @@
 
 namespace fsw
 {
-  template <typename K>
+  template<typename K>
   using fsw_hash_set = std::unordered_set<K>;
 }
 

@@ -47,7 +47,7 @@ namespace fsw
     fsw_hash_set<int> descriptors_to_remove;
     fsw_hash_set<int> descriptors_to_rescan;
 
-    void add_watch(int fd, const string & path, const struct stat &fd_stat)
+    void add_watch(int fd, const string& path, const struct stat& fd_stat)
     {
       descriptors_by_file_name[path] = fd;
       file_names_by_descriptor[fd] = path;
@@ -64,7 +64,7 @@ namespace fsw
       close(fd);
     }
 
-    void remove_watch(const string & path)
+    void remove_watch(const string& path)
     {
       int fd = descriptors_by_file_name[path];
       descriptors_by_file_name.erase(path);
@@ -100,8 +100,8 @@ namespace fsw
   REGISTER_MONITOR_IMPL(kqueue_monitor, kqueue_monitor_type);
 
   kqueue_monitor::kqueue_monitor(vector<string> paths_to_monitor,
-                                 FSW_EVENT_CALLBACK * callback,
-                                 void * context) :
+                                 FSW_EVENT_CALLBACK *callback,
+                                 void *context) :
     monitor(paths_to_monitor, callback, context), load(new kqueue_monitor_load())
   {
   }
@@ -116,7 +116,7 @@ namespace fsw
   {
     vector<fsw_event_flag> evt_flags;
 
-    for (const KqueueFlagType &type : event_flag_type)
+    for (const KqueueFlagType& type : event_flag_type)
     {
       if (flag & type.flag)
       {
@@ -140,12 +140,12 @@ namespace fsw
     return ts;
   }
 
-  bool kqueue_monitor::is_path_watched(const string & path) const
+  bool kqueue_monitor::is_path_watched(const string& path) const
   {
     return load->descriptors_by_file_name.find(path) != load->descriptors_by_file_name.end();
   }
 
-  bool kqueue_monitor::add_watch(const string & path, const struct stat &fd_stat)
+  bool kqueue_monitor::add_watch(const string& path, const struct stat& fd_stat)
   {
     // check if the path is already watched and if it is,
     // skip it and return false.
@@ -180,7 +180,7 @@ namespace fsw
     return true;
   }
 
-  bool kqueue_monitor::scan(const string &path, bool is_root_path)
+  bool kqueue_monitor::scan(const string& path, bool is_root_path)
   {
     struct stat fd_stat;
     if (!lstat_path(path, fd_stat)) return false;
@@ -204,7 +204,7 @@ namespace fsw
 
     vector<string> children = get_directory_children(path);
 
-    for (string & child : children)
+    for (string& child : children)
     {
       if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
@@ -253,7 +253,7 @@ namespace fsw
 
   void kqueue_monitor::scan_root_paths()
   {
-    for (string &path : paths)
+    for (string& path : paths)
     {
       if (is_path_watched(path)) continue;
 
@@ -277,8 +277,8 @@ namespace fsw
     }
   }
 
-  int kqueue_monitor::wait_for_events(const vector<struct kevent> &changes,
-                                      vector<struct kevent> &event_list)
+  int kqueue_monitor::wait_for_events(const vector<struct kevent>& changes,
+                                      vector<struct kevent>& event_list)
   {
     struct timespec ts = create_timespec_from_latency(latency);
 
@@ -298,8 +298,8 @@ namespace fsw
     return event_num;
   }
 
-  void kqueue_monitor::process_events(const vector<struct kevent> &changes,
-                                      const vector<struct kevent> &event_list,
+  void kqueue_monitor::process_events(const vector<struct kevent>& changes,
+                                      const vector<struct kevent>& event_list,
                                       int event_num)
   {
     time_t curr_time;
@@ -343,8 +343,8 @@ namespace fsw
       if (e.fflags)
       {
         events.push_back({load->file_names_by_descriptor[e.ident],
-                         curr_time,
-                         decode_flags(e.fflags)});
+                          curr_time,
+                          decode_flags(e.fflags)});
       }
     }
 
@@ -372,7 +372,7 @@ namespace fsw
       vector<struct kevent> changes;
       vector<struct kevent> event_list;
 
-      for (const pair<int, string> &fd_path : load->file_names_by_descriptor)
+      for (const pair<int, string>& fd_path : load->file_names_by_descriptor)
       {
         struct kevent change;
 

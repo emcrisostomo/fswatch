@@ -48,8 +48,8 @@ namespace fsw
   REGISTER_MONITOR_IMPL(poll_monitor, poll_monitor_type);
 
   poll_monitor::poll_monitor(vector<string> paths,
-                             FSW_EVENT_CALLBACK * callback,
-                             void * context) :
+                             FSW_EVENT_CALLBACK *callback,
+                             void *context) :
     monitor(paths, callback, context)
   {
     previous_data = new poll_monitor_data();
@@ -63,8 +63,8 @@ namespace fsw
     delete new_data;
   }
 
-  bool poll_monitor::initial_scan_callback(const string &path,
-                                           const struct stat &stat)
+  bool poll_monitor::initial_scan_callback(const string& path,
+                                           const struct stat& stat)
   {
     if (previous_data->tracked_files.count(path))
       return false;
@@ -75,8 +75,8 @@ namespace fsw
     return true;
   }
 
-  bool poll_monitor::intermediate_scan_callback(const string &path,
-                                                const struct stat &stat)
+  bool poll_monitor::intermediate_scan_callback(const string& path,
+                                                const struct stat& stat)
   {
     if (new_data->tracked_files.count(path)) return false;
 
@@ -115,14 +115,14 @@ namespace fsw
     return true;
   }
 
-  bool poll_monitor::add_path(const string &path,
-                              const struct stat &fd_stat,
+  bool poll_monitor::add_path(const string& path,
+                              const struct stat& fd_stat,
                               poll_monitor_scan_callback poll_callback)
   {
     return ((*this).*(poll_callback))(path, fd_stat);
   }
 
-  void poll_monitor::scan(const string &path, poll_monitor_scan_callback fn)
+  void poll_monitor::scan(const string& path, poll_monitor_scan_callback fn)
   {
     struct stat fd_stat;
     if (!lstat_path(path, fd_stat)) return;
@@ -143,7 +143,7 @@ namespace fsw
 
     vector<string> children = get_directory_children(path);
 
-    for (string &child : children)
+    for (string& child : children)
     {
       if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
@@ -156,7 +156,7 @@ namespace fsw
     vector<fsw_event_flag> flags;
     flags.push_back(fsw_event_flag::Removed);
 
-    for (auto &removed : previous_data->tracked_files)
+    for (auto& removed : previous_data->tracked_files)
     {
       events.push_back({removed.first, curr_time, flags});
     }
@@ -173,7 +173,7 @@ namespace fsw
   {
     poll_monitor_scan_callback fn = &poll_monitor::intermediate_scan_callback;
 
-    for (string &path : paths)
+    for (string& path : paths)
     {
       scan(path, fn);
     }
@@ -186,7 +186,7 @@ namespace fsw
   {
     poll_monitor_scan_callback fn = &poll_monitor::initial_scan_callback;
 
-    for (string &path : paths)
+    for (string& path : paths)
     {
       scan(path, fn);
     }

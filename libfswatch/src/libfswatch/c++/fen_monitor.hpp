@@ -51,7 +51,7 @@ namespace fsw
     void rescan_pending();
 
     // pimpl
-    fen_monitor_load * load;
+    fen_monitor_load *load;
   };
 }
 

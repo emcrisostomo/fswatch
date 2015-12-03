@@ -28,8 +28,8 @@ namespace fsw
 
   public:
     poll_monitor(std::vector<std::string> paths,
-                 FSW_EVENT_CALLBACK * callback,
-                 void * context = nullptr);
+                 FSW_EVENT_CALLBACK *callback,
+                 void *context = nullptr);
     virtual ~poll_monitor();
     void run();
 
@@ -37,11 +37,11 @@ namespace fsw
 
   private:
     poll_monitor(const poll_monitor& orig) = delete;
-    poll_monitor& operator=(const poll_monitor & that) = delete;
+    poll_monitor& operator=(const poll_monitor& that) = delete;
 
     typedef bool (poll_monitor::*poll_monitor_scan_callback)(
-      const std::string &path,
-      const struct stat &stat);
+      const std::string& path,
+      const struct stat& stat);
 
     typedef struct watched_file_info
     {
@@ -51,15 +51,15 @@ namespace fsw
 
     struct poll_monitor_data;
 
-    void scan(const std::string &path, poll_monitor_scan_callback fn);
+    void scan(const std::string& path, poll_monitor_scan_callback fn);
     void collect_initial_data();
     void collect_data();
-    bool add_path(const std::string &path,
-                  const struct stat &fd_stat,
+    bool add_path(const std::string& path,
+                  const struct stat& fd_stat,
                   poll_monitor_scan_callback poll_callback);
-    bool initial_scan_callback(const std::string &path, const struct stat &stat);
-    bool intermediate_scan_callback(const std::string &path,
-                                    const struct stat &stat);
+    bool initial_scan_callback(const std::string& path, const struct stat& stat);
+    bool intermediate_scan_callback(const std::string& path,
+                                    const struct stat& stat);
     void find_removed_files();
     void swap_data_containers();
 

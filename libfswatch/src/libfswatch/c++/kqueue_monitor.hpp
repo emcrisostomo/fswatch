@@ -32,32 +32,32 @@ namespace fsw
 
   public:
     kqueue_monitor(std::vector<std::string> paths,
-                   FSW_EVENT_CALLBACK * callback,
-                   void * context = nullptr);
+                   FSW_EVENT_CALLBACK *callback,
+                   void *context = nullptr);
     virtual ~kqueue_monitor();
 
     void run();
 
   private:
     kqueue_monitor(const kqueue_monitor& orig) = delete;
-    kqueue_monitor& operator=(const kqueue_monitor & that) = delete;
+    kqueue_monitor& operator=(const kqueue_monitor& that) = delete;
 
     void initialize_kqueue();
-    bool scan(const std::string &path, bool is_root_path = true);
-    bool add_watch(const std::string &path, const struct stat &fd_stat);
-    bool is_path_watched(const std::string &path) const;
+    bool scan(const std::string& path, bool is_root_path = true);
+    bool add_watch(const std::string& path, const struct stat& fd_stat);
+    bool is_path_watched(const std::string& path) const;
     void remove_deleted();
     void rescan_pending();
     void scan_root_paths();
-    int wait_for_events(const std::vector<struct kevent> &changes,
-                        std::vector<struct kevent> &event_list);
-    void process_events(const std::vector<struct kevent> &changes,
-                        const std::vector<struct kevent> &event_list,
+    int wait_for_events(const std::vector<struct kevent>& changes,
+                        std::vector<struct kevent>& event_list);
+    void process_events(const std::vector<struct kevent>& changes,
+                        const std::vector<struct kevent>& event_list,
                         int event_num);
 
     int kq = -1;
     // initial load
-    kqueue_monitor_load * load;
+    kqueue_monitor_load *load;
   };
 }
 

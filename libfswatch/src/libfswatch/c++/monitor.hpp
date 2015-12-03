@@ -28,7 +28,7 @@
 
 namespace fsw
 {
-  typedef void FSW_EVENT_CALLBACK(const std::vector<event> &, void *);
+  typedef void FSW_EVENT_CALLBACK(const std::vector<event>&, void *);
 
   struct compiled_monitor_filter;
 
@@ -36,45 +36,45 @@ namespace fsw
   {
   public:
     monitor(std::vector<std::string> paths,
-            FSW_EVENT_CALLBACK * callback,
-            void * context = nullptr);
+            FSW_EVENT_CALLBACK *callback,
+            void *context = nullptr);
     virtual ~monitor();
 
     monitor(const monitor& orig) = delete;
-    monitor& operator=(const monitor & that) = delete;
+    monitor& operator=(const monitor& that) = delete;
 
-    void set_property(const std::string & name, const std::string & value);
-    void set_properties(const std::map<std::string, std::string> & options);
+    void set_property(const std::string& name, const std::string& value);
+    void set_properties(const std::map<std::string, std::string>& options);
     std::string get_property(std::string name);
     void set_latency(double latency);
     void set_allow_overflow(bool overflow);
     void set_recursive(bool recursive);
     void set_directory_only(bool directory_only);
-    void add_filter(const monitor_filter &filter);
-    void set_filters(const std::vector<monitor_filter> &filters);
+    void add_filter(const monitor_filter& filter);
+    void set_filters(const std::vector<monitor_filter>& filters);
     void set_follow_symlinks(bool follow);
-    void * get_context() const;
-    void set_context(void * context);
+    void *get_context() const;
+    void set_context(void *context);
     void start();
-    void add_event_type_filter(const fsw_event_type_filter &filter);
-    void set_event_type_filters(const std::vector<fsw_event_type_filter> &filters);
+    void add_event_type_filter(const fsw_event_type_filter& filter);
+    void set_event_type_filters(const std::vector<fsw_event_type_filter>& filters);
     void set_watch_access(bool access);
 
   protected:
     bool accept_event_type(fsw_event_flag event_type) const;
-    bool accept_path(const std::string &path) const;
+    bool accept_path(const std::string& path) const;
     bool accept_path(const char *path) const;
-    void notify_events(const std::vector<event> &events) const;
-    void notify_overflow(const std::string & path) const;
-    std::vector<fsw_event_flag> filter_flags(const event &evt) const;
+    void notify_events(const std::vector<event>& events) const;
+    void notify_overflow(const std::string& path) const;
+    std::vector<fsw_event_flag> filter_flags(const event& evt) const;
 
     virtual void run() = 0;
 
   protected:
     std::vector<std::string> paths;
     std::map<std::string, std::string> properties;
-    FSW_EVENT_CALLBACK * callback;
-    void * context = nullptr;
+    FSW_EVENT_CALLBACK *callback;
+    void *context = nullptr;
     double latency = 1.0;
     bool allow_overflow = false;
     bool recursive = false;
@@ -90,9 +90,9 @@ namespace fsw
     std::vector<fsw_event_type_filter> event_type_filters;
   };
 
-  typedef monitor * (*FSW_FN_MONITOR_CREATOR)(std::vector<std::string> paths,
-    FSW_EVENT_CALLBACK * callback,
-    void * context);
+  typedef monitor *(*FSW_FN_MONITOR_CREATOR)(std::vector<std::string> paths,
+                                             FSW_EVENT_CALLBACK *callback,
+                                             void *context);
 
   /*
    * This class maintains a register of the available monitors and let users
@@ -104,23 +104,23 @@ namespace fsw
   class monitor_factory
   {
   public:
-    static monitor * create_monitor(fsw_monitor_type type,
-                                    std::vector<std::string> paths,
-                                    FSW_EVENT_CALLBACK * callback,
-                                    void * context = nullptr);
-    static monitor * create_monitor(const std::string & name,
-                                    std::vector<std::string> paths,
-                                    FSW_EVENT_CALLBACK * callback,
-                                    void * context = nullptr);
+    static monitor *create_monitor(fsw_monitor_type type,
+                                   std::vector<std::string> paths,
+                                   FSW_EVENT_CALLBACK *callback,
+                                   void *context = nullptr);
+    static monitor *create_monitor(const std::string& name,
+                                   std::vector<std::string> paths,
+                                   FSW_EVENT_CALLBACK *callback,
+                                   void *context = nullptr);
     static std::vector<std::string> get_types();
     static bool exists_type(const std::string& name);
-    static void register_creator(const std::string & name,
+    static void register_creator(const std::string& name,
                                  FSW_FN_MONITOR_CREATOR creator);
     monitor_factory() = delete;
     monitor_factory(const monitor_factory& orig) = delete;
-    monitor_factory& operator=(const monitor_factory & that) = delete;
+    monitor_factory& operator=(const monitor_factory& that) = delete;
   private:
-    static std::map<std::string, FSW_FN_MONITOR_CREATOR> & creators_by_string();
+    static std::map<std::string, FSW_FN_MONITOR_CREATOR>& creators_by_string();
   };
 
   /*
@@ -133,13 +133,12 @@ namespace fsw
   {
   public:
 
-    monitor_registrant(const std::string & name, fsw_monitor_type type)
+    monitor_registrant(const std::string& name, fsw_monitor_type type)
     {
       FSW_FN_MONITOR_CREATOR default_creator =
         [](std::vector<std::string> paths,
-        FSW_EVENT_CALLBACK * callback,
-        void * context = nullptr) -> monitor *
-        {
+           FSW_EVENT_CALLBACK *callback,
+           void *context = nullptr) -> monitor * {
           return new M(paths, callback, context);
         };
 

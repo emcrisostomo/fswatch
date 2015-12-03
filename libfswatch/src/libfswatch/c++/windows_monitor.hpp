@@ -30,26 +30,26 @@ namespace fsw
 
   public:
     windows_monitor(std::vector<std::string> paths,
-                   FSW_EVENT_CALLBACK * callback,
-                   void * context = nullptr);
+                    FSW_EVENT_CALLBACK *callback,
+                    void *context = nullptr);
     virtual ~windows_monitor();
 
     void run();
 
   private:
     windows_monitor(const windows_monitor& orig) = delete;
-    windows_monitor& operator=(const windows_monitor & that) = delete;
+    windows_monitor& operator=(const windows_monitor& that) = delete;
 
     void configure_monitor();
     void initialize_windows_path_list();
     void initialize_events();
     bool init_search_for_path(const std::wstring path);
     void stop_search_for_path(const std::wstring path);
-    void process_path(const std::wstring & path);
+    void process_path(const std::wstring& path);
     bool is_path_watched(std::wstring path);
 
     // initial load
-    windows_monitor_load * load;
+    windows_monitor_load *load;
   };
 }
 

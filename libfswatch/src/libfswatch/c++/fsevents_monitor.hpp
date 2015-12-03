@@ -27,15 +27,15 @@ namespace fsw
 
   public:
     fsevents_monitor(std::vector<std::string> paths,
-                     FSW_EVENT_CALLBACK * callback,
-                     void * context = nullptr);
+                     FSW_EVENT_CALLBACK *callback,
+                     void *context = nullptr);
     virtual ~fsevents_monitor();
 
     void run();
 
   private:
     fsevents_monitor(const fsevents_monitor& orig) = delete;
-    fsevents_monitor& operator=(const fsevents_monitor & that) = delete;
+    fsevents_monitor& operator=(const fsevents_monitor& that) = delete;
 
     static void fsevents_callback(ConstFSEventStreamRef streamRef,
                                   void *clientCallBackInfo,

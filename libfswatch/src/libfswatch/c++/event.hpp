@@ -34,8 +34,8 @@ namespace fsw
     time_t get_time() const;
     std::vector<fsw_event_flag> get_flags() const;
 
-    static fsw_event_flag get_event_flag_by_name(const std::string &name);
-    static std::string get_event_flag_name(const fsw_event_flag &flag);
+    static fsw_event_flag get_event_flag_by_name(const std::string& name);
+    static std::string get_event_flag_name(const fsw_event_flag& flag);
 
   private:
     std::string path;

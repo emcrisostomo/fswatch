@@ -25,7 +25,7 @@ namespace fsw
   {
   }
 
-  const char * libfsw_exception::what() const noexcept
+  const char *libfsw_exception::what() const noexcept
   {
     return (string(_("Error: ")) + this->cause).c_str();
   }

@@ -56,8 +56,8 @@ namespace fsw
   };
 
   monitor::monitor(vector<string> paths,
-                   FSW_EVENT_CALLBACK * callback,
-                   void * context) :
+                   FSW_EVENT_CALLBACK *callback,
+                   void *context) :
     paths(paths), callback(callback), context(context)
   {
     if (callback == nullptr)
@@ -91,19 +91,19 @@ namespace fsw
     this->directory_only = directory_only;
   }
 
-  void monitor::add_event_type_filter(const fsw_event_type_filter &filter)
+  void monitor::add_event_type_filter(const fsw_event_type_filter& filter)
   {
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(const vector<fsw_event_type_filter> &filters)
+  void monitor::set_event_type_filters(const vector<fsw_event_type_filter>& filters)
   {
     event_type_filters.clear();
 
-    for (const auto & filter : filters) add_event_type_filter(filter);
+    for (const auto& filter : filters) add_event_type_filter(filter);
   }
 
-  void monitor::add_filter(const monitor_filter &filter)
+  void monitor::add_filter(const monitor_filter& filter)
   {
     regex_t regex;
     int flags = 0;
@@ -120,12 +120,12 @@ namespace fsw
     this->filters.push_back({regex, filter.type});
   }
 
-  void monitor::set_property(const std::string & name, const std::string & value)
+  void monitor::set_property(const std::string& name, const std::string& value)
   {
     properties[name] = value;
   }
 
-  void monitor::set_properties(const map<string, string> & options)
+  void monitor::set_properties(const map<string, string>& options)
   {
     properties = options;
   }
@@ -135,9 +135,9 @@ namespace fsw
     return properties[name];
   }
 
-  void monitor::set_filters(const vector<monitor_filter> &filters)
+  void monitor::set_filters(const vector<monitor_filter>& filters)
   {
-    for (const monitor_filter &filter : filters)
+    for (const monitor_filter& filter : filters)
     {
       add_filter(filter);
     }
@@ -159,7 +159,7 @@ namespace fsw
     if (event_type_filters.size() == 0) return true;
 
     // If filters are set, accept the event only if present amongst the filters.
-    for (const auto & filter : event_type_filters)
+    for (const auto& filter : event_type_filters)
     {
       if (filter.flag == event_type)
       {
@@ -171,7 +171,7 @@ namespace fsw
     return false;
   }
 
-  bool monitor::accept_path(const string &path) const
+  bool monitor::accept_path(const string& path) const
   {
     return accept_path(path.c_str());
   }
@@ -180,7 +180,7 @@ namespace fsw
   {
     bool is_excluded = false;
 
-    for (const auto &filter : filters)
+    for (const auto& filter : filters)
     {
       if (regexec(&filter.regex, path, 0, nullptr, 0) == 0)
       {
@@ -195,19 +195,19 @@ namespace fsw
     return true;
   }
 
-  void * monitor::get_context() const
+  void *monitor::get_context() const
   {
     return context;
   }
 
-  void monitor::set_context(void * context)
+  void monitor::set_context(void *context)
   {
     this->context = context;
   }
 
   monitor::~monitor()
   {
-    for (auto &re : filters)
+    for (auto& re : filters)
     {
       regfree(&re.regex);
     }
@@ -215,9 +215,9 @@ namespace fsw
     filters.clear();
   }
 
-  static monitor * create_default_monitor(vector<string> paths,
-                                          FSW_EVENT_CALLBACK * callback,
-                                          void * context)
+  static monitor *create_default_monitor(vector<string> paths,
+                                         FSW_EVENT_CALLBACK *callback,
+                                         void *context)
   {
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
     return new fsevents_monitor(paths, callback, context);
@@ -234,10 +234,10 @@ namespace fsw
 #endif
   }
 
-  monitor * monitor_factory::create_monitor(fsw_monitor_type type,
-                                            vector<string> paths,
-                                            FSW_EVENT_CALLBACK * callback,
-                                            void * context)
+  monitor *monitor_factory::create_monitor(fsw_monitor_type type,
+                                           vector<string> paths,
+                                           FSW_EVENT_CALLBACK *callback,
+                                           void *context)
   {
     switch (type)
     {
@@ -295,14 +295,14 @@ namespace fsw
     this->run();
   }
 
-  vector<fsw_event_flag> monitor::filter_flags(const event &evt) const
+  vector<fsw_event_flag> monitor::filter_flags(const event& evt) const
   {
     // If there is nothing to filter, just return the original vector.
     if (event_type_filters.size() == 0) return evt.get_flags();
 
     vector<fsw_event_flag> filtered_flags;
 
-    for (auto const & flag : evt.get_flags())
+    for (auto const& flag : evt.get_flags())
     {
       if (accept_event_type(flag)) filtered_flags.push_back(flag);
     }
@@ -310,7 +310,7 @@ namespace fsw
     return filtered_flags;
   }
 
-  void monitor::notify_overflow(const string & path) const
+  void monitor::notify_overflow(const string& path) const
   {
     if (!allow_overflow)
     {
@@ -323,11 +323,11 @@ namespace fsw
     notify_events({{path, curr_time, {fsw_event_flag::Overflow}}});
   }
 
-  void monitor::notify_events(const vector<event> &events) const
+  void monitor::notify_events(const vector<event>& events) const
   {
     vector<event> filtered_events;
 
-    for (auto const & event : events)
+    for (auto const& event : events)
     {
       // Filter flags
       vector<fsw_event_flag> filtered_flags = filter_flags(event);
@@ -348,17 +348,17 @@ namespace fsw
     }
   }
 
-  map<string, FSW_FN_MONITOR_CREATOR> & monitor_factory::creators_by_string()
+  map<string, FSW_FN_MONITOR_CREATOR>& monitor_factory::creators_by_string()
   {
     static map<string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
 
     return creator_by_string_map;
   }
 
-  monitor * monitor_factory::create_monitor(const string & name,
-                                            vector<string> paths,
-                                            FSW_EVENT_CALLBACK * callback,
-                                            void * context)
+  monitor *monitor_factory::create_monitor(const string& name,
+                                           vector<string> paths,
+                                           FSW_EVENT_CALLBACK *callback,
+                                           void *context)
   {
     auto i = creators_by_string().find(name);
 
@@ -368,14 +368,14 @@ namespace fsw
       return i->second(paths, callback, context);
   }
 
-  bool monitor_factory::exists_type(const string & name)
+  bool monitor_factory::exists_type(const string& name)
   {
     auto i = creators_by_string().find(name);
 
     return (i != creators_by_string().end());
   }
 
-  void monitor_factory::register_creator(const string & name,
+  void monitor_factory::register_creator(const string& name,
                                          FSW_FN_MONITOR_CREATOR creator)
   {
     creators_by_string()[name] = creator;
@@ -385,7 +385,7 @@ namespace fsw
   {
     vector<string> types;
 
-    for (auto & i : creators_by_string())
+    for (auto& i : creators_by_string())
     {
       types.push_back(i.first);
     }
