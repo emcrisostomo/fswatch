@@ -57,7 +57,8 @@ namespace fsw
     void set_context(void *context);
     void start();
     void add_event_type_filter(const fsw_event_type_filter& filter);
-    void set_event_type_filters(const std::vector<fsw_event_type_filter>& filters);
+    void set_event_type_filters(
+      const std::vector<fsw_event_type_filter>& filters);
     void set_watch_access(bool access);
 
   protected:
@@ -114,13 +115,16 @@ namespace fsw
                                    void *context = nullptr);
     static std::vector<std::string> get_types();
     static bool exists_type(const std::string& name);
-    static void register_creator(const std::string& name,
-                                 FSW_FN_MONITOR_CREATOR creator);
+    static bool exists_type(const fsw_monitor_type& name);
+    static void register_creator(const std::string& name, FSW_FN_MONITOR_CREATOR creator);
+    static void register_creator_by_type(const fsw_monitor_type& type, FSW_FN_MONITOR_CREATOR creator);
+
     monitor_factory() = delete;
     monitor_factory(const monitor_factory& orig) = delete;
     monitor_factory& operator=(const monitor_factory& that) = delete;
   private:
     static std::map<std::string, FSW_FN_MONITOR_CREATOR>& creators_by_string();
+    static std::map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>& creators_by_type();
   };
 
   /*
@@ -133,16 +137,18 @@ namespace fsw
   {
   public:
 
-    monitor_registrant(const std::string& name, fsw_monitor_type type)
+    monitor_registrant(const std::string& name, const fsw_monitor_type& type)
     {
       FSW_FN_MONITOR_CREATOR default_creator =
         [](std::vector<std::string> paths,
            FSW_EVENT_CALLBACK *callback,
-           void *context = nullptr) -> monitor * {
+           void *context = nullptr) -> monitor *
+        {
           return new M(paths, callback, context);
         };
 
       monitor_factory::register_creator(name, default_creator);
+      monitor_factory::register_creator_by_type(type, default_creator);
     }
   };
 

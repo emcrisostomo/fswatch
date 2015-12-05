@@ -190,9 +190,7 @@ namespace fsw
       }
     }
 
-    if (is_excluded) return false;
-
-    return true;
+    return !is_excluded;
   }
 
   void *monitor::get_context() const
@@ -244,46 +242,11 @@ namespace fsw
     case system_default_monitor_type:
       return create_default_monitor(paths, callback, context);
 
-    case fsevents_monitor_type:
-#if defined(HAVE_FSEVENTS_FILE_EVENTS)
-      return new fsevents_monitor(paths, callback, context);
-#else
-      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif
-
-    case kqueue_monitor_type:
-#if defined(HAVE_SYS_EVENT_H)
-      return new kqueue_monitor(paths, callback, context);
-#else
-      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif
-
-    case fen_monitor_type:
-#if defined(HAVE_PORT_H)
-      return new fen_monitor(paths, callback, context);
-#else
-      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif
-
-    case inotify_monitor_type:
-#if defined(HAVE_SYS_INOTIFY_H)
-      return new inotify_monitor(paths, callback, context);
-#else
-      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif
-
-    case windows_monitor_type:
-#if defined(HAVE_WINDOWS)
-      return new windows_monitor(paths, callback, context);
-#else
-      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-#endif
-
-    case poll_monitor_type:
-      return new poll_monitor(paths, callback, context);
-
     default:
-      throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
+      if (!monitor_factory::exists_type(type))
+        throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
+
+      return monitor_factory::create_monitor(type, paths, callback, context);
     }
   }
 
@@ -355,6 +318,13 @@ namespace fsw
     return creator_by_string_map;
   }
 
+  map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>& monitor_factory::creators_by_type()
+  {
+    static map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR> creator_by_type_map;
+
+    return creator_by_type_map;
+  }
+
   monitor *monitor_factory::create_monitor(const string& name,
                                            vector<string> paths,
                                            FSW_EVENT_CALLBACK *callback,
@@ -375,17 +345,30 @@ namespace fsw
     return (i != creators_by_string().end());
   }
 
+  bool monitor_factory::exists_type(const fsw_monitor_type& name)
+  {
+    auto i = creators_by_type().find(name);
+
+    return (i != creators_by_type().end());
+  }
+
   void monitor_factory::register_creator(const string& name,
                                          FSW_FN_MONITOR_CREATOR creator)
   {
     creators_by_string()[name] = creator;
   }
 
+  void monitor_factory::register_creator_by_type(const fsw_monitor_type& type, FSW_FN_MONITOR_CREATOR creator)
+  {
+    creators_by_type()[type] = creator;
+  }
+
+
   vector<string> monitor_factory::get_types()
   {
     vector<string> types;
 
-    for (auto& i : creators_by_string())
+    for (const auto& i : creators_by_string())
     {
       types.push_back(i.first);
     }
