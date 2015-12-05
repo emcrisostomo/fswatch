@@ -10,6 +10,7 @@
           <option name="INDENT_INSIDE_CODE_BLOCK" value="2" />
           <option name="NAMESPACE_BRACE_PLACEMENT" value="2" />
           <option name="FUNCTION_BRACE_PLACEMENT" value="2" />
+          <option name="BLOCK_BRACE_PLACEMENT" value="2" />
           <option name="SPACE_BEFORE_REFERENCE_IN_DECLARATION" value="false" />
           <option name="SPACE_AFTER_REFERENCE_IN_DECLARATION" value="true" />
         </Objective-C>
