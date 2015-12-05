@@ -52,6 +52,8 @@ static void print_event_path(const event& evt);
 static void print_event_timestamp(const event& evt);
 static int printf_event_validate_format(const string& fmt);
 
+static FSW_EVENT_CALLBACK process_events;
+
 struct printf_event_callbacks
 {
   void (*format_f)(const event& evt);
