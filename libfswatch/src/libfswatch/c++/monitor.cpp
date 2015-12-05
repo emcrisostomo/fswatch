@@ -58,7 +58,7 @@ namespace fsw
   monitor::monitor(vector<string> paths,
                    FSW_EVENT_CALLBACK *callback,
                    void *context) :
-    paths(paths), callback(callback), context(context)
+    paths(std::move(paths)), callback(callback), context(context)
   {
     if (callback == nullptr)
     {
