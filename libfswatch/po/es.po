@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libfswatch 1.4.4\n"
+"Project-Id-Version: libfswatch 1.8.0\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-11-10 23:07+0100\n"
-"PO-Revision-Date: 2015-10-24 13:04+0200\n"
+"POT-Creation-Date: 2015-12-06 21:05+0100\n"
+"PO-Revision-Date: 2015-12-06 21:09+0100\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "Language: es\n"
@@ -71,39 +71,39 @@ msgstr "Rastreando %s.\n"
 msgid "Event from unexpected source"
 msgstr "Evento de fuente inesperada"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:79
+#: src/libfswatch/c++/fsevents_monitor.cpp:77
 msgid "Stopping event stream...\n"
 msgstr "Parando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:82
+#: src/libfswatch/c++/fsevents_monitor.cpp:80
 msgid "Invalidating event stream...\n"
 msgstr "Invalidando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:85
+#: src/libfswatch/c++/fsevents_monitor.cpp:83
 msgid "Releasing event stream...\n"
 msgstr "Liberando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:126
+#: src/libfswatch/c++/fsevents_monitor.cpp:119
 msgid "Creating FSEvent stream...\n"
 msgstr "Creando el flujo FSEvent...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:137
+#: src/libfswatch/c++/fsevents_monitor.cpp:130
 msgid "Event stream could not be created."
 msgstr "El flujo de eventos no se puede crear."
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:140
+#: src/libfswatch/c++/fsevents_monitor.cpp:133
 msgid "Scheduling stream with run loop...\n"
 msgstr "Planificando el flujo de eventos con el bucle de ejecución...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:145
+#: src/libfswatch/c++/fsevents_monitor.cpp:138
 msgid "Starting event stream...\n"
 msgstr "Arrancando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:148
+#: src/libfswatch/c++/fsevents_monitor.cpp:141
 msgid "Starting run loop...\n"
 msgstr "Arrancando el bucle de ejecución...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:179
+#: src/libfswatch/c++/fsevents_monitor.cpp:172
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "El context de callback no puede convertirse a fsevents_monitor."
 
@@ -176,24 +176,26 @@ msgstr "El callback no puede ser null."
 msgid "Latency cannot be negative."
 msgstr "La latencia no puede ser negativa."
 
-#: src/libfswatch/c++/monitor.cpp:116
-msgid "An error occurred during the compilation of "
-msgstr "Un error ocurrió durante la compilación de "
+#: src/libfswatch/c++/monitor.cpp:117
+#, c-format
+msgid "An error occurred during the compilation of %s"
+msgstr "Un error ocurrió durante la compilación de %s"
 
-#: src/libfswatch/c++/monitor.cpp:317
+#: src/libfswatch/c++/monitor.cpp:281
 msgid "Event queue overflow."
 msgstr "Cola de eventos saturada."
 
-#: src/libfswatch/c++/monitor.cpp:344
-msgid "Notifying events #: "
-msgstr "Notificando eventos #: "
+#: src/libfswatch/c++/monitor.cpp:307
+#, c-format
+msgid "Notifying events #: %d.\n"
+msgstr "Notificando eventos #: %d.\n"
 
-#: src/libfswatch/c++/path_utils.cpp:74
+#: src/libfswatch/c++/path_utils.cpp:73
 #, c-format
 msgid "Cannot stat %s"
 msgstr "No se puede hacer stat() de %s"
 
-#: src/libfswatch/c++/path_utils.cpp:86
+#: src/libfswatch/c++/path_utils.cpp:85
 #, c-format
 msgid "Cannot lstat %s"
 msgstr "No se puede hacer lstat() de %s"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-11-10 23:07+0100\n"
+"POT-Creation-Date: 2015-12-06 20:34+0100\n"
 "PO-Revision-Date: 2015-10-24 13:09+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -238,37 +238,37 @@ msgstr "<formato de data erróneo>"
 msgid "Adding path: %s\n"
 msgstr "Añadiendo ruta: %s\n"
 
-#: src/fswatch.cpp:636
+#: src/fswatch.cpp:634
 msgid "Invalid property format."
 msgstr "Formato de propiedad inválido."
 
-#: src/fswatch.cpp:662
+#: src/fswatch.cpp:660
 msgid ""
 "--format is incompatible with any other format option such as -t and -x."
 msgstr ""
 "--format no es compatible con otras opciones de formato tales como -t y -x."
 
-#: src/fswatch.cpp:668
+#: src/fswatch.cpp:666
 msgid "--format is incompatible with -o."
 msgstr "--format no es compatible con -o."
 
-#: src/fswatch.cpp:683
+#: src/fswatch.cpp:681
 msgid "Invalid format."
 msgstr "Nombre de monitor inválido."
 
-#: src/fswatch.cpp:795
+#: src/fswatch.cpp:793
 msgid "Invalid number of arguments."
 msgstr "Número de argumentos inválidos."
 
-#: src/fswatch.cpp:801
+#: src/fswatch.cpp:799
 msgid "Invalid monitor name."
 msgstr "Nombre de monitor inválido."
 
-#: src/fswatch.cpp:817
+#: src/fswatch.cpp:815
 msgid "An error occurred and the program will be terminated.\n"
 msgstr "Ha ocurrido un error y el programa terminará.\n"
 
-#: src/fswatch.cpp:824
+#: src/fswatch.cpp:822
 msgid "An unknown error occurred and the program will be terminated."
 msgstr "Ha ocurrido un error desconocido y el programa terminará."
 

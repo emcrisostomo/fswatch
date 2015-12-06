@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.7.0\n"
+"Project-Id-Version: fswatch 1.8.0-develop\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-11-10 23:07+0100\n"
+"POT-Creation-Date: 2015-12-06 20:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -229,35 +229,35 @@ msgstr ""
 msgid "Adding path: %s\n"
 msgstr ""
 
-#: src/fswatch.cpp:636
+#: src/fswatch.cpp:634
 msgid "Invalid property format."
 msgstr ""
 
-#: src/fswatch.cpp:662
+#: src/fswatch.cpp:660
 msgid ""
 "--format is incompatible with any other format option such as -t and -x."
 msgstr ""
 
-#: src/fswatch.cpp:668
+#: src/fswatch.cpp:666
 msgid "--format is incompatible with -o."
 msgstr ""
 
-#: src/fswatch.cpp:683
+#: src/fswatch.cpp:681
 msgid "Invalid format."
 msgstr ""
 
-#: src/fswatch.cpp:795
+#: src/fswatch.cpp:793
 msgid "Invalid number of arguments."
 msgstr ""
 
-#: src/fswatch.cpp:801
+#: src/fswatch.cpp:799
 msgid "Invalid monitor name."
 msgstr ""
 
-#: src/fswatch.cpp:817
+#: src/fswatch.cpp:815
 msgid "An error occurred and the program will be terminated.\n"
 msgstr ""
 
-#: src/fswatch.cpp:824
+#: src/fswatch.cpp:822
 msgid "An unknown error occurred and the program will be terminated."
 msgstr ""

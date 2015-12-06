@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: libfswatch 1.7.0\n"
+"Project-Id-Version: libfswatch 1.8.0-develop\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-11-10 23:07+0100\n"
+"POT-Creation-Date: 2015-12-06 21:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,39 +71,39 @@ msgstr ""
 msgid "Event from unexpected source"
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:79
+#: src/libfswatch/c++/fsevents_monitor.cpp:77
 msgid "Stopping event stream...\n"
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:82
+#: src/libfswatch/c++/fsevents_monitor.cpp:80
 msgid "Invalidating event stream...\n"
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:85
+#: src/libfswatch/c++/fsevents_monitor.cpp:83
 msgid "Releasing event stream...\n"
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:126
+#: src/libfswatch/c++/fsevents_monitor.cpp:119
 msgid "Creating FSEvent stream...\n"
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:137
+#: src/libfswatch/c++/fsevents_monitor.cpp:130
 msgid "Event stream could not be created."
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:140
+#: src/libfswatch/c++/fsevents_monitor.cpp:133
 msgid "Scheduling stream with run loop...\n"
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:145
+#: src/libfswatch/c++/fsevents_monitor.cpp:138
 msgid "Starting event stream...\n"
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:148
+#: src/libfswatch/c++/fsevents_monitor.cpp:141
 msgid "Starting run loop...\n"
 msgstr ""
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:179
+#: src/libfswatch/c++/fsevents_monitor.cpp:172
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr ""
 
@@ -176,24 +176,26 @@ msgstr ""
 msgid "Latency cannot be negative."
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:116
-msgid "An error occurred during the compilation of "
+#: src/libfswatch/c++/monitor.cpp:117
+#, c-format
+msgid "An error occurred during the compilation of %s"
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:317
+#: src/libfswatch/c++/monitor.cpp:281
 msgid "Event queue overflow."
 msgstr ""
 
-#: src/libfswatch/c++/monitor.cpp:344
-msgid "Notifying events #: "
+#: src/libfswatch/c++/monitor.cpp:307
+#, c-format
+msgid "Notifying events #: %d.\n"
 msgstr ""
 
-#: src/libfswatch/c++/path_utils.cpp:74
+#: src/libfswatch/c++/path_utils.cpp:73
 #, c-format
 msgid "Cannot stat %s"
 msgstr ""
 
-#: src/libfswatch/c++/path_utils.cpp:86
+#: src/libfswatch/c++/path_utils.cpp:85
 #, c-format
 msgid "Cannot lstat %s"
 msgstr ""
