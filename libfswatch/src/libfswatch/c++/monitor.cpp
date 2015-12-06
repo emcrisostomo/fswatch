@@ -20,9 +20,9 @@
 #include "monitor.hpp"
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
+#include "string/string_utils.hpp"
 #include <cstdlib>
 #include <regex.h>
-#include <iostream>
 #include <sstream>
 #include <time.h>
 /*
@@ -113,8 +113,9 @@ namespace fsw
 
     if (regcomp(&regex, filter.text.c_str(), flags))
     {
-      string err = _("An error occurred during the compilation of ") + filter.text;
-      throw libfsw_exception(err, FSW_ERR_INVALID_REGEX);
+      throw libfsw_exception(
+        string_utils::string_from_format(_("An error occurred during the compilation of %s"), filter.text.c_str()),
+        FSW_ERR_INVALID_REGEX);
     }
 
     this->filters.push_back({regex, filter.type});
@@ -303,9 +304,7 @@ namespace fsw
 
     if (filtered_events.size() > 0)
     {
-      ostringstream log;
-      log << _("Notifying events #: ") << filtered_events.size() << "\n";
-      FSW_ELOG(log.str().c_str());
+      FSW_ELOG(string_utils::string_from_format(_("Notifying events #: %d.\n"), filtered_events.size()).c_str());
 
       callback(filtered_events, context);
     }
