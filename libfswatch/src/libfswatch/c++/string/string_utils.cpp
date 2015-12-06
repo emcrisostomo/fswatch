@@ -22,9 +22,9 @@ using namespace std;
 
 namespace fsw
 {
-  namespace string
+  namespace string_utils
   {
-    std::string vstring_from_format(const char *format, va_list args)
+    string vstring_from_format(const char *format, va_list args)
     {
       size_t current_buffer_size = 0;
       int required_chars = 512;
@@ -47,15 +47,15 @@ namespace fsw
       }
       while ((size_t) required_chars > current_buffer_size);
 
-      return std::string(&buffer[0]);
+      return string(&buffer[0]);
     }
 
-    std::string string_from_format(const char *format, ...)
+    string string_from_format(const char *format, ...)
     {
       va_list args;
       va_start(args, format);
 
-      std::string ret = vstring_from_format(format, args);
+      string ret = vstring_from_format(format, args);
 
       va_end(args);
 

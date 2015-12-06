@@ -20,7 +20,7 @@
 
 namespace fsw
 {
-  namespace string
+  namespace string_utils
   {
     std::string string_from_format(const char *format, ...);
     std::string vstring_from_format(const char *format, va_list args);
