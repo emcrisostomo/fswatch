@@ -25,6 +25,8 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/path_utils.hpp
         src/libfswatch/c++/poll_monitor.cpp
         src/libfswatch/c++/poll_monitor.hpp
+        src/libfswatch/c++/string/string_utils.cpp
+        src/libfswatch/c++/string/string_utils.hpp
         src/libfswatch/gettext.h
         src/libfswatch/gettext_defs.h
         libfswatch_config.h)

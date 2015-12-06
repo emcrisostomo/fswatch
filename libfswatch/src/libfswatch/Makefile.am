@@ -29,6 +29,7 @@ libfswatch_la_SOURCES += c++/event.cpp
 libfswatch_la_SOURCES += c++/monitor.cpp
 libfswatch_la_SOURCES += c++/poll_monitor.cpp
 libfswatch_la_SOURCES += c++/path_utils.cpp
+libfswatch_la_SOURCES += c++/string/string_utils.cpp
 libfswatch_la_SOURCES += gettext.h
 libfswatch_la_SOURCES += gettext_defs.h
 
@@ -90,6 +91,7 @@ libfswatch_cpp_HEADERS  = c++/monitor.hpp
 libfswatch_cpp_HEADERS += c++/libfswatch_map.hpp
 libfswatch_cpp_HEADERS += c++/libfswatch_set.hpp
 libfswatch_cpp_HEADERS += c++/path_utils.hpp
+libfswatch_cpp_HEADERS += c++/string/string_utils.hpp
 if USE_FSEVENTS
   libfswatch_cpp_HEADERS += c++/fsevents_monitor.hpp
 endif
