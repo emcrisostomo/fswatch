@@ -78,7 +78,8 @@ extern "C"
    * a pointer to it.
    */
   typedef void (*FSW_CEVENT_CALLBACK)(fsw_cevent const * const events,
-    const unsigned int event_num, void * data);
+                                      const unsigned int event_num,
+                                      void * data);
 
 #  ifdef __cplusplus
 }
