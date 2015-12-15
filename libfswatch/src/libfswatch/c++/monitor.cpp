@@ -244,10 +244,12 @@ namespace fsw
       return create_default_monitor(paths, callback, context);
 
     default:
-      if (!monitor_factory::exists_type(type))
-        throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
+      auto c = creators_by_type().find(type);
 
-      return monitor_factory::create_monitor(type, paths, callback, context);
+      if (c == creators_by_type().end())
+        throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
+      else
+        return c->second(paths, callback, context);
     }
   }
 
