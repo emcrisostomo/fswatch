@@ -25,25 +25,6 @@
 #include <regex.h>
 #include <sstream>
 #include <time.h>
-/*
- * Conditionally include monitor headers for default construction.
- */
-#if defined(HAVE_FSEVENTS_FILE_EVENTS)
-#  include "fsevents_monitor.hpp"
-#endif
-#if defined(HAVE_SYS_EVENT_H)
-#  include "kqueue_monitor.hpp"
-#endif
-#if defined(HAVE_PORT_H)
-#  include "fen_monitor.hpp"
-#endif
-#if defined(HAVE_SYS_INOTIFY_H)
-#  include "inotify_monitor.hpp"
-#endif
-#if defined(HAVE_WINDOWS)
-#  include "windows_monitor.hpp"
-#endif
-#include "poll_monitor.hpp"
 
 using namespace std;
 
@@ -218,19 +199,23 @@ namespace fsw
                                          FSW_EVENT_CALLBACK *callback,
                                          void *context)
   {
+    fsw_monitor_type type;
+
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
-    return new fsevents_monitor(paths, callback, context);
+    type = fsw_monitor_type::fsevents_monitor_type;
 #elif defined(HAVE_SYS_EVENT_H)
-    return new kqueue_monitor(paths, callback, context);
+    type = fsw_monitor_type::kqueue_monitor_type;
 #elif defined(HAVE_PORT_H)
-    return new fen_monitor(paths, callback, context);
+    type = fsw_monitor_type::fen_monitor_type;
 #elif defined(HAVE_SYS_INOTIFY_H)
-    return new inotify_monitor(paths, callback, context);
+    type = fsw_monitor_type::inotify_monitor_type;
 #elif defined(HAVE_WINDOWS)
-    return new windows_monitor(paths, callback, context);
+    type = fsw_monitor_type::windows_monitor_type;
 #else
-    return new poll_monitor(paths, callback, context);
+    type = fsw_monitor_type::poll_monitor_type;
 #endif
+
+    return monitor_factory::create_monitor(type, paths, callback, context);
   }
 
   monitor *monitor_factory::create_monitor(fsw_monitor_type type,
