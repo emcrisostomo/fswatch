@@ -57,6 +57,11 @@ AM_CONDITIONAL([OS_CYGWIN], [test "${target_os}" = "cygwin"])
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
 
 # Checks for programs.
+AC_CHECK_PROGS([DOXYGEN], [doxygen])
+test -z "${DOXYGEN}" && AC_MSG_WARN([Doxygen support disabled])
+
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "${DOXYGEN}"])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES(docs/Doxyfile)])
 
 # Initialize gettext
 AM_GNU_GETTEXT([external])
