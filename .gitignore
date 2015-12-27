@@ -115,7 +115,7 @@ version.texi
 *.t2p
 
 # Template files
-Doxygen
+Doxyfile
 build-aux/create-pot-template.sh
 libfswatch/libfswatch_config.h
 libfswatch/libfswatch_config.h.in
