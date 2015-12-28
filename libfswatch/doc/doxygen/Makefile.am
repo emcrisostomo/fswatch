@@ -13,14 +13,19 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+all-local: doc-doxygen
+
 if HAVE_DOXYGEN
+DOXYGEN_TARGETS = doc-html-doxygen doc-pdf-doxygen
+endif
+
+.PHONY: doc-doxygen
+doc-doxygen: $(DOXYGEN_TARGETS)
 
 .PHONY: doc-html-doxygen
 doc-html-doxygen:
-	doxygen Doxyfile
+	$(DOXYGEN) Doxyfile
 
 .PHONY: doc-pdf-doxygen
 doc-pdf-doxygen: doc-html-doxygen
 	$(MAKE) -C latex
-
-endif
