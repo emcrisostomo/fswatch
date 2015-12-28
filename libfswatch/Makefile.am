@@ -31,6 +31,3 @@ dist-hook:
 	git log --oneline --decorate >> $(distdir)/ChangeLog
 
 EXTRA_DIST = config/config.rpath
-
-doc-doxygen:
-	$(MAKE) -C doc doc-doxygen
