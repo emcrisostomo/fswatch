@@ -25,7 +25,9 @@ AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
-AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([doc/Makefile doc/doxygen/Makefile doc/texinfo/Makefile])
+AC_CONFIG_FILES([src/Makefile src/libfswatch/Makefile po/Makefile.in])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -61,7 +63,7 @@ AC_CHECK_PROGS([DOXYGEN], [doxygen])
 test -z "${DOXYGEN}" && AC_MSG_WARN([Doxygen support disabled])
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "${DOXYGEN}"])
-AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES(docs/Doxyfile)])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES(doc/doxygen/Doxyfile)])
 
 # Initialize gettext
 AM_GNU_GETTEXT([external])

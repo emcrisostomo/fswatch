@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2015 Enrico M. Crisostomo
+# Copyright (c) 2015 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -13,24 +13,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-ACLOCAL_AMFLAGS = -I m4
+if HAVE_DOXYGEN
 
-# Refresh configuration if libtool dependencies change
-LIBTOOL_DEPS = @LIBTOOL_DEPS@
-libtool: $(LIBTOOL_DEPS)
-	$(SHELL) $(top_builddir)/config.status libtool
+.PHONY: doc-html-doxygen
+doc-html-doxygen:
+	doxygen Doxyfile
 
-SUBDIRS = src po doc
+.PHONY: doc-pdf-doxygen
+doc-pdf-doxygen: doc-html-doxygen
+	$(MAKE) -C latex
 
-dist_doc_DATA  = README.md
-dist_doc_DATA += AUTHORS COPYING LICENSE NEWS
-
-dist-hook:
-# The recipe cannot assume a file in $(distdir) is writable.
-	chmod u+w $(distdir)/ChangeLog
-	git log --oneline --decorate >> $(distdir)/ChangeLog
-
-EXTRA_DIST = config/config.rpath
-
-doc-doxygen:
-	$(MAKE) -C doc doc-doxygen
+endif
