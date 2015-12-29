@@ -13,6 +13,17 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Event type manipulation.
+ *
+ * This header file defines the event types of the `libfswatch` API
+ *
+ * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
 #ifndef FSW__CEVENT_H
 #  define FSW__CEVENT_H
 
@@ -23,35 +34,41 @@ extern "C"
 {
 #  endif
 
-  /*
-   * Each element of this enum represents a backend-agnostic change flag,
-   * providing information about the different kind of changes an event refers
-   * to.
-   */
+/**
+ * @brief Backend-agnostic change flags.
+ *
+ * Each element of this enum represents a backend-agnostic change flag.  No
+ * direct mapping to backend-specific change types is guaranteed to exist: a
+ * change type may be mapped to multiple `fsw_event_flag` instances included
+ * the `PlatformSpecific` flag.
+ */
   enum fsw_event_flag
   {
-    NoOp = 0,
-    PlatformSpecific = (1 << 0),
-    Created = (1 << 1),
-    Updated = (1 << 2),
-    Removed = (1 << 3),
-    Renamed = (1 << 4),
-    OwnerModified = (1 << 5),
-    AttributeModified = (1 << 6),
-    MovedFrom = (1 << 7),
-    MovedTo = (1 << 8),
-    IsFile = (1 << 9),
-    IsDir = (1 << 10),
-    IsSymLink = (1 << 11),
-    Link = (1 << 12),
-    Overflow = (1 << 13)
+    NoOp = 0,                     /**< No event has occurred. */
+    PlatformSpecific = (1 << 0),  /**< Platform-specific placeholder for event type that cannot currently be mapped. */
+    Created = (1 << 1),           /**< An object was created. */
+    Updated = (1 << 2),           /**< An object was updated. */
+    Removed = (1 << 3),           /**< An object was removed. */
+    Renamed = (1 << 4),           /**< An object was renamed. */
+    OwnerModified = (1 << 5),     /**< The owner of an object was modified. */
+    AttributeModified = (1 << 6), /**< The attributes of an object were modified. */
+    MovedFrom = (1 << 7),         /**< An object was moved from this location. */
+    MovedTo = (1 << 8),           /**< An object was moved to this location. */
+    IsFile = (1 << 9),            /**< The object is a file. */
+    IsDir = (1 << 10),            /**< The object is a directory. */
+    IsSymLink = (1 << 11),        /**< The object is a symbolic link. */
+    Link = (1 << 12),             /**< The link count of an object has changed. */
+    Overflow = (1 << 13)          /**< The event queue has overflowed. */
   };
 
+  /**
+   * @brief Get event flag by name.
+   */
   fsw_event_flag fsw_get_event_flag_by_name(const char * name);
   char * fsw_get_event_flag_name(const fsw_event_flag flag);
 
-  /*
-   * An file change event is represented as an instance of this struct where:
+  /**
+   * A file change event is represented as an instance of this struct where:
    *   - path is the path where the event was triggered.
    *   - evt_time the time when the event was triggered.
    *   - flags is an array of fsw_event_flag of size flags_num.
@@ -65,7 +82,7 @@ extern "C"
     unsigned int flags_num;
   } fsw_cevent;
 
-  /*
+  /**
    * A function pointer of type FSW_CEVENT_CALLBACK is used by the API as a
    * callback to provide information about received events.  The callback is
    * passed the following arguments:

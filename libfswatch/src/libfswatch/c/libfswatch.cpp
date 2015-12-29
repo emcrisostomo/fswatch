@@ -13,6 +13,127 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
+/**
+ * @mainpage
+ *
+ * Cross-platform file change monitor.
+ *
+ * `fswatch` is a cross-platform file change monitor currently supporting the
+ * following backends:
+ *
+ *   - A monitor based on the _FSEvents_ API of Apple OS X.
+ *   - A monitor based on _kqueue_, an event notification interface introduced
+ *     in FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+ *   - A monitor based on _File Events Notification_, an event notification API
+ *     of the Solaris/Illumos kernel.
+ *   - A monitor based on _inotify_, a Linux kernel subsystem that reports
+ *     file system changes to applications.
+ *   - A monitor based on the Microsoft Windows' `ReadDirectoryChangesW`
+ *     function and reads change events asynchronously.
+ *   - A monitor which periodically stats the file system, saves file
+ *     modification times in memory and manually calculates file system
+ *     changes, which can work on any operating system where @code{stat} can be
+ *     used.
+ *
+ * Instead of using different APIs, a programmer can use just one: the API of
+ * `libfswatch`.  The advantages of using `libfswatch` are many:
+ *
+ *   - *Portability*: `libfswatch` supports many backends, effectively giving
+ *     support to a great number of operating systems, including Solaris, *BSD
+ *     Unix and Linux.
+ *   - Ease of use: using `libfswatch` should be easier than using any of the
+ *     APIs it supports.
+ * @section Available Bindings
+ * `libfswatch` is a C++ library with C bindings which makes it available to a
+ * wide range of programming languages.  If a programming language has C
+ * bindings, then `libfswatch` can be used from it.  The C binding provides all
+ * the functionality provided by the C++ implementation and it can be used as a
+ * fallback solution when the C++ API cannot be used.
+ *
+ * @section libtool's versioning scheme
+ * `libtool`'s versioning scheme is described by three integers:
+ * `current:revision:age` where:
+ *
+ *   - `current` is the most recent interface number implemented by the
+ *     library.
+ *   - `revision` is the implementation number of the current interface.
+ *   - `age` is the difference between the newest and the oldest interface that
+ *     the library implements.
+ * @section The C and the C++ API
+ * The C API is built on top of the C++ API but the two are very different, to
+ * reflect the fundamental differences between the two languages.
+ *
+ * The C++ API centres on the concept of _monitor_, a
+ * class of objects modelling the functionality of the file monitoring
+ * API.  Different monitor types are modelled as different
+ * classes inheriting from the `fsw::monitor` abstract class, that
+ * is the type that defines the core monitoring API.
+ * API clients can pick the current platform's default monitor,
+ * or choose a specific implementation amongst the available ones,
+ * configure it and _run_ it.  When running, a monitor gathers file
+ * system change events and communicates them back to the caller using a
+ * _callback_.
+ *
+ * The C API, on the other hand, centres on the concept of
+ * _monitoring session_.  A session internally wraps a monitor
+ * instance and represents an opaque C bridge to the C++ monitor
+ * _API_.  Sessions are identified by a _session handle_ and
+ * they can be thought as a sort of C facade of the C++ monitor
+ * class.  In fact there is an evident similarity between the C library
+ * functions operating on a monitoring session and the methods of the
+ * `monitor` class.
+ *
+ * @section Thread Safety
+ * The C++ API does not deal with thread safety explicitly.
+ * Rather, it leaves the responsibility of implementing a thread-safe
+ * use of the library to the callers.  The C++ implementation has been designed in order to:
+ *
+ *   - Encapsulate all the state of a monitor into its class fields.
+ *   - Perform no concurrent access control in methods or class fields.
+ *   - Guarantee that functions and @emph{static} methods are thread safe.
+ *
+ * As a consequence, it is _not_ thread-safe to access a monitor's
+ * member, be it a method or a field, from different threads
+ * concurrently.  The easiest way to implement thread-safety when using
+ * `libfswatch`, therefore, is segregating access to each monitor
+ * instance from a different thread.
+ *
+ * The C API, a layer above the C++ API, has been
+ * designed in order to provide the same basic guarantee:
+ *
+ *   - Concurrently manipulating different monitoring sessions is thread
+ *     safe.
+ *   - Concurrently manipulating the same monitoring session is _not_
+ *   thread safe.
+ *
+ * @section C++11
+ * There is an additional limitation which affects the C library only:
+ * the C binding implementation internally uses C++11 classes
+ * and keywords to provide the aforementioned guarantees.  If compiler or
+ * library support is not found when building `libfswatch` the
+ * library will still build, but those guarantees will _not_ be
+ * honoured.  A warning such as the following will appear in
+ * the output of `configure` to inform the user:
+ *
+ * configure: WARNING: libfswatch is not thread-safe because the current
+ * combination of compiler and libraries do not support the thread_local
+ * storage specifier.
+ *
+ * @section Reporting Bugs and Suggestions
+ * If you find problems or have suggestions about this program or this
+ * manual, please report them as new issues in the official GitHub
+ * repository of @command{fswatch} at
+ * https://github.com/emcrisostomo/fswatch.  Please, read the
+ * `CONTRIBUTING.md` file for detailed instructions on how to
+ * contribute to `fswatch`.
+ */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
 #endif
