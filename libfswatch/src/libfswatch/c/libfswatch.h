@@ -14,27 +14,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef LIBFSW_H
-#  define LIBFSW_H
+#define LIBFSW_H
 
-#  include "cevent.h"
-#  include "cmonitor.h"
-#  include "cfilter.h"
-#  include "error.h"
+#include "libfswatch_types.h"
+#include "cevent.h"
+#include "cmonitor.h"
+#include "cfilter.h"
+#include "error.h"
 
 #  ifdef __cplusplus
 extern "C"
 {
-#  endif
-
-  typedef unsigned int FSW_HANDLE;
-  typedef int FSW_STATUS;
-
-#  define FSW_INVALID_HANDLE -1
-
-#  if defined(HAVE_CXX_THREAD_LOCAL)
-#    define FSW_THREAD_LOCAL thread_local
-#  else
-#    define FSW_THREAD_LOCAL
 #  endif
 
   /*
