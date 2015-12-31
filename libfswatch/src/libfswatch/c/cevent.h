@@ -28,6 +28,8 @@
 #  define FSW__CEVENT_H
 
 #  include <ctime>
+#  include <climits>
+#  include "libfswatch_types.h"
 
 #  ifdef __cplusplus
 extern "C"
@@ -64,8 +66,8 @@ extern "C"
   /**
    * @brief Get event flag by name.
    */
-  fsw_event_flag fsw_get_event_flag_by_name(const char * name);
-  char * fsw_get_event_flag_name(const fsw_event_flag flag);
+  FSW_STATUS fsw_get_event_flag_by_name(const char *name, fsw_event_flag *flag);
+  char *fsw_get_event_flag_name(const fsw_event_flag flag);
 
   /**
    * A file change event is represented as an instance of this struct where:
@@ -94,9 +96,9 @@ extern "C"
    * callback invocation.  A callback should copy such data instead of storing
    * a pointer to it.
    */
-  typedef void (*FSW_CEVENT_CALLBACK)(fsw_cevent const * const events,
+  typedef void (*FSW_CEVENT_CALLBACK)(fsw_cevent const *const events,
                                       const unsigned int event_num,
-                                      void * data);
+                                      void *data);
 
 #  ifdef __cplusplus
 }

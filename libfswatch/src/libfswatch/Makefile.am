@@ -80,6 +80,7 @@ libfswatch_cppdir = $(pkgincludedir)/c++
 # Distribute C headers.
 libfswatch_c_HEADERS  = c/libfswatch_mem.h
 libfswatch_c_HEADERS += c/libfswatch.h
+libfswatch_c_HEADERS += c/libfswatch_types.h
 libfswatch_c_HEADERS += c/cevent.h
 libfswatch_c_HEADERS += c/cfilter.h
 libfswatch_c_HEADERS += c/cmonitor.h
