@@ -65,8 +65,21 @@ extern "C"
 
   /**
    * @brief Get event flag by name.
+   *
+   * This function looks for an event flag called @p name and, if it exists, it
+   * writes its value onto @p flag and @c FSW_OK, otherwise @p flag is not
+   * modified and @c FSW_ERR_UNKNOWN_VALUE is returned.
+   *
+   * @param name [in] The name of the event flag to look for.
+   * @param flag [out] The output variable where the event flag is returned.
+   * @return @c FSW_OK if the functions succeeds, @c FSW_ERR_UNKNOWN_VALUE
+   * otherwise.
    */
   FSW_STATUS fsw_get_event_flag_by_name(const char *name, fsw_event_flag *flag);
+
+  /**
+   * @brief Get the name of an event flag.
+   */
   char *fsw_get_event_flag_name(const fsw_event_flag flag);
 
   /**
