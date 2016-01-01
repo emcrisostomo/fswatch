@@ -13,6 +13,17 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Error values.
+ *
+ * This header file defines the error values used by the `libfswatch` API.
+ *
+ * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
 #ifndef FSW__ERROR_H
 #  define FSW__ERROR_H
 
@@ -21,8 +32,8 @@ extern "C"
 {
 #  endif
 
-  // Error codes
-#  define FSW_OK                            0
+// Error codes
+#  define FSW_OK                            0        /**< The call was successful. */
 #  define FSW_ERR_UNKNOWN_ERROR             (1 << 0)
 #  define FSW_ERR_SESSION_UNKNOWN           (1 << 1)
 #  define FSW_ERR_MONITOR_ALREADY_EXISTS    (1 << 2)
@@ -40,7 +51,7 @@ extern "C"
 #  define FSW_ERR_STALE_MONITOR_THREAD      (1 << 14)
 #  define FSW_ERR_THREAD_FAULT              (1 << 15)
 #  define FSW_ERR_UNSUPPORTED_OPERATION     (1 << 16)
-#  define FSW_ERR_UNKNOWN_VALUE             (1 << 17)
+#  define FSW_ERR_UNKNOWN_VALUE             (1 << 17) /**< The specified value is unknown. */
 #  define FSW_ERR_INVALID_PROPERTY          (1 << 18)
 
 #  ifdef __cplusplus

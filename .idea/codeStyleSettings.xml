@@ -3,6 +3,7 @@
   <component name="ProjectCodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
       <value>
+        <option name="RIGHT_MARGIN" value="80" />
         <Objective-C>
           <option name="INDENT_NAMESPACE_MEMBERS" value="2" />
           <option name="INDENT_C_STRUCT_MEMBERS" value="2" />

@@ -17,7 +17,7 @@
  * @file
  * @brief Event type manipulation.
  *
- * This header file defines the event types of the `libfswatch` API
+ * This header file defines the event types of the `libfswatch` API.
  *
  * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
@@ -70,15 +70,21 @@ extern "C"
    * writes its value onto @p flag and @c FSW_OK, otherwise @p flag is not
    * modified and @c FSW_ERR_UNKNOWN_VALUE is returned.
    *
-   * @param name [in] The name of the event flag to look for.
-   * @param flag [out] The output variable where the event flag is returned.
-   * @return @c FSW_OK if the functions succeeds, @c FSW_ERR_UNKNOWN_VALUE
+   * @param[in] name The name of the event flag to look for.
+   * @param[out] flag The output variable where the event flag is returned.
+   * @return #FSW_OK if the functions succeeds, #FSW_ERR_UNKNOWN_VALUE
    * otherwise.
    */
   FSW_STATUS fsw_get_event_flag_by_name(const char *name, fsw_event_flag *flag);
 
   /**
    * @brief Get the name of an event flag.
+   *
+   * This function looks for the name of the specified event @p flag.  If it
+   * exists, it returns its name, otherwise @c nullptr is returned.
+   *
+   * @param[in] flag The event flag to look for.
+   * @return The name of @p flag, or @c nullptr if it does not exist.
    */
   char *fsw_get_event_flag_name(const fsw_event_flag flag);
 
