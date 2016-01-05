@@ -36,6 +36,16 @@ namespace fsw
     fsw_filter_type type;
   };
 
+#ifdef HAVE_CXX_MUTEX
+  #define FSW_MONITOR_RUN_GUARD unique_lock<mutex> run_guard(run_mutex);
+  #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock();
+  #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock();
+#else
+  #define FSW_MONITOR_RUN_GUARD
+  #define FSW_MONITOR_RUN_GUARD_LOCK
+  #define FSW_MONITOR_RUN_GUARD_UNLOCK
+#endif
+
   monitor::monitor(vector<string> paths,
                    FSW_EVENT_CALLBACK *callback,
                    void *context) :
@@ -43,7 +53,8 @@ namespace fsw
   {
     if (callback == nullptr)
     {
-      throw libfsw_exception(_("Callback cannot be null."), FSW_ERR_CALLBACK_NOT_SET);
+      throw libfsw_exception(_("Callback cannot be null."),
+                             FSW_ERR_CALLBACK_NOT_SET);
     }
   }
 
@@ -56,7 +67,8 @@ namespace fsw
   {
     if (latency < 0)
     {
-      throw libfsw_exception(_("Latency cannot be negative."), FSW_ERR_INVALID_LATENCY);
+      throw libfsw_exception(_("Latency cannot be negative."),
+                             FSW_ERR_INVALID_LATENCY);
     }
 
     this->latency = latency;
@@ -77,7 +89,8 @@ namespace fsw
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(const vector<fsw_event_type_filter>& filters)
+  void monitor::set_event_type_filters(
+    const vector<fsw_event_type_filter>& filters)
   {
     event_type_filters.clear();
 
@@ -95,7 +108,9 @@ namespace fsw
     if (regcomp(&regex, filter.text.c_str(), flags))
     {
       throw libfsw_exception(
-        string_utils::string_from_format(_("An error occurred during the compilation of %s"), filter.text.c_str()),
+        string_utils::string_from_format(
+          _("An error occurred during the compilation of %s"),
+          filter.text.c_str()),
         FSW_ERR_INVALID_REGEX);
     }
 
@@ -187,10 +202,7 @@ namespace fsw
 
   monitor::~monitor()
   {
-    for (auto& re : filters)
-    {
-      regfree(&re.regex);
-    }
+    for (auto& re : filters) regfree(&re.regex);
 
     filters.clear();
   }
@@ -232,18 +244,44 @@ namespace fsw
       auto c = creators_by_type().find(type);
 
       if (c == creators_by_type().end())
-        throw libfsw_exception("Unsupported monitor.", FSW_ERR_UNKNOWN_MONITOR_TYPE);
-      else
-        return c->second(paths, callback, context);
+        throw libfsw_exception("Unsupported monitor.",
+                               FSW_ERR_UNKNOWN_MONITOR_TYPE);
+      return c->second(paths, callback, context);
     }
   }
 
   void monitor::start()
   {
-#ifdef HAVE_CXX_MUTEX
-    lock_guard<mutex> run_guard(run_mutex);
-#endif
+    FSW_MONITOR_RUN_GUARD;
+    if (this->running)
+      throw libfsw_exception(_("monitor already running"),
+                             FSW_ERR_MONITOR_ALREADY_RUNNING);
+
+    this->running = true;
+    FSW_MONITOR_RUN_GUARD_UNLOCK;
+
     this->run();
+
+    FSW_MONITOR_RUN_GUARD_LOCK;
+    this->running = false;
+    this->should_stop = false;
+    FSW_MONITOR_RUN_GUARD_UNLOCK;
+  }
+
+  void monitor::stop()
+  {
+    cout << "Entering STOP" << endl;
+    FSW_MONITOR_RUN_GUARD;
+    if (!this->running)
+      throw libfsw_exception(_("monitor not running"),
+                             FSW_ERR_MONITOR_ALREADY_RUNNING);
+
+    // Stopping a monitor is a cooperative task: the caller request a task to
+    // stop and it's responsibility of each monitor to check for this flag and
+    // timely stop the processing loop.
+    this->should_stop = true;
+
+    on_stop();
   }
 
   vector<fsw_event_flag> monitor::filter_flags(const event& evt) const
@@ -263,10 +301,7 @@ namespace fsw
 
   void monitor::notify_overflow(const string& path) const
   {
-    if (!allow_overflow)
-    {
-      throw libfsw_exception(_("Event queue overflow."));
-    }
+    if (!allow_overflow) throw libfsw_exception(_("Event queue overflow."));
 
     time_t curr_time;
     time(&curr_time);
@@ -286,12 +321,14 @@ namespace fsw
 
       if (!accept_path(event.get_path())) continue;
 
-      filtered_events.push_back({event.get_path(), event.get_time(), filtered_flags});
+      filtered_events.push_back(
+        {event.get_path(), event.get_time(), filtered_flags});
     }
 
     if (filtered_events.size() > 0)
     {
-      FSW_ELOG(string_utils::string_from_format(_("Notifying events #: %d.\n"), filtered_events.size()).c_str());
+      FSW_ELOG(string_utils::string_from_format(_("Notifying events #: %d.\n"),
+                                                filtered_events.size()).c_str());
 
       callback(filtered_events, context);
     }
@@ -320,8 +357,8 @@ namespace fsw
 
     if (i == creators_by_string().end())
       return nullptr;
-    else
-      return i->second(paths, callback, context);
+
+    return i->second(paths, callback, context);
   }
 
   bool monitor_factory::exists_type(const string& name)
@@ -344,7 +381,8 @@ namespace fsw
     creators_by_string()[name] = creator;
   }
 
-  void monitor_factory::register_creator_by_type(const fsw_monitor_type& type, FSW_FN_MONITOR_CREATOR creator)
+  void monitor_factory::register_creator_by_type(const fsw_monitor_type& type,
+                                                 FSW_FN_MONITOR_CREATOR creator)
   {
     creators_by_type()[type] = creator;
   }
@@ -360,5 +398,10 @@ namespace fsw
     }
 
     return types;
+  }
+
+  void monitor::on_stop()
+  {
+    // No-op implementation.
   }
 }
