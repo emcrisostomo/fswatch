@@ -18,7 +18,9 @@
 
 #  include "monitor.hpp"
 #  include <CoreServices/CoreServices.h>
-
+#  ifdef HAVE_CXX_MUTEX
+#    include <mutex>
+#  endif
 namespace fsw
 {
   class fsevents_monitor : public monitor
@@ -31,7 +33,9 @@ namespace fsw
                      void *context = nullptr);
     virtual ~fsevents_monitor();
 
-    void run();
+  protected:
+    void run() override;
+    void on_stop() override;
 
   private:
     fsevents_monitor(const fsevents_monitor& orig) = delete;
@@ -44,7 +48,11 @@ namespace fsw
                                   const FSEventStreamEventFlags eventFlags[],
                                   const FSEventStreamEventId eventIds[]);
 
+#  ifdef HAVE_CXX_MUTEX
+    std::mutex run_mutex;
+#  endif
     FSEventStreamRef stream = nullptr;
+    CFRunLoopRef run_loop = nullptr;
   };
 }
 
