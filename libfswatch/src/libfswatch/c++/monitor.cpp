@@ -284,6 +284,12 @@ namespace fsw
     on_stop();
   }
 
+  bool monitor::is_running()
+  {
+    FSW_MONITOR_RUN_GUARD;
+    return this->running;
+  }
+
   vector<fsw_event_flag> monitor::filter_flags(const event& evt) const
   {
     // If there is nothing to filter, just return the original vector.

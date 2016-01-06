@@ -57,6 +57,7 @@ namespace fsw
     void set_context(void *context);
     void start();
     void stop();
+    bool is_running();
     void add_event_type_filter(const fsw_event_type_filter& filter);
     void set_event_type_filters(
       const std::vector<fsw_event_type_filter>& filters);
