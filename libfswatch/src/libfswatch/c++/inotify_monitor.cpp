@@ -366,6 +366,8 @@ namespace fsw
   void inotify_monitor::run()
   {
     char buffer[BUFFER_SIZE];
+    double sec;
+    double frac = modf(this->latency, &sec);
 
     for(;;)
     {
@@ -394,8 +396,6 @@ namespace fsw
 
       FD_ZERO(&set);
       FD_SET(impl->inotify_monitor_handle, &set);
-      double sec;
-      double frac = modf(this->latency, &sec);
       timeout.tv_sec = sec;
       timeout.tv_usec = 1000 * 1000 * frac;
 
