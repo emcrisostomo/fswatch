@@ -270,17 +270,13 @@ namespace fsw
 
   void monitor::stop()
   {
-    cout << "Entering STOP" << endl;
-    FSW_MONITOR_RUN_GUARD;
-    if (!this->running)
-      throw libfsw_exception(_("monitor not running"),
-                             FSW_ERR_MONITOR_ALREADY_RUNNING);
-
     // Stopping a monitor is a cooperative task: the caller request a task to
     // stop and it's responsibility of each monitor to check for this flag and
     // timely stop the processing loop.
-    this->should_stop = true;
+    FSW_MONITOR_RUN_GUARD;
+    if (!this->running || this->should_stop) return;
 
+    this->should_stop = true;
     on_stop();
   }
 

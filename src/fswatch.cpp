@@ -220,20 +220,14 @@ static void usage(ostream& stream)
 
 static void close_monitor()
 {
-  if (active_monitor)
-  {
-    active_monitor->stop();
-
-    delete active_monitor;
-    active_monitor = nullptr;
-  }
+  if (active_monitor) active_monitor->stop();
 }
 
 static void close_handler(int signal)
 {
+  FSW_ELOG(_("Executing termination handler.\n"));
   close_monitor();
 
-  FSW_ELOG(_("Done.\n"));
   exit(FSW_EXIT_OK);
 }
 
@@ -807,6 +801,9 @@ int main(int argc, char **argv)
 
     // configure and start the monitor loop
     start_monitor(argc, argv, optind);
+
+    delete active_monitor;
+    active_monitor = nullptr;
   }
   catch (exception& conf)
   {
