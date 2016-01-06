@@ -253,9 +253,7 @@ namespace fsw
   void monitor::start()
   {
     FSW_MONITOR_RUN_GUARD;
-    if (this->running)
-      throw libfsw_exception(_("monitor already running"),
-                             FSW_ERR_MONITOR_ALREADY_RUNNING);
+    if (this->running) return;
 
     this->running = true;
     FSW_MONITOR_RUN_GUARD_UNLOCK;
