@@ -384,7 +384,7 @@ namespace fsw
       port_event_t pe;
       struct timespec timeout;
       timeout.tv_sec = sec;
-      timeout.tv_usec = 1000 * 1000 * frac;
+      timeout.tv_nsec = 1000 * 1000 * 1000 * frac;
 
       int ret = port_get(load->port, &pe, &timeout);
       if (ret == 0)
