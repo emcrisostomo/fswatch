@@ -20,6 +20,7 @@
 #ifdef HAVE_PORT_H
 
 #  include <time.h>
+#  include <cerrno>
 #  include <cmath>
 #  include <cstring>
 #  include <cstdlib>
@@ -386,8 +387,7 @@ namespace fsw
       timeout.tv_sec = sec;
       timeout.tv_nsec = 1000 * 1000 * 1000 * frac;
 
-      int ret = port_get(load->port, &pe, &timeout);
-      if (ret == 0)
+      if (port_get(load->port, &pe, &timeout) == 0)
       {
         switch (pe.portev_source)
         {
@@ -401,7 +401,7 @@ namespace fsw
           throw libfsw_exception(msg);
         }
       }
-      else if (ret != ETIME) perror("port_get");
+      else if (errno != ETIME) perror("port_get");
     }
   }
 }
