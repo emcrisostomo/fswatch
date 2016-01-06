@@ -87,11 +87,11 @@ namespace fsw
     bool watch_access = false;
     bool running = false;
     bool should_stop = false;
-
-  private:
 #  ifdef HAVE_CXX_MUTEX
     std::mutex run_mutex;
 #  endif
+
+  private:
     std::vector<compiled_monitor_filter> filters;
     std::vector<fsw_event_type_filter> event_type_filters;
   };

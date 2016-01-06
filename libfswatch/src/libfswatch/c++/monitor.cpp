@@ -274,6 +274,7 @@ namespace fsw
     FSW_MONITOR_RUN_GUARD;
     if (!this->running || this->should_stop) return;
 
+    FSW_ELOG(_("Stopping the monitor.\n"));
     this->should_stop = true;
     on_stop();
   }
