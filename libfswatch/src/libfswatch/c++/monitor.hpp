@@ -97,9 +97,21 @@ namespace fsw
     monitor(std::vector<std::string> paths,
             FSW_EVENT_CALLBACK *callback,
             void *context = nullptr);
+    /**
+     * @brief Destructs a monitor instance.
+     *
+     * This destructor frees the compiled regular expression of the path
+     * filters, if any.
+     */
     virtual ~monitor();
 
+    /**
+     * @brief This class is not copy constructible.
+     */
     monitor(const monitor& orig) = delete;
+    /**
+     * @brief This class is not copy assignable.
+     */
     monitor& operator=(const monitor& that) = delete;
 
     void set_property(const std::string& name, const std::string& value);
