@@ -56,6 +56,8 @@ namespace fsw
     void *get_context() const;
     void set_context(void *context);
     void start();
+    void stop();
+    bool is_running();
     void add_event_type_filter(const fsw_event_type_filter& filter);
     void set_event_type_filters(
       const std::vector<fsw_event_type_filter>& filters);
@@ -70,6 +72,7 @@ namespace fsw
     std::vector<fsw_event_flag> filter_flags(const event& evt) const;
 
     virtual void run() = 0;
+    virtual void on_stop();
 
   protected:
     std::vector<std::string> paths;
@@ -82,11 +85,13 @@ namespace fsw
     bool follow_symlinks = false;
     bool directory_only = false;
     bool watch_access = false;
-
-  private:
+    bool running = false;
+    bool should_stop = false;
 #  ifdef HAVE_CXX_MUTEX
     std::mutex run_mutex;
 #  endif
+
+  private:
     std::vector<compiled_monitor_filter> filters;
     std::vector<fsw_event_type_filter> event_type_filters;
   };

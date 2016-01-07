@@ -108,7 +108,7 @@ namespace fsw
 
   kqueue_monitor::~kqueue_monitor()
   {
-    if (kq != -1) close(kq);
+    terminate_kqueue();
     delete load;
   }
 
@@ -277,6 +277,12 @@ namespace fsw
     }
   }
 
+  void kqueue_monitor::terminate_kqueue()
+  {
+    if (kq != -1) close(kq);
+    kq = -1;
+  }
+
   int kqueue_monitor::wait_for_events(const vector<struct kevent>& changes,
                                       vector<struct kevent>& event_list)
   {
@@ -284,9 +290,9 @@ namespace fsw
 
     int event_num = kevent(kq,
                            &changes[0],
-                           changes.size(),
+                           (int) changes.size(),
                            &event_list[0],
-                           event_list.size(),
+                           (int) event_list.size(),
                            &ts);
 
     if (event_num == -1)
@@ -358,8 +364,14 @@ namespace fsw
   {
     initialize_kqueue();
 
-    while (true)
+    for(;;)
     {
+#ifdef HAVE_CXX_MUTEX
+      unique_lock<mutex> run_guard(run_mutex);
+      if (should_stop) break;
+      run_guard.unlock();
+#endif
+
       // remove the deleted descriptors
       remove_deleted();
 
@@ -401,6 +413,8 @@ namespace fsw
       const int event_num = wait_for_events(changes, event_list);
       process_events(changes, event_list, event_num);
     }
+
+    terminate_kqueue();
   }
 }
 

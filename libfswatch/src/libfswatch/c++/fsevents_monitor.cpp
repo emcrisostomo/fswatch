@@ -117,6 +117,7 @@ namespace fsw
     context->copyDescription = nullptr;
 
     FSW_ELOG(_("Creating FSEvent stream...\n"));
+    unique_lock<mutex> run_loop_lock(run_mutex);
     stream = FSEventStreamCreate(NULL,
                                  &fsevents_monitor::fsevents_callback,
                                  context,
@@ -125,14 +126,14 @@ namespace fsw
                                  latency,
                                  kFSEventStreamCreateFlagFileEvents);
 
-    if (!stream)
-    {
-      throw libfsw_exception(_("Event stream could not be created."));
-    }
+    if (!stream) throw libfsw_exception(_("Event stream could not be created."));
+
+    run_loop = CFRunLoopGetCurrent();
+    run_loop_lock.unlock();
 
     FSW_ELOG(_("Scheduling stream with run loop...\n"));
     FSEventStreamScheduleWithRunLoop(stream,
-                                     CFRunLoopGetCurrent(),
+                                     run_loop,
                                      kCFRunLoopDefaultMode);
 
     FSW_ELOG(_("Starting event stream...\n"));
@@ -140,6 +141,21 @@ namespace fsw
 
     FSW_ELOG(_("Starting run loop...\n"));
     CFRunLoopRun();
+  }
+
+
+  void fsevents_monitor::on_stop()
+  {
+    lock_guard<mutex> run_loop_lock(run_mutex);
+    if (!run_loop) throw libfsw_exception(_("run loop is null"));
+
+    FSW_ELOG(_("Stopping event stream...\n"));
+    FSEventStreamStop(stream);
+    stream = nullptr;
+
+    FSW_ELOG(_("Stopping run loop...\n"));
+    CFRunLoopStop(run_loop);
+    run_loop = nullptr;
   }
 
   static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
