@@ -203,8 +203,6 @@ namespace fsw
   monitor::~monitor()
   {
     for (auto& re : filters) regfree(&re.regex);
-
-    filters.clear();
   }
 
   static monitor *create_default_monitor(vector<string> paths,
