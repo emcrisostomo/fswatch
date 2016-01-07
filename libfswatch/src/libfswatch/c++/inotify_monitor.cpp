@@ -366,9 +366,17 @@ namespace fsw
   void inotify_monitor::run()
   {
     char buffer[BUFFER_SIZE];
+    double sec;
+    double frac = modf(this->latency, &sec);
 
-    while (true)
+    for(;;)
     {
+#ifdef HAVE_CXX_MUTEX
+      unique_lock<mutex> run_guard(run_mutex);
+      if (should_stop) break;
+      run_guard.unlock();
+#endif
+
       process_pending_events();
 
       scan_root_paths();
@@ -388,8 +396,6 @@ namespace fsw
 
       FD_ZERO(&set);
       FD_SET(impl->inotify_monitor_handle, &set);
-      double sec;
-      double frac = modf(this->latency, &sec);
       timeout.tv_sec = sec;
       timeout.tv_usec = 1000 * 1000 * frac;
 
@@ -405,10 +411,7 @@ namespace fsw
       }
 
       // In case of read timeout just repeat the loop.
-      if (rv == 0)
-      {
-        continue;
-      }
+      if (rv == 0) continue;
 
       ssize_t record_num = read(impl->inotify_monitor_handle,
                                 buffer,
@@ -445,7 +448,6 @@ namespace fsw
       if (impl->events.size())
       {
         notify_events(impl->events);
-
         impl->events.clear();
       }
 

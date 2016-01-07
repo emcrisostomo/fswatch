@@ -9,6 +9,7 @@
           <option name="INDENT_C_STRUCT_MEMBERS" value="2" />
           <option name="INDENT_CLASS_MEMBERS" value="2" />
           <option name="INDENT_INSIDE_CODE_BLOCK" value="2" />
+          <option name="INDENT_PREPROCESSOR_DIRECTIVE" value="2" />
           <option name="NAMESPACE_BRACE_PLACEMENT" value="2" />
           <option name="FUNCTION_BRACE_PLACEMENT" value="2" />
           <option name="BLOCK_BRACE_PLACEMENT" value="2" />

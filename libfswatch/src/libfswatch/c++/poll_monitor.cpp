@@ -196,8 +196,14 @@ namespace fsw
   {
     collect_initial_data();
 
-    while (true)
+    for (;;)
     {
+#ifdef HAVE_CXX_MUTEX
+      unique_lock<mutex> run_guard(run_mutex);
+      if (should_stop) break;
+      run_guard.unlock();
+#endif
+
       FSW_ELOG(_("Done scanning.\n"));
 
       sleep(latency < MIN_POLL_LATENCY ? MIN_POLL_LATENCY : latency);

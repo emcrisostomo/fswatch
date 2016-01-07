@@ -20,6 +20,7 @@
 #ifdef HAVE_PORT_H
 
 #  include <time.h>
+#  include <cerrno>
 #  include <cmath>
 #  include <cstring>
 #  include <cstdlib>
@@ -365,15 +366,28 @@ namespace fsw
   {
     load->initialize_fen();
 
-    while (true)
+    double sec;
+    double frac = modf(latency, &sec);
+
+    for (;;)
     {
+#ifdef HAVE_CXX_MUTEX
+      unique_lock<mutex> run_guard(run_mutex);
+      if (should_stop) break;
+      run_guard.unlock();
+#endif
+
       rescan_removed();
       rescan_pending();
 
       scan_root_paths();
 
       port_event_t pe;
-      if (port_get(load->port, &pe, nullptr) == 0)
+      struct timespec timeout;
+      timeout.tv_sec = sec;
+      timeout.tv_nsec = 1000 * 1000 * 1000 * frac;
+
+      if (port_get(load->port, &pe, &timeout) == 0)
       {
         switch (pe.portev_source)
         {
@@ -387,6 +401,7 @@ namespace fsw
           throw libfsw_exception(msg);
         }
       }
+      else if (errno != ETIME) perror("port_get");
     }
   }
 }

@@ -227,8 +227,14 @@ namespace fsw
     initialize_windows_path_list();
     initialize_events();
 
-    while (true)
+    for (;;)
     {
+#ifdef HAVE_CXX_MUTEX
+      unique_lock<mutex> run_guard(run_mutex);
+      if (should_stop) break;
+      run_guard.unlock();
+#endif
+
       sleep(latency);
 
       for (const auto & path : load->win_paths)

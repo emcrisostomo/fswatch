@@ -218,21 +218,16 @@ static void usage(ostream& stream)
   stream << endl;
 }
 
-static void close_stream()
+static void close_monitor()
 {
-  if (active_monitor)
-  {
-    delete active_monitor;
-
-    active_monitor = nullptr;
-  }
+  if (active_monitor) active_monitor->stop();
 }
 
 static void close_handler(int signal)
 {
-  close_stream();
+  FSW_ELOG(_("Executing termination handler.\n"));
+  close_monitor();
 
-  FSW_ELOG(_("Done.\n"));
   exit(FSW_EXIT_OK);
 }
 
@@ -410,13 +405,10 @@ static void start_monitor(int argc, char **argv, int optind)
 
   for (auto i = optind; i < argc; ++i)
   {
-    char *real_path = ::realpath(argv[i], nullptr);
+    char *real_path = realpath(argv[i], nullptr);
     string path(real_path ? real_path : argv[i]);
 
-    if (real_path)
-    {
-      ::free(real_path);
-    }
+    if (real_path) free(real_path);
 
     FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 
@@ -805,10 +797,13 @@ int main(int argc, char **argv)
   {
     // registering handlers to clean up resources
     register_signal_handlers();
-    ::atexit(close_stream);
+    atexit(close_monitor);
 
     // configure and start the monitor loop
     start_monitor(argc, argv, optind);
+
+    delete active_monitor;
+    active_monitor = nullptr;
   }
   catch (exception& conf)
   {
