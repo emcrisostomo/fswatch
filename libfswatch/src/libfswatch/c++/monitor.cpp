@@ -122,9 +122,9 @@ namespace fsw
     properties[name] = value;
   }
 
-  void monitor::set_properties(const map<string, string>& options)
+  void monitor::set_properties(const map<string, string> options)
   {
-    properties = options;
+    properties = std::move(options);
   }
 
   string monitor::get_property(string name)

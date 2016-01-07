@@ -115,7 +115,7 @@ namespace fsw
     monitor& operator=(const monitor& that) = delete;
 
     void set_property(const std::string& name, const std::string& value);
-    void set_properties(const std::map<std::string, std::string>& options);
+    void set_properties(const std::map<std::string, std::string> options);
     std::string get_property(std::string name);
     void set_latency(double latency);
     void set_allow_overflow(bool overflow);
