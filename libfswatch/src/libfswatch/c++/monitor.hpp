@@ -13,6 +13,21 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Header of the fsw::monitor class.
+ *
+ * This header file defines the fsw::monitor class, the base type of a
+ * `libfswatch` monitor.
+ *
+ * If `HAVE_CXX_MUTEX` is defined, this header includes `<mutex>` and instances
+ * of the fsw::monitor class are thread-safe.
+ *
+ * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
 #ifndef FSW__MONITOR_H
 #  define FSW__MONITOR_H
 
@@ -26,15 +41,59 @@
 #  include "event.hpp"
 #  include "../c/cmonitor.h"
 
+/**
+ * @brief Main namespace of `libfswatch`.
+ */
 namespace fsw
 {
+  /**
+   * @brief Function definition of an event callback.
+   *
+   * The event callback is a user-supplied function that is invoked by the
+   * monitor when an event is detected.  The following parameters are passed to
+   * the callback:
+   *
+   *   * A reference to the vector of events.
+   *   * A pointer to the _context data_ set by the caller.
+   */
   typedef void FSW_EVENT_CALLBACK(const std::vector<event>&, void *);
 
   struct compiled_monitor_filter;
 
+  /**
+   * @brief Base class of all monitors.
+   *
+   * The fsw::monitor class is the base class of all monitors.  This class
+   * encapsulates the common functionality of a monitor:
+   *
+   *   * Accessors to configuration parameters.
+   *   * start() and stop() lifecycle.
+   *   * Thread-safety of its API, if supported.
+   *   * Event filtering.
+   *   * Event notification to user-provided callback function.
+   *
+   * At least the following tasks must be performed to implement a monitor:
+   *
+   *   * Providing an implementation of the run() method.
+   *   * Providing an implementation of the on_stop() method if the
+   *     monitor cannot be stopped cooperatively from the run() method.
+   */
   class monitor
   {
   public:
+    /**
+     * @brief Constructs a monitor watching the specified @p paths.
+     *
+     * The monitor will notify change events to the specified @p callback,
+     * passing it the pointer to the specified @p context.
+     *
+     * @param paths The list of paths to watch.
+     * @param callback The callback to which change events will be notified.
+     *                 The callback cannot be null, otherwise a libfsw_exception
+     *                 will be thrown.
+     * @param context An optional pointer to context data.  The monitor stores a
+     *                copy of this pointer to pass it to the @p callback.
+     */
     monitor(std::vector<std::string> paths,
             FSW_EVENT_CALLBACK *callback,
             void *context = nullptr);
@@ -55,12 +114,19 @@ namespace fsw
     void set_follow_symlinks(bool follow);
     void *get_context() const;
     void set_context(void *context);
+
+    /**
+     * To do.
+     */
     void start();
+
+    /**
+     * To do.
+     */
     void stop();
     bool is_running();
     void add_event_type_filter(const fsw_event_type_filter& filter);
-    void set_event_type_filters(
-      const std::vector<fsw_event_type_filter>& filters);
+    void set_event_type_filters(const std::vector<fsw_event_type_filter>& filters);
     void set_watch_access(bool access);
 
   protected:
@@ -71,7 +137,14 @@ namespace fsw
     void notify_overflow(const std::string& path) const;
     std::vector<fsw_event_flag> filter_flags(const event& evt) const;
 
+    /**
+     * To do.
+     */
     virtual void run() = 0;
+
+    /**
+     * To do.
+     */
     virtual void on_stop();
 
   protected:
@@ -100,12 +173,13 @@ namespace fsw
                                              FSW_EVENT_CALLBACK *callback,
                                              void *context);
 
-  /*
+  /**
    * This class maintains a register of the available monitors and let users
    * create monitors by name.  Monitors classes are required to register
-   * themselves invoking the register_type method and providing a name to their
-   * type.  Registration can be performed using the monitor_creator utility
-   * class and the REGISTER_MONITOR and REGISTER_MONITOR_IMPL macros.
+   * themselves invoking the monitor_factory::register_creator and
+   * monitor_factory::register_creator_by_type methods.  Registration can be
+   * performed using the monitor_creator utility class and the
+   * ::REGISTER_MONITOR and ::REGISTER_MONITOR_IMPL macros.
    */
   class monitor_factory
   {
@@ -121,7 +195,13 @@ namespace fsw
     static std::vector<std::string> get_types();
     static bool exists_type(const std::string& name);
     static bool exists_type(const fsw_monitor_type& name);
+    /**
+     * To do.
+     */
     static void register_creator(const std::string& name, FSW_FN_MONITOR_CREATOR creator);
+    /**
+     * To do.
+     */
     static void register_creator_by_type(const fsw_monitor_type& type, FSW_FN_MONITOR_CREATOR creator);
 
     monitor_factory() = delete;
@@ -157,7 +237,7 @@ namespace fsw
     }
   };
 
-  /*
+  /**
    * This macro is used to simplify the registration process of a monitor
    * type.  Since registration of a monitor type is usually performed once, a
    * static private instance monitor_factory_registrant of the
@@ -185,7 +265,7 @@ namespace fsw
 private: \
 static const monitor_registrant<classname> monitor_factory_registrant;
 
-  /*
+  /**
    * This macro is used to simplify the registration process of a monitor
    * type.  Since registration of a monitor type is usually performed once, a
    * static private instance monitor_factory_registrant of the
