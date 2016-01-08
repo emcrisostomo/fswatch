@@ -97,6 +97,7 @@ namespace fsw
     monitor(std::vector<std::string> paths,
             FSW_EVENT_CALLBACK *callback,
             void *context = nullptr);
+
     /**
      * @brief Destructs a monitor instance.
      *
@@ -109,14 +110,53 @@ namespace fsw
      * @brief This class is not copy constructible.
      */
     monitor(const monitor& orig) = delete;
+
     /**
      * @brief This class is not copy assignable.
      */
     monitor& operator=(const monitor& that) = delete;
 
+    /**
+     * @brief Sets a custom property.
+     *
+     * This method sets the custom property @p name to @p value.
+     *
+     * @param name The name of the property.
+     * @param value The value of the property.
+     */
     void set_property(const std::string& name, const std::string& value);
+
+    /**
+     * @brief Sets the custom properties.
+     *
+     * This method _replaces_ all the existing properties using the pairs
+     * contained into @p options.
+     *
+     * @param options The map containing the properties to set.
+     */
     void set_properties(const std::map<std::string, std::string> options);
+
+    /**
+     * @brief Gets the value of a property.
+     *
+     * This method gets the value of the property @p name.  If the property
+     * @p name is not set, this method returns an empty string.
+     *
+     * @param name The name of the property.
+     * @return The value of the property.
+     */
     std::string get_property(std::string name);
+
+    /**
+     * @brief Sets the latency.
+     *
+     * This method sets the _latency_ of the monitor to @p latency.  The latency
+     * is a positive number that indicates to a monitor implementation how often
+     * events must be retrieved or waited for: the shortest the latency, the
+     * quicker events are processed.
+     *
+     * @param latency The latency value.
+     */
     void set_latency(double latency);
     void set_allow_overflow(bool overflow);
     void set_recursive(bool recursive);
