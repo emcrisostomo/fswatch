@@ -271,17 +271,46 @@ namespace fsw
     /**
      * @brief Start the monitor.
      *
-     * The monitor starts watching for events and the call
+     * The monitor status is marked as _running_ and it starts watching for
+     * change events.  This function performs the following tasks:
+     *
+     *   * Atomically marks the thread state as _running_, locking on
+     *     monitor::run_mutex.
+     *   * Calls the run() function: the monitor::run_mutex is **not** locked
+     *     during this call.
+     *   * When run() returns, it atomically marks the thread state as
+     *     _stopped_, locking on monitor::run_mutex.
+     *
+     * This call does _not_ return until the monitor is stopped and events are
+     * notified from its thread.
+     *
+     * State changes are performed thread-safely locking on monitor::run_mutex.
+     *
+     * @see run()
+     * @see stop()
      */
     void start();
 
     /**
      * @brief Stop the monitor.
+     *
+     * This function asks the monitor to stop.  Since start() is designed to
+     * execute the monitoring loop in its thread and to not return until the
+     * monitor is stopped, stop() is designed to be called from another thread.
+     * stop() is a cooperative signal that must be handled in an
+     * implementation-specific way in the run() function.
+     *
+     * State changes are performed thread-safely locking on monitor::run_mutex.
+     *
+     * @see run()
+     * @see start()
      */
     void stop();
 
     /**
      * @brief Check whether the monitor is running.
+     *
+     * State is checked thread-safely locking on monitor::run_mutex.
      *
      * @return @c true if the monitor is running, @c false otherwise.
      */
@@ -308,30 +337,112 @@ namespace fsw
 
     /**
      * @brief Monitor file access.
+     *
+     * @warning The ability of monitoring file access depends on a monitor
+     * implementation.
      */
     void set_watch_access(bool access);
 
   protected:
+    /**
+     * @brief Check whether an event should be accepted.
+     *
+     * This function checks @p event_type against the event type filters of the
+     * monitor to determine whether it should be _accepted_.
+     *
+     * @param event_type The event type to check.
+     * @return @c true if the event is accepted, @c false otherwise.
+     */
     bool accept_event_type(fsw_event_flag event_type) const;
+
+    /**
+     * @brief Check whether a path should be accepted.
+     *
+     * This function checks @p path against the path filters of the monitor to
+     * determine whether it should be _accepted_.
+     *
+     * @param event_type The path to check.
+     * @return @c true if the path is accepted, @c false otherwise.
+     */
     bool accept_path(const std::string& path) const;
+
+    /**
+     * @brief Check whether a path should be accepted.
+     *
+     * This function checks @p path against the path filters of the monitor to
+     * determine whether it should be _accepted_.
+     *
+     * @param event_type The path to check.
+     * @return @c true if the path is accepted, @c false otherwise.
+     */
     bool accept_path(const char *path) const;
+
+    /**
+     * @brief Notify change events.
+     *
+     * This function notifies change events using the provided callback.
+     *
+     * @see monitor()
+     */
     void notify_events(const std::vector<event>& events) const;
+
+    /**
+     * @brief Notify an overflow event.
+     *
+     * This function notifies an overflow event using the provided callback.
+     *
+     * @warning Experiencing an overflow and the ability to notify it is an
+     * implementation-defined behaviour.
+     *
+     * @see monitor()
+     */
     void notify_overflow(const std::string& path) const;
+
+    /**
+     * @brief Filter event types.
+     *
+     * This function filters the event types of an event leaving only the types
+     * allowed by the configured filters.
+     *
+     * @param evt The event whose types must be filtered.
+     * @return A vector containing the acceptable events.
+     */
     std::vector<fsw_event_flag> filter_flags(const event& evt) const;
 
     /**
-     * To do.
+     * @brief Execute monitor loop.
+     *
+     * This function implements the monitor event watching logic.  This function
+     * is called from start() and it is executed on its thread.  This function
+     * should _block_ until the monitoring loop terminates: when it returns, the
+     * monitor is marked as stopped.
+     *
+     * This function should cooperatively check the monitor::should_stop field
+     * locking monitor::run_mutex and return if set to @c true.
+     *
+     * @see start()
+     * @see stop()
      */
     virtual void run() = 0;
 
     /**
-     * To do.
+     * @brief Execute an implementation-specific stop handler.
+     *
+     * This function is executed by the stop() method, after requesting the
+     * monitor to stop.  This handler is required if the thread running run() is
+     * not able to preemtively stop its execution by checking the
+     * monitor::should_stop flag.
+     *
+     * @see stop()
      */
     virtual void on_stop();
 
   protected:
     std::vector<std::string> paths;
     std::map<std::string, std::string> properties;
+    /**
+     * To do.
+     */
     FSW_EVENT_CALLBACK *callback;
     void *context = nullptr;
     double latency = 1.0;
@@ -341,8 +452,14 @@ namespace fsw
     bool directory_only = false;
     bool watch_access = false;
     bool running = false;
+    /**
+     * To do.
+     */
     bool should_stop = false;
 #  ifdef HAVE_CXX_MUTEX
+    /**
+     * To do.
+     */
     std::mutex run_mutex;
 #  endif
 
