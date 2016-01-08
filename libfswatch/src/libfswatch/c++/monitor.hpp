@@ -155,30 +155,160 @@ namespace fsw
      * events must be retrieved or waited for: the shortest the latency, the
      * quicker events are processed.
      *
+     * @warning The behaviour associated with this flag depends on the
+     * implementation.
+     *
      * @param latency The latency value.
      */
     void set_latency(double latency);
+
+    /**
+     * @brief Notify buffer overflows as change events.
+     *
+     * If this flag is set, the monitor will report a monitor buffer overflow as
+     * a change event of type fsw_event_flag::Overflow.
+     *
+     * @warning The behaviour associated with this flag depends on the
+     * implementation.
+     *
+     * @param overflow @c true if overflow should be notified, @c false
+     * otherwise.
+     */
     void set_allow_overflow(bool overflow);
+
+    /**
+     * @brief Recursively scan subdirectories.
+     *
+     * This function sets the recursive flag of the monitor to indicate whether
+     * the monitor should recursively observe the contents of directories.  The
+     * behaviour associated with this flag is an implementation-specific detail.
+     * This class only stores the value of the flag.
+     *
+     * @warning The behaviour associated with this flag depends on the
+     * implementation.
+     *
+     * @param recursive @c true if directories should be recursively, @c false
+     * otherwise.
+     */
     void set_recursive(bool recursive);
+
+    /**
+     * @brief Watch directories only.
+     *
+     * This function sets the directory only flag to the specified value.  If
+     * this flag is set, then the monitor will only watch directories during a
+     * recursive scan.  This functionality is only supported by monitors whose
+     * backend fires change events on a directory when one its children is
+     * changed.  If a monitor backend does not support this functionality, the
+     * flag is ignored.
+     *
+     * @warning The behaviour associated with this flag depends on the
+     * implementation.
+     *
+     * @param directory_only @c true if only directories should be watched,
+     * @c flase otherwise.
+     */
     void set_directory_only(bool directory_only);
+
+    /**
+     * @brief Add a path filter.
+     *
+     * This function adds a monitor_filter instance instance to the filter list.
+     *
+     * @param filter The filter to add.
+     */
     void add_filter(const monitor_filter& filter);
+
+    /**
+     * @brief Set the path filters.
+     *
+     * This function sets the list of path filters, substituting existing
+     * filters if any.
+     *
+     * @param filters The filters to set.
+     */
     void set_filters(const std::vector<monitor_filter>& filters);
+
+    /**
+     * @brief Follow symlinks.
+     *
+     * This function sets the follow_symlinks flag of the monitor to indicate
+     * whether the monitor should follow symbolic links or observe the links
+     * themselves.
+     *
+     * @warning The behaviour associated with this flag depends on the
+     * implementation.
+     *
+     * @param follow @c true if symbolic links should be followed, @c false
+     * otherwise.
+     */
     void set_follow_symlinks(bool follow);
+
+    /**
+     * @brief Get the pointer to the context data.
+     *
+     * This function gets the pointer to the context data that is passed to the
+     * callback by the monitor.
+     *
+     * @return The pointer to the context data.
+     */
     void *get_context() const;
+
+    /**
+     * @brief Set the context data.
+     *
+     * This function sets the pointer to the _context data_.  The context data
+     * is opaque data that the monitor passes to the event callback.
+     *
+     * @warning The monitor stores the pointer to the context data throughout
+     * its life.  The caller must ensure it points to valid data until the
+     * monitor is running.
+     *
+     * @param context The pointer to the context data.
+     */
     void set_context(void *context);
 
     /**
-     * To do.
+     * @brief Start the monitor.
+     *
+     * The monitor starts watching for events and the call
      */
     void start();
 
     /**
-     * To do.
+     * @brief Stop the monitor.
      */
     void stop();
+
+    /**
+     * @brief Check whether the monitor is running.
+     *
+     * @return @c true if the monitor is running, @c false otherwise.
+     */
     bool is_running();
+
+    /**
+     * @brief Add an event type filter.
+     *
+     * Adds a fsw_event_type_filter instance to filter events by _type_.
+     *
+     * @param filter The event type filter to add.
+     */
     void add_event_type_filter(const fsw_event_type_filter& filter);
+
+    /**
+     * @brief Set the event type filters.
+     *
+     * This function sets the list of event type filters, substituting existing
+     * filters if any.
+     *
+     * @param filters The filters to set.
+     */
     void set_event_type_filters(const std::vector<fsw_event_type_filter>& filters);
+
+    /**
+     * @brief Monitor file access.
+     */
     void set_watch_access(bool access);
 
   protected:

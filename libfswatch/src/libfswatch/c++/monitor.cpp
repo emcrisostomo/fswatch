@@ -89,8 +89,7 @@ namespace fsw
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(
-    const vector<fsw_event_type_filter>& filters)
+  void monitor::set_event_type_filters(const vector<fsw_event_type_filter>& filters)
   {
     event_type_filters.clear();
 
