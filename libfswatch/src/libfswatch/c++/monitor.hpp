@@ -430,7 +430,7 @@ namespace fsw
      *
      * This function is executed by the stop() method, after requesting the
      * monitor to stop.  This handler is required if the thread running run() is
-     * not able to preemtively stop its execution by checking the
+     * not able to preemptively stop its execution by checking the
      * monitor::should_stop flag.
      *
      * @see stop()
