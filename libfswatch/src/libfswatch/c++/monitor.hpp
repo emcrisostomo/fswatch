@@ -103,6 +103,9 @@ namespace fsw
      *
      * This destructor frees the compiled regular expression of the path
      * filters, if any.
+     *
+     * @warning Destroying a monitor in the _running_ state results in undefined
+     * behaviour.
      */
     virtual ~monitor();
 
