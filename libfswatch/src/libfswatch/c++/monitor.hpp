@@ -476,12 +476,23 @@ namespace fsw
                                              void *context);
 
   /**
-   * This class maintains a register of the available monitors and let users
-   * create monitors by name.  Monitors classes are required to register
-   * themselves invoking the monitor_factory::register_creator and
-   * monitor_factory::register_creator_by_type methods.  Registration can be
-   * performed using the monitor_creator utility class and the
-   * ::REGISTER_MONITOR and ::REGISTER_MONITOR_IMPL macros.
+   * @brief Object factory class for fsw::monitor instances.
+   *
+   * Since multiple monitor implementations exist and the caller potentially
+   * ignores which monitors will be available at run time, there must exist a
+   * way to query the API for the list of available monitor and request a
+   * particular instance.  The fsw::monitor_factory is an object factory class
+   * that provides basic monitor _registration_ and _discovery_ functionality:
+   * API clients can query the monitor registry to get a list of available
+   * monitors and get an instance of a monitor either by _type_ or by _name_.
+   *
+   * In order for monitor types to be visible to the factory they have to be
+   * _registered_.  Currently, monitor implementations can be registered using
+   * the register_creator() and register_creator_by_type(), or using:
+   *
+   *   * The fsw::monitor_registrant helper class.
+   *   * The ::REGISTER_MONITOR macro.
+   *   * The ::REGISTER_MONITOR_IMPL macro.
    */
   class monitor_factory
   {

@@ -100,7 +100,8 @@
  *
  * The C++ API does not deal with thread safety explicitly.
  * Rather, it leaves the responsibility of implementing a thread-safe
- * use of the library to the callers.  The C++ implementation has been designed in order to:
+ * use of the library to the callers.  The C++ implementation has been designed
+ * in order to:
  *
  *   - Encapsulate all the state of a monitor into its class fields.
  *   - Perform no concurrent access control in methods or class fields.
@@ -165,6 +166,18 @@
  * monitors try to ‘compensate’ for any behavioural difference across
  * implementations.
  *
+ * The fsw::monitor class is the basic type of the C++ API: it defines the
+ * interface of every monitor and provides common functionality to inheritors of
+ * this class, such as:
+ *
+ *   * Configuration and life cycle (fsw::monitor).
+ *   * Event filtering (fsw::monitor).
+ *   * Path filtering (fsw::monitor).
+ *   * Monitor registration (fsw::monitor_factory).
+ *   * Monitor discovery (fsw::monitor_factory).
+ *
+ * @section Usage
+ *
  * The typical usage pattern of this API is similar to the following:
  *
  *   * An instance of a monitor is either created directly or through the
@@ -172,25 +185,6 @@
  *   * The monitor is configured (fsw::monitor).
  *   * The monitor is run and change events are waited for
  *     (fsw::monitor::start()).
- *
- * @section monitor-discovery Monitor Discovery
- *
- * Since multiple monitor implementations exist and the caller potentially
- * ignores which monitors will be available at run time, there must exist a way
- * to query the API for the list of available monitor and request a particular
- * instance.  The fsw::monitor_factory is an object factory class that provides
- * basic monitor registration and discovery functionality: API clients can query
- * the monitor registry to get a list of available monitors and get an instance
- * of a monitor either by _type_ or by _name_.
- *
- * @section monitor-registration Monitor Registration
- *
- * In order for monitor types to be visible to the factory they have to be
- * registered.  Currently they can be registered using two helper macros,
- * defined in monitor.hpp:
- *
- *   * ::REGISTER_MONITOR
- *   * ::REGISTER_MONITOR_IMPL
  */
 /**
  * @page c-api C API
