@@ -50,7 +50,7 @@ extern "C"
 #  define FSW_ERR_MONITOR_ALREADY_RUNNING   (1 << 13)
 #  define FSW_ERR_STALE_MONITOR_THREAD      (1 << 14)
 #  define FSW_ERR_THREAD_FAULT              (1 << 15)
-#  define FSW_ERR_UNSUPPORTED_OPERATION     (1 << 16)
+#  define FSW_ERR_UNSUPPORTED_OPERATION     (1 << 16) /**< The operation is unsupported. */
 #  define FSW_ERR_UNKNOWN_VALUE             (1 << 17) /**< The specified value is unknown. */
 #  define FSW_ERR_INVALID_PROPERTY          (1 << 18)
 
