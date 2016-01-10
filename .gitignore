@@ -8,6 +8,8 @@ fswatch.exe
 # Documentation
 fswatch.pdf
 libfswatch.pdf
+libfswatch/doc/doxygen/html
+libfswatch/doc/doxygen/latex
 
 # Distribution files
 *.tar.gz
