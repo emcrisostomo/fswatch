@@ -54,7 +54,7 @@
  *
  * @section changelog Changelog
  *
- * @ref history "History".
+ * See the @ref history "History" page.
  *
  * @section bindings Available Bindings
  *
@@ -161,20 +161,20 @@
  * interface of every monitor and provides common functionality to inheritors of
  * this class, such as:
  *
- *   * Configuration and life cycle (fsw::monitor).
- *   * Event filtering (fsw::monitor).
- *   * Path filtering (fsw::monitor).
- *   * Monitor registration (fsw::monitor_factory).
- *   * Monitor discovery (fsw::monitor_factory).
+ *   - Configuration and life cycle (fsw::monitor).
+ *   - Event filtering (fsw::monitor).
+ *   - Path filtering (fsw::monitor).
+ *   - Monitor registration (fsw::monitor_factory).
+ *   - Monitor discovery (fsw::monitor_factory).
  *
  * @section Usage
  *
  * The typical usage pattern of this API is similar to the following:
  *
- *   * An instance of a monitor is either created directly or through the
+ *   - An instance of a monitor is either created directly or through the
  *     factory (fsw::monitor_factory).
- *   * The monitor is configured (fsw::monitor).
- *   * The monitor is run and change events are waited for
+ *   - The monitor is configured (fsw::monitor).
+ *   - The monitor is run and change events are waited for
  *     (fsw::monitor::start()).
  */
 /**
@@ -194,6 +194,70 @@
  *   - fsw::fsevents_monitor::set_numeric_event(): removed.
  *   - fsw::string_utils::string_from_format: added.
  *   - fsw::string_utils::vstring_from_format: added.
+ *
+ * @section v502 5:0:2
+ *
+ *   - A monitor based on the Solaris/Illumos File Events Notification API has
+ *     been added.
+ *
+ *   - The possibility of watching for directories only during a recursive scan.
+ *     This feature helps reducing the number of open file descriptors if a
+ *     generic change event for a directory is acceptable instead of events on
+ *     directory children.
+ *
+ *   - fsw::fen_monitor: added to provide a monitor based on the Solaris/Illumos
+ *     File Events Notification API.
+ *
+ *   - fsw::monitor::set_directory_only(): added to set a flag to only watch
+ *     directories during a recursive scan.
+ *
+ *   - fsw_set_directory_only(): added to set a flag to only watch directories
+ *     during a recursive scan.
+ *
+ *   - fsw_logf_perror(): added to log a `printf()`-style message using
+ *     `perror()`.
+ *
+ * @section v401 4:0:1
+ *
+ *   - fsw::windows_monitor: a monitor for Microsoft Windows was added.
+ *
+ *   - A logging function has been added to log verbose messages.
+ *
+ *   - A family of functions and macros have been added to log diagnostic
+ *     messages:
+ *
+ *     - fsw_flog()
+ *     - fsw_logf()
+ *     - fsw_flogf()
+ *     - fsw_log_perror()
+ *     - ::FSW_LOG
+ *     - ::FSW_ELOG
+ *     - ::FSW_LOGF
+ *     - ::FSW_ELOGF
+ *     - ::FSW_FLOGF
+ *
+ * @section v300 3:0:0
+ *
+ *   - Added ability to filter events _by type_:
+ *
+ *     - fsw::monitor::add_event_type_filter()
+ *     - fsw::monitor::set_event_type_filters()
+ *
+ *   - fsw::monitor::notify_events(): added to centralize event filtering and
+ *     dispatching into the monitor base class.
+ *
+ *   - Added ability to get event types by name and stringify them:
+ *
+ *     - fsw::event::get_event_flag_by_name()
+ *     - fsw::event::get_event_flag_name()
+ *     - fsw_get_event_flag_by_name()
+ *     - fsw_get_event_flag_name()
+ *
+ *   - fsw_event_type_filter: added to represent an event type filter.
+ *
+ *   - ::FSW_ERR_UNKNOWN_VALUE: added error code.
+ *
+ *   - fsw_add_event_type_filter(): added to add an event type filter.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
