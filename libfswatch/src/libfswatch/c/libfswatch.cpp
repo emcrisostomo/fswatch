@@ -52,6 +52,10 @@
  *   - Ease of use: using `libfswatch` should be easier than using any of the
  *     APIs it supports.
  *
+ * @section changelog Changelog
+ *
+ * @ref history "History".
+ *
  * @section bindings Available Bindings
  *
  * `libfswatch` is a C++ library with C bindings which makes it available to a
@@ -177,6 +181,19 @@
  * @page c-api C API
  *
  * bbb
+ */
+/**
+ * @page history History
+ *
+ * @section v600 6:0:0
+ *
+ *   - fsw::monitor::stop(): added.
+ *   - fsw::monitor::monitor(): update to move paths instead of copying them.
+ *   - fsw::monitor_factory::exists_type(const std::string&): added.
+ *   - fsw::monitor_factory::exists_type(const fsw_monitor_type&): added.
+ *   - fsw::fsevents_monitor::set_numeric_event(): removed.
+ *   - fsw::string_utils::string_from_format: added.
+ *   - fsw::string_utils::vstring_from_format: added.
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
