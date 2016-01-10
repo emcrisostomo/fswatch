@@ -238,6 +238,6 @@ AS_VAR_IF(
   [ax_cv_cxx_have_thread_local],
   ["yes"],
   [],
-  [AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier.])])
+  [AC_MSG_WARN([The C API of AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier.])])
 
 AC_OUTPUT
