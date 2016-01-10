@@ -25,6 +25,7 @@
  * @mainpage
  *
  * @section introduction Introduction
+ *
  * `fswatch` is a cross-platform file change monitor currently supporting the
  * following backends:
  *
@@ -52,6 +53,7 @@
  *     APIs it supports.
  *
  * @section bindings Available Bindings
+ *
  * `libfswatch` is a C++ library with C bindings which makes it available to a
  * wide range of programming languages.  If a programming language has C
  * bindings, then `libfswatch` can be used from it.  The C binding provides all
@@ -59,6 +61,7 @@
  * fallback solution when the C++ API cannot be used.
  *
  * @section libtools-versioning libtool's versioning scheme
+ *
  * `libtool`'s versioning scheme is described by three integers:
  * `current:revision:age` where:
  *
@@ -69,6 +72,7 @@
  *     the library implements.
  *
  * @section c-cpp-api The C and the C++ API
+ *
  * The C API is built on top of the C++ API but the two are very different, to
  * reflect the fundamental differences between the two languages.
  *
@@ -93,6 +97,7 @@
  * `monitor` class.
  *
  * @section thread-safety Thread Safety
+ *
  * The C++ API does not deal with thread safety explicitly.
  * Rather, it leaves the responsibility of implementing a thread-safe
  * use of the library to the callers.  The C++ implementation has been designed in order to:
@@ -115,7 +120,8 @@
  *   - Concurrently manipulating the same monitoring session is _not_
  *   thread safe.
  *
- * @section c++11 C++11
+ * @section cpp11 C++11
+ *
  * There is an additional limitation which affects the C library only:
  * the C binding implementation internally uses C++11 classes
  * and keywords to provide the aforementioned guarantees.  If compiler or
@@ -124,17 +130,72 @@
  * honoured.  A warning such as the following will appear in
  * the output of `configure` to inform the user:
  *
- * configure: WARNING: libfswatch is not thread-safe because the current
- * combination of compiler and libraries do not support the thread_local
- * storage specifier.
+ *     configure: WARNING: libfswatch is not thread-safe because the current
+ *     combination of compiler and libraries do not support the thread_local
+ *     storage specifier.
  *
  * @section bug-reports Reporting Bugs and Suggestions
+ *
  * If you find problems or have suggestions about this program or this
  * manual, please report them as new issues in the official GitHub
  * repository of `fswatch` at
  * https://github.com/emcrisostomo/fswatch.  Please, read the
  * `CONTRIBUTING.md` file for detailed instructions on how to
  * contribute to `fswatch`.
+ *
+ * @section Sections
+ *
+ *   * @subpage cpp-api
+ *   * @subpage c-api
+ */
+/**
+ * @page cpp-api C++ API
+ *
+ * The C++ API provides users an easy to use, object-oriented interface to a
+ * wide range of file monitoring APIs.  This API provides a common facade to a
+ * set of heterogeneous APIs that not only greatly simplifies their usage, but
+ * provides an indirection layer that makes applications more portable: as far
+ * as there is an available monitor in another platform, an existing
+ * application will just work.
+ *
+ * In reality, a monitor may have platform-specific behaviours that should be
+ * taken into account when writing portable applications using this library.
+ * This differences complicate the task of writing portable applications that
+ * are truly independent of the file monitoring API they may be using. However,
+ * monitors try to ‘compensate’ for any behavioural difference across
+ * implementations.
+ *
+ * The typical usage pattern of this API is similar to the following:
+ *
+ *   * An instance of a monitor is either created directly or through the
+ *     factory (fsw::monitor_factory).
+ *   * The monitor is configured (fsw::monitor).
+ *   * The monitor is run and change events are waited for
+ *     (fsw::monitor::start()).
+ *
+ * @section monitor-discovery Monitor Discovery
+ *
+ * Since multiple monitor implementations exist and the caller potentially
+ * ignores which monitors will be available at run time, there must exist a way
+ * to query the API for the list of available monitor and request a particular
+ * instance.  The fsw::monitor_factory is an object factory class that provides
+ * basic monitor registration and discovery functionality: API clients can query
+ * the monitor registry to get a list of available monitors and get an instance
+ * of a monitor either by _type_ or by _name_.
+ *
+ * @section monitor-registration Monitor Registration
+ *
+ * In order for monitor types to be visible to the factory they have to be
+ * registered.  Currently they can be registered using two helper macros,
+ * defined in monitor.hpp:
+ *
+ *   * ::REGISTER_MONITOR
+ *   * ::REGISTER_MONITOR_IMPL
+ */
+/**
+ * @page c-api C API
+ *
+ * bbb
  */
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
