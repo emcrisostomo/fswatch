@@ -493,6 +493,11 @@ namespace fsw
    *   * The fsw::monitor_registrant helper class.
    *   * The ::REGISTER_MONITOR macro.
    *   * The ::REGISTER_MONITOR_IMPL macro.
+   *
+   * The same monitor type cannot be used to register multiple monitor
+   * implementations.  No checks are in place to detect this situation and the
+   * registration will succeed; however, the registration process of multiple
+   * monitor implementations for the same monitor type is _not_ deterministic.
    */
   class monitor_factory
   {
@@ -506,7 +511,13 @@ namespace fsw
                                    FSW_EVENT_CALLBACK *callback,
                                    void *context = nullptr);
     static std::vector<std::string> get_types();
+    /**
+     * aaa.
+     */
     static bool exists_type(const std::string& name);
+    /**
+     * a...
+     */
     static bool exists_type(const fsw_monitor_type& name);
     /**
      * To do.
