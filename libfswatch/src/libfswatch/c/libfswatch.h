@@ -40,13 +40,13 @@ extern "C"
 #  endif
 
   /**
-   * The libfswatch C API let users create monitor sessions and receive file
+   * The `libfswatch` C API let users create monitor sessions and receive file
    * system events matching the specified criteria.  Most API functions return
    * a status code of type FSW_STATUS which can take any value specified in
    * the error.h header.  A successful API call returns FSW_OK and the last
    * error can be obtained calling the fsw_last_error() function.
    *
-   * If the compiler and the C++ library used to build libfswatch support the
+   * If the compiler and the C++ library used to build `libfswatch` support the
    * thread_local storage specified then this API is thread safe and a
    * different state is maintained on a per-thread basis.
    *
@@ -63,7 +63,6 @@ extern "C"
    *
    * as shown in the next example (error checking code was omitted).
    *
-   * +------------------------------------------------------------------------+
    *     // Use the default monitor.
    *     const FSW_HANDLE handle = fsw_init_session();
    *
@@ -71,7 +70,6 @@ extern "C"
    *     fsw_set_callback(handle, my_callback);
    *
    *     fsw_start_monitor(handle);
-   * +------------------------------------------------------------------------+
    *
    * A suitable callback function is a function pointer of type
    * FSW_CEVENT_CALLBACK, that is it is a function conforming with the
@@ -86,7 +84,7 @@ extern "C"
    */
 
   /**
-   * This function initializes the libfswatch library and must be invoked
+   * This function initializes the `libfswatch` library and must be invoked
    * before any other calls to the C or C++ API.  If the function succeeds, it
    * returns FSW_OK, otherwise the initialization routine failed and the library
    * should not be usable.
@@ -95,10 +93,10 @@ extern "C"
 
   /**
    * This function creates a new monitor session using the specified monitor
-   * and returns an handle to it.  This function is the libfswatch API entry
+   * and returns an handle to it.  This function is the `libfswatch` API entry
    * point.
    *
-   * See cmonitor.h for a list of all the available monitors.
+   * @see cmonitor.h for a list of all the available monitors.
    */
   FSW_HANDLE fsw_init_session(const fsw_monitor_type type = system_default_monitor_type);
 
