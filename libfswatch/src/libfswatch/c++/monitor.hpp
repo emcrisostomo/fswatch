@@ -18,10 +18,9 @@
  * @brief Header of the fsw::monitor class.
  *
  * This header file defines the fsw::monitor class, the base type of a
- * `libfswatch` monitor.
+ * `libfswatch` monitor and fundamental type of the C++ API.
  *
- * If `HAVE_CXX_MUTEX` is defined, this header includes `<mutex>` and instances
- * of the fsw::monitor class are thread-safe.
+ * If `HAVE_CXX_MUTEX` is defined, this header includes `<mutex>`.
  *
  * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
@@ -66,17 +65,81 @@ namespace fsw
    * The fsw::monitor class is the base class of all monitors.  This class
    * encapsulates the common functionality of a monitor:
    *
-   *   * Accessors to configuration parameters.
-   *   * start() and stop() lifecycle.
-   *   * Thread-safety of its API, if supported.
-   *   * Event filtering.
-   *   * Event notification to user-provided callback function.
+   *   - Accessors to configuration parameters.
+   *   - start() and stop() lifecycle.
+   *   - Event filtering.
+   *   - Event notification to user-provided callback function.
+   *
+   * Since some methods are designed to be called from different threads, this
+   * class provides an internal mutex (monitor::run_mutex) that implementors
+   * should lock on when accessing shared state.  The mutex is available only
+   * when `HAVE_CXX_MUTEX` is defined.
    *
    * At least the following tasks must be performed to implement a monitor:
    *
-   *   * Providing an implementation of the run() method.
-   *   * Providing an implementation of the on_stop() method if the
+   *   - Providing an implementation of the run() method.
+   *   - Providing an implementation of the on_stop() method if the
    *     monitor cannot be stopped cooperatively from the run() method.
+   *
+   * A basic monitor needs to implement the run() method, whose skeleton is
+   * often similar to the following:
+   *
+   *     void run()
+   *     {
+   *       initialize_api();
+   *
+   *       for (;;)
+   *       {
+   *         #ifdef HAVE_CXX_MUTEX
+   *           unique_lock<mutex> run_guard(run_mutex);
+   *           if (should_stop) break;
+   *           run_guard.unlock();
+   *         #endif
+   *
+   *         scan_paths();
+   *         wait_for_events();
+   *
+   *         vector<change_events> evts = get_changes();
+   *         vector<event> events;
+   *
+   *         for (auto & evt : evts)
+   *         {
+   *           if (accept(evt.get_path))
+   *           {
+   *             events.push_back({event from evt});
+   *           }
+   *         }
+   *
+   *         if (events.size()) notify_events(events);
+   *       }
+   *
+   *       terminate_api();
+   *     }
+   *
+   * Despite being a minimal implementation, it performs all the tasks commonly
+   * performed by a monitor:
+   *
+   *   - It initializes the API it uses to detect file system change events.
+   *
+   *   - It enters a loop, often infinite, where change events are waited for.
+   *
+   *   - If `HAVE_CXX_MUTEX` is defined, it locks on monitor::run_mutex to
+   *     check whether monitor::should_stop is set to @c true.  If it is, the
+   *     monitor breaks the loop to return from run() as soon as possible.
+   *
+   *   - It scans the paths that must be observed: this step might be necessary
+   *     for example because some path may not have existed during the previous
+   *     iteration of the loop, or because some API may require the user to
+   *     re-register a watch on a path after events are retrieved.
+   *
+   *   - Events are waited for and the wait should respect the specified
+   *     _latency_.
+   *
+   *   - Events are _filtered_ to exclude those referring to paths that do not
+   *     satisfy the configured filters.
+   *
+   *   - The notify_events() method is called to filter the event types and
+   *     notify the caller.
    */
   class monitor
   {
@@ -441,19 +504,64 @@ namespace fsw
     virtual void on_stop();
 
   protected:
-    std::vector<std::string> paths;
-    std::map<std::string, std::string> properties;
     /**
-     * To do.
+     * @brief List of paths to watch.
+     *
+     * @see monitor::monitor()
+     */
+    std::vector<std::string> paths;
+
+    /**
+     * @brief Map of custom properties.
+     *
+     * @see monitor::set_property()
+     * @see monitor::set_properties()
+     */
+    std::map<std::string, std::string> properties;
+
+    /**
+     * @brief Callback to which change events should be notified.
+     *
+     * @see monitor::monitor()
      */
     FSW_EVENT_CALLBACK *callback;
+
+    /**
+     * @brief Pointer to context data that will be passed to the monitor::callback.
+     */
     void *context = nullptr;
+
+    /**
+     * @brief Latency of the monitor.
+     */
     double latency = 1.0;
+
+    /**
+     * @brief If @c true, queue overflow events will be notified to the caller,
+     * otherwise the monitor will throw a libfsw_exception.
+     */
     bool allow_overflow = false;
+
+    /**
+     * @brief If @c true, directories will be scanned recursively.
+     */
     bool recursive = false;
+
+    /**
+     * @brief If @c true, symbolic links are followed.
+     */
     bool follow_symlinks = false;
+
+    /**
+     * @brief Flag indicating whether only directories should be monitored.
+     */
     bool directory_only = false;
+
+    /**
+     * @brief Flag indicating whether file access should be watched.
+     */
     bool watch_access = false;
+
     bool running = false;
     /**
      * To do.
