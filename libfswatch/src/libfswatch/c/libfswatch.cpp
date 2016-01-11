@@ -259,6 +259,30 @@
  *
  *   - fsw_add_event_type_filter(): added to add an event type filter.
  */
+/**
+ * @page path-filtering Path Filtering
+ *
+ * A filter type determine whether the filter regular expression is used to
+ * include and exclude paths from the list of the events processed by the
+ * library.  `libfswatch` processes filters this way:
+ *
+ *   - If a path matches an including filter, the path is _accepted_ no matter
+ *     any other filter.
+ *
+ *   - If a path matches an excluding filter, the path is _rejected_.
+ *
+ *   - If a path matches no  lters, the path is _accepted_.
+ *
+ * Said another way:
+ *
+ *   - All paths are accepted _by default_, unless an exclusion filter says
+ *     otherwise.
+ *
+ *   - Inclusion filters may override any other exclusion filter.
+ *
+ *   - The order in the filter definition has no effect.
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
 #endif
