@@ -176,6 +176,28 @@
  *   - The monitor is configured (fsw::monitor).
  *   - The monitor is run and change events are waited for
  *     (fsw::monitor::start()).
+ *
+ * @section cpp-example Example
+ *
+ *     // Create the default platform monitor
+ *     monitor *active_monitor =
+ *       monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
+ *                                       paths,
+ *                                       process_events);
+ *
+ *     // Configure the monitor
+ *     active_monitor->set_properties(monitor_properties);
+ *     active_monitor->set_allow_overflow(allow_overflow);
+ *     active_monitor->set_latency(latency);
+ *     active_monitor->set_recursive(recursive);
+ *     active_monitor->set_directory_only(directory_only);
+ *     active_monitor->set_event_type_filters(event_filters);
+ *     active_monitor->set_filters(filters);
+ *     active_monitor->set_follow_symlinks(follow_symlinks);
+ *     active_monitor->set_watch_access(watch_access);
+ *
+ *     // Start the monitor
+ *     active_monitor->start();
  */
 /**
  * @page c-api C API
@@ -330,9 +352,10 @@
 /**
  * @page path-filtering Path Filtering
  *
- * A filter type determine whether the filter regular expression is used to
- * include and exclude paths from the list of the events processed by the
- * library.  `libfswatch` processes filters this way:
+ * A _path filter_ (fsw::monitor_filter) can be used to filter event paths.  A
+ * filter type (::fsw_filter_type) determines whether the filter regular
+ * expression is used to include and exclude paths from the list of the events
+ * processed by the library.  `libfswatch` processes filters this way:
  *
  *   - If a path matches an including filter, the path is _accepted_ no matter
  *     any other filter.

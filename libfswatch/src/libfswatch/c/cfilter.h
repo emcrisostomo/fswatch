@@ -23,7 +23,6 @@
  * @version 1.8.0
  */
 
-
 #ifndef FSW__CFILTER_H
 #  define FSW__CFILTER_H
 #  include "cevent.h"
@@ -33,6 +32,9 @@ extern "C"
 {
 #  endif
 
+  /**
+   * @brief Event filter type.
+   */
   enum fsw_filter_type
   {
     filter_include,
