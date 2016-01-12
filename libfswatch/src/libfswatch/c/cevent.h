@@ -43,6 +43,22 @@ extern "C"
  * direct mapping to backend-specific change types is guaranteed to exist: a
  * change type may be mapped to multiple `fsw_event_flag` instances included
  * the `PlatformSpecific` flag.
+ *
+ * The values of event flags are all powers of 2, that is numbers @f$f=2^n@f$
+ * where @f$n@f$ is an integer.  This representation makes it easy to combine
+ * flags into a bit mask and encode multiple events flags into a single integer.
+ *
+ * A monitor implementation is required to map implementation-specific flags
+ * into API flags.  Sometimes, though, a perfect match is not possible and the
+ * following situation may arise:
+ *
+ *   - One platform-specific flag must be mapped into multiple API flags.
+ *
+ *   - Multiple platform-specific flags must be mapped into a single API flag.
+ *
+ *   - A mapping is not possible for some flags, in which case they should be
+ *     mapped to fsw_event_flag::PlatformSpecific.  The API currently offers no
+ *     way to retain a platform-specific event flag value in this case.
  */
   enum fsw_event_flag
   {
