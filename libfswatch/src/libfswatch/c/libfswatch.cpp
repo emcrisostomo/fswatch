@@ -180,7 +180,75 @@
 /**
  * @page c-api C API
  *
- * bbb
+ * The C API, whose main header file is libfswatch.h, is a C-compatible
+ * lightweight wrapper around the C++ API that provides an easy to use binding
+ * to C clients.  The central type in the C API is the _monitoring session_, an
+ * opaque type identified by a handle of type ::FSW_HANDLE that can be
+ * manipulated using the C functions of this library.
+ *
+ * Session-modifying API calls (such as fsw_add_path()) will take effect the
+ * next time a monitor is started with fsw_start_monitor().
+ *
+ * @section cpp-to-c Translating the C++ API to C
+ *
+ * The conventions used to translate C++ types into C types are simple:
+ *
+ *   - `std::string` is represented as a `NUL`-terminated `char *`.
+ *
+ *   - Lists are represented as arrays whose length is specified in a separate
+ *     field.
+ *
+ *   - More complex types are usually translated as a `struct` containing data
+ *     fields and a set of functions to operate on it.
+ *
+ * @section c-thread-safety Thread Safety
+ *
+ * If the compiler and the C++ library used to build `libfswatch` support the
+ * `thread_local` storage specifier then this API is thread safe and a
+ * different state is maintained on a per-thread basis.
+ *
+ * Even when `thread_local` is not available, manipulating _different_
+ * monitoring sessions concurrently from different threads is thread safe, since
+ * they share no data.
+ *
+ * @section c-lib-init Library Initialization
+ *
+ * Before calling any library method, the library must be initialized by calling
+ * the fsw_init_library() function:
+ *
+ *     // Initialize the library
+ *     FSW_STATUS ret = fsw_init_library();
+ *     if (ret != FSW_OK)
+ *     {
+ *       exit(1);
+ *     }
+ *
+ * @section c-status-code Status Codes and Errors
+ *
+ * Most API functions return a status code of type ::FSW_STATUS, defined in the
+ * error.h header.  A successful API call returns ::FSW_OK and the last error
+ * can be obtained calling the fsw_last_error() function.
+ *
+ * @section c-example Example
+ *
+ * This is a basic example of how a monitor session can be constructed and run
+ * using the C API.  To be valid, a session needs at least the following
+ * information:
+ *
+ *   - A path to watch.
+ *   - A _callback_ to process the events sent by the monitor.
+ *
+ * The next code fragment shows how to create and start a basic monitoring
+ * session (error checking code was omitted):
+ *
+ *     // Initialize the library
+ *     fsw_init_library();
+ *
+ *     // Use the default monitor.
+ *     const FSW_HANDLE handle = fsw_init_session();
+ *     fsw_add_path(handle, "my/path");
+ *     fsw_set_callback(handle, my_callback);
+ *     fsw_start_monitor(handle);
  */
 /**
  * @page history History
