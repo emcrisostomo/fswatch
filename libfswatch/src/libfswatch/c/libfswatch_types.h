@@ -13,6 +13,18 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Header of the `libfswatch` library containing common types.
+ *
+ * This header file defines the types used by the `libfswatch` library.
+ *
+ * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
+
 #ifndef LIBFSWATCH_TYPES_H
 #define LIBFSWATCH_TYPES_H
 
@@ -21,7 +33,14 @@ extern "C"
 {
 #endif
 
+/**
+ * @brief Handle to a monitoring session.
+ */
 typedef unsigned int FSW_HANDLE;
+
+/**
+ * @brief Status of a library call.
+ */
 typedef int FSW_STATUS;
 
 #define FSW_INVALID_HANDLE -1
