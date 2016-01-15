@@ -23,7 +23,6 @@
  * @version 1.8.0
  */
 
-
 #ifndef FSW_EVENT_H
 #  define FSW_EVENT_H
 
@@ -35,14 +34,54 @@
 
 namespace fsw
 {
+  /**
+   * @brief Type representing a file change event.
+   *
+   * This class represents a file change event in the `libfswatch` API.  An
+   * event contains:
+   *
+   *   - The path.
+   *   - The time the event was raised.
+   *   - A vector of flags specifying the type of the event.
+   */
   class event
   {
   public:
+    /**
+     * @brief Constructs an event.
+     *
+     * @param path The path the event refers to.
+     * @param evt_time The time the event was raised.
+     * @param flags The vector of flags specifying the type of the event.
+     */
     event(std::string path, time_t evt_time, std::vector<fsw_event_flag> flags);
+
+    /**
+     * @brief Destructs an event.
+     *
+     * This is a virtual destructor that performs no operations.
+     */
     virtual ~event();
 
+    /**
+     * @brief Returns the path of the event.
+     *
+     * @return The path of the event.
+     */
     std::string get_path() const;
+
+    /**
+     * @brief Returns the time of the event.
+     *
+     * @return The time of the event.
+     */
     time_t get_time() const;
+
+    /**
+     * @brief Returns the flags of the event.
+     *
+     * @return The flags of the event.
+     */
     std::vector<fsw_event_flag> get_flags() const;
 
     /**
