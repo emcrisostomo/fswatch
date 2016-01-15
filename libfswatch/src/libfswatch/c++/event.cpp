@@ -22,9 +22,8 @@ using namespace std;
 
 namespace fsw
 {
-
   event::event(string path, time_t evt_time, vector<fsw_event_flag> flags) :
-    path(path), evt_time(evt_time), evt_flags(flags)
+    path(std::move(path)), evt_time(evt_time), evt_flags(std::move(flags))
   {
   }
 
