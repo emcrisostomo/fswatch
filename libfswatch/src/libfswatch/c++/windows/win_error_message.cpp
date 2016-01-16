@@ -32,7 +32,7 @@ namespace fsw
     return win_error_message();
   }
 
-  win_error_message::win_error_message(DWORD err_code) : err_code{err_code}{}
+  win_error_message::win_error_message(DWORD error_code) : err_code{error_code}{}
   win_error_message::win_error_message() : err_code{GetLastError()}{}
 
   DWORD win_error_message::get_error_code() const
