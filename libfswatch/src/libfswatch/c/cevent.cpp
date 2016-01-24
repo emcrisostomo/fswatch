@@ -19,7 +19,6 @@
 
 #include "cevent.h"
 #include <cstring>
-#include "libfswatch_mem.h"
 #include "../c++/event.hpp"
 #include "../c++/libfswatch_exception.hpp"
 
@@ -43,7 +42,7 @@ FSW_STATUS fsw_get_event_flag_by_name(const char *name, fsw_event_flag *flag)
 char *fsw_get_event_flag_name(const fsw_event_flag flag)
 {
   string name = event::get_event_flag_name(flag);
-  char *cstr = static_cast<char *>(fsw_alloc(name.size() + 1));
+  char *cstr = static_cast<char *>(malloc(name.size() + 1));
 
   if (cstr == nullptr) return nullptr;
 

@@ -27,8 +27,6 @@
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/fsevents_monitor.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/gettext_defs.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_mem.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_mem.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cfilter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.h" isTestSource="false" />
@@ -222,11 +220,9 @@
           <root url="file:///usr/local/include" />
           <root url="file://$MODULE_DIR$/libfswatch/src" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
-          <root url="file:///Library/Frameworks/Mono.framework/Headers" />
+          <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/PrivateHeaders" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/Headers" />
-          <root url="file:///Library/Frameworks/WacomMultiTouch.framework/Headers" />
-          <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.0.2/include" />
         </CLASSES>
@@ -405,11 +401,9 @@
           <root url="file:///usr/local/include" />
           <root url="file://$MODULE_DIR$/libfswatch/src" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
-          <root url="file:///Library/Frameworks/Mono.framework/Headers" />
+          <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/PrivateHeaders" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/Headers" />
-          <root url="file:///Library/Frameworks/WacomMultiTouch.framework/Headers" />
-          <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.0.2/include" />
         </SOURCES>
@@ -435,8 +429,6 @@
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/fsevents_monitor.cpp" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/gettext_defs.h" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_mem.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_mem.cpp" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch.h" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cfilter.h" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.h" />
