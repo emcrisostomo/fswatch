@@ -15,7 +15,7 @@
  */
 /**
  * @file
- * @brief Header of the `libfswatch` defining the monitor types.
+ * @brief Header of the `libfswatch` library defining the monitor types.
  *
  * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0

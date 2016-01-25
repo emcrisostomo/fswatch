@@ -13,6 +13,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Base exception of the `libfswatch` library.
+ *
+ * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
+
 #ifndef LIBFSW_EXCEPTION_H
 #  define LIBFSW_EXCEPTION_H
 
@@ -22,10 +32,18 @@
 
 namespace fsw
 {
+  /**
+   * @brief Base exception of the `libfswatch` library.
+   *
+   * An instance of this class stores an error message and an integer error
+   * code.
+   */
   class libfsw_exception : public std::exception
   {
   public:
-    // TODO default code value should be taken from an error header
+    /**
+     * @brief Constructs
+     */
     libfsw_exception(std::string cause, int code = FSW_ERR_UNKNOWN_ERROR);
     virtual const char *what() const noexcept;
     virtual int error_code() const noexcept;
