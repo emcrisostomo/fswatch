@@ -34,7 +34,7 @@ extern "C"
 
 // Error codes
 #  define FSW_OK                            0        /**< The call was successful. */
-#  define FSW_ERR_UNKNOWN_ERROR             (1 << 0)
+#  define FSW_ERR_UNKNOWN_ERROR             (1 << 0) /**< An unknown error has occurred. */
 #  define FSW_ERR_SESSION_UNKNOWN           (1 << 1)
 #  define FSW_ERR_MONITOR_ALREADY_EXISTS    (1 << 2)
 #  define FSW_ERR_MEMORY                    (1 << 3)

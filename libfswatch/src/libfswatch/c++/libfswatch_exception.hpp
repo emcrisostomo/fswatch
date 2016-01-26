@@ -42,13 +42,36 @@ namespace fsw
   {
   public:
     /**
-     * @brief Constructs
+     * @brief Constructs an exception with the specified @p cause and error
+     * @p code.
+     *
+     * @param cause The error message.
+     * @param code The error code.
      */
     libfsw_exception(std::string cause, int code = FSW_ERR_UNKNOWN_ERROR);
+
+    /**
+     * @brief Gets the error message.
+     *
+     * @return The error message.
+     */
     virtual const char *what() const noexcept;
+
+    /**
+     * @brief Gets the error code.
+     *
+     * @return The error code.
+     */
     virtual int error_code() const noexcept;
+
+    /**
+     * @brief Destructs an instance of this class.
+     */
     virtual ~libfsw_exception() noexcept;
 
+    /**
+     * @brief Gets the error code.
+     */
     explicit operator int() const noexcept;
 
   private:
