@@ -17,6 +17,8 @@ if HAVE_DOXYGEN
 DOXYGEN_TARGETS = doc-html-doxygen doc-pdf-doxygen
 endif
 
+all-local: doxygen
+
 .PHONY: doxygen
 doxygen: $(DOXYGEN_TARGETS)
 
