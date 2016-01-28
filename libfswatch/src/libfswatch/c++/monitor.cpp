@@ -366,9 +366,9 @@ namespace fsw
     return (i != creators_by_string().end());
   }
 
-  bool monitor_factory::exists_type(const fsw_monitor_type& name)
+  bool monitor_factory::exists_type(const fsw_monitor_type& type)
   {
-    auto i = creators_by_type().find(name);
+    auto i = creators_by_type().find(type);
 
     return (i != creators_by_type().end());
   }

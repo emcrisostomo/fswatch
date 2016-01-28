@@ -399,7 +399,8 @@ namespace fsw
      *
      * @param filters The filters to set.
      */
-    void set_event_type_filters(const std::vector<fsw_event_type_filter>& filters);
+    void set_event_type_filters(
+      const std::vector<fsw_event_type_filter>& filters);
 
     /**
      * @brief Monitor file access.
@@ -610,31 +611,87 @@ namespace fsw
   class monitor_factory
   {
   public:
+    /**
+     * @brief Creates a monitor of the specified @p type.
+     *
+     * The other parameters are forwarded to the fsw::monitor() constructor.
+     *
+     * @param type The monitor type.
+     * @param paths The paths to watch.
+     * @param callback The callback to invoke during the notification of a
+     * change event.
+     * @return The newly created monitor.
+     * @throw libfsw_exception if a monitor of the specified @p type cannot be
+     * found.
+     * @see fsw::monitor()
+     */
     static monitor *create_monitor(fsw_monitor_type type,
                                    std::vector<std::string> paths,
                                    FSW_EVENT_CALLBACK *callback,
                                    void *context = nullptr);
+
+    /**
+     * @brief Creates a monitor whose type is the specified by @p name.
+     *
+     * The other parameters are forwarded to the fsw::monitor() constructor.
+     *
+     * @param name The monitor type.
+     * @param paths The paths to watch.
+     * @param callback The callback to invoke during the notification of a
+     * change event.
+     * @return The newly created monitor.
+     * @throw libfsw_exception if a monitor of the type specified by @p name
+     * cannot be found.
+     * @see fsw::monitor()
+     */
     static monitor *create_monitor(const std::string& name,
                                    std::vector<std::string> paths,
                                    FSW_EVENT_CALLBACK *callback,
                                    void *context = nullptr);
-    static std::vector<std::string> get_types();
+
     /**
-     * aaa.
+     * @brief Get the available monitor types.
+     *
+     * @return A vector with the available monitor types.
+     */
+    static std::vector<std::string> get_types();
+
+    /**
+     * @brief Checks whether a monitor of the type specified by @p name exists.
+     *
+     * @return `true` if @p name specifies a valid monitor type, `false`
+     * otherwise.
+     *
+     * @param name The name of the monitor type to look for.
+     * @return `true` if the type @p name exists, `false` otherwise.
      */
     static bool exists_type(const std::string& name);
+
     /**
-     * a...
+     * @brief Checks whether a monitor of the type specified @p type.
+     *
+     * @param type The type of the monitor to look for.
+     * @return `true` if @p name specifies a valid monitor type, `false`
+     * otherwise.
      */
-    static bool exists_type(const fsw_monitor_type& name);
+    static bool exists_type(const fsw_monitor_type& type);
+
     /**
-     * To do.
+     * @brief Registers a @p creator for the specified monitor type @p name.
+     *
+     * @param name The name of the monitor type.
+     * @param creator The monitor creator function.
      */
-    static void register_creator(const std::string& name, FSW_FN_MONITOR_CREATOR creator);
+    static void register_creator(const std::string& name,
+                                 FSW_FN_MONITOR_CREATOR creator);
     /**
-     * To do.
+     * @brief Registers a @p creator for the specified monitor @p type.
+     *
+     * @param type The monitor type.
+     * @param creator The monitor creator function.
      */
-    static void register_creator_by_type(const fsw_monitor_type& type, FSW_FN_MONITOR_CREATOR creator);
+    static void register_creator_by_type(const fsw_monitor_type& type,
+                                         FSW_FN_MONITOR_CREATOR creator);
 
     monitor_factory() = delete;
     monitor_factory(const monitor_factory& orig) = delete;
@@ -644,10 +701,14 @@ namespace fsw
     static std::map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>& creators_by_type();
   };
 
-  /*
+  /**
+   * @brief Helper class to register monitor factories.
+   *
    * The constructor of this class perform the registration of the given
    * (name, type) pair in the monitor_factory registry.  This class is used by
    * the REGISTER_MONITOR and REGISTER_MONITOR_IMPL macros.
+   *
+   * @see fsw::monitor_factory
    */
   template<class M>
   class monitor_registrant
