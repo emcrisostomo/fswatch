@@ -715,6 +715,12 @@ namespace fsw
   {
   public:
 
+    /**
+     * @brief Constructs a monitor registrant for the specified @p type.
+     *
+     * @param name The name of the type whose factory is being registered.
+     * @param type The type whose factory is being registered.
+     */
     monitor_registrant(const std::string& name, const fsw_monitor_type& type)
     {
       FSW_FN_MONITOR_CREATOR default_creator =
