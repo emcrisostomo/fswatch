@@ -1489,31 +1489,6 @@ To free the pointed memory @emph{after} when the pointer is not shared
 with any monitoring session any longer.
 @end itemize
 
-@section Memory Management Functions
-@cpindex memory management
-@cpindex memory management, functions
-@pgindex @file{libfswatch_mem.h}
-@anchor{Memory Management Functions} The C @acronym{API} published by
-the @file{libfswatch} library contains some memory management
-routines.  These functions, defined in the @file{libfswatch_mem.h}
-header file, are the following:
-
-@table @code
-@item @code{void * fsw_alloc(size_t size)}
-@fnindex @code{fsw_alloc}
-
-This function allocates a chunk of memory of the specified @var{size}
-and returns a pointer to it.  If the memory could not be allocated,
-@code{nullptr} is returned instead.
-
-@item @code{void fsw_free(void * ptr)}
-@fnindex @code{fsw_free}
-
-This function frees the memory pointed by @var{ptr}.
-
-@item @code{fsw_free}
-@end table
-
 @section Events in the C @acronym{API}
 @cpindex events
 @cpindex events, C @acronym{API}
@@ -1662,7 +1637,7 @@ function will return a negative number.
 This function returns a @code{char *} pointer to the name of the
 specified event type, @var{flag}, or @code{nullptr} if an error
 occurs.  The memory pointed by the return value of this function
-should be freed with a call to @code{fsw_free} (@pxref{Memory Management Functions}).
+should be freed with a call to @code{free}.
 
 @end table
 

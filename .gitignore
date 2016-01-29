@@ -8,6 +8,8 @@ fswatch.exe
 # Documentation
 fswatch.pdf
 libfswatch.pdf
+libfswatch/doc/doxygen/html
+libfswatch/doc/doxygen/latex
 
 # Distribution files
 *.tar.gz
@@ -115,7 +117,7 @@ version.texi
 *.t2p
 
 # Template files
-Doxygen
+Doxyfile
 build-aux/create-pot-template.sh
 libfswatch/libfswatch_config.h
 libfswatch/libfswatch_config.h.in

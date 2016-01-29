@@ -27,8 +27,6 @@
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/fsevents_monitor.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/gettext_defs.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_mem.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_mem.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cfilter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.h" isTestSource="false" />
@@ -435,8 +433,6 @@
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/fsevents_monitor.cpp" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/gettext_defs.h" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_mem.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_mem.cpp" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch.h" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cfilter.h" />
           <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.h" />

@@ -13,4 +13,5 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-SUBDIRS = texinfo
+info_TEXINFOS = libfswatch.texi
+libfswatch_TEXINFOS = fdl.texi

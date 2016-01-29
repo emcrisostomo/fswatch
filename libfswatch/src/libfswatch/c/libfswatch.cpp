@@ -13,6 +13,367 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Main `libfswatch` source file.
+ * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
+/**
+ * @mainpage
+ *
+ * @section introduction Introduction
+ *
+ * `fswatch` is a cross-platform file change monitor currently supporting the
+ * following backends:
+ *
+ *   - A monitor based on the _FSEvents_ API of Apple OS X.
+ *   - A monitor based on _kqueue_, an event notification interface introduced
+ *     in FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+ *   - A monitor based on _File Events Notification_, an event notification API
+ *     of the Solaris/Illumos kernel.
+ *   - A monitor based on _inotify_, a Linux kernel subsystem that reports
+ *     file system changes to applications.
+ *   - A monitor based on the Microsoft Windows' `ReadDirectoryChangesW`
+ *     function and reads change events asynchronously.
+ *   - A monitor which periodically stats the file system, saves file
+ *     modification times in memory and manually calculates file system
+ *     changes, which can work on any operating system where stat can be
+ *     used.
+ *
+ * Instead of using different APIs, a programmer can use just one: the API of
+ * `libfswatch`.  The advantages of using `libfswatch` are many:
+ *
+ *   - *Portability*: `libfswatch` supports many backends, effectively giving
+ *     support to a great number of operating systems, including Solaris, *BSD
+ *     Unix and Linux.
+ *   - Ease of use: using `libfswatch` should be easier than using any of the
+ *     APIs it supports.
+ *
+ * @section changelog Changelog
+ *
+ * See the @ref history "History" page.
+ *
+ * @section bindings Available Bindings
+ *
+ * `libfswatch` is a C++ library with C bindings which makes it available to a
+ * wide range of programming languages.  If a programming language has C
+ * bindings, then `libfswatch` can be used from it.  The C binding provides all
+ * the functionality provided by the C++ implementation and it can be used as a
+ * fallback solution when the C++ API cannot be used.
+ *
+ * @section libtools-versioning libtool's versioning scheme
+ *
+ * `libtool`'s versioning scheme is described by three integers:
+ * `current:revision:age` where:
+ *
+ *   - `current` is the most recent interface number implemented by the
+ *     library.
+ *   - `revision` is the implementation number of the current interface.
+ *   - `age` is the difference between the newest and the oldest interface that
+ *     the library implements.
+ *
+ * @section c-cpp-api The C and the C++ API
+ *
+ * The C API is built on top of the C++ API but the two are very different, to
+ * reflect the fundamental differences between the two languages.
+ *
+ * The \ref cpp-api "C++ API" centres on the concept of _monitor_, a class of
+ * objects modelling the functionality of the file monitoring API.  Different
+ * monitor types are modelled as different classes inheriting from the
+ * `fsw::monitor` abstract class, that is the type that defines the core
+ * monitoring API.  API clients can pick the current platform's default monitor,
+ * or choose a specific implementation amongst the available ones, configure it
+ * and _run_ it.  When running, a monitor gathers file system change events and
+ * communicates them back to the caller using a _callback_.
+ *
+ * The \ref c-api "C API", on the other hand, centres on the concept of
+ * _monitoring session_.  A session internally wraps a monitor instance and
+ * represents an opaque C bridge to the C++ monitor _API_.  Sessions are
+ * identified by a _session handle_ and they can be thought as a sort of C
+ * facade of the C++ monitor class.  In fact there is an evident similarity
+ * between the C library functions operating on a monitoring session and the
+ * methods of the `monitor` class.
+ *
+ * @section thread-safety Thread Safety
+ *
+ * The C++ API does not deal with thread safety explicitly.  Rather, it leaves
+ * the responsibility of implementing a thread-safe use of the library to the
+ * callers.  The C++ implementation has been designed in order to:
+ *
+ *   - Encapsulate all the state of a monitor into its class fields.
+ *   - Perform no concurrent access control in methods or class fields.
+ *   - Guarantee that functions and _static_ methods are thread safe.
+ *
+ * As a consequence, it is _not_ thread-safe to access a monitor's member, be it
+ * a method or a field, from different threads concurrently.  The easiest way to
+ * implement thread-safety when using `libfswatch`, therefore, is segregating
+ * access to each monitor instance from a different thread.
+ *
+ * The C API, a layer above the C++ API, has been designed in order to provide
+ * the same basic guarantee:
+ *
+ *   - Concurrently manipulating different monitoring sessions is thread safe.
+ *   - Concurrently manipulating the same monitoring session is _not_ thread
+ *     safe.
+ *
+ * @section cpp11 C++11
+ *
+ * There is an additional limitation which affects the C library only: the C
+ * binding implementation internally uses C++11 classes and keywords to provide
+ * the aforementioned guarantees.  If compiler or library support is not found
+ * when building `libfswatch` the library will still build, but those guarantees
+ * will _not_ be honoured.  A warning such as the following will appear in the
+ * output of `configure` to inform the user:
+ *
+ *     configure: WARNING: libfswatch is not thread-safe because the current
+ *     combination of compiler and libraries do not support the thread_local
+ *     storage specifier.
+ *
+ * @section bug-reports Reporting Bugs and Suggestions
+ *
+ * If you find problems or have suggestions about this program or this manual,
+ * please report them as new issues in the official GitHub repository of
+ * `fswatch` at https://github.com/emcrisostomo/fswatch.  Please, read the
+ * `CONTRIBUTING.md` file for detailed instructions on how to contribute to
+ * `fswatch`.
+ */
+/**
+ * @page cpp-api C++ API
+ *
+ * The C++ API provides users an easy to use, object-oriented interface to a
+ * wide range of file monitoring APIs.  This API provides a common facade to a
+ * set of heterogeneous APIs that not only greatly simplifies their usage, but
+ * provides an indirection layer that makes applications more portable: as far
+ * as there is an available monitor in another platform, an existing application
+ * will just work.
+ *
+ * In reality, a monitor may have platform-specific behaviours that should be
+ * taken into account when writing portable applications using this library.
+ * This differences complicate the task of writing portable applications that
+ * are truly independent of the file monitoring API they may be using. However,
+ * monitors try to ‘compensate’ for any behavioural difference across
+ * implementations.
+ *
+ * The fsw::monitor class is the basic type of the C++ API: it defines the
+ * interface of every monitor and provides common functionality to inheritors of
+ * this class, such as:
+ *
+ *   - Configuration and life cycle (fsw::monitor).
+ *   - Event filtering (fsw::monitor).
+ *   - Path filtering (fsw::monitor).
+ *   - Monitor registration (fsw::monitor_factory).
+ *   - Monitor discovery (fsw::monitor_factory).
+ *
+ * @section Usage
+ *
+ * The typical usage pattern of this API is similar to the following:
+ *
+ *   - An instance of a monitor is either created directly or through the
+ *     factory (fsw::monitor_factory).
+ *   - The monitor is configured (fsw::monitor).
+ *   - The monitor is run and change events are waited for
+ *     (fsw::monitor::start()).
+ *
+ * @section cpp-example Example
+ *
+ *     // Create the default platform monitor
+ *     monitor *active_monitor =
+ *       monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
+ *                                       paths,
+ *                                       process_events);
+ *
+ *     // Configure the monitor
+ *     active_monitor->set_properties(monitor_properties);
+ *     active_monitor->set_allow_overflow(allow_overflow);
+ *     active_monitor->set_latency(latency);
+ *     active_monitor->set_recursive(recursive);
+ *     active_monitor->set_directory_only(directory_only);
+ *     active_monitor->set_event_type_filters(event_filters);
+ *     active_monitor->set_filters(filters);
+ *     active_monitor->set_follow_symlinks(follow_symlinks);
+ *     active_monitor->set_watch_access(watch_access);
+ *
+ *     // Start the monitor
+ *     active_monitor->start();
+ */
+/**
+ * @page c-api C API
+ *
+ * The C API, whose main header file is libfswatch.h, is a C-compatible
+ * lightweight wrapper around the C++ API that provides an easy to use binding
+ * to C clients.  The central type in the C API is the _monitoring session_, an
+ * opaque type identified by a handle of type ::FSW_HANDLE that can be
+ * manipulated using the C functions of this library.
+ *
+ * Session-modifying API calls (such as fsw_add_path()) will take effect the
+ * next time a monitor is started with fsw_start_monitor().
+ *
+ * @section cpp-to-c Translating the C++ API to C
+ *
+ * The conventions used to translate C++ types into C types are simple:
+ *
+ *   - `std::string` is represented as a `NUL`-terminated `char *`.
+ *
+ *   - Lists are represented as arrays whose length is specified in a separate
+ *     field.
+ *
+ *   - More complex types are usually translated as a `struct` containing data
+ *     fields and a set of functions to operate on it.
+ *
+ * @section c-thread-safety Thread Safety
+ *
+ * If the compiler and the C++ library used to build `libfswatch` support the
+ * `thread_local` storage specifier then this API is thread safe and a
+ * different state is maintained on a per-thread basis.
+ *
+ * Even when `thread_local` is not available, manipulating _different_
+ * monitoring sessions concurrently from different threads is thread safe, since
+ * they share no data.
+ *
+ * @section c-lib-init Library Initialization
+ *
+ * Before calling any library method, the library must be initialized by calling
+ * the fsw_init_library() function:
+ *
+ *     // Initialize the library
+ *     FSW_STATUS ret = fsw_init_library();
+ *     if (ret != FSW_OK)
+ *     {
+ *       exit(1);
+ *     }
+ *
+ * @section c-status-code Status Codes and Errors
+ *
+ * Most API functions return a status code of type ::FSW_STATUS, defined in the
+ * error.h header.  A successful API call returns ::FSW_OK and the last error
+ * can be obtained calling the fsw_last_error() function.
+ *
+ * @section c-example Example
+ *
+ * This is a basic example of how a monitor session can be constructed and run
+ * using the C API.  To be valid, a session needs at least the following
+ * information:
+ *
+ *   - A path to watch.
+ *   - A _callback_ to process the events sent by the monitor.
+ *
+ * The next code fragment shows how to create and start a basic monitoring
+ * session (error checking code was omitted):
+ *
+ *     // Initialize the library
+ *     fsw_init_library();
+ *
+ *     // Use the default monitor.
+ *     const FSW_HANDLE handle = fsw_init_session();
+ *     fsw_add_path(handle, "my/path");
+ *     fsw_set_callback(handle, my_callback);
+ *     fsw_start_monitor(handle);
+ */
+/**
+ * @page history History
+ *
+ * @section v600 6:0:0
+ *
+ *   - fsw::monitor::stop(): added.
+ *   - fsw::monitor::monitor(): update to move paths instead of copying them.
+ *   - fsw::monitor_factory::exists_type(const std::string&): added.
+ *   - fsw::monitor_factory::exists_type(const fsw_monitor_type&): added.
+ *   - fsw::fsevents_monitor::set_numeric_event(): removed.
+ *   - fsw::string_utils::string_from_format: added.
+ *   - fsw::string_utils::vstring_from_format: added.
+ *
+ * @section v502 5:0:2
+ *
+ *   - A monitor based on the Solaris/Illumos File Events Notification API has
+ *     been added.
+ *
+ *   - The possibility of watching for directories only during a recursive scan.
+ *     This feature helps reducing the number of open file descriptors if a
+ *     generic change event for a directory is acceptable instead of events on
+ *     directory children.
+ *
+ *   - fsw::fen_monitor: added to provide a monitor based on the Solaris/Illumos
+ *     File Events Notification API.
+ *
+ *   - fsw::monitor::set_directory_only(): added to set a flag to only watch
+ *     directories during a recursive scan.
+ *
+ *   - fsw_set_directory_only(): added to set a flag to only watch directories
+ *     during a recursive scan.
+ *
+ *   - fsw_logf_perror(): added to log a `printf()`-style message using
+ *     `perror()`.
+ *
+ * @section v401 4:0:1
+ *
+ *   - fsw::windows_monitor: a monitor for Microsoft Windows was added.
+ *
+ *   - A logging function has been added to log verbose messages.
+ *
+ *   - A family of functions and macros have been added to log diagnostic
+ *     messages:
+ *
+ *     - fsw_flog()
+ *     - fsw_logf()
+ *     - fsw_flogf()
+ *     - fsw_log_perror()
+ *     - ::FSW_LOG
+ *     - ::FSW_ELOG
+ *     - ::FSW_LOGF
+ *     - ::FSW_ELOGF
+ *     - ::FSW_FLOGF
+ *
+ * @section v300 3:0:0
+ *
+ *   - Added ability to filter events _by type_:
+ *
+ *     - fsw::monitor::add_event_type_filter()
+ *     - fsw::monitor::set_event_type_filters()
+ *
+ *   - fsw::monitor::notify_events(): added to centralize event filtering and
+ *     dispatching into the monitor base class.
+ *
+ *   - Added ability to get event types by name and stringify them:
+ *
+ *     - fsw::event::get_event_flag_by_name()
+ *     - fsw::event::get_event_flag_name()
+ *     - fsw_get_event_flag_by_name()
+ *     - fsw_get_event_flag_name()
+ *
+ *   - fsw_event_type_filter: added to represent an event type filter.
+ *
+ *   - ::FSW_ERR_UNKNOWN_VALUE: added error code.
+ *
+ *   - fsw_add_event_type_filter(): added to add an event type filter.
+ */
+/**
+ * @page path-filtering Path Filtering
+ *
+ * A _path filter_ (fsw::monitor_filter) can be used to filter event paths.  A
+ * filter type (::fsw_filter_type) determines whether the filter regular
+ * expression is used to include and exclude paths from the list of the events
+ * processed by the library.  `libfswatch` processes filters this way:
+ *
+ *   - If a path matches an including filter, the path is _accepted_ no matter
+ *     any other filter.
+ *
+ *   - If a path matches an excluding filter, the path is _rejected_.
+ *
+ *   - If a path matches no  lters, the path is _accepted_.
+ *
+ * Said another way:
+ *
+ *   - All paths are accepted _by default_, unless an exclusion filter says
+ *     otherwise.
+ *
+ *   - Inclusion filters may override any other exclusion filter.
+ *
+ *   - The order in the filter definition has no effect.
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include "libfswatch_config.h"
 #endif

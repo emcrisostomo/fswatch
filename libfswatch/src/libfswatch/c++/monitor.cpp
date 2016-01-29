@@ -89,8 +89,7 @@ namespace fsw
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(
-    const vector<fsw_event_type_filter>& filters)
+  void monitor::set_event_type_filters(const vector<fsw_event_type_filter>& filters)
   {
     event_type_filters.clear();
 
@@ -122,9 +121,9 @@ namespace fsw
     properties[name] = value;
   }
 
-  void monitor::set_properties(const map<string, string>& options)
+  void monitor::set_properties(const map<string, string> options)
   {
-    properties = options;
+    properties = std::move(options);
   }
 
   string monitor::get_property(string name)
@@ -203,8 +202,6 @@ namespace fsw
   monitor::~monitor()
   {
     for (auto& re : filters) regfree(&re.regex);
-
-    filters.clear();
   }
 
   static monitor *create_default_monitor(vector<string> paths,
@@ -369,9 +366,9 @@ namespace fsw
     return (i != creators_by_string().end());
   }
 
-  bool monitor_factory::exists_type(const fsw_monitor_type& name)
+  bool monitor_factory::exists_type(const fsw_monitor_type& type)
   {
-    auto i = creators_by_type().find(name);
+    auto i = creators_by_type().find(type);
 
     return (i != creators_by_type().end());
   }

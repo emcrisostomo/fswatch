@@ -13,6 +13,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Solaris/Illumos monitor.
+ *
+ * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
+
 #ifndef FSW_INOTIFY_MONITOR_H
 #  define FSW_INOTIFY_MONITOR_H
 
@@ -24,18 +34,43 @@
 
 namespace fsw
 {
+  /**
+   * @brief Opaque structure containing implementation specific details of the
+   * FSEvents monitor.
+   */
   struct inotify_monitor_impl;
 
+  /**
+   * @brief Solaris/Illumos monitor.
+   *
+   * This monitor is built upon the _File Events Notification_ API of the
+   * Solaris and Illumos kernels.
+   */
   class inotify_monitor : public monitor
   {
     REGISTER_MONITOR(inotify_monitor, inotify_monitor_type);
 
   public:
+    /**
+     * @brief Constructs an instance of this class.
+     */
     inotify_monitor(std::vector<std::string> paths,
                     FSW_EVENT_CALLBACK *callback,
                     void *context = nullptr);
+
+    /**
+     * @brief Destroys an instance of this class.
+     */
     virtual ~inotify_monitor();
 
+  protected:
+    /**
+     * @brief Executes the monitor loop.
+     *
+     * This call does not return until the monitor is stopped.
+     *
+     * @see stop()
+     */
     void run();
 
   private:

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2016 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,6 +13,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief OS X FSEvents monitor.
+ *
+ * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
+
 #ifndef FSW_FSEVENT_MONITOR_H
 #  define FSW_FSEVENT_MONITOR_H
 
@@ -23,18 +33,40 @@
 #  endif
 namespace fsw
 {
+  /**
+   * @brief OS X FSEvents monitor.
+   *
+   * This monitor is built upon the _FSEvents_ API of the Apple OS X kernel.
+   */
   class fsevents_monitor : public monitor
   {
     REGISTER_MONITOR(fsevents_monitor, fsevents_monitor_type);
 
   public:
+    /**
+     * @brief Constructs an instance of this class.
+     */
     fsevents_monitor(std::vector<std::string> paths,
                      FSW_EVENT_CALLBACK *callback,
                      void *context = nullptr);
+    /**
+     * @brief Destroys an instance of this class.
+     */
     virtual ~fsevents_monitor();
 
   protected:
+    /**
+     * @brief Executes the monitor loop.
+     *
+     * This call does not return until the monitor is stopped.
+     *
+     * @see stop()
+     */
     void run() override;
+
+    /**
+     * @brief Execute an implementation-specific stop handler.
+     */
     void on_stop() override;
 
   private:

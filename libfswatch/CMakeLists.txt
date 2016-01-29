@@ -10,8 +10,6 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c/libfswatch.h
         src/libfswatch/c/libfswatch_log.cpp
         src/libfswatch/c/libfswatch_log.h
-        src/libfswatch/c/libfswatch_mem.cpp
-        src/libfswatch/c/libfswatch_mem.h
         src/libfswatch/c/libfswatch_types.h
         src/libfswatch/c++/event.cpp
         src/libfswatch/c++/event.hpp
