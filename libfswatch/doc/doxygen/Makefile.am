@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015 Enrico M. Crisostomo
+# Copyright (c) 2015-2016 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,8 +16,6 @@
 if HAVE_DOXYGEN
 DOXYGEN_TARGETS = doc-html-doxygen doc-pdf-doxygen
 endif
-
-all-local: doxygen
 
 .PHONY: doxygen
 doxygen: $(DOXYGEN_TARGETS)

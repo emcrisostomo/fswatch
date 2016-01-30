@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (c) 2014-2015 Enrico M. Crisostomo
+# Copyright (c) 2014-2016 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -26,7 +26,7 @@ AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([doc/Makefile doc/doxygen/Makefile doc/texinfo/Makefile])
+AC_CONFIG_FILES([doc/Makefile doc/doxygen/Makefile])
 AC_CONFIG_FILES([src/Makefile src/libfswatch/Makefile po/Makefile.in])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])

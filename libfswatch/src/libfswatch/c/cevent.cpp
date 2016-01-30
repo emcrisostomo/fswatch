@@ -18,6 +18,7 @@
 #endif
 
 #include "cevent.h"
+#include <cstdlib>
 #include <cstring>
 #include "../c++/event.hpp"
 #include "../c++/libfswatch_exception.hpp"
