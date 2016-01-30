@@ -13,6 +13,15 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Header of the fsw::directory_change_event class.
+ *
+ * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
 #ifndef FSW_WIN_DIRECTORY_CHANGE_EVENT_H
 #  define	FSW_WIN_DIRECTORY_CHANGE_EVENT_H
 
@@ -27,6 +36,11 @@
 
 namespace fsw
 {
+  /**
+   * @brief Header of the fsw::directory_change_event class, a helper class to
+   * wrap Microsoft Windows' `ReadDirectoryChangesW` function and a common
+   * workflow to detect file system changes.
+   */
   class directory_change_event
   {
   public:

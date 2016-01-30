@@ -20,8 +20,7 @@ AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\"
 
 lib_LTLIBRARIES = libfswatch.la
 
-libfswatch_la_SOURCES  = c/libfswatch_mem.cpp
-libfswatch_la_SOURCES += c/cevent.cpp
+libfswatch_la_SOURCES  = c/cevent.cpp
 libfswatch_la_SOURCES += c/libfswatch.cpp
 libfswatch_la_SOURCES += c/libfswatch_log.cpp
 libfswatch_la_SOURCES += c++/libfswatch_exception.cpp
@@ -29,6 +28,7 @@ libfswatch_la_SOURCES += c++/event.cpp
 libfswatch_la_SOURCES += c++/monitor.cpp
 libfswatch_la_SOURCES += c++/poll_monitor.cpp
 libfswatch_la_SOURCES += c++/path_utils.cpp
+libfswatch_la_SOURCES += c++/string/string_utils.cpp
 libfswatch_la_SOURCES += gettext.h
 libfswatch_la_SOURCES += gettext_defs.h
 
@@ -77,8 +77,8 @@ libfswatch_cdir = $(pkgincludedir)/c
 libfswatch_cppdir = $(pkgincludedir)/c++
 
 # Distribute C headers.
-libfswatch_c_HEADERS  = c/libfswatch_mem.h
-libfswatch_c_HEADERS += c/libfswatch.h
+libfswatch_c_HEADERS  = c/libfswatch.h
+libfswatch_c_HEADERS += c/libfswatch_types.h
 libfswatch_c_HEADERS += c/cevent.h
 libfswatch_c_HEADERS += c/cfilter.h
 libfswatch_c_HEADERS += c/cmonitor.h
@@ -90,6 +90,7 @@ libfswatch_cpp_HEADERS  = c++/monitor.hpp
 libfswatch_cpp_HEADERS += c++/libfswatch_map.hpp
 libfswatch_cpp_HEADERS += c++/libfswatch_set.hpp
 libfswatch_cpp_HEADERS += c++/path_utils.hpp
+libfswatch_cpp_HEADERS += c++/string/string_utils.hpp
 if USE_FSEVENTS
   libfswatch_cpp_HEADERS += c++/fsevents_monitor.hpp
 endif

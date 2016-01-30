@@ -13,6 +13,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief Header defining the default set type used by the library.
+ *
+ * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
+
 #ifndef LIBFSW_SET_H
 #  define LIBFSW_SET_H
 
@@ -25,7 +35,13 @@
 
 namespace fsw
 {
-  template <typename K>
+  /**
+   * @brief Default set type used by `libfswatch`.
+   *
+   * This type definition will be a synonym of `std::unordered_set` if the C++
+   * library contains it, otherwise it will default to `std::set`.
+   */
+  template<typename K>
   using fsw_hash_set = std::unordered_set<K>;
 }
 
@@ -34,6 +50,12 @@ namespace fsw
 
 namespace fsw
 {
+  /**
+   * @brief Default set type used by `libfswatch`.
+   *
+   * This type definition will be a synonym of `std::unordered_set` if the C++
+   * library contains it, otherwise it will default to `std::set`.
+   */
   template <typename K>
   using fsw_hash_set = std::set<K>;
 }

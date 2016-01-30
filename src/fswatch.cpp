@@ -47,29 +47,31 @@ using namespace fsw;
 /*
  * Event formatting types and routines.
  */
-static void print_event_flags(const event & evt);
-static void print_event_path(const event & evt);
-static void print_event_timestamp(const event & evt);
-static int printf_event_validate_format(const string & fmt);
+static void print_event_flags(const event& evt);
+static void print_event_path(const event& evt);
+static void print_event_timestamp(const event& evt);
+static int printf_event_validate_format(const string& fmt);
+
+static FSW_EVENT_CALLBACK process_events;
 
 struct printf_event_callbacks
 {
-  void (*format_f)(const event & evt);
-  void (*format_p)(const event & evt);
-  void (*format_t)(const event & evt);
+  void (*format_f)(const event& evt);
+  void (*format_p)(const event& evt);
+  void (*format_t)(const event& evt);
 };
 
 struct printf_event_callbacks event_format_callbacks
-{
-  print_event_flags,
-  print_event_path,
-  print_event_timestamp
-};
+  {
+    print_event_flags,
+    print_event_path,
+    print_event_timestamp
+  };
 
-static int printf_event(const string & fmt,
-                        const event & evt,
-                        const struct printf_event_callbacks & callback,
-                        ostream & os = cout);
+static int printf_event(const string& fmt,
+                        const event& evt,
+                        const struct printf_event_callbacks& callback,
+                        ostream& os = cout);
 
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
@@ -83,9 +85,7 @@ static bool allow_overflow = false;
 static int batch_marker_flag = false;
 static bool dflag = false;
 static bool Eflag = false;
-static bool fflag = false;
 static bool Iflag = false;
-static bool lflag = false;
 static bool Lflag = false;
 static bool mflag = false;
 static bool nflag = false;
@@ -118,7 +118,7 @@ static const int OPT_MONITOR_PROPERTY = 133;
 
 static void list_monitor_types(ostream& stream)
 {
-  for (const auto & type : monitor_factory::get_types())
+  for (const auto& type : monitor_factory::get_types())
   {
     stream << "  " << type << "\n";
   }
@@ -218,32 +218,27 @@ static void usage(ostream& stream)
   stream << endl;
 }
 
-static void close_stream()
+static void close_monitor()
 {
-  if (active_monitor)
-  {
-    delete active_monitor;
-
-    active_monitor = nullptr;
-  }
+  if (active_monitor) active_monitor->stop();
 }
 
 static void close_handler(int signal)
 {
-  close_stream();
+  FSW_ELOG(_("Executing termination handler.\n"));
+  close_monitor();
 
-  FSW_ELOG(_("Done.\n"));
   exit(FSW_EXIT_OK);
 }
 
-static bool parse_event_filter(const char * optarg)
+static bool parse_event_filter(const char *optarg)
 {
   try
   {
     event_filters.push_back({event::get_event_flag_by_name(optarg)});
     return true;
   }
-  catch (libfsw_exception & ex)
+  catch (libfsw_exception& ex)
   {
     cerr << ex.what() << endl;
     return false;
@@ -252,13 +247,13 @@ static bool parse_event_filter(const char * optarg)
 
 static bool validate_latency(double latency)
 {
-  if (lvalue == 0.0)
+  if (latency == 0.0)
   {
     cerr << _("Invalid value: ") << optarg << endl;
     return false;
   }
 
-  if (errno == ERANGE || lvalue == HUGE_VAL)
+  if (errno == ERANGE || latency == HUGE_VAL)
   {
     cerr << _("Value out of range: ") << optarg << endl;
     return false;
@@ -302,17 +297,17 @@ static void register_signal_handlers()
   }
 }
 
-static void print_event_path(const event & evt)
+static void print_event_path(const event& evt)
 {
   cout << evt.get_path();
 }
 
-static void print_event_timestamp(const event & evt)
+static void print_event_timestamp(const event& evt)
 {
-  const time_t & evt_time = evt.get_time();
+  const time_t& evt_time = evt.get_time();
 
   char time_format_buffer[TIME_FORMAT_BUFF_SIZE];
-  struct tm * tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
+  struct tm *tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
 
   string date =
     strftime(time_format_buffer,
@@ -323,14 +318,14 @@ static void print_event_timestamp(const event & evt)
   cout << date;
 }
 
-static void print_event_flags(const event & evt)
+static void print_event_flags(const event& evt)
 {
-  const vector<fsw_event_flag> & flags = evt.get_flags();
+  const vector<fsw_event_flag>& flags = evt.get_flags();
 
   if (nflag)
   {
     int mask = 0;
-    for (const fsw_event_flag &flag : flags)
+    for (const fsw_event_flag& flag : flags)
     {
       mask += static_cast<int> (flag);
     }
@@ -371,7 +366,7 @@ static void write_batch_marker()
   }
 }
 
-static void write_one_batch_event(const vector<event> &events)
+static void write_one_batch_event(const vector<event>& events)
 {
   cout << events.size();
   print_end_of_event_record();
@@ -379,9 +374,9 @@ static void write_one_batch_event(const vector<event> &events)
   write_batch_marker();
 }
 
-static void write_events(const vector<event> &events)
+static void write_events(const vector<event>& events)
 {
-  for (const event &evt : events)
+  for (const event& evt : events)
   {
     printf_event(format, evt, event_format_callbacks);
     print_end_of_event_record();
@@ -395,7 +390,7 @@ static void write_events(const vector<event> &events)
   }
 }
 
-static void process_events(const vector<event> &events, void * context)
+static void process_events(const vector<event>& events, void *context)
 {
   if (oflag)
     write_one_batch_event(events);
@@ -403,20 +398,17 @@ static void process_events(const vector<event> &events, void * context)
     write_events(events);
 }
 
-static void start_monitor(int argc, char ** argv, int optind)
+static void start_monitor(int argc, char **argv, int optind)
 {
   // parsing paths
   vector<string> paths;
 
   for (auto i = optind; i < argc; ++i)
   {
-    char *real_path = ::realpath(argv[i], nullptr);
+    char *real_path = realpath(argv[i], nullptr);
     string path(real_path ? real_path : argv[i]);
 
-    if (real_path)
-    {
-      ::free(real_path);
-    }
+    if (real_path) free(real_path);
 
     FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 
@@ -437,7 +429,7 @@ static void start_monitor(int argc, char ** argv, int optind)
    * filter but fswatch does not.  For the time being, we apply the same flags
    * to every filter.
    */
-  for (auto & filter : filters)
+  for (auto& filter : filters)
   {
     filter.case_sensitive = !Iflag;
     filter.extended = Eflag;
@@ -456,7 +448,7 @@ static void start_monitor(int argc, char ** argv, int optind)
   active_monitor->start();
 }
 
-static void parse_opts(int argc, char ** argv)
+static void parse_opts(int argc, char **argv)
 {
   int ch;
   string short_options = "01ade:Ef:hi:Il:LMm:nortuvx";
@@ -464,35 +456,35 @@ static void parse_opts(int argc, char ** argv)
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
   static struct option long_options[] = {
-    { "access",               no_argument,       nullptr, 'a'},
-    { "allow-overflow",       no_argument,       nullptr, OPT_ALLOW_OVERFLOW},
-    { "batch-marker",         optional_argument, nullptr, OPT_BATCH_MARKER},
-    { "directories",          no_argument,       nullptr, 'd'},
-    { "event",                required_argument, nullptr, OPT_EVENT_TYPE},
-    { "event-flags",          no_argument,       nullptr, 'x'},
-    { "event-flag-separator", required_argument, nullptr, OPT_EVENT_FLAG_SEPARATOR},
-    { "exclude",              required_argument, nullptr, 'e'},
-    { "extended",             no_argument,       nullptr, 'E'},
-    { "follow-links",         no_argument,       nullptr, 'L'},
-    { "format",               required_argument, nullptr, OPT_FORMAT},
-    { "format-time",          required_argument, nullptr, 'f'},
-    { "help",                 no_argument,       nullptr, 'h'},
-    { "include",              required_argument, nullptr, 'i'},
-    { "insensitive",          no_argument,       nullptr, 'I'},
-    { "latency",              required_argument, nullptr, 'l'},
-    { "list-monitors",        no_argument,       nullptr, 'M'},
-    { "monitor",              required_argument, nullptr, 'm'},
-    { "monitor-property",     required_argument, nullptr, OPT_MONITOR_PROPERTY},
-    { "numeric",              no_argument,       nullptr, 'n'},
-    { "one-per-batch",        no_argument,       nullptr, 'o'},
-    { "one-event",            no_argument,       nullptr, '1'},
-    { "print0",               no_argument,       nullptr, '0'},
-    { "recursive",            no_argument,       nullptr, 'r'},
-    { "timestamp",            no_argument,       nullptr, 't'},
-    { "utc-time",             no_argument,       nullptr, 'u'},
-    { "verbose",              no_argument,       nullptr, 'v'},
-    { "version",              no_argument,       &version_flag, true},
-    { nullptr, 0, nullptr, 0}
+    {"access",               no_argument,       nullptr,       'a'},
+    {"allow-overflow",       no_argument,       nullptr,       OPT_ALLOW_OVERFLOW},
+    {"batch-marker",         optional_argument, nullptr,       OPT_BATCH_MARKER},
+    {"directories",          no_argument,       nullptr,       'd'},
+    {"event",                required_argument, nullptr,       OPT_EVENT_TYPE},
+    {"event-flags",          no_argument,       nullptr,       'x'},
+    {"event-flag-separator", required_argument, nullptr,       OPT_EVENT_FLAG_SEPARATOR},
+    {"exclude",              required_argument, nullptr,       'e'},
+    {"extended",             no_argument,       nullptr,       'E'},
+    {"follow-links",         no_argument,       nullptr,       'L'},
+    {"format",               required_argument, nullptr,       OPT_FORMAT},
+    {"format-time",          required_argument, nullptr,       'f'},
+    {"help",                 no_argument,       nullptr,       'h'},
+    {"include",              required_argument, nullptr,       'i'},
+    {"insensitive",          no_argument,       nullptr,       'I'},
+    {"latency",              required_argument, nullptr,       'l'},
+    {"list-monitors",        no_argument,       nullptr,       'M'},
+    {"monitor",              required_argument, nullptr,       'm'},
+    {"monitor-property",     required_argument, nullptr,       OPT_MONITOR_PROPERTY},
+    {"numeric",              no_argument,       nullptr,       'n'},
+    {"one-per-batch",        no_argument,       nullptr,       'o'},
+    {"one-event",            no_argument,       nullptr,       '1'},
+    {"print0",               no_argument,       nullptr,       '0'},
+    {"recursive",            no_argument,       nullptr,       'r'},
+    {"timestamp",            no_argument,       nullptr,       't'},
+    {"utc-time",             no_argument,       nullptr,       'u'},
+    {"verbose",              no_argument,       nullptr,       'v'},
+    {"version",              no_argument,       &version_flag, true},
+    {nullptr,                0,                 nullptr,       0}
   };
 
   while ((ch = getopt_long(argc,
@@ -533,7 +525,6 @@ static void parse_opts(int argc, char ** argv)
       break;
 
     case 'f':
-      fflag = true;
       tformat = string(optarg);
       break;
 
@@ -550,7 +541,6 @@ static void parse_opts(int argc, char ** argv)
       break;
 
     case 'l':
-      lflag = true;
       lvalue = strtod(optarg, nullptr);
 
       if (!validate_latency(lvalue))
@@ -701,19 +691,19 @@ static void parse_opts(int argc, char ** argv)
   }
 }
 
-static void format_noop(const event & evt)
+static void format_noop(const event& evt)
 {
 }
 
-static int printf_event_validate_format(const string & fmt)
+static int printf_event_validate_format(const string& fmt)
 {
 
   struct printf_event_callbacks noop_callbacks
-  {
-    format_noop,
-    format_noop,
-    format_noop
-  };
+    {
+      format_noop,
+      format_noop,
+      format_noop
+    };
 
   const vector<fsw_event_flag> flags;
   const event empty("", 0, flags);
@@ -722,10 +712,10 @@ static int printf_event_validate_format(const string & fmt)
   return printf_event(fmt, empty, noop_callbacks, noop_stream);
 }
 
-static int printf_event(const string & fmt,
-                        const event & evt,
-                        const struct printf_event_callbacks & callback,
-                        ostream & os)
+static int printf_event(const string& fmt,
+                        const event& evt,
+                        const struct printf_event_callbacks& callback,
+                        ostream& os)
 {
   /*
    * %t - time (further formatted using -f and strftime.
@@ -778,7 +768,7 @@ static int printf_event(const string & fmt,
   return 0;
 }
 
-int main(int argc, char ** argv)
+int main(int argc, char **argv)
 {
   // Trigger gettext operations
 #ifdef ENABLE_NLS
@@ -807,12 +797,15 @@ int main(int argc, char ** argv)
   {
     // registering handlers to clean up resources
     register_signal_handlers();
-    ::atexit(close_stream);
+    atexit(close_monitor);
 
     // configure and start the monitor loop
     start_monitor(argc, argv, optind);
+
+    delete active_monitor;
+    active_monitor = nullptr;
   }
-  catch (exception & conf)
+  catch (exception& conf)
   {
     cerr << _("An error occurred and the program will be terminated.\n");
     cerr << conf.what() << endl;

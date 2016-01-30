@@ -1,6 +1,29 @@
 NEWS
 ****
 
+New in 1.8.0:
+
+  * Unsupported CMake files and CLion project files are included as a courtesy.
+
+  * Parts of the code have been refactored to use move semantics.
+
+  * Fixed a bug in fsw::monitor_factory::create_monitor().
+
+  * Refactor fsw::monitor_factory to dynamically create the default monitor
+    using the factory registration information.
+
+  * Generate documentation using Doxygen.
+
+  * Texinfo documentation has been obsoleted by Doxygen documentation and has
+    been removed.
+
+  * Add fsw::monitor::stop() function to allow for cooperative monitor shutdown.
+
+  * Implement fsw::monitor::stop() on all available monitors.
+
+  * Fixed a but in the Solaris/Illumos monitor that prevented it to correctly
+    detect the ETIME status code upon waiting for events.
+
 New in 1.7.0:
 
   * Issue 35: Support Solaris/Illumos File Events Notification API.

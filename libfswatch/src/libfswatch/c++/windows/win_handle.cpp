@@ -53,7 +53,7 @@ namespace fsw
 
   win_handle& win_handle::operator=(const HANDLE& handle)
   {
-    if (is_valid()) CloseHandle(h);
+    if (is_valid() && h != handle) CloseHandle(h);
 
     h = handle;
 
@@ -70,7 +70,7 @@ namespace fsw
   {
     if (this == &other) return *this;
 
-    if (is_valid()) CloseHandle(h);
+    if (is_valid() && h != other.h) CloseHandle(h);
 
     h = other.h;
     other.h = INVALID_HANDLE_VALUE;

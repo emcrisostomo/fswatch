@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (c) 2014-2015 Enrico M. Crisostomo
+# Copyright (c) 2014-2016 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -25,7 +25,9 @@ AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
-AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile src/libfswatch/Makefile po/Makefile.in])
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([doc/Makefile doc/doxygen/Makefile])
+AC_CONFIG_FILES([src/Makefile src/libfswatch/Makefile po/Makefile.in])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -57,6 +59,11 @@ AM_CONDITIONAL([OS_CYGWIN], [test "${target_os}" = "cygwin"])
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
 
 # Checks for programs.
+AC_CHECK_PROGS([DOXYGEN], [doxygen])
+test -z "${DOXYGEN}" && AC_MSG_WARN([Doxygen support disabled])
+
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "${DOXYGEN}"])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES(doc/doxygen/Doxyfile)])
 
 # Initialize gettext
 AM_GNU_GETTEXT([external])
@@ -238,6 +245,6 @@ AS_VAR_IF(
   [ax_cv_cxx_have_thread_local],
   ["yes"],
   [],
-  [AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier.])])
+  [AC_MSG_WARN([The C API of AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier.])])
 
 AC_OUTPUT

@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.8.0:
+
+  * Unsupported CMake files and CLion project files are included as a courtesy.
+
 New in 1.7.0:
 
   * Issue 35: Support Solaris/Illumos File Events Notification API.

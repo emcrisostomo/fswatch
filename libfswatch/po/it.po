@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libfswatch 1.4.4\n"
+"Project-Id-Version: libfswatch 1.8.0\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2015-11-10 23:07+0100\n"
-"PO-Revision-Date: 2015-10-24 13:08+0200\n"
+"POT-Creation-Date: 2016-01-30 12:48+0100\n"
+"PO-Revision-Date: 2016-01-30 13:00+0100\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -17,93 +17,102 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/libfswatch/c++/event.cpp:75
+#: src/libfswatch/c++/event.cpp:74
 msgid "Unknown event type: "
 msgstr "Tipo evento sconosciuto: "
 
-#: src/libfswatch/c++/event.cpp:105
+#: src/libfswatch/c++/event.cpp:104
 msgid "Unknown event type."
 msgstr "Tipo evento sconosciuto."
 
-#: src/libfswatch/c++/fen_monitor.cpp:60
+#: src/libfswatch/c++/fen_monitor.cpp:61
 msgid "An error occurred while creating a port."
 msgstr "Si è prodotto un errore durante la creazione del port."
 
-#: src/libfswatch/c++/fen_monitor.cpp:197
+#: src/libfswatch/c++/fen_monitor.cpp:198
 #, c-format
 msgid "Associating %s.\n"
 msgstr "Associando %s.\n"
 
-#: src/libfswatch/c++/fen_monitor.cpp:228
+#: src/libfswatch/c++/fen_monitor.cpp:229
 #, c-format
 msgid "Adding %s to list of watched paths.\n"
 msgstr "Aggiungendo %s alla lista di path osservati.\n"
 
-#: src/libfswatch/c++/fen_monitor.cpp:234
+#: src/libfswatch/c++/fen_monitor.cpp:235
 msgid "Allocating fen_info.\n"
 msgstr "Allocando fen_info.\n"
 
-#: src/libfswatch/c++/fen_monitor.cpp:241
-#: src/libfswatch/c++/fen_monitor.cpp:248
+#: src/libfswatch/c++/fen_monitor.cpp:242
+#: src/libfswatch/c++/fen_monitor.cpp:249
 msgid "Cannot allocate memory"
 msgstr "Non si può allocare memoria"
 
-#: src/libfswatch/c++/fen_monitor.cpp:305
+#: src/libfswatch/c++/fen_monitor.cpp:306
 #: src/libfswatch/c++/kqueue_monitor.cpp:262
 #, c-format
 msgid "%s cannot be found. Will retry later.\n"
 msgstr "%s non può essere trovato. Si riproverà più tardi.\n"
 
-#: src/libfswatch/c++/fen_monitor.cpp:328
+#: src/libfswatch/c++/fen_monitor.cpp:329
 msgid "Processing deleted descriptors.\n"
 msgstr "Processando descrittori eliminati.\n"
 
-#: src/libfswatch/c++/fen_monitor.cpp:350
+#: src/libfswatch/c++/fen_monitor.cpp:351
 msgid "Rescanning pending descriptors.\n"
 msgstr "Scansione dei descrittori in sospeso.\n"
 
-#: src/libfswatch/c++/fen_monitor.cpp:356
+#: src/libfswatch/c++/fen_monitor.cpp:357
 #, c-format
 msgid "Rescanning %s.\n"
 msgstr "Nuova scansione di %s.\n"
 
-#: src/libfswatch/c++/fen_monitor.cpp:385
+#: src/libfswatch/c++/fen_monitor.cpp:399
 msgid "Event from unexpected source"
 msgstr "Evento da sorgente inattesa"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:79
+#: src/libfswatch/c++/fsevents_monitor.cpp:77
+#: src/libfswatch/c++/fsevents_monitor.cpp:152
 msgid "Stopping event stream...\n"
 msgstr "Fermando il flusso di eventi...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:82
+#: src/libfswatch/c++/fsevents_monitor.cpp:80
 msgid "Invalidating event stream...\n"
 msgstr "Invalidando il flusso di eventi...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:85
+#: src/libfswatch/c++/fsevents_monitor.cpp:83
 msgid "Releasing event stream...\n"
 msgstr "Liberando il flusso di eventi...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:126
+#: src/libfswatch/c++/fsevents_monitor.cpp:119
 msgid "Creating FSEvent stream...\n"
 msgstr "Creando il flusso FSEvent...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:137
+#: src/libfswatch/c++/fsevents_monitor.cpp:129
 msgid "Event stream could not be created."
 msgstr "Il flusso di eventi non può essere creato."
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:140
+#: src/libfswatch/c++/fsevents_monitor.cpp:134
 msgid "Scheduling stream with run loop...\n"
 msgstr "Pianificando il flusso con il ciclo di esecuzione...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:145
+#: src/libfswatch/c++/fsevents_monitor.cpp:139
 msgid "Starting event stream...\n"
 msgstr "Facendo partire il flusso di eventi...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:148
+#: src/libfswatch/c++/fsevents_monitor.cpp:142
 msgid "Starting run loop...\n"
 msgstr "Facendo partire il ciclo di esecuzione...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:179
+#: src/libfswatch/c++/fsevents_monitor.cpp:150
+msgid "run loop is null"
+msgstr "ciclo di esecuzione nullo"
+
+#: src/libfswatch/c++/fsevents_monitor.cpp:156
+msgid "Stopping run loop...\n"
+msgstr "Fermando il ciclo di esecuzione...\n"
+
+#: src/libfswatch/c++/fsevents_monitor.cpp:188
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "Il contesto del callback non può essere convertita a fsevents_monitor."
 
@@ -127,19 +136,19 @@ msgstr "Evento generico: "
 msgid "Removed: "
 msgstr "Eliminato: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:404
+#: src/libfswatch/c++/inotify_monitor.cpp:410
 msgid "::select() on inotify descriptor encountered an error."
 msgstr "::select() sul descrittore inotify è andata in errore."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:419
+#: src/libfswatch/c++/inotify_monitor.cpp:422
 msgid "Number of records: "
 msgstr "Numero di registri: "
 
-#: src/libfswatch/c++/inotify_monitor.cpp:425
+#: src/libfswatch/c++/inotify_monitor.cpp:428
 msgid "read() on inotify descriptor read 0 records."
 msgstr "read() sul descrittore inotify ha trovato 0 registri."
 
-#: src/libfswatch/c++/inotify_monitor.cpp:431
+#: src/libfswatch/c++/inotify_monitor.cpp:434
 msgid "read() on inotify descriptor returned -1."
 msgstr "read() sul descrittore inotify ha ritornato -1."
 
@@ -156,11 +165,11 @@ msgstr "Si sta già eseguando kqueue."
 msgid "kqueue failed."
 msgstr "kqueue ha fallito."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:295
+#: src/libfswatch/c++/kqueue_monitor.cpp:301
 msgid "kevent returned -1, invalid event number."
 msgstr "kevent ha ritornato -1, numero di eventi invalido."
 
-#: src/libfswatch/c++/kqueue_monitor.cpp:315
+#: src/libfswatch/c++/kqueue_monitor.cpp:321
 msgid "Event with EV_ERROR"
 msgstr "Evento con EV_ERROR"
 
@@ -168,37 +177,43 @@ msgstr "Evento con EV_ERROR"
 msgid "Error: "
 msgstr "Errore: "
 
-#: src/libfswatch/c++/monitor.cpp:65
+#: src/libfswatch/c++/monitor.cpp:56
 msgid "Callback cannot be null."
 msgstr "Il callback non può essere nullo."
 
-#: src/libfswatch/c++/monitor.cpp:78
+#: src/libfswatch/c++/monitor.cpp:70
 msgid "Latency cannot be negative."
 msgstr "La latenza non può essere negativa."
 
-#: src/libfswatch/c++/monitor.cpp:116
-msgid "An error occurred during the compilation of "
-msgstr "Si è prodotto un errore durante la compilazione di "
+#: src/libfswatch/c++/monitor.cpp:111
+#, c-format
+msgid "An error occurred during the compilation of %s"
+msgstr "Si è prodotto un errore durante la compilazione di %s"
 
-#: src/libfswatch/c++/monitor.cpp:317
+#: src/libfswatch/c++/monitor.cpp:274
+msgid "Stopping the monitor.\n"
+msgstr "Fermando il monitor...\n"
+
+#: src/libfswatch/c++/monitor.cpp:302
 msgid "Event queue overflow."
 msgstr "La coda degli eventi è andata in overflow."
 
-#: src/libfswatch/c++/monitor.cpp:344
-msgid "Notifying events #: "
-msgstr "Notificando eventi #: "
+#: src/libfswatch/c++/monitor.cpp:328
+#, c-format
+msgid "Notifying events #: %d.\n"
+msgstr "Notificando eventi #: %d.\n"
 
-#: src/libfswatch/c++/path_utils.cpp:74
+#: src/libfswatch/c++/path_utils.cpp:73
 #, c-format
 msgid "Cannot stat %s"
 msgstr "Non posso eseguire stat() di %s"
 
-#: src/libfswatch/c++/path_utils.cpp:86
+#: src/libfswatch/c++/path_utils.cpp:85
 #, c-format
 msgid "Cannot lstat %s"
 msgstr "Non posso eseguire lstat() di %s"
 
-#: src/libfswatch/c++/poll_monitor.cpp:201
+#: src/libfswatch/c++/poll_monitor.cpp:207
 msgid "Done scanning.\n"
 msgstr "Scansione terminata.\n"
 

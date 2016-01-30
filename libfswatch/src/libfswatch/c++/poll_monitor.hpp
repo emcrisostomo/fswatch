@@ -13,6 +13,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @file
+ * @brief `stat()` based monitor.
+ *
+ * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @license GNU General Public License v. 3.0
+ * @author Enrico M. Crisostomo
+ * @version 1.8.0
+ */
+
 #ifndef FSW_POLL_MONITOR_H
 #  define FSW_POLL_MONITOR_H
 
@@ -22,26 +32,41 @@
 
 namespace fsw
 {
+  /**
+   * @brief `stat()`-based monitor.
+   *
+   * This monitor uses the `stat()` function to periodically check the observed
+   * paths and detect changes.
+   */
   class poll_monitor : public monitor
   {
     REGISTER_MONITOR(poll_monitor, poll_monitor_type);
 
   public:
+    /**
+     * @brief Constructs an instance of this class.
+     */
     poll_monitor(std::vector<std::string> paths,
-                 FSW_EVENT_CALLBACK * callback,
-                 void * context = nullptr);
+                 FSW_EVENT_CALLBACK *callback,
+                 void *context = nullptr);
+
+    /**
+     * @brief Destroys an instance of this class.
+     */
     virtual ~poll_monitor();
+
+  protected:
     void run();
 
+  private:
     static const unsigned int MIN_POLL_LATENCY = 1;
 
-  private:
     poll_monitor(const poll_monitor& orig) = delete;
-    poll_monitor& operator=(const poll_monitor & that) = delete;
+    poll_monitor& operator=(const poll_monitor& that) = delete;
 
     typedef bool (poll_monitor::*poll_monitor_scan_callback)(
-      const std::string &path,
-      const struct stat &stat);
+      const std::string& path,
+      const struct stat& stat);
 
     typedef struct watched_file_info
     {
@@ -51,15 +76,15 @@ namespace fsw
 
     struct poll_monitor_data;
 
-    void scan(const std::string &path, poll_monitor_scan_callback fn);
+    void scan(const std::string& path, poll_monitor_scan_callback fn);
     void collect_initial_data();
     void collect_data();
-    bool add_path(const std::string &path,
-                  const struct stat &fd_stat,
+    bool add_path(const std::string& path,
+                  const struct stat& fd_stat,
                   poll_monitor_scan_callback poll_callback);
-    bool initial_scan_callback(const std::string &path, const struct stat &stat);
-    bool intermediate_scan_callback(const std::string &path,
-                                    const struct stat &stat);
+    bool initial_scan_callback(const std::string& path, const struct stat& stat);
+    bool intermediate_scan_callback(const std::string& path,
+                                    const struct stat& stat);
     void find_removed_files();
     void swap_data_containers();
 

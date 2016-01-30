@@ -41,4 +41,7 @@ dist-hook:
 	chmod u+w $(distdir)/ChangeLog
 	git log --oneline --decorate >> $(distdir)/ChangeLog
 
-EXTRA_DIST = config/config.rpath
+# Manually distributing config.rpath seems not to be required any longer with
+# current Autotools.
+#
+# EXTRA_DIST = config/config.rpath

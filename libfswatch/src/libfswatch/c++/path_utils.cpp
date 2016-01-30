@@ -26,8 +26,7 @@ using namespace std;
 
 namespace fsw
 {
-
-  vector<string> get_directory_children(const string &path)
+  vector<string> get_directory_children(const string& path)
   {
     vector<string> children;
     DIR *dir = opendir(path.c_str());
@@ -46,7 +45,7 @@ namespace fsw
       return children;
     }
 
-    while (struct dirent * ent = readdir(dir))
+    while (struct dirent *ent = readdir(dir))
     {
       children.push_back(ent->d_name);
     }
@@ -56,7 +55,7 @@ namespace fsw
     return children;
   }
 
-  bool read_link_path(const string &path, string &link_path)
+  bool read_link_path(const string& path, string& link_path)
   {
     char *real_path = realpath(path.c_str(), nullptr);
     link_path = (real_path ? real_path : path);
@@ -67,7 +66,7 @@ namespace fsw
     return ret;
   }
 
-  bool stat_path(const string &path, struct stat &fd_stat)
+  bool stat_path(const string& path, struct stat& fd_stat)
   {
     if (stat(path.c_str(), &fd_stat) != 0)
     {
@@ -79,7 +78,7 @@ namespace fsw
     return true;
   }
 
-  bool lstat_path(const string &path, struct stat &fd_stat)
+  bool lstat_path(const string& path, struct stat& fd_stat)
   {
     if (lstat(path.c_str(), &fd_stat) != 0)
     {

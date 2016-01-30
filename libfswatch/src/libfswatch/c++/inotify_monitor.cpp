@@ -69,13 +69,13 @@ namespace fsw
     time_t curr_time;
   };
 
-  static const unsigned int BUFFER_SIZE = (10 * ((sizeof (struct inotify_event)) + NAME_MAX + 1));
+  static const unsigned int BUFFER_SIZE = (10 * ((sizeof(struct inotify_event)) + NAME_MAX + 1));
 
   REGISTER_MONITOR_IMPL(inotify_monitor, inotify_monitor_type);
 
   inotify_monitor::inotify_monitor(vector<string> paths_to_monitor,
-                                   FSW_EVENT_CALLBACK * callback,
-                                   void * context) :
+                                   FSW_EVENT_CALLBACK *callback,
+                                   void *context) :
     monitor(paths_to_monitor, callback, context),
     impl(new inotify_monitor_impl())
   {
@@ -112,8 +112,8 @@ namespace fsw
     delete impl;
   }
 
-  bool inotify_monitor::add_watch(const string &path,
-                                  const struct stat &fd_stat)
+  bool inotify_monitor::add_watch(const string& path,
+                                  const struct stat& fd_stat)
   {
     // TODO: Consider optionally adding the IN_EXCL_UNLINK flag.
     int inotify_desc = inotify_add_watch(impl->inotify_monitor_handle,
@@ -138,7 +138,7 @@ namespace fsw
     return (inotify_desc != -1);
   }
 
-  void inotify_monitor::scan(const string &path, const bool accept_non_dirs)
+  void inotify_monitor::scan(const string& path, const bool accept_non_dirs)
   {
     struct stat fd_stat;
     if (!lstat_path(path, fd_stat)) return;
@@ -172,7 +172,7 @@ namespace fsw
 
     vector<string> children = get_directory_children(path);
 
-    for (const string &child : children)
+    for (const string& child : children)
     {
       if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
@@ -183,20 +183,20 @@ namespace fsw
     }
   }
 
-  bool inotify_monitor::is_watched(const string & path) const
+  bool inotify_monitor::is_watched(const string& path) const
   {
     return (impl->path_to_wd.find(path) != impl->path_to_wd.end());
   }
 
   void inotify_monitor::scan_root_paths()
   {
-    for (string &path : paths)
+    for (string& path : paths)
     {
       if (!is_watched(path)) scan(path);
     }
   }
 
-  void inotify_monitor::preprocess_dir_event(struct inotify_event * event)
+  void inotify_monitor::preprocess_dir_event(struct inotify_event *event)
   {
     vector<fsw_event_flag> flags;
 
@@ -210,7 +210,7 @@ namespace fsw
     }
   }
 
-  void inotify_monitor::preprocess_node_event(struct inotify_event * event)
+  void inotify_monitor::preprocess_node_event(struct inotify_event *event)
   {
     vector<fsw_event_flag> flags;
 
@@ -308,7 +308,7 @@ namespace fsw
     }
   }
 
-  void inotify_monitor::preprocess_event(struct inotify_event * event)
+  void inotify_monitor::preprocess_event(struct inotify_event *event)
   {
     if (event->mask & IN_Q_OVERFLOW)
     {
@@ -354,7 +354,7 @@ namespace fsw
 
     while (fd != impl->descriptors_to_remove.end())
     {
-      const string & curr_path = impl->wd_to_path[*fd];
+      const string& curr_path = impl->wd_to_path[*fd];
       impl->path_to_wd.erase(curr_path);
       impl->wd_to_path.erase(*fd);
       impl->watched_descriptors.erase(*fd);
@@ -366,9 +366,17 @@ namespace fsw
   void inotify_monitor::run()
   {
     char buffer[BUFFER_SIZE];
+    double sec;
+    double frac = modf(this->latency, &sec);
 
-    while (true)
+    for(;;)
     {
+#ifdef HAVE_CXX_MUTEX
+      unique_lock<mutex> run_guard(run_mutex);
+      if (should_stop) break;
+      run_guard.unlock();
+#endif
+
       process_pending_events();
 
       scan_root_paths();
@@ -388,8 +396,6 @@ namespace fsw
 
       FD_ZERO(&set);
       FD_SET(impl->inotify_monitor_handle, &set);
-      double sec;
-      double frac = modf(this->latency, &sec);
       timeout.tv_sec = sec;
       timeout.tv_usec = 1000 * 1000 * frac;
 
@@ -405,10 +411,7 @@ namespace fsw
       }
 
       // In case of read timeout just repeat the loop.
-      if (rv == 0)
-      {
-        continue;
-      }
+      if (rv == 0) continue;
 
       ssize_t record_num = read(impl->inotify_monitor_handle,
                                 buffer,
@@ -435,17 +438,16 @@ namespace fsw
 
       for (char *p = buffer; p < buffer + record_num;)
       {
-        struct inotify_event * event = reinterpret_cast<struct inotify_event *> (p);
+        struct inotify_event *event = reinterpret_cast<struct inotify_event *> (p);
 
         preprocess_event(event);
 
-        p += (sizeof (struct inotify_event)) + event->len;
+        p += (sizeof(struct inotify_event)) + event->len;
       }
 
       if (impl->events.size())
       {
         notify_events(impl->events);
-
         impl->events.clear();
       }
 
