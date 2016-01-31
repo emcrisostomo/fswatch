@@ -1,9 +1,5 @@
 language: cpp
 
-branches:
-  only:
-    - master
-
 compiler:
   - clang
 
