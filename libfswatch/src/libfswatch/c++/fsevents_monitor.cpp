@@ -72,19 +72,6 @@ namespace fsw
 
   fsevents_monitor::~fsevents_monitor()
   {
-    if (stream)
-    {
-      FSW_ELOG(_("Stopping event stream...\n"));
-      FSEventStreamStop(stream);
-
-      FSW_ELOG(_("Invalidating event stream...\n"));
-      FSEventStreamInvalidate(stream);
-
-      FSW_ELOG(_("Releasing event stream...\n"));
-      FSEventStreamRelease(stream);
-    }
-
-    stream = nullptr;
   }
 
   void fsevents_monitor::run()
@@ -151,11 +138,18 @@ namespace fsw
 
     FSW_ELOG(_("Stopping event stream...\n"));
     FSEventStreamStop(stream);
-    stream = nullptr;
 
     FSW_ELOG(_("Stopping run loop...\n"));
     CFRunLoopStop(run_loop);
     run_loop = nullptr;
+
+    FSW_ELOG(_("Invalidating event stream...\n"));
+    FSEventStreamInvalidate(stream);
+
+    FSW_ELOG(_("Releasing event stream...\n"));
+    FSEventStreamRelease(stream);
+
+    stream = nullptr;
   }
 
   static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
@@ -188,6 +182,7 @@ namespace fsw
       throw libfsw_exception(_("The callback info cannot be cast to fsevents_monitor."));
     }
 
+    // Build the notification objects.
     vector<event> events;
 
     time_t curr_time;
