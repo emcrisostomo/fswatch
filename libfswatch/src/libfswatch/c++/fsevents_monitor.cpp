@@ -21,8 +21,11 @@
 #include "gettext_defs.h"
 #include "libfswatch_exception.hpp"
 #include "c/libfswatch_log.h"
+#include <memory>
+#include <thread>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace fsw
 {
@@ -66,7 +69,8 @@ namespace fsw
   fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
                                      FSW_EVENT_CALLBACK *callback,
                                      void *context) :
-    monitor(paths_to_monitor, callback, context)
+    monitor(paths_to_monitor, callback, context),
+    last_notification(duration_cast<milliseconds>(system_clock::now().time_since_epoch()))
   {
   }
 
@@ -76,6 +80,9 @@ namespace fsw
 
   void fsevents_monitor::run()
   {
+#ifdef HAVE_CXX_MUTEX
+    unique_lock<mutex> run_loop_lock(run_mutex);
+#endif
     if (stream) return;
 
     // parsing paths
@@ -104,7 +111,6 @@ namespace fsw
     context->copyDescription = nullptr;
 
     FSW_ELOG(_("Creating FSEvent stream...\n"));
-    unique_lock<mutex> run_loop_lock(run_mutex);
     stream = FSEventStreamCreate(NULL,
                                  &fsevents_monitor::fsevents_callback,
                                  context,
@@ -113,8 +119,16 @@ namespace fsw
                                  latency,
                                  kFSEventStreamCreateFlagFileEvents);
 
-    if (!stream) throw libfsw_exception(_("Event stream could not be created."));
+    if (!stream)
+      throw libfsw_exception(_("Event stream could not be created."));
 
+    // Fire the inactivity thread
+    std::unique_ptr<std::thread> inactivity_thread;
+#ifdef HAVE_CXX_MUTEX
+    inactivity_thread.reset(new std::thread(fsevents_monitor::inactivity_callback, this));
+#endif
+
+    // Fire the event loop
     run_loop = CFRunLoopGetCurrent();
     run_loop_lock.unlock();
 
@@ -128,20 +142,25 @@ namespace fsw
 
     FSW_ELOG(_("Starting run loop...\n"));
     CFRunLoopRun();
-  }
 
+    // Join the inactivity thread and wait until it stops.
+    if (!inactivity_thread) inactivity_thread->join();
+  }
 
   void fsevents_monitor::on_stop()
   {
+#ifdef HAVE_CXX_MUTEX
     lock_guard<mutex> run_loop_lock(run_mutex);
+#endif
     if (!run_loop) throw libfsw_exception(_("run loop is null"));
-
-    FSW_ELOG(_("Stopping event stream...\n"));
-    FSEventStreamStop(stream);
 
     FSW_ELOG(_("Stopping run loop...\n"));
     CFRunLoopStop(run_loop);
+
     run_loop = nullptr;
+
+    FSW_ELOG(_("Stopping event stream...\n"));
+    FSEventStreamStop(stream);
 
     FSW_ELOG(_("Invalidating event stream...\n"));
     FSEventStreamInvalidate(stream);
@@ -166,6 +185,56 @@ namespace fsw
 
     return evt_flags;
   }
+
+  void fsevents_monitor::notify_events_sync(const std::vector<event>& events) const
+  {
+#ifdef HAVE_CXX_MUTEX
+    lock_guard<mutex> notify_lock(notify_mutex);
+#endif
+    notify_events(events);
+  }
+
+#ifdef HAVE_CXX_MUTEX
+  void fsevents_monitor::inactivity_callback(fsevents_monitor *fse_monitor)
+  {
+    if (!fse_monitor)
+    {
+      throw libfsw_exception(_("Callback argument cannot be null."));
+    }
+
+    for (;;)
+    {
+      unique_lock<mutex> run_guard(fse_monitor->run_mutex);
+      if (fse_monitor->should_stop) break;
+      run_guard.unlock();
+
+      std::this_thread::sleep_for(nanoseconds((long)(fse_monitor->latency * 1000 * 1000 * 1000)));
+      timeout_callback(fse_monitor);
+    }
+  }
+
+  void fsevents_monitor::timeout_callback(fsevents_monitor *fse_monitor)
+  {
+    milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    milliseconds previous = fse_monitor->last_notification.load(memory_order_acquire);
+
+    // If the distance between the timeout event and the last notified event is
+    // greater than the latency, then do nothing.
+    if ((now - previous) < milliseconds((long) (fse_monitor->latency * 1000)))
+      return;
+
+    fse_monitor->last_notification.compare_exchange_weak(previous, now, memory_order_acq_rel);
+
+    // Build a fake
+    time_t curr_time;
+    time(&curr_time);
+
+    vector<event> events;
+    events.push_back({"", curr_time, {NoOp}});
+
+    fse_monitor->notify_events_sync(events);
+  }
+#endif
 
   void fsevents_monitor::fsevents_callback(ConstFSEventStreamRef streamRef,
                                            void *clientCallBackInfo,
@@ -195,7 +264,11 @@ namespace fsw
 
     if (events.size() > 0)
     {
-      fse_monitor->notify_events(events);
+      // Update the last notification timestamp
+      milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+      fse_monitor->last_notification.exchange(now, memory_order_release);
+
+      fse_monitor->notify_events_sync(events);
     }
   }
 }
