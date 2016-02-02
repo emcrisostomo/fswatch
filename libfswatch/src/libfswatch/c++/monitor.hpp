@@ -164,11 +164,16 @@ namespace fsw
     /**
      * @brief Destructs a monitor instance.
      *
-     * This destructor frees the compiled regular expression of the path
-     * filters, if any.
+     * This destructor performs the following operations:
+     *
+     *   - Stops the monitor.
+     *
+     *   - Frees the compiled regular expression of the path filters, if any.
      *
      * @warning Destroying a monitor in the _running_ state results in undefined
      * behaviour.
+     *
+     * @see stop()
      */
     virtual ~monitor();
 

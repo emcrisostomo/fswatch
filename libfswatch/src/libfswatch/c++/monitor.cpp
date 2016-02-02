@@ -201,6 +201,8 @@ namespace fsw
 
   monitor::~monitor()
   {
+    stop();
+
     for (auto& re : filters) regfree(&re.regex);
   }
 
