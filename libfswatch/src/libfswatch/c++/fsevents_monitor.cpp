@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2016 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -144,14 +144,15 @@ namespace fsw
     CFRunLoopRun();
 
     // Join the inactivity thread and wait until it stops.
-    if (!inactivity_thread) inactivity_thread->join();
+    FSW_ELOG(_("Inactivity notification thread: joining\n"));
+    if (inactivity_thread) inactivity_thread->join();
   }
 
+  /*
+   * on_stop() is designed to be invoked with a lock on the run_mutex.
+   */
   void fsevents_monitor::on_stop()
   {
-#ifdef HAVE_CXX_MUTEX
-    lock_guard<mutex> run_loop_lock(run_mutex);
-#endif
     if (!run_loop) throw libfsw_exception(_("run loop is null"));
 
     FSW_ELOG(_("Stopping run loop...\n"));
@@ -202,15 +203,20 @@ namespace fsw
       throw libfsw_exception(_("Callback argument cannot be null."));
     }
 
+    FSW_ELOG(_("Inactivity notification thread: starting\n"));
+
     for (;;)
     {
+      std::this_thread::sleep_for(nanoseconds((long)(fse_monitor->latency * 1000 * 1000 * 1000)));
+
       unique_lock<mutex> run_guard(fse_monitor->run_mutex);
       if (fse_monitor->should_stop) break;
       run_guard.unlock();
 
-      std::this_thread::sleep_for(nanoseconds((long)(fse_monitor->latency * 1000 * 1000 * 1000)));
       timeout_callback(fse_monitor);
     }
+
+    FSW_ELOG(_("Inactivity notification thread: exiting\n"));
   }
 
   void fsevents_monitor::timeout_callback(fsevents_monitor *fse_monitor)
