@@ -28,8 +28,6 @@
 
 #  include "monitor.hpp"
 #  include <CoreServices/CoreServices.h>
-#  include <chrono>
-#  include <atomic>
 
 namespace fsw
 {
@@ -80,14 +78,8 @@ namespace fsw
                                   const FSEventStreamEventFlags eventFlags[],
                                   const FSEventStreamEventId eventIds[]);
 
-#ifdef HAVE_CXX_MUTEX
-    static void inactivity_callback(fsevents_monitor *ptr);
-    static void timeout_callback(fsevents_monitor *ptr);
-#endif
-
     FSEventStreamRef stream = nullptr;
     CFRunLoopRef run_loop = nullptr;
-    std::atomic<std::chrono::milliseconds> last_notification;
   };
 }
 

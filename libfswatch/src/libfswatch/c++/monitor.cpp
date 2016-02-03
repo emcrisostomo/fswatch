@@ -22,11 +22,14 @@
 #include "../c/libfswatch_log.h"
 #include "string/string_utils.hpp"
 #include <cstdlib>
+#include <memory>
+#include <thread>
 #include <regex.h>
 #include <sstream>
 #include <time.h>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace fsw
 {
@@ -56,6 +59,10 @@ namespace fsw
       throw libfsw_exception(_("Callback cannot be null."),
                              FSW_ERR_CALLBACK_NOT_SET);
     }
+
+#ifdef HAVE_CXX_MUTEX
+    last_notification = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+#endif
   }
 
   void monitor::set_allow_overflow(bool overflow)
@@ -249,6 +256,58 @@ namespace fsw
     }
   }
 
+#ifdef HAVE_CXX_MUTEX
+  void monitor::inactivity_callback(monitor *mon)
+  {
+    if (!mon)
+    {
+      throw libfsw_exception(_("Callback argument cannot be null."));
+    }
+
+    FSW_ELOG(_("Inactivity notification thread: starting\n"));
+
+    for (;;)
+    {
+      std::this_thread::sleep_for(nanoseconds((long)(mon->latency * 1000 * 1000 * 1000)));
+
+      unique_lock<mutex> run_guard(mon->run_mutex);
+      if (mon->should_stop) break;
+      run_guard.unlock();
+
+      timeout_callback(mon);
+    }
+
+    FSW_ELOG(_("Inactivity notification thread: exiting\n"));
+  }
+
+  void monitor::timeout_callback(monitor *mon)
+  {
+    milliseconds previous = mon->last_notification.load(memory_order_acquire);
+    milliseconds now;
+
+    do
+    {
+      now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+
+      // If the distance between the timeout event and the last notified event is
+      // greater than the latency, then do nothing.
+      if ((now - previous) < milliseconds((long) (mon->latency * 1000)))
+        return;
+
+    }
+    while(!mon->last_notification.compare_exchange_weak(previous, now, memory_order_acq_rel));
+
+    // Build a fake
+    time_t curr_time;
+    time(&curr_time);
+
+    vector<event> events;
+    events.push_back({"", curr_time, {NoOp}});
+
+    mon->notify_events(events);
+  }
+#endif
+
   void monitor::start()
   {
     FSW_MONITOR_RUN_GUARD;
@@ -257,7 +316,18 @@ namespace fsw
     this->running = true;
     FSW_MONITOR_RUN_GUARD_UNLOCK;
 
+    // Fire the inactivity thread
+    std::unique_ptr<std::thread> inactivity_thread;
+#ifdef HAVE_CXX_MUTEX
+    inactivity_thread.reset(new std::thread(monitor::inactivity_callback, this));
+#endif
+
+    // Fire the monitor run loop.
     this->run();
+
+    // Join the inactivity thread and wait until it stops.
+    FSW_ELOG(_("Inactivity notification thread: joining\n"));
+    if (inactivity_thread) inactivity_thread->join();
 
     FSW_MONITOR_RUN_GUARD_LOCK;
     this->running = false;
@@ -312,6 +382,11 @@ namespace fsw
   void monitor::notify_events(const vector<event>& events) const
   {
     FSW_MONITOR_RUN_GUARD;
+
+    // Update the last notification timestamp
+    milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    last_notification.store(now, memory_order_release);
+
     vector<event> filtered_events;
 
     for (auto const& event : events)

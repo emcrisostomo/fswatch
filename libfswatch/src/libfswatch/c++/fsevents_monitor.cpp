@@ -21,14 +21,11 @@
 #include "gettext_defs.h"
 #include "libfswatch_exception.hpp"
 #include "c/libfswatch_log.h"
-#include <memory>
-#include <thread>
 #  ifdef HAVE_CXX_MUTEX
 #    include <mutex>
 #  endif
 
 using namespace std;
-using namespace std::chrono;
 
 namespace fsw
 {
@@ -72,8 +69,7 @@ namespace fsw
   fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
                                      FSW_EVENT_CALLBACK *callback,
                                      void *context) :
-    monitor(paths_to_monitor, callback, context),
-    last_notification(duration_cast<milliseconds>(system_clock::now().time_since_epoch()))
+    monitor(paths_to_monitor, callback, context)
   {
   }
 
@@ -125,12 +121,6 @@ namespace fsw
     if (!stream)
       throw libfsw_exception(_("Event stream could not be created."));
 
-    // Fire the inactivity thread
-    std::unique_ptr<std::thread> inactivity_thread;
-#ifdef HAVE_CXX_MUTEX
-    inactivity_thread.reset(new std::thread(fsevents_monitor::inactivity_callback, this));
-#endif
-
     // Fire the event loop
     run_loop = CFRunLoopGetCurrent();
     run_loop_lock.unlock();
@@ -145,10 +135,6 @@ namespace fsw
 
     FSW_ELOG(_("Starting run loop...\n"));
     CFRunLoopRun();
-
-    // Join the inactivity thread and wait until it stops.
-    FSW_ELOG(_("Inactivity notification thread: joining\n"));
-    if (inactivity_thread) inactivity_thread->join();
   }
 
   /*
@@ -190,53 +176,6 @@ namespace fsw
     return evt_flags;
   }
 
-#ifdef HAVE_CXX_MUTEX
-  void fsevents_monitor::inactivity_callback(fsevents_monitor *fse_monitor)
-  {
-    if (!fse_monitor)
-    {
-      throw libfsw_exception(_("Callback argument cannot be null."));
-    }
-
-    FSW_ELOG(_("Inactivity notification thread: starting\n"));
-
-    for (;;)
-    {
-      std::this_thread::sleep_for(nanoseconds((long)(fse_monitor->latency * 1000 * 1000 * 1000)));
-
-      unique_lock<mutex> run_guard(fse_monitor->run_mutex);
-      if (fse_monitor->should_stop) break;
-      run_guard.unlock();
-
-      timeout_callback(fse_monitor);
-    }
-
-    FSW_ELOG(_("Inactivity notification thread: exiting\n"));
-  }
-
-  void fsevents_monitor::timeout_callback(fsevents_monitor *fse_monitor)
-  {
-    milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-    milliseconds previous = fse_monitor->last_notification.load(memory_order_acquire);
-
-    // If the distance between the timeout event and the last notified event is
-    // greater than the latency, then do nothing.
-    if ((now - previous) < milliseconds((long) (fse_monitor->latency * 1000)))
-      return;
-
-    fse_monitor->last_notification.compare_exchange_weak(previous, now, memory_order_acq_rel);
-
-    // Build a fake
-    time_t curr_time;
-    time(&curr_time);
-
-    vector<event> events;
-    events.push_back({"", curr_time, {NoOp}});
-
-    fse_monitor->notify_events(events);
-  }
-#endif
-
   void fsevents_monitor::fsevents_callback(ConstFSEventStreamRef streamRef,
                                            void *clientCallBackInfo,
                                            size_t numEvents,
@@ -265,10 +204,6 @@ namespace fsw
 
     if (events.size() > 0)
     {
-      // Update the last notification timestamp
-      milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-      fse_monitor->last_notification.exchange(now, memory_order_release);
-
       fse_monitor->notify_events(events);
     }
   }
