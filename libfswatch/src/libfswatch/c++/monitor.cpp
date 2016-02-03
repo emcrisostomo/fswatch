@@ -311,6 +311,7 @@ namespace fsw
 
   void monitor::notify_events(const vector<event>& events) const
   {
+    FSW_MONITOR_RUN_GUARD;
     vector<event> filtered_events;
 
     for (auto const& event : events)

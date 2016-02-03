@@ -568,16 +568,22 @@ namespace fsw
      */
     bool watch_access = false;
 
-    bool running = false;
     /**
-     * To do.
+     * @brief Flag indicating whether the monitor is in the running state.
+     */
+    bool running = false;
+
+    /**
+     * @brief Flag indicating whether the monitor should preemptively stop.
      */
     bool should_stop = false;
+
 #  ifdef HAVE_CXX_MUTEX
     /**
-     * To do.
+     * @brief Mutex used to serialize access to the monitor state from multiple
+     * threads.
      */
-    std::mutex run_mutex;
+    mutable std::mutex run_mutex;
 #  endif
 
   private:
