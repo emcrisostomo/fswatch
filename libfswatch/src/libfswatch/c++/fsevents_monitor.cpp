@@ -23,6 +23,9 @@
 #include "c/libfswatch_log.h"
 #include <memory>
 #include <thread>
+#  ifdef HAVE_CXX_MUTEX
+#    include <mutex>
+#  endif
 
 using namespace std;
 using namespace std::chrono;
@@ -187,14 +190,6 @@ namespace fsw
     return evt_flags;
   }
 
-  void fsevents_monitor::notify_events_sync(const std::vector<event>& events) const
-  {
-#ifdef HAVE_CXX_MUTEX
-    lock_guard<mutex> notify_lock(notify_mutex);
-#endif
-    notify_events(events);
-  }
-
 #ifdef HAVE_CXX_MUTEX
   void fsevents_monitor::inactivity_callback(fsevents_monitor *fse_monitor)
   {
@@ -238,7 +233,7 @@ namespace fsw
     vector<event> events;
     events.push_back({"", curr_time, {NoOp}});
 
-    fse_monitor->notify_events_sync(events);
+    fse_monitor->notify_events(events);
   }
 #endif
 
@@ -274,7 +269,7 @@ namespace fsw
       milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
       fse_monitor->last_notification.exchange(now, memory_order_release);
 
-      fse_monitor->notify_events_sync(events);
+      fse_monitor->notify_events(events);
     }
   }
 }

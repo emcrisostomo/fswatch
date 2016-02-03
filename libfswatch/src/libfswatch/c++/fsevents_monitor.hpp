@@ -30,9 +30,7 @@
 #  include <CoreServices/CoreServices.h>
 #  include <chrono>
 #  include <atomic>
-#  ifdef HAVE_CXX_MUTEX
-#    include <mutex>
-#  endif
+
 namespace fsw
 {
   /**
@@ -74,7 +72,6 @@ namespace fsw
   private:
     fsevents_monitor(const fsevents_monitor& orig) = delete;
     fsevents_monitor& operator=(const fsevents_monitor& that) = delete;
-    void notify_events_sync(const std::vector<event>& events) const;
 
     static void fsevents_callback(ConstFSEventStreamRef streamRef,
                                   void *clientCallBackInfo,
@@ -88,10 +85,6 @@ namespace fsw
     static void timeout_callback(fsevents_monitor *ptr);
 #endif
 
-#  ifdef HAVE_CXX_MUTEX
-    std::mutex run_mutex;
-    mutable std::mutex notify_mutex;
-#  endif
     FSEventStreamRef stream = nullptr;
     CFRunLoopRef run_loop = nullptr;
     std::atomic<std::chrono::milliseconds> last_notification;
