@@ -588,16 +588,16 @@ namespace fsw
 #  endif
 
   private:
+    std::chrono::milliseconds get_latency_ms() const;
+
     std::vector<compiled_monitor_filter> filters;
     std::vector<fsw_event_type_filter> event_type_filters;
 
 #ifdef HAVE_CXX_MUTEX
     static void inactivity_callback(monitor *mon);
-    static void timeout_callback(monitor *mon);
 
     mutable std::atomic<std::chrono::milliseconds> last_notification;
 #endif
-
   };
 
   typedef monitor *(*FSW_FN_MONITOR_CREATOR)(std::vector<std::string> paths,

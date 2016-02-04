@@ -52,7 +52,7 @@ namespace fsw
   monitor::monitor(vector<string> paths,
                    FSW_EVENT_CALLBACK *callback,
                    void *context) :
-    paths(std::move(paths)), callback(callback), context(context)
+    paths(std::move(paths)), callback(callback), context(context), latency(1)
   {
     if (callback == nullptr)
     {
@@ -79,6 +79,11 @@ namespace fsw
     }
 
     this->latency = latency;
+  }
+
+  milliseconds monitor::get_latency_ms() const
+  {
+    return milliseconds((long long)(latency * 1000 * 1.1));
   }
 
   void monitor::set_recursive(bool recursive)
@@ -268,43 +273,32 @@ namespace fsw
 
     for (;;)
     {
-      std::this_thread::sleep_for(nanoseconds((long)(mon->latency * 1000 * 1000 * 1000)));
-
       unique_lock<mutex> run_guard(mon->run_mutex);
       if (mon->should_stop) break;
       run_guard.unlock();
 
-      timeout_callback(mon);
+      milliseconds elapsed =
+        duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+        - mon->last_notification.load(memory_order_acquire);
+
+      // Sleep and loop again if sufficient time has not elapsed yet.
+      if (elapsed < mon->get_latency_ms())
+      {
+        std::this_thread::sleep_for((mon->get_latency_ms() - elapsed));
+        continue;
+      }
+
+      // Build a fake event.
+      time_t curr_time;
+      time(&curr_time);
+
+      vector<event> events;
+      events.push_back({"", curr_time, {NoOp}});
+
+      mon->notify_events(events);
     }
 
     FSW_ELOG(_("Inactivity notification thread: exiting\n"));
-  }
-
-  void monitor::timeout_callback(monitor *mon)
-  {
-    milliseconds previous = mon->last_notification.load(memory_order_acquire);
-    milliseconds now;
-
-    do
-    {
-      now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-
-      // If the distance between the timeout event and the last notified event is
-      // greater than the latency, then do nothing.
-      if ((now - previous) < milliseconds((long) (mon->latency * 1000)))
-        return;
-
-    }
-    while(!mon->last_notification.compare_exchange_weak(previous, now, memory_order_acq_rel));
-
-    // Build a fake
-    time_t curr_time;
-    time(&curr_time);
-
-    vector<event> events;
-    events.push_back({"", curr_time, {NoOp}});
-
-    mon->notify_events(events);
   }
 #endif
 
