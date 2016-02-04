@@ -284,7 +284,10 @@ namespace fsw
       // Sleep and loop again if sufficient time has not elapsed yet.
       if (elapsed < mon->get_latency_ms())
       {
-        std::this_thread::sleep_for((mon->get_latency_ms() - elapsed));
+        milliseconds to_sleep = mon->get_latency_ms() - elapsed;
+        seconds max_sleep_time(2);
+
+        std::this_thread::sleep_for(to_sleep > max_sleep_time ? max_sleep_time : to_sleep);
         continue;
       }
 
