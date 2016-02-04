@@ -227,8 +227,6 @@ static void close_handler(int signal)
 {
   FSW_ELOG(_("Executing termination handler.\n"));
   close_monitor();
-
-  exit(FSW_EXIT_OK);
 }
 
 static bool parse_event_filter(const char *optarg)
