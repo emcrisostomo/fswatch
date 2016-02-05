@@ -295,7 +295,8 @@ namespace fsw
                            (int) event_list.size(),
                            &ts);
 
-    if (event_num == -1)
+    // Ignore errors when kevent() is interrupted by a signal.
+    if (event_num == -1 && errno != EINTR)
     {
       perror("kevent");
       throw libfsw_exception(_("kevent returned -1, invalid event number."));

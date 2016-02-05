@@ -22,11 +22,14 @@
 #include "../c/libfswatch_log.h"
 #include "string/string_utils.hpp"
 #include <cstdlib>
+#include <memory>
+#include <thread>
 #include <regex.h>
 #include <sstream>
 #include <time.h>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace fsw
 {
@@ -49,13 +52,17 @@ namespace fsw
   monitor::monitor(vector<string> paths,
                    FSW_EVENT_CALLBACK *callback,
                    void *context) :
-    paths(std::move(paths)), callback(callback), context(context)
+    paths(std::move(paths)), callback(callback), context(context), latency(1)
   {
     if (callback == nullptr)
     {
       throw libfsw_exception(_("Callback cannot be null."),
                              FSW_ERR_CALLBACK_NOT_SET);
     }
+
+#ifdef HAVE_CXX_MUTEX
+    last_notification = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+#endif
   }
 
   void monitor::set_allow_overflow(bool overflow)
@@ -72,6 +79,16 @@ namespace fsw
     }
 
     this->latency = latency;
+  }
+
+  void monitor::set_fire_idle_event(bool fire_idle_event)
+  {
+    this->fire_idle_event = fire_idle_event;
+  }
+
+  milliseconds monitor::get_latency_ms() const
+  {
+    return milliseconds((long long)(latency * 1000 * 1.1));
   }
 
   void monitor::set_recursive(bool recursive)
@@ -249,6 +266,50 @@ namespace fsw
     }
   }
 
+#ifdef HAVE_CXX_MUTEX
+  void monitor::inactivity_callback(monitor *mon)
+  {
+    if (!mon)
+    {
+      throw libfsw_exception(_("Callback argument cannot be null."));
+    }
+
+    FSW_ELOG(_("Inactivity notification thread: starting\n"));
+
+    for (;;)
+    {
+      unique_lock<mutex> run_guard(mon->run_mutex);
+      if (mon->should_stop) break;
+      run_guard.unlock();
+
+      milliseconds elapsed =
+        duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+        - mon->last_notification.load(memory_order_acquire);
+
+      // Sleep and loop again if sufficient time has not elapsed yet.
+      if (elapsed < mon->get_latency_ms())
+      {
+        milliseconds to_sleep = mon->get_latency_ms() - elapsed;
+        seconds max_sleep_time(2);
+
+        std::this_thread::sleep_for(to_sleep > max_sleep_time ? max_sleep_time : to_sleep);
+        continue;
+      }
+
+      // Build a fake event.
+      time_t curr_time;
+      time(&curr_time);
+
+      vector<event> events;
+      events.push_back({"", curr_time, {NoOp}});
+
+      mon->notify_events(events);
+    }
+
+    FSW_ELOG(_("Inactivity notification thread: exiting\n"));
+  }
+#endif
+
   void monitor::start()
   {
     FSW_MONITOR_RUN_GUARD;
@@ -257,7 +318,19 @@ namespace fsw
     this->running = true;
     FSW_MONITOR_RUN_GUARD_UNLOCK;
 
+    // Fire the inactivity thread
+    std::unique_ptr<std::thread> inactivity_thread;
+#ifdef HAVE_CXX_MUTEX
+    if (fire_idle_event)
+      inactivity_thread.reset(new std::thread(monitor::inactivity_callback, this));
+#endif
+
+    // Fire the monitor run loop.
     this->run();
+
+    // Join the inactivity thread and wait until it stops.
+    FSW_ELOG(_("Inactivity notification thread: joining\n"));
+    if (inactivity_thread) inactivity_thread->join();
 
     FSW_MONITOR_RUN_GUARD_LOCK;
     this->running = false;
@@ -311,6 +384,12 @@ namespace fsw
 
   void monitor::notify_events(const vector<event>& events) const
   {
+    FSW_MONITOR_RUN_GUARD;
+
+    // Update the last notification timestamp
+    milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    last_notification.store(now, memory_order_release);
+
     vector<event> filtered_events;
 
     for (auto const& event : events)

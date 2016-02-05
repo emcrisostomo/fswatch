@@ -85,6 +85,7 @@ static bool allow_overflow = false;
 static int batch_marker_flag = false;
 static bool dflag = false;
 static bool Eflag = false;
+static bool fieFlag = false;
 static bool Iflag = false;
 static bool Lflag = false;
 static bool mflag = false;
@@ -115,6 +116,7 @@ static const int OPT_EVENT_FLAG_SEPARATOR = 130;
 static const int OPT_EVENT_TYPE = 131;
 static const int OPT_ALLOW_OVERFLOW = 132;
 static const int OPT_MONITOR_PROPERTY = 133;
+static const int OPT_FIRE_IDLE_EVENTS = 134;
 
 static void list_monitor_types(ostream& stream)
 {
@@ -155,6 +157,7 @@ static void usage(ostream& stream)
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
   stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
   stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
+  stream << "     --fire-idle-event " << _("Fire idle events.\n");
   stream << " -h, --help            " << _("Show this message.\n");
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
   stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
@@ -227,8 +230,6 @@ static void close_handler(int signal)
 {
   FSW_ELOG(_("Executing termination handler.\n"));
   close_monitor();
-
-  exit(FSW_EXIT_OK);
 }
 
 static bool parse_event_filter(const char *optarg)
@@ -438,6 +439,7 @@ static void start_monitor(int argc, char **argv, int optind)
   active_monitor->set_properties(monitor_properties);
   active_monitor->set_allow_overflow(allow_overflow);
   active_monitor->set_latency(lvalue);
+  active_monitor->set_fire_idle_event(fieFlag);
   active_monitor->set_recursive(rflag);
   active_monitor->set_directory_only(dflag);
   active_monitor->set_event_type_filters(event_filters);
@@ -465,6 +467,7 @@ static void parse_opts(int argc, char **argv)
     {"event-flag-separator", required_argument, nullptr,       OPT_EVENT_FLAG_SEPARATOR},
     {"exclude",              required_argument, nullptr,       'e'},
     {"extended",             no_argument,       nullptr,       'E'},
+    {"fire-idle-events",     no_argument,       nullptr,       OPT_FIRE_IDLE_EVENTS},
     {"follow-links",         no_argument,       nullptr,       'L'},
     {"format",               required_argument, nullptr,       OPT_FORMAT},
     {"format-time",          required_argument, nullptr,       'f'},
@@ -629,6 +632,10 @@ static void parse_opts(int argc, char **argv)
 
       monitor_properties[param.substr(0, eq_pos)] = param.substr(eq_pos + 1);
     }
+      break;
+
+    case OPT_FIRE_IDLE_EVENTS:
+      fieFlag = true;
       break;
 
     case '?':
