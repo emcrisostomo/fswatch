@@ -235,6 +235,19 @@ namespace fsw
     void set_latency(double latency);
 
     /**
+     * @brief Sets the _fire idle event_ flag.
+     *
+     * When @c true, the _fire idle event_ flag instructs the monitor to fire a
+     * fake event at the event of an _idle_ cycle.  An idle cycle is a period of
+     * time whose length is 110% of the monitor::latency where no change events
+     * were detected.
+     *
+     * @param fire_idle_event @c true if idle events should be fired, @c false
+     * otherwise.
+     */
+    void fire_idle_event(bool fire_idle_event);
+
+    /**
      * @brief Notify buffer overflows as change events.
      *
      * If this flag is set, the monitor will report a monitor buffer overflow as
@@ -542,6 +555,13 @@ namespace fsw
      * @brief Latency of the monitor.
      */
     double latency = 1.0;
+
+    /**
+     * @brief If @c true, the monitor will notify an event when idle.
+     *
+     * An idle cycle is long as 110% of the monitor::latency value.
+     */
+    bool fire_idle_event = false;
 
     /**
      * @brief If @c true, queue overflow events will be notified to the caller,

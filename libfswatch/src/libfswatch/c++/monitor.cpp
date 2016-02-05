@@ -81,6 +81,11 @@ namespace fsw
     this->latency = latency;
   }
 
+  void monitor::fire_idle_event(bool fire_idle_event)
+  {
+    this->fire_idle_event = fire_idle_event;
+  }
+
   milliseconds monitor::get_latency_ms() const
   {
     return milliseconds((long long)(latency * 1000 * 1.1));
@@ -316,7 +321,8 @@ namespace fsw
     // Fire the inactivity thread
     std::unique_ptr<std::thread> inactivity_thread;
 #ifdef HAVE_CXX_MUTEX
-    inactivity_thread.reset(new std::thread(monitor::inactivity_callback, this));
+    if (fire_idle_event)
+      inactivity_thread.reset(new std::thread(monitor::inactivity_callback, this));
 #endif
 
     // Fire the monitor run loop.
