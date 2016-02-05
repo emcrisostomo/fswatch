@@ -81,7 +81,7 @@ namespace fsw
     this->latency = latency;
   }
 
-  void monitor::fire_idle_event(bool fire_idle_event)
+  void monitor::set_fire_idle_event(bool fire_idle_event)
   {
     this->fire_idle_event = fire_idle_event;
   }

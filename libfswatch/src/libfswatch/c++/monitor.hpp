@@ -245,7 +245,7 @@ namespace fsw
      * @param fire_idle_event @c true if idle events should be fired, @c false
      * otherwise.
      */
-    void fire_idle_event(bool fire_idle_event);
+    void set_fire_idle_event(bool fire_idle_event);
 
     /**
      * @brief Notify buffer overflows as change events.
