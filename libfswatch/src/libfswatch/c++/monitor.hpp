@@ -36,6 +36,7 @@
 #  ifdef HAVE_CXX_MUTEX
 #    include <mutex>
 #  endif
+#  include <atomic>
 #  include <chrono>
 #  include <map>
 #  include "event.hpp"
