@@ -187,6 +187,7 @@ AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
 AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
 
 # Some compilers declare to conform to C++11 but the library does not.
+
 # These OS X versions are known to miss at least the listed headers:
 #   - 10.6 Snow Leopard: mutex, atomic
 #   - 10.7 Lion: mutex, atomic
@@ -201,6 +202,14 @@ if test "x${ac_cv_header_mutex}" = "xyes" ; then
 else
   AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
 fi
+
+# The GCC toolchain on Debian GNU/Linux 8 still misses the <atomic> header.
+AC_CHECK_HEADER([atomic])
+
+AS_VAR_IF([ac_cv_header_atomic],
+  ["yes"],
+  [AC_DEFINE([HAVE_CXX_ATOMIC], [1], [Define if <atomic> is available.])],
+  [AC_MSG_WARN([<atomic> unavailable: some functionalities will not be built.])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
