@@ -404,7 +404,7 @@ typedef struct FSW_SESSION
   FSW_HANDLE handle;
   vector<string> paths;
   fsw_monitor_type type;
-  fsw::monitor * monitor;
+  fsw::monitor *monitor;
   FSW_CEVENT_CALLBACK callback;
   double latency;
   bool allow_overflow;
@@ -414,8 +414,8 @@ typedef struct FSW_SESSION
   vector<monitor_filter> filters;
   vector<fsw_event_type_filter> event_type_filters;
   map<string, string> properties;
-  void * data;
-#ifdef HAVE_CXX_MUTEX
+  void *data;
+#ifdef HAVE_CXX_ATOMIC
   atomic<bool> running;
 #endif
 } FSW_SESSION;
@@ -447,7 +447,7 @@ static FSW_THREAD_LOCAL FSW_STATUS last_error;
 
 // Forward declarations.
 static FSW_EVENT_CALLBACK libfsw_cpp_callback_proxy;
-static FSW_SESSION * get_session(const FSW_HANDLE handle);
+static FSW_SESSION *get_session(const FSW_HANDLE handle);
 static int create_monitor(FSW_HANDLE handle, const fsw_monitor_type type);
 static FSW_STATUS fsw_set_last_error(const int error);
 
@@ -469,33 +469,35 @@ typedef struct fsw_callback_context
 {
   FSW_HANDLE handle;
   FSW_CEVENT_CALLBACK callback;
-  void * data;
+  void *data;
 } fsw_callback_context;
 
-void libfsw_cpp_callback_proxy(const std::vector<event> & events,
-                               void * context_ptr)
+void libfsw_cpp_callback_proxy(const std::vector<event>& events,
+                               void *context_ptr)
 {
   // TODO: A C friendly error handler should be notified instead of throwing an exception.
   if (!context_ptr)
     throw int(FSW_ERR_MISSING_CONTEXT);
 
-  const fsw_callback_context * context = static_cast<fsw_callback_context *> (context_ptr);
+  const fsw_callback_context *context = static_cast<fsw_callback_context *> (context_ptr);
 
-  fsw_cevent * const cevents = static_cast<fsw_cevent *> (malloc(sizeof (fsw_cevent) * events.size()));
+  fsw_cevent *const cevents = static_cast<fsw_cevent *> (malloc(
+    sizeof(fsw_cevent) * events.size()));
 
   if (cevents == nullptr)
     throw int(FSW_ERR_MEMORY);
 
   for (unsigned int i = 0; i < events.size(); ++i)
   {
-    fsw_cevent * cevt = &cevents[i];
-    const event & evt = events[i];
+    fsw_cevent *cevt = &cevents[i];
+    const event& evt = events[i];
 
     // Copy event into C event wrapper.
     const string path = evt.get_path();
 
     // Copy std::string into char * buffer and null-terminate it.
-    cevt->path = static_cast<char *> (malloc(sizeof (char *) * (path.length() + 1)));
+    cevt->path = static_cast<char *> (malloc(
+      sizeof(char *) * (path.length() + 1)));
     if (!cevt->path) throw int(FSW_ERR_MEMORY);
 
     strncpy(cevt->path, path.c_str(), path.length());
@@ -524,7 +526,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event> & events,
   // Deallocate memory allocated by events.
   for (unsigned int i = 0; i < events.size(); ++i)
   {
-    fsw_cevent * cevt = &cevents[i];
+    fsw_cevent *cevt = &cevents[i];
 
     if (cevt->flags) free(static_cast<void *> (cevt->flags));
     free(static_cast<void *> (cevt->path));
@@ -578,7 +580,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
 {
   try
   {
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     // Check sufficient data is present to build a monitor.
     if (!session->callback)
@@ -590,18 +592,18 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     if (!session->paths.size())
       return fsw_set_last_error(int(FSW_ERR_PATHS_NOT_SET));
 
-    fsw_callback_context * context_ptr = new fsw_callback_context;
+    fsw_callback_context *context_ptr = new fsw_callback_context;
     context_ptr->callback = session->callback;
     context_ptr->handle = session->handle;
     context_ptr->data = session->data;
 
-    monitor * current_monitor = monitor_factory::create_monitor(type,
-                                                                session->paths,
-                                                                libfsw_cpp_callback_proxy,
-                                                                context_ptr);
+    monitor *current_monitor = monitor_factory::create_monitor(type,
+                                                               session->paths,
+                                                               libfsw_cpp_callback_proxy,
+                                                               context_ptr);
     session->monitor = current_monitor;
   }
-  catch (libfsw_exception & ex)
+  catch (libfsw_exception& ex)
   {
     return fsw_set_last_error(int(ex));
   }
@@ -613,7 +615,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
   return fsw_set_last_error(FSW_OK);
 }
 
-FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path)
+FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char *path)
 {
   if (!path)
     return fsw_set_last_error(int(FSW_ERR_INVALID_PATH));
@@ -622,7 +624,7 @@ FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char * path)
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
     session->paths.push_back(path);
   }
   catch (int error)
@@ -642,7 +644,7 @@ FSW_STATUS fsw_add_property(const FSW_HANDLE handle, const char * name, const ch
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     session->properties[name] = value;
   }
@@ -663,7 +665,7 @@ FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK c
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     session->callback = callback;
     session->data = data;
@@ -676,13 +678,14 @@ FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK c
   return fsw_set_last_error(FSW_OK);
 }
 
-FSW_STATUS fsw_set_allow_overflow(const FSW_HANDLE handle, const bool allow_overflow)
+FSW_STATUS fsw_set_allow_overflow(const FSW_HANDLE handle,
+                                  const bool allow_overflow)
 {
   try
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     session->allow_overflow = allow_overflow;
   }
@@ -703,7 +706,7 @@ FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency)
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     session->latency = latency;
   }
@@ -721,7 +724,7 @@ FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     session->recursive = recursive;
   }
@@ -739,7 +742,7 @@ FSW_STATUS fsw_set_directory_only(const FSW_HANDLE handle, const bool directory_
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     session->directory_only = directory_only;
   }
@@ -758,7 +761,7 @@ FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     session->follow_symlinks = follow_symlinks;
   }
@@ -777,7 +780,7 @@ FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
     session->event_type_filters.push_back(event_type);
   }
@@ -796,9 +799,10 @@ FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
-    session->filters.push_back({filter.text, filter.type, filter.case_sensitive, filter.extended});
+    session->filters.push_back(
+      {filter.text, filter.type, filter.case_sensitive, filter.extended});
   }
   catch (int error)
   {
@@ -810,15 +814,15 @@ FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
 
 #ifdef HAVE_CXX_MUTEX
 
-template <typename T>
+template<typename T>
 class monitor_start_guard
 {
-  atomic<T> & a;
+  atomic<T>& a;
   T val;
 
 public:
 
-  monitor_start_guard(atomic<T> & a,
+  monitor_start_guard(atomic<T>& a,
                       T val,
                       memory_order sync = memory_order_seq_cst)
     : a(a), val(val)
@@ -830,6 +834,7 @@ public:
     a.store(val, memory_order_release);
   }
 };
+
 #endif
 
 FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
@@ -841,14 +846,16 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
     session_lock.lock();
 #endif
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
 #ifdef HAVE_CXX_MUTEX
+# ifdef HAVE_CXX_ATOMIC
     if (session->running.load(memory_order_acquire))
       return fsw_set_last_error(int(FSW_ERR_MONITOR_ALREADY_RUNNING));
+# endif
 
 #  ifdef HAVE_CXX_UNIQUE_PTR
-    unique_ptr<mutex> & sm = session_mutexes.at(handle);
+    unique_ptr<mutex>& sm = session_mutexes.at(handle);
     lock_guard<mutex> lock_sm(*sm.get());
 #  else
     mutex * sm = session_mutexes.at(handle);
@@ -870,13 +877,15 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
     session->monitor->set_directory_only(session->directory_only);
 
 #ifdef HAVE_CXX_MUTEX
+# ifdef HAVE_CXX_ATOMIC
     session->running.store(true, memory_order_release);
     monitor_start_guard<bool> guard(session->running, false);
+# endif
 #endif
 
     session->monitor->start();
   }
-  catch (libfsw_exception & ex)
+  catch (libfsw_exception& ex)
   {
     return fsw_set_last_error(int(ex));
   }
@@ -896,11 +905,11 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
   {
     SESSION_GUARD;
 
-    FSW_SESSION * session = get_session(handle);
+    FSW_SESSION *session = get_session(handle);
 
 #ifdef HAVE_CXX_MUTEX
 #  ifdef HAVE_CXX_UNIQUE_PTR
-    const unique_ptr<mutex> & sm = session_mutexes[handle];
+    const unique_ptr<mutex>& sm = session_mutexes[handle];
     lock_guard<mutex> sm_lock(*sm.get());
 #  else
     mutex * sm = session_mutexes[handle];
@@ -910,7 +919,7 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
 
     if (session->monitor)
     {
-      void * context = session->monitor->get_context();
+      void *context = session->monitor->get_context();
 
       if (!context)
       {
@@ -934,7 +943,7 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
   return fsw_set_last_error(ret);
 }
 
-FSW_SESSION * get_session(const FSW_HANDLE handle)
+FSW_SESSION *get_session(const FSW_HANDLE handle)
 {
   if (sessions.find(handle) == sessions.end())
     throw int(FSW_ERR_SESSION_UNKNOWN);
