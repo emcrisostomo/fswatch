@@ -388,8 +388,8 @@ namespace fsw
     FSW_MONITOR_RUN_GUARD;
 
     // Update the last notification timestamp
-    milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 #ifdef HAVE_INACTIVITY_CALLBACK
+    milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
     last_notification.store(now, memory_order_release);
 #endif
 
