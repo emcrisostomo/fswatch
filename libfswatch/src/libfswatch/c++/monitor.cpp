@@ -60,8 +60,9 @@ namespace fsw
                              FSW_ERR_CALLBACK_NOT_SET);
     }
 
-#ifdef HAVE_CXX_MUTEX
-    last_notification = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+#ifdef HAVE_INACTIVITY_CALLBACK
+    milliseconds epoch = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    last_notification.store(epoch, memory_order_release);
 #endif
   }
 
@@ -266,7 +267,7 @@ namespace fsw
     }
   }
 
-#ifdef HAVE_CXX_MUTEX
+#ifdef HAVE_INACTIVITY_CALLBACK
   void monitor::inactivity_callback(monitor *mon)
   {
     if (!mon)
@@ -320,7 +321,7 @@ namespace fsw
 
     // Fire the inactivity thread
     std::unique_ptr<std::thread> inactivity_thread;
-#ifdef HAVE_CXX_MUTEX
+#ifdef HAVE_INACTIVITY_CALLBACK
     if (fire_idle_event)
       inactivity_thread.reset(new std::thread(monitor::inactivity_callback, this));
 #endif
@@ -388,7 +389,9 @@ namespace fsw
 
     // Update the last notification timestamp
     milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+#ifdef HAVE_INACTIVITY_CALLBACK
     last_notification.store(now, memory_order_release);
+#endif
 
     vector<event> filtered_events;
 

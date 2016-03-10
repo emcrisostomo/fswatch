@@ -615,9 +615,11 @@ namespace fsw
     std::vector<fsw_event_type_filter> event_type_filters;
 
 #ifdef HAVE_CXX_MUTEX
+# ifdef HAVE_CXX_ATOMIC
+#   define HAVE_INACTIVITY_CALLBACK
     static void inactivity_callback(monitor *mon);
-
     mutable std::atomic<std::chrono::milliseconds> last_notification;
+# endif
 #endif
   };
 
