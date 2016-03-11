@@ -74,6 +74,7 @@ AX_CXX_COMPILE_STDCXX_11
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
+AC_CHECK_LIB([pthread], [pthread_create])
 
 # Checks for required header files.
 AC_CHECK_HEADERS([cstdlib],  [], [AC_MSG_ERROR([A required header file is missing.])])
