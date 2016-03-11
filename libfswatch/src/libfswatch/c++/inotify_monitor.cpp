@@ -19,6 +19,7 @@
 
 #include "gettext_defs.h"
 #include "inotify_monitor.hpp"
+#include <algorithm>
 #include <limits.h>
 #ifdef __sun
 #  define NAME_MAX         255    /* # chars in a file name */
@@ -66,6 +67,7 @@ namespace fsw
     fsw_hash_map<int, string> wd_to_path;
     fsw_hash_set<int> descriptors_to_remove;
     fsw_hash_set<int> watches_to_remove;
+    vector<string> paths_to_rescan;
     time_t curr_time;
   };
 
@@ -207,6 +209,12 @@ namespace fsw
     if (flags.size())
     {
       impl->events.push_back({impl->wd_to_path[event->wd], impl->curr_time, flags});
+    }
+
+    // If a new directory has been created, it should be rescanned if the
+    if ((event->mask & IN_ISDIR) && (event->mask & IN_CREATE))
+    {
+      impl->paths_to_rescan.push_back(impl->wd_to_path[event->wd]);
     }
   }
 
@@ -361,6 +369,17 @@ namespace fsw
 
       impl->descriptors_to_remove.erase(fd++);
     }
+
+    // Process paths to be rescanned
+    std::for_each(impl->paths_to_rescan.begin(),
+		  impl->paths_to_rescan.end(),
+		  [this] (const string& p)
+		  {
+		    this->scan(p);
+		  }
+		  );
+
+    impl->paths_to_rescan.clear();
   }
 
   void inotify_monitor::run()
@@ -407,7 +426,8 @@ namespace fsw
 
       if (rv == -1)
       {
-        throw libfsw_exception(_("::select() on inotify descriptor encountered an error."));
+	fsw_log_perror("select");
+	continue;
       }
 
       // In case of read timeout just repeat the loop.
