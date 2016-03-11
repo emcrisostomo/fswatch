@@ -203,7 +203,6 @@ else
   AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
 fi
 
-# The GCC toolchain on Debian GNU/Linux 8 still misses the <atomic> header.
 AC_CHECK_HEADER([atomic])
 
 AS_VAR_IF([ac_cv_header_atomic],
