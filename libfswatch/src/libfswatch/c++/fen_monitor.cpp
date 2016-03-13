@@ -401,7 +401,7 @@ namespace fsw
           throw libfsw_exception(msg);
         }
       }
-      else if (errno != ETIME) perror("port_get");
+      else if (errno != ETIME && errno != EINTR) perror("port_get");
     }
   }
 }
