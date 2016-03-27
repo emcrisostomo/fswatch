@@ -1,6 +1,13 @@
 NEWS
 ****
 
+New in 1.9.0:
+
+  * Issue 84: Add the possibility of scheduling a periodic event.
+
+  * Issue 114: fswatch does not track newly created directories recursively when
+    using the inotify monitor.
+
 New in 1.8.0:
 
   * Unsupported CMake files and CLion project files are included as a courtesy.
