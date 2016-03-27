@@ -46,6 +46,7 @@ Features
   * Recursive directory monitoring.
   * Path filtering using including and excluding regular expressions.
   * Customizable record format.
+  * Support for periodic idle events.
 
 Limitations
 -----------
@@ -54,23 +55,30 @@ The limitations of `fswatch` depend largely on the monitor being used:
 
   * The **FSEvents** monitor, available only on OS X, has no known limitations,
     and scales very well with the number of files being observed.
+
+  * The **File Events Notification** monitor, available on Solaris kernels and
+    its derivatives, has no known limitations.
+
   * The **kqueue** monitor, available on any \*BSD system featuring kqueue,
     requires a file descriptor to be opened for every file being watched.  As a
     result, this monitor scales badly with the number of files being observed,
     and may begin to misbehave as soon as the `fswatch` process runs out of file
     descriptors.  In this case, `fswatch` dumps one error on standard error for
     every file that cannot be opened.
+
   * The **inotify** monitor, available on Linux since kernel 2.6.13, may suffer
     a queue overflow if events are generated faster than they are read from the
     queue.  In any case, the application is guaranteed to receive an overflow
     notification which can be handled to gracefully recover.  `fswatch`
     currently throws an exception if a queue overflow occurs.  Future versions
     will handle the overflow by emitting proper notifications.
+
   * The **Windows** monitor can only establish a watch _directories_, not files.
     To watch a file, its parent directory must be watched in order to receive
     change events for all the directory's children, _recursively_ at any depth.
     Optionally, change events can be filtered to include only changes to the
     desired file.
+
   * The **poll** monitor, available on any platform, only relies on
     available CPU and memory to perform its task.  The performance of this
     monitor degrades linearly with the number of files being watched.
@@ -78,17 +86,24 @@ The limitations of `fswatch` depend largely on the monitor being used:
 Usage recommendations are as follows:
 
   * On OS X, use only the `FSEvents` monitor (which is the default behaviour).
+
+  * On Solaris and its derivatives use the _File Events Notification_ monitor.
+
   * On Linux, use the `inotify` monitor (which is the default behaviour).
+
   * If the number of files to observe is sufficiently small, use the `kqueue`
     monitor.  Beware that on some systems the maximum number of file descriptors
     that can be opened by a process is set to a very low value (values as low as
     256 are not uncommon), even if the operating system may allow a much larger
     value.  In this case, check your OS documentation to raise this limit on
     either a per process or a system-wide basis.
+
   * If feasible, watch directories instead of files.  Properly crafting the
     receiving side of the events to deal with directories may sensibly reduce
     the monitor resource consumption.
+
   * On Windows, use the `windows` monitor.
+
   * If none of the above applies, use the poll monitor.  The authors' experience
     indicates that `fswatch` requires approximately 150 MB of RAM memory to
     observe a hierarchy of 500.000 files with a minimum path length of 32
