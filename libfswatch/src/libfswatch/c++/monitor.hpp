@@ -36,6 +36,8 @@
 #  ifdef HAVE_CXX_MUTEX
 #    include <mutex>
 #  endif
+#  include <atomic>
+#  include <chrono>
 #  include <map>
 #  include "event.hpp"
 #  include "../c/cmonitor.h"
@@ -164,11 +166,16 @@ namespace fsw
     /**
      * @brief Destructs a monitor instance.
      *
-     * This destructor frees the compiled regular expression of the path
-     * filters, if any.
+     * This destructor performs the following operations:
+     *
+     *   - Stops the monitor.
+     *
+     *   - Frees the compiled regular expression of the path filters, if any.
      *
      * @warning Destroying a monitor in the _running_ state results in undefined
      * behaviour.
+     *
+     * @see stop()
      */
     virtual ~monitor();
 
@@ -227,6 +234,19 @@ namespace fsw
      * @param latency The latency value.
      */
     void set_latency(double latency);
+
+    /**
+     * @brief Sets the _fire idle event_ flag.
+     *
+     * When @c true, the _fire idle event_ flag instructs the monitor to fire a
+     * fake event at the event of an _idle_ cycle.  An idle cycle is a period of
+     * time whose length is 110% of the monitor::latency where no change events
+     * were detected.
+     *
+     * @param fire_idle_event @c true if idle events should be fired, @c false
+     * otherwise.
+     */
+    void set_fire_idle_event(bool fire_idle_event);
 
     /**
      * @brief Notify buffer overflows as change events.
@@ -538,6 +558,13 @@ namespace fsw
     double latency = 1.0;
 
     /**
+     * @brief If @c true, the monitor will notify an event when idle.
+     *
+     * An idle cycle is long as 110% of the monitor::latency value.
+     */
+    bool fire_idle_event = false;
+
+    /**
      * @brief If @c true, queue overflow events will be notified to the caller,
      * otherwise the monitor will throw a libfsw_exception.
      */
@@ -563,21 +590,37 @@ namespace fsw
      */
     bool watch_access = false;
 
-    bool running = false;
     /**
-     * To do.
+     * @brief Flag indicating whether the monitor is in the running state.
+     */
+    bool running = false;
+
+    /**
+     * @brief Flag indicating whether the monitor should preemptively stop.
      */
     bool should_stop = false;
+
 #  ifdef HAVE_CXX_MUTEX
     /**
-     * To do.
+     * @brief Mutex used to serialize access to the monitor state from multiple
+     * threads.
      */
-    std::mutex run_mutex;
+    mutable std::mutex run_mutex;
 #  endif
 
   private:
+    std::chrono::milliseconds get_latency_ms() const;
+
     std::vector<compiled_monitor_filter> filters;
     std::vector<fsw_event_type_filter> event_type_filters;
+
+#ifdef HAVE_CXX_MUTEX
+# ifdef HAVE_CXX_ATOMIC
+#   define HAVE_INACTIVITY_CALLBACK
+    static void inactivity_callback(monitor *mon);
+    mutable std::atomic<std::chrono::milliseconds> last_notification;
+# endif
+#endif
   };
 
   typedef monitor *(*FSW_FN_MONITOR_CREATOR)(std::vector<std::string> paths,

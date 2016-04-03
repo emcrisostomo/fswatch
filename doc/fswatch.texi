@@ -92,6 +92,22 @@ Free Documentation License'.
 @node Version History
 @chapter Version History
 
+@section 1.9.0
+@itemize
+@item
+Fix issue 114: @command{fswatch} does not track newly created
+directories recursively when using the @emph{inotify} monitor.
+
+@item
+Add the possibility of scheduling a periodic event.
+@end itemize
+
+@section 1.8.0
+@itemize
+@item
+Add preemptive monitor stop support.
+@end itemize
+
 @section 1.7.0
 @itemize
 @item
@@ -1103,6 +1119,11 @@ Exclude paths matching @command{@var{regex}}.
 
 Use extended regular expressions.
 
+@opsummary{fire-idle-events}
+@item --fire-idle-events
+
+Fire idle events.
+
 @opsummary{follow-links}
 @item --follow-links
 @itemx -L
@@ -1415,6 +1436,30 @@ it by providing the desired marker string as optional argument to
 *** BATCH END ***
 @end example
 
+@section Idle events
+@cpindex event, idle
+An @emph{idle} event is a special event type that can optionally be
+emitted by @command{fswatch} if no change events were collected in a
+period of time whose average length is equal to the monitor latency
+(@pxref{Latency}).  Idle events come in handy when an observer wants
+to perform an operation every time a change is detected @emph{or}
+after a specified amount of time even if no changes were detected.
+
+Idle events were introduced in version 1.9.0 and are available only
+when @command{fswatch} is built on a platform that supports C++11
+threads (@command{std::thread}) and can be enabled using the
+@option{--fire-idle-events} option.
+
+An idle event has got the following characteristics:
+
+@itemize
+@item
+It has an empty path.
+
+@item
+It is of type @command{NoOp}.
+@end itemize
+
 @section Filtering by Path
 @cpindex filter, by path
 @cpindex path filter
@@ -1606,6 +1651,9 @@ of all the available monitor flags.  The list of all the available
 global event flags, defined in @file{c/cevent.h}, is the following:
 
 @table @code
+@item NoOp
+Idle event, optionally issued when no changes were detected.
+
 @item PlatformSpecific
 This event maps a platform-specific event that has no corresponding
 flag.
@@ -1712,6 +1760,7 @@ where @math{\wedge} is the bitwise @command{and} operator, is @math{r
 The numeric value of all the event flags is the following:
 
 @itemize
+@item @command{NoOp}: 0
 @item @command{PlatformSpecific}: 1
 @item @command{Created}: 2
 @item @command{Updated}: 4

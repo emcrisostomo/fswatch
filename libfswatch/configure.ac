@@ -16,11 +16,11 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
-dnl Copyright (C) 2014-2015 Enrico M. Crisostomo
+dnl Copyright (C) 2014-2016 Enrico M. Crisostomo
 AC_PREREQ([2.69])
 m4_include([m4/libfswatch_version.m4])
 AC_INIT([libfswatch], LIBFSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
-AC_COPYRIGHT([2015 (C) Enrico M. Crisostomo])
+AC_COPYRIGHT([2016 (C) Enrico M. Crisostomo])
 AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
@@ -74,6 +74,7 @@ AX_CXX_COMPILE_STDCXX_11
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
+AC_CHECK_LIB([pthread], [pthread_create])
 
 # Checks for required header files.
 AC_CHECK_HEADERS([cstdlib],  [], [AC_MSG_ERROR([A required header file is missing.])])
@@ -187,6 +188,7 @@ AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
 AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
 
 # Some compilers declare to conform to C++11 but the library does not.
+
 # These OS X versions are known to miss at least the listed headers:
 #   - 10.6 Snow Leopard: mutex, atomic
 #   - 10.7 Lion: mutex, atomic
@@ -201,6 +203,13 @@ if test "x${ac_cv_header_mutex}" = "xyes" ; then
 else
   AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
 fi
+
+AC_CHECK_HEADER([atomic])
+
+AS_VAR_IF([ac_cv_header_atomic],
+  ["yes"],
+  [AC_DEFINE([HAVE_CXX_ATOMIC], [1], [Define if <atomic> is available.])],
+  [AC_MSG_WARN([<atomic> unavailable: some functionalities will not be built.])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL

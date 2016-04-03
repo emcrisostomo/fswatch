@@ -28,9 +28,7 @@
 
 #  include "monitor.hpp"
 #  include <CoreServices/CoreServices.h>
-#  ifdef HAVE_CXX_MUTEX
-#    include <mutex>
-#  endif
+
 namespace fsw
 {
   /**
@@ -80,9 +78,6 @@ namespace fsw
                                   const FSEventStreamEventFlags eventFlags[],
                                   const FSEventStreamEventId eventIds[]);
 
-#  ifdef HAVE_CXX_MUTEX
-    std::mutex run_mutex;
-#  endif
     FSEventStreamRef stream = nullptr;
     CFRunLoopRef run_loop = nullptr;
   };

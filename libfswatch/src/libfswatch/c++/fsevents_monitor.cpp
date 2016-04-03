@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2016 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -21,6 +21,9 @@
 #include "gettext_defs.h"
 #include "libfswatch_exception.hpp"
 #include "c/libfswatch_log.h"
+#  ifdef HAVE_CXX_MUTEX
+#    include <mutex>
+#  endif
 
 using namespace std;
 
@@ -72,23 +75,13 @@ namespace fsw
 
   fsevents_monitor::~fsevents_monitor()
   {
-    if (stream)
-    {
-      FSW_ELOG(_("Stopping event stream...\n"));
-      FSEventStreamStop(stream);
-
-      FSW_ELOG(_("Invalidating event stream...\n"));
-      FSEventStreamInvalidate(stream);
-
-      FSW_ELOG(_("Releasing event stream...\n"));
-      FSEventStreamRelease(stream);
-    }
-
-    stream = nullptr;
   }
 
   void fsevents_monitor::run()
   {
+#ifdef HAVE_CXX_MUTEX
+    unique_lock<mutex> run_loop_lock(run_mutex);
+#endif
     if (stream) return;
 
     // parsing paths
@@ -117,7 +110,6 @@ namespace fsw
     context->copyDescription = nullptr;
 
     FSW_ELOG(_("Creating FSEvent stream...\n"));
-    unique_lock<mutex> run_loop_lock(run_mutex);
     stream = FSEventStreamCreate(NULL,
                                  &fsevents_monitor::fsevents_callback,
                                  context,
@@ -126,8 +118,10 @@ namespace fsw
                                  latency,
                                  kFSEventStreamCreateFlagFileEvents);
 
-    if (!stream) throw libfsw_exception(_("Event stream could not be created."));
+    if (!stream)
+      throw libfsw_exception(_("Event stream could not be created."));
 
+    // Fire the event loop
     run_loop = CFRunLoopGetCurrent();
     run_loop_lock.unlock();
 
@@ -143,19 +137,28 @@ namespace fsw
     CFRunLoopRun();
   }
 
-
+  /*
+   * on_stop() is designed to be invoked with a lock on the run_mutex.
+   */
   void fsevents_monitor::on_stop()
   {
-    lock_guard<mutex> run_loop_lock(run_mutex);
     if (!run_loop) throw libfsw_exception(_("run loop is null"));
-
-    FSW_ELOG(_("Stopping event stream...\n"));
-    FSEventStreamStop(stream);
-    stream = nullptr;
 
     FSW_ELOG(_("Stopping run loop...\n"));
     CFRunLoopStop(run_loop);
+
     run_loop = nullptr;
+
+    FSW_ELOG(_("Stopping event stream...\n"));
+    FSEventStreamStop(stream);
+
+    FSW_ELOG(_("Invalidating event stream...\n"));
+    FSEventStreamInvalidate(stream);
+
+    FSW_ELOG(_("Releasing event stream...\n"));
+    FSEventStreamRelease(stream);
+
+    stream = nullptr;
   }
 
   static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
@@ -188,6 +191,7 @@ namespace fsw
       throw libfsw_exception(_("The callback info cannot be cast to fsevents_monitor."));
     }
 
+    // Build the notification objects.
     vector<event> events;
 
     time_t curr_time;

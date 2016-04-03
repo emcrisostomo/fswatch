@@ -1,6 +1,25 @@
 NEWS
 ****
 
+New in 1.9.0:
+
+  * Update monitor::~monitor() to invoke monitor::stop(), close resources in
+    monitor::on_stop().
+
+  * Issue 84: Add the possibility of scheduling a periodic idle event.
+
+  * Run a separate thread to fire idle events.
+
+  * Improve logging.
+
+  * Do not fail if blocking calls are interrupted by a signal.
+
+  * Issue 114: fswatch does not track newly created directories recursively when
+    using the inotify monitor.
+
+  * The AX_CXX_COMPILE_STDCXX macro was patched so that the switches it adds to
+    the compiler are added to the preprocessor configuration as well.
+
 New in 1.8.0:
 
   * Unsupported CMake files and CLion project files are included as a courtesy.
