@@ -92,6 +92,12 @@ Free Documentation License'.
 @node Version History
 @chapter Version History
 
+@section 1.9.1
+@itemize
+@item
+@file{libfswatch} @acronym{API} version set to 7:0:1.
+@end itemize
+
 @section 1.9.0
 @itemize
 @item
