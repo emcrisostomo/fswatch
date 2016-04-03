@@ -14,5 +14,5 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 m4_define([LIBFSWATCH_VERSION], [1.9.1])
-m4_define([LIBFSWATCH_API_VERSION], [6:0:0])
+m4_define([LIBFSWATCH_API_VERSION], [7:0:1])
 m4_define([LIBFSWATCH_REVISION], [1])
