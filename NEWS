@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.9.1:
+
+  * Only libfswatch has been updated.
+
 New in 1.9.0:
 
   * Issue 84: Add the possibility of scheduling a periodic event.

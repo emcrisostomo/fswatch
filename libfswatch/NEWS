@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.9.1:
+
+  * libfswatch API version 7:0:1.
+
 New in 1.9.0:
 
   * Update monitor::~monitor() to invoke monitor::stop(), close resources in
