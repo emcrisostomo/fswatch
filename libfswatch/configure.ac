@@ -16,11 +16,11 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
-dnl Copyright (C) 2014-2015 Enrico M. Crisostomo
+dnl Copyright (C) 2014-2016 Enrico M. Crisostomo
 AC_PREREQ([2.69])
 m4_include([m4/libfswatch_version.m4])
 AC_INIT([libfswatch], LIBFSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
-AC_COPYRIGHT([2015 (C) Enrico M. Crisostomo])
+AC_COPYRIGHT([2016 (C) Enrico M. Crisostomo])
 AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([src/libfswatch/c/libfswatch.cpp])
 AC_CONFIG_AUX_DIR([config])

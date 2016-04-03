@@ -218,7 +218,6 @@
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
-          <root url="file://$MODULE_DIR$/libfswatch/src" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
           <root url="file:///Library/Frameworks/Mono.framework/Headers" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/PrivateHeaders" />
@@ -226,7 +225,7 @@
           <root url="file:///Library/Frameworks/WacomMultiTouch.framework/Headers" />
           <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.0.2/include" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include" />
         </CLASSES>
         <SOURCES>
           <root url="file:///System/Library/Frameworks/AudioToolbox.framework/Headers" />
@@ -401,7 +400,6 @@
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
-          <root url="file://$MODULE_DIR$/libfswatch/src" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
           <root url="file:///Library/Frameworks/Mono.framework/Headers" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/PrivateHeaders" />
@@ -409,41 +407,8 @@
           <root url="file:///Library/Frameworks/WacomMultiTouch.framework/Headers" />
           <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.0.2/include" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include" />
         </SOURCES>
-        <excluded>
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/libfswatch_map.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/fsevents_monitor.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/kqueue_monitor.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/filter.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/path_utils.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/kqueue_monitor.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/path_utils.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/monitor.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/libfswatch_exception.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/event.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/monitor.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/libfswatch_set.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/libfswatch_exception.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/event.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/string/string_utils.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/string/string_utils.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/poll_monitor.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/poll_monitor.hpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/fsevents_monitor.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/gettext_defs.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cfilter.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cevent.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_log.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_types.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch_log.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/libfswatch.cpp" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/error.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cmonitor.h" />
-          <root url="file://$MODULE_DIR$/libfswatch/src/libfswatch/gettext.h" />
-        </excluded>
       </library>
     </orderEntry>
   </component>
