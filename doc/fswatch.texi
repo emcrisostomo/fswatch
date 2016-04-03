@@ -1445,9 +1445,10 @@ period of time whose average length is equal to the monitor latency
 to perform an operation every time a change is detected @emph{or}
 after a specified amount of time even if no changes were detected.
 
-Idle events are available only when @command{fswatch} is built on a
-platform that supports C++11 threads (@command{std::thread}) and can
-be enabled using the @option{--fire-idle-events} option.
+Idle events were introduced in version 1.9.0 and are available only
+when @command{fswatch} is built on a platform that supports C++11
+threads (@command{std::thread}) and can be enabled using the
+@option{--fire-idle-events} option.
 
 An idle event has got the following characteristics:
 
