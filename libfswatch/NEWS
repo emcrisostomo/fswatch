@@ -17,6 +17,9 @@ New in 1.9.0:
   * Issue 114: fswatch does not track newly created directories recursively when
     using the inotify monitor.
 
+  * The AX_CXX_COMPILE_STDCXX macro was patched so that the switches it adds to
+    the compiler are added to the preprocessor configuration as well.
+
 New in 1.8.0:
 
   * Unsupported CMake files and CLion project files are included as a courtesy.
