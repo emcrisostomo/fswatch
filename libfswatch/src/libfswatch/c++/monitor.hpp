@@ -606,11 +606,15 @@ namespace fsw
      * threads.
      */
     mutable std::mutex run_mutex;
+
+    /**
+     * @brief Mutex used to serialize access to the notify_events() method.
+     */
+    mutable std::mutex notify_mutex;
 #  endif
 
   private:
     std::chrono::milliseconds get_latency_ms() const;
-
     std::vector<compiled_monitor_filter> filters;
     std::vector<fsw_event_type_filter> event_type_filters;
 
