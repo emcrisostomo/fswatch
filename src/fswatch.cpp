@@ -387,7 +387,7 @@ static void write_events(const vector<event>& events)
 
   if (_1flag)
   {
-    exit(FSW_EXIT_OK);
+    close_monitor();
   }
 }
 

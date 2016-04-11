@@ -82,6 +82,7 @@ namespace fsw
 #ifdef HAVE_CXX_MUTEX
     unique_lock<mutex> run_loop_lock(run_mutex);
 #endif
+
     if (stream) return;
 
     // parsing paths
@@ -123,7 +124,10 @@ namespace fsw
 
     // Fire the event loop
     run_loop = CFRunLoopGetCurrent();
+
+#ifdef HAVE_CXX_MUTEX
     run_loop_lock.unlock();
+#endif
 
     FSW_ELOG(_("Scheduling stream with run loop...\n"));
     FSEventStreamScheduleWithRunLoop(stream,

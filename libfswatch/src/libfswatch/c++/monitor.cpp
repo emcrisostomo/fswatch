@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2016 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -43,10 +43,14 @@ namespace fsw
   #define FSW_MONITOR_RUN_GUARD unique_lock<mutex> run_guard(run_mutex);
   #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock();
   #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock();
+
+  #define FSW_MONITOR_NOTIFY_GUARD unique_lock<mutex> notify_guard(notify_mutex);
 #else
   #define FSW_MONITOR_RUN_GUARD
   #define FSW_MONITOR_RUN_GUARD_LOCK
   #define FSW_MONITOR_RUN_GUARD_UNLOCK
+
+  #define FSW_MONITOR_NOTIFY_GUARD
 #endif
 
   monitor::monitor(vector<string> paths,
@@ -270,10 +274,7 @@ namespace fsw
 #ifdef HAVE_INACTIVITY_CALLBACK
   void monitor::inactivity_callback(monitor *mon)
   {
-    if (!mon)
-    {
-      throw libfsw_exception(_("Callback argument cannot be null."));
-    }
+    if (!mon) throw libfsw_exception(_("Callback argument cannot be null."));
 
     FSW_ELOG(_("Inactivity notification thread: starting\n"));
 
@@ -385,7 +386,7 @@ namespace fsw
 
   void monitor::notify_events(const vector<event>& events) const
   {
-    FSW_MONITOR_RUN_GUARD;
+    FSW_MONITOR_NOTIFY_GUARD;
 
     // Update the last notification timestamp
 #ifdef HAVE_INACTIVITY_CALLBACK
