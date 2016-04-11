@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libfswatch 1.8.0\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2016-04-03 13:41+0200\n"
+"POT-Creation-Date: 2016-04-11 23:56+0200\n"
 "PO-Revision-Date: 2016-03-14 20:15+0100\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -71,47 +71,47 @@ msgstr "Rastreando %s.\n"
 msgid "Event from unexpected source"
 msgstr "Evento de fuente inesperada"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:112
+#: src/libfswatch/c++/fsevents_monitor.cpp:113
 msgid "Creating FSEvent stream...\n"
 msgstr "Creando el flujo FSEvent...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:122
+#: src/libfswatch/c++/fsevents_monitor.cpp:123
 msgid "Event stream could not be created."
 msgstr "El flujo de eventos no se puede crear."
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:128
+#: src/libfswatch/c++/fsevents_monitor.cpp:132
 msgid "Scheduling stream with run loop...\n"
 msgstr "Planificando el flujo de eventos con el bucle de ejecución...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:133
+#: src/libfswatch/c++/fsevents_monitor.cpp:137
 msgid "Starting event stream...\n"
 msgstr "Arrancando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:136
+#: src/libfswatch/c++/fsevents_monitor.cpp:140
 msgid "Starting run loop...\n"
 msgstr "Arrancando el bucle de ejecución...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:145
+#: src/libfswatch/c++/fsevents_monitor.cpp:149
 msgid "run loop is null"
 msgstr "loop de ejecución nulo"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:147
+#: src/libfswatch/c++/fsevents_monitor.cpp:151
 msgid "Stopping run loop...\n"
 msgstr "Parando el bucle de ejecución...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:152
+#: src/libfswatch/c++/fsevents_monitor.cpp:156
 msgid "Stopping event stream...\n"
 msgstr "Parando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:155
+#: src/libfswatch/c++/fsevents_monitor.cpp:159
 msgid "Invalidating event stream...\n"
 msgstr "Invalidando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:158
+#: src/libfswatch/c++/fsevents_monitor.cpp:162
 msgid "Releasing event stream...\n"
 msgstr "Liberando el flujo de eventos...\n"
 
-#: src/libfswatch/c++/fsevents_monitor.cpp:191
+#: src/libfswatch/c++/fsevents_monitor.cpp:195
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "El context de callback no puede convertirse a fsevents_monitor."
 
@@ -172,44 +172,44 @@ msgstr "Evento con EV_ERROR"
 msgid "Error: "
 msgstr "Error: "
 
-#: src/libfswatch/c++/monitor.cpp:59
+#: src/libfswatch/c++/monitor.cpp:63
 msgid "Callback cannot be null."
 msgstr "El callback no puede ser null."
 
-#: src/libfswatch/c++/monitor.cpp:78
+#: src/libfswatch/c++/monitor.cpp:82
 msgid "Latency cannot be negative."
 msgstr "La latencia no puede ser negativa."
 
-#: src/libfswatch/c++/monitor.cpp:129
+#: src/libfswatch/c++/monitor.cpp:133
 #, c-format
 msgid "An error occurred during the compilation of %s"
 msgstr "Un error ocurrió durante la compilación de %s"
 
-#: src/libfswatch/c++/monitor.cpp:275
+#: src/libfswatch/c++/monitor.cpp:277
 msgid "Callback argument cannot be null."
 msgstr "El callback no puede ser null."
 
-#: src/libfswatch/c++/monitor.cpp:278
+#: src/libfswatch/c++/monitor.cpp:279
 msgid "Inactivity notification thread: starting\n"
 msgstr "Thread para notificación de inactividad: arrancando\n"
 
-#: src/libfswatch/c++/monitor.cpp:310
+#: src/libfswatch/c++/monitor.cpp:311
 msgid "Inactivity notification thread: exiting\n"
 msgstr "Thread para notificación de inactividad: saliendo\n"
 
-#: src/libfswatch/c++/monitor.cpp:333
+#: src/libfswatch/c++/monitor.cpp:334
 msgid "Inactivity notification thread: joining\n"
 msgstr "Thread para notificación de inactividad: esperando\n"
 
-#: src/libfswatch/c++/monitor.cpp:350
+#: src/libfswatch/c++/monitor.cpp:351
 msgid "Stopping the monitor.\n"
 msgstr "Parando el monitor...\n"
 
-#: src/libfswatch/c++/monitor.cpp:378
+#: src/libfswatch/c++/monitor.cpp:379
 msgid "Event queue overflow."
 msgstr "Cola de eventos saturada."
 
-#: src/libfswatch/c++/monitor.cpp:412
+#: src/libfswatch/c++/monitor.cpp:413
 #, c-format
 msgid "Notifying events #: %d.\n"
 msgstr "Notificando eventos #: %d.\n"
