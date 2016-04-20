@@ -87,12 +87,39 @@ namespace fsw
      */
     bool extended;
 
+    /**
+     * @brief Load filters from the specified file.
+     *
+     * Filters can be loaded from a text file containing one filter per line.
+     * A filter has the following structure:
+     *
+     *   - It is validated by the following regular expression:
+     *     `^([+-])([ei]*) (.+)$`
+     *
+     *   - The first character is the filter type: `+` if it is an _inclusion_
+     *     filter, `-` if it is an _exclusion_ filter.
+     *
+     *   - An optional list of flags:
+     *
+     *     - `e` if it is an _extended_ regular expression.
+     *
+     *     - `i` if it is a _case insensitive_ regular expression.
+     *
+     *   - A space.
+     *
+     *   - The filter regular expression text.
+     *
+     * Parsing errors are notified through an optional error handler.  The valid
+     * filters are returned in a vector.
+     *
+     * @param path The path of the file to read filters from.
+     * @param err_handler An optional error handler.
+     * @return A vector containing the valid filters.
+     * @throw invalid_argument If the specified path cannot be opened.
+     */
     static std::vector<monitor_filter> read_from_file(std::string path,
                                                       void (*err_handler)(
                                                         std::string));
-    static bool parse_filter(std::string filter,
-                             monitor_filter& filter_object,
-                             void (*err_handler)(std::string));
   } monitor_filter;
 }
 
