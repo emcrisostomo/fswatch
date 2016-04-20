@@ -856,17 +856,23 @@ int main(int argc, char **argv)
     delete active_monitor;
     active_monitor = nullptr;
   }
+  catch (invalid_argument& ex)
+  {
+    cerr << ex.what() << "\n";
+
+    return FSW_EXIT_ERROR;
+  }
   catch (exception& conf)
   {
     cerr << _("An error occurred and the program will be terminated.\n");
-    cerr << conf.what() << endl;
+    cerr << conf.what() << "\n";
 
     return FSW_EXIT_ERROR;
   }
   catch (...)
   {
     cerr <<
-    _("An unknown error occurred and the program will be terminated.") << endl;
+    _("An unknown error occurred and the program will be terminated.\n");
 
     return FSW_EXIT_ERROR;
   }
