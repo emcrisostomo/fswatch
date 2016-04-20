@@ -94,8 +94,9 @@ namespace fsw
       return false;
     }
 
-    // Reset the filter object.
+    // Reset the filter object to its default values.
     filter_object = {};
+    filter_object.case_sensitive = true;
 
     // Name the fragments
     string frag_type = fragments[1].str();
@@ -124,7 +125,7 @@ namespace fsw
         filter_object.extended = true;
         break;
       case 'i':
-        filter_object.case_sensitive = true;
+        filter_object.case_sensitive = false;
         break;
       default:
         throw invalid_argument(string(_("Unknown flag: ")) + c);
