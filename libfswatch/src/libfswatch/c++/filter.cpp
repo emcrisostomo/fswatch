@@ -40,7 +40,8 @@ namespace fsw
     vector<monitor_filter> filters;
     ifstream f(path);
 
-    if (!f.is_open()) throw invalid_argument(path);
+    if (!f.is_open())
+      throw invalid_argument(string(_("File not found: ")) + path);
 
     string line;
     monitor_filter filter;
