@@ -464,10 +464,11 @@ static void start_monitor(int argc, char **argv, int optind)
     for (auto filter : monitor_filter::read_from_file(filter_file,
                                                       [](string f)
                                                       {
-                                                        cout << f << "\n";
+                                                        cerr <<
+                                                        _("Invalid filter: ") <<
+                                                        f << "\n";
                                                       }))
     {
-      cout << "Pushing back filter\n";
       filters.push_back(filter);
     }
   }
