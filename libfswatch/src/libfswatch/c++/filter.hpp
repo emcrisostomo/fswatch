@@ -119,7 +119,7 @@ namespace fsw
      */
     static std::vector<monitor_filter> read_from_file(std::string path,
                                                       void (*err_handler)(
-                                                        std::string));
+                                                        std::string) = nullptr);
   } monitor_filter;
 }
 

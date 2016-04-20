@@ -71,7 +71,7 @@ namespace fsw
                     monitor_filter& filter_object,
                     void (*err_handler)(string))
   {
-#define handle_error(t) if (!err_handler) err_handler(t);
+#define handle_error(t) if (err_handler) err_handler(t);
     // Skip empty strings.
     if (filter.length() == 0) return false;
 

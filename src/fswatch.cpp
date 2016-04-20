@@ -78,6 +78,7 @@ static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 static monitor *active_monitor = nullptr;
 static vector<monitor_filter> filters;
 static vector<fsw_event_type_filter> event_filters;
+static vector<string> filter_files;
 static bool _0flag = false;
 static bool _1flag = false;
 static bool aflag = false;
@@ -117,6 +118,7 @@ static const int OPT_EVENT_TYPE = 131;
 static const int OPT_ALLOW_OVERFLOW = 132;
 static const int OPT_MONITOR_PROPERTY = 133;
 static const int OPT_FIRE_IDLE_EVENTS = 134;
+static const int OPT_FILTER_FROM = 135;
 
 static void list_monitor_types(ostream& stream)
 {
@@ -129,9 +131,12 @@ static void list_monitor_types(ostream& stream)
 static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2013-2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
-  stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
-  stream << _("This is free software: you are free to change and redistribute it.\n");
+  stream <<
+  "Copyright (C) 2013-2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream <<
+  _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
+  stream <<
+  _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
   stream << "\n";
   stream << _("Written by Enrico M. Crisostomo.");
@@ -146,21 +151,32 @@ static void usage(ostream& stream)
   stream << PACKAGE_NAME << _(" [OPTION] ... path ...\n");
   stream << "\n";
   stream << _("Options:\n");
-  stream << " -0, --print0          " << _("Use the ASCII NUL character (0) as line separator.\n");
-  stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
-  stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
-  stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
-  stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
+  stream << " -0, --print0          " <<
+  _("Use the ASCII NUL character (0) as line separator.\n");
+  stream << " -1, --one-event       " <<
+  _("Exit fswatch after the first set of events is received.\n");
+  stream << "     --allow-overflow  " <<
+  _("Allow a monitor to overflow and report it as a change event.\n");
+  stream << "     --batch-marker    " <<
+  _("Print a marker at the end of every batch.\n");
+  stream << "     --event=TYPE      " <<
+  _("Filter the event by the specified type.\n");
   stream << " -a, --access          " << _("Watch file accesses.\n");
   stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
-  stream << " -E, --extended        " << _("Use extended regular expressions.\n");
-  stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
-  stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
+  stream << " -E, --extended        " <<
+  _("Use extended regular expressions.\n");
+  stream << "     --filter-from=FILE\n";
+  stream << "                       " << _("Load filters from file.") << "\n";
+  stream << "     --format=FORMAT   " <<
+  _("Use the specified record format.") << "\n";
+  stream << " -f, --format-time     " <<
+  _("Print the event time using the specified format.\n");
   stream << "     --fire-idle-event " << _("Fire idle events.\n");
   stream << " -h, --help            " << _("Show this message.\n");
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
-  stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
+  stream << " -I, --insensitive     " <<
+  _("Use case insensitive regular expressions.\n");
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
   stream << " -M, --list-monitors   " << _("List the available monitors.\n");
@@ -168,15 +184,19 @@ static void usage(ostream& stream)
   stream << "     --monitor-property name=value\n";
   stream << "                       " << _("Define the specified property.\n");
   stream << " -n, --numeric         " << _("Print a numeric event mask.\n");
-  stream << " -o, --one-per-batch   " << _("Print a single message with the number of change events.\n");
+  stream << " -o, --one-per-batch   " <<
+  _("Print a single message with the number of change events.\n");
   stream << " -r, --recursive       " << _("Recurse subdirectories.\n");
   stream << " -t, --timestamp       " << _("Print the event timestamp.\n");
-  stream << " -u, --utc-time        " << _("Print the event time as UTC time.\n");
+  stream << " -u, --utc-time        " <<
+  _("Print the event time as UTC time.\n");
   stream << " -v, --verbose         " << _("Print verbose output.\n");
-  stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
+  stream << "     --version         " << _("Print the version of ") <<
+  PACKAGE_NAME << _(" and exit.\n");
   stream << " -x, --event-flags     " << _("Print the event flags.\n");
   stream << "     --event-flag-separator=STRING\n";
-  stream << "                       " << _("Print event flags using the specified separator.") << "\n";
+  stream << "                       " <<
+  _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
   string option_string = "[01adeEfhilLMmnortuvx]";
@@ -314,7 +334,8 @@ static void print_event_timestamp(const event& evt)
     strftime(time_format_buffer,
              TIME_FORMAT_BUFF_SIZE,
              tformat.c_str(),
-             tm_time) ? string(time_format_buffer) : string(_("<date format error>"));
+             tm_time) ? string(time_format_buffer) : string(
+      _("<date format error>"));
 
   cout << date;
 }
@@ -391,7 +412,7 @@ static void write_events(const vector<event>& events)
   }
 }
 
-static void process_events(const vector<event>& events, void *context)
+void process_events(const vector<event>& events, void *context)
 {
   if (oflag)
     write_one_batch_event(events);
@@ -421,9 +442,10 @@ static void start_monitor(int argc, char **argv, int optind)
                                                      paths,
                                                      process_events);
   else
-    active_monitor = monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
-                                                     paths,
-                                                     process_events);
+    active_monitor = monitor_factory::create_monitor(
+      fsw_monitor_type::system_default_monitor_type,
+      paths,
+      process_events);
 
   /*
    * libfswatch supports case sensitivity and extended flags to be set on any
@@ -434,6 +456,20 @@ static void start_monitor(int argc, char **argv, int optind)
   {
     filter.case_sensitive = !Iflag;
     filter.extended = Eflag;
+  }
+
+  // Load filters from the specified files.
+  for (auto filter_file : filter_files)
+  {
+    for (auto filter : monitor_filter::read_from_file(filter_file,
+                                                      [](string f)
+                                                      {
+                                                        cout << f << "\n";
+                                                      }))
+    {
+      cout << "Pushing back filter\n";
+      filters.push_back(filter);
+    }
   }
 
   active_monitor->set_properties(monitor_properties);
@@ -467,6 +503,7 @@ static void parse_opts(int argc, char **argv)
     {"event-flag-separator", required_argument, nullptr,       OPT_EVENT_FLAG_SEPARATOR},
     {"exclude",              required_argument, nullptr,       'e'},
     {"extended",             no_argument,       nullptr,       'E'},
+    {"filter-from",          required_argument, nullptr,       OPT_FILTER_FROM},
     {"fire-idle-events",     no_argument,       nullptr,       OPT_FIRE_IDLE_EVENTS},
     {"follow-links",         no_argument,       nullptr,       'L'},
     {"format",               required_argument, nullptr,       OPT_FORMAT},
@@ -487,7 +524,7 @@ static void parse_opts(int argc, char **argv)
     {"utc-time",             no_argument,       nullptr,       'u'},
     {"verbose",              no_argument,       nullptr,       'v'},
     {"version",              no_argument,       &version_flag, true},
-    {nullptr,                0,                 nullptr,       0}
+    {nullptr, 0,                                nullptr,       0}
   };
 
   while ((ch = getopt_long(argc,
@@ -497,8 +534,8 @@ static void parse_opts(int argc, char **argv)
                            &option_index)) != -1)
   {
 #else
-  while ((ch = getopt(argc, argv, short_options.c_str())) != -1)
-  {
+    while ((ch = getopt(argc, argv, short_options.c_str())) != -1)
+    {
 #endif
 
     switch (ch)
@@ -638,6 +675,10 @@ static void parse_opts(int argc, char **argv)
       fieFlag = true;
       break;
 
+    case OPT_FILTER_FROM:
+      filter_files.push_back(optarg);
+      break;
+
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
@@ -656,7 +697,9 @@ static void parse_opts(int argc, char **argv)
   // --format is incompatible with any other format option.
   if (format_flag && (tflag || xflag))
   {
-    cerr << _("--format is incompatible with any other format option such as -t and -x.") << endl;
+    cerr <<
+    _("--format is incompatible with any other format option such as -t and -x.") <<
+    endl;
     exit(FSW_EXIT_FORMAT);
   }
 
@@ -821,7 +864,8 @@ int main(int argc, char **argv)
   }
   catch (...)
   {
-    cerr << _("An unknown error occurred and the program will be terminated.") << endl;
+    cerr <<
+    _("An unknown error occurred and the program will be terminated.") << endl;
 
     return FSW_EXIT_ERROR;
   }
