@@ -23,11 +23,16 @@
 #include <regex>
 #include <stdexcept>
 
-
 using namespace std;
 
 namespace fsw
 {
+
+  static inline bool parse_filter(std::string filter,
+                                  monitor_filter& filter_object,
+                                  void (*err_handler)(std::string));
+  static inline bool is_unescaped_space(string& filter, long i);
+
   vector<monitor_filter> monitor_filter::read_from_file(string path,
                                                         void (*err_handler)(
                                                           string))
@@ -51,7 +56,7 @@ namespace fsw
     return filters;
   }
 
-  static inline bool is_unescaped_space(string& filter, long i)
+  bool is_unescaped_space(string& filter, long i)
   {
     if (filter[i] != ' ') return false;
 
@@ -62,9 +67,9 @@ namespace fsw
     return (backslashes % 2 == 0);
   }
 
-  bool monitor_filter::parse_filter(string filter,
-                                    monitor_filter& filter_object,
-                                    void (*err_handler)(string))
+  bool parse_filter(string filter,
+                    monitor_filter& filter_object,
+                    void (*err_handler)(string))
   {
 #define handle_error(t) if (!err_handler) err_handler(t);
     // Skip empty strings.
