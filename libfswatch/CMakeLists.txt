@@ -29,6 +29,7 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/event.cpp
         src/libfswatch/c++/event.hpp
         src/libfswatch/c++/filter.hpp
+        src/libfswatch/c++/filter.cpp
         src/libfswatch/c++/libfswatch_exception.cpp
         src/libfswatch/c++/libfswatch_exception.hpp
         src/libfswatch/c++/libfswatch_map.hpp

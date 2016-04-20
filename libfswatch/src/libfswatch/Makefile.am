@@ -25,6 +25,7 @@ libfswatch_la_SOURCES += c/libfswatch.cpp
 libfswatch_la_SOURCES += c/libfswatch_log.cpp
 libfswatch_la_SOURCES += c++/libfswatch_exception.cpp
 libfswatch_la_SOURCES += c++/event.cpp
+libfswatch_la_SOURCES += c++/filter.cpp
 libfswatch_la_SOURCES += c++/monitor.cpp
 libfswatch_la_SOURCES += c++/poll_monitor.cpp
 libfswatch_la_SOURCES += c++/path_utils.cpp

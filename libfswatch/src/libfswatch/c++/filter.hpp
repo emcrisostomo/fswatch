@@ -30,6 +30,7 @@
 
 #  include <string>
 #  include "../c/cfilter.h"
+#  include <vector>
 
 namespace fsw
 {
@@ -85,6 +86,13 @@ namespace fsw
      * http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html#tag_09_04
      */
     bool extended;
+
+    static std::vector<monitor_filter> read_from_file(std::string path,
+                                                      void (*err_handler)(
+                                                        std::string));
+    static bool parse_filter(std::string filter,
+                             monitor_filter& filter_object,
+                             void (*err_handler)(std::string));
   } monitor_filter;
 }
 

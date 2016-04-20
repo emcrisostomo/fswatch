@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/gettext.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/fswatch.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/filter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/libfswatch_map.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/fsevents_monitor.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/kqueue_monitor.cpp" isTestSource="false" />
@@ -219,11 +220,9 @@
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
-          <root url="file:///Library/Frameworks/Mono.framework/Headers" />
+          <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/PrivateHeaders" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/Headers" />
-          <root url="file:///Library/Frameworks/WacomMultiTouch.framework/Headers" />
-          <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include" />
         </CLASSES>
@@ -401,11 +400,9 @@
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
-          <root url="file:///Library/Frameworks/Mono.framework/Headers" />
+          <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/PrivateHeaders" />
           <root url="file:///Library/Frameworks/XRiteDevice.framework/Headers" />
-          <root url="file:///Library/Frameworks/WacomMultiTouch.framework/Headers" />
-          <root url="file:///Library/Frameworks/EMCLoginItem.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include" />
         </SOURCES>
