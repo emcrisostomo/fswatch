@@ -151,32 +151,23 @@ static void usage(ostream& stream)
   stream << PACKAGE_NAME << _(" [OPTION] ... path ...\n");
   stream << "\n";
   stream << _("Options:\n");
-  stream << " -0, --print0          " <<
-  _("Use the ASCII NUL character (0) as line separator.\n");
-  stream << " -1, --one-event       " <<
-  _("Exit fswatch after the first set of events is received.\n");
-  stream << "     --allow-overflow  " <<
-  _("Allow a monitor to overflow and report it as a change event.\n");
-  stream << "     --batch-marker    " <<
-  _("Print a marker at the end of every batch.\n");
-  stream << "     --event=TYPE      " <<
-  _("Filter the event by the specified type.\n");
+  stream << " -0, --print0          " << _("Use the ASCII NUL character (0) as line separator.\n");
+  stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
+  stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
+  stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
+  stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
   stream << " -a, --access          " << _("Watch file accesses.\n");
   stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
-  stream << " -E, --extended        " <<
-  _("Use extended regular expressions.\n");
+  stream << " -E, --extended        " << _("Use extended regular expressions.\n");
   stream << "     --filter-from=FILE\n";
   stream << "                       " << _("Load filters from file.") << "\n";
-  stream << "     --format=FORMAT   " <<
-  _("Use the specified record format.") << "\n";
-  stream << " -f, --format-time     " <<
-  _("Print the event time using the specified format.\n");
+  stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
+  stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
   stream << "     --fire-idle-event " << _("Fire idle events.\n");
   stream << " -h, --help            " << _("Show this message.\n");
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
-  stream << " -I, --insensitive     " <<
-  _("Use case insensitive regular expressions.\n");
+  stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
   stream << " -M, --list-monitors   " << _("List the available monitors.\n");
@@ -184,19 +175,15 @@ static void usage(ostream& stream)
   stream << "     --monitor-property name=value\n";
   stream << "                       " << _("Define the specified property.\n");
   stream << " -n, --numeric         " << _("Print a numeric event mask.\n");
-  stream << " -o, --one-per-batch   " <<
-  _("Print a single message with the number of change events.\n");
+  stream << " -o, --one-per-batch   " << _("Print a single message with the number of change events.\n");
   stream << " -r, --recursive       " << _("Recurse subdirectories.\n");
   stream << " -t, --timestamp       " << _("Print the event timestamp.\n");
-  stream << " -u, --utc-time        " <<
-  _("Print the event time as UTC time.\n");
+  stream << " -u, --utc-time        " << _("Print the event time as UTC time.\n");
   stream << " -v, --verbose         " << _("Print verbose output.\n");
-  stream << "     --version         " << _("Print the version of ") <<
-  PACKAGE_NAME << _(" and exit.\n");
+  stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
   stream << " -x, --event-flags     " << _("Print the event flags.\n");
   stream << "     --event-flag-separator=STRING\n";
-  stream << "                       " <<
-  _("Print event flags using the specified separator.") << "\n";
+  stream << "                       " << _("Print event flags using the specified separator.") << "\n";
   stream << "\n";
 #else
   string option_string = "[01adeEfhilLMmnortuvx]";
