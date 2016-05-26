@@ -33,7 +33,7 @@ namespace fsw
                                   void (*err_handler)(std::string));
   static inline bool is_unescaped_space(string& filter, long i);
 
-  vector<monitor_filter> monitor_filter::read_from_file(string path,
+  vector<monitor_filter> monitor_filter::read_from_file(const string& path,
                                                         void (*err_handler)(
                                                           string))
   {

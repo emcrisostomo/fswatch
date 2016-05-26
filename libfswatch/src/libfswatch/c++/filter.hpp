@@ -117,7 +117,7 @@ namespace fsw
      * @return A vector containing the valid filters.
      * @throw invalid_argument If the specified path cannot be opened.
      */
-    static std::vector<monitor_filter> read_from_file(std::string path,
+    static std::vector<monitor_filter> read_from_file(const std::string& path,
                                                       void (*err_handler)(
                                                         std::string) = nullptr);
   } monitor_filter;
