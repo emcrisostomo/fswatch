@@ -446,18 +446,18 @@ static void start_monitor(int argc, char **argv, int optind)
   }
 
   // Load filters from the specified files.
-  for (auto filter_file : filter_files)
+  for (const auto& filter_file : filter_files)
   {
-    for (auto filter : monitor_filter::read_from_file(filter_file,
-                                                      [](string f)
-                                                      {
-                                                        cerr <<
-                                                        _("Invalid filter: ") <<
-                                                        f << "\n";
-                                                      }))
-    {
-      filters.push_back(filter);
-    }
+    auto filters_from_file =
+      monitor_filter::read_from_file(filter_file,
+                                     [](string f)
+                                     {
+                                       cerr << _("Invalid filter: ") << f << "\n";
+                                     });
+
+    std::move(filters_from_file.begin(),
+              filters_from_file.end(),
+              std::back_inserter(filters));
   }
 
   active_monitor->set_properties(monitor_properties);
