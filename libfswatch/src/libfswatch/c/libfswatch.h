@@ -28,6 +28,7 @@
 #ifndef LIBFSW_H
 #define LIBFSW_H
 
+#include <stdbool.h>
 #include "libfswatch_types.h"
 #include "cevent.h"
 #include "cmonitor.h"
