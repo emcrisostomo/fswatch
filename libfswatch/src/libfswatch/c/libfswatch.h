@@ -99,7 +99,7 @@ extern "C"
    *
    * @see cmonitor.h for a list of all the available monitors.
    */
-  FSW_HANDLE fsw_init_session(const fsw_monitor_type type = system_default_monitor_type);
+  FSW_HANDLE fsw_init_session(const enum fsw_monitor_type type/* = system_default_monitor_type*/);
 
   /**
    * Adds a path to watch to the specified session.  At least one path must be
