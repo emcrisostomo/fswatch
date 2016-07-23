@@ -26,7 +26,7 @@
 #ifndef LIBFSW_LOG_H
 #  define LIBFSW_LOG_H
 
-#include <cstdio>
+#include <stdio.h>
 
 /**
  * Prints the specified message to standard output.

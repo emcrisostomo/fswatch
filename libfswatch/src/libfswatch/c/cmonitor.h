@@ -26,7 +26,7 @@
 #ifndef FSW__CMONITOR_H
 #  define FSW__CMONITOR_H
 
-#  include <ctime>
+#  include <time.h>
 
 #  ifdef __cplusplus
 extern "C"
