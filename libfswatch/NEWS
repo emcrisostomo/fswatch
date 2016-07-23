@@ -4,6 +4,8 @@ NEWS
 New in 1.9.3:
 
   * Use C header names in C headers instead of C++.
+  * Explicitly use the enum keyword when referring to enum types in C headers.
+  * Remove default argument values from C headers.
 
 New in 1.9.2:
 
