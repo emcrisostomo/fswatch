@@ -65,7 +65,7 @@ extern "C"
    * as shown in the next example (error checking code was omitted).
    *
    *     // Use the default monitor.
-   *     const FSW_HANDLE handle = fsw_init_session();
+   *     const FSW_HANDLE handle = fsw_init_session(system_default_monitor_type);
    *
    *     fsw_add_path(handle, "my/path");
    *     fsw_set_callback(handle, my_callback);
@@ -99,7 +99,7 @@ extern "C"
    *
    * @see cmonitor.h for a list of all the available monitors.
    */
-  FSW_HANDLE fsw_init_session(const enum fsw_monitor_type type/* = system_default_monitor_type*/);
+  FSW_HANDLE fsw_init_session(const enum fsw_monitor_type type);
 
   /**
    * Adds a path to watch to the specified session.  At least one path must be
