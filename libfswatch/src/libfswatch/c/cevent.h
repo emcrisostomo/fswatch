@@ -91,7 +91,7 @@ extern "C"
    * @return #FSW_OK if the functions succeeds, #FSW_ERR_UNKNOWN_VALUE
    * otherwise.
    */
-  FSW_STATUS fsw_get_event_flag_by_name(const char *name, fsw_event_flag *flag);
+  FSW_STATUS fsw_get_event_flag_by_name(const char *name, enum fsw_event_flag *flag);
 
   /**
    * @brief Get the name of an event flag.
@@ -102,7 +102,7 @@ extern "C"
    * @param[in] flag The event flag to look for.
    * @return The name of @p flag, or @c nullptr if it does not exist.
    */
-  char *fsw_get_event_flag_name(const fsw_event_flag flag);
+  char *fsw_get_event_flag_name(const enum fsw_event_flag flag);
 
   /**
    * A file change event is represented as an instance of this struct where:
@@ -115,7 +115,7 @@ extern "C"
   {
     char * path;
     time_t evt_time;
-    fsw_event_flag * flags;
+    enum fsw_event_flag * flags;
     unsigned int flags_num;
   } fsw_cevent;
 
