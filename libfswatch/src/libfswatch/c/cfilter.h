@@ -44,7 +44,7 @@ extern "C"
   typedef struct fsw_cmonitor_filter
   {
     char * text;
-    fsw_filter_type type;
+    enum fsw_filter_type type;
     bool case_sensitive;
     bool extended;
   } fsw_cmonitor_filter;
@@ -54,7 +54,7 @@ extern "C"
   */
   typedef struct fsw_event_type_filter
   {
-    fsw_event_flag flag;
+    enum fsw_event_flag flag;
   } fsw_event_type_filter;
 
 #  ifdef __cplusplus

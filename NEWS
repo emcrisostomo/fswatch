@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.9.3:
+
+  * Only libfswatch has been updated.
+
 New in 1.9.2:
 
   * Issue 118: v. 1.9.0 breaks the -1 option.
