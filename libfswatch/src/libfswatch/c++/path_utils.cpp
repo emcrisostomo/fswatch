@@ -66,6 +66,11 @@ namespace fsw
     return ret;
   }
 
+  char *fsw_realpath(const char *path, char *resolved_path)
+  {
+    return realpath(path, resolved_path);
+  }
+
   bool stat_path(const string& path, struct stat& fd_stat)
   {
     if (stat(path.c_str(), &fd_stat) != 0)
