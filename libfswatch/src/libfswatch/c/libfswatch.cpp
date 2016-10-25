@@ -435,10 +435,10 @@ static fsw_hash_map<FSW_HANDLE, unique_ptr<mutex>> session_mutexes;
 #  else
 static fsw_hash_map<FSW_HANDLE, mutex *> session_mutexes;
 #  endif
-static std::mutex session_mutex;
+static std::mutex session_store_mutex;
 
 #  define SESSION_GUARD \
-    std::lock_guard<std::mutex> session_lock(session_mutex);
+    std::lock_guard<std::mutex> session_lock(session_store_mutex);
 #else
 #  define SESSION_GUARD
 #endif
@@ -842,8 +842,8 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
   try
   {
 #ifdef HAVE_CXX_MUTEX
-    unique_lock<mutex> session_lock(session_mutex, defer_lock);
-    session_lock.lock();
+    unique_lock<mutex> session_store_lock(session_store_mutex, defer_lock);
+    session_store_lock.lock();
 #endif
 
     FSW_SESSION *session = get_session(handle);
@@ -862,7 +862,7 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
     lock_guard<mutex> lock_sm(*sm);
 #  endif
 
-    session_lock.unlock();
+    session_store_lock.unlock();
 #endif
 
     if (!session->monitor)
