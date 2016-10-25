@@ -856,12 +856,12 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
 
 #  ifdef HAVE_CXX_UNIQUE_PTR
     unique_ptr<mutex>& sm = session_mutexes.at(handle);
-    lock_guard<mutex> lock_sm(*sm.get());
+    unique_lock<mutex> session_lock(*sm.get(), defer_lock);
 #  else
     mutex * sm = session_mutexes.at(handle);
-    lock_guard<mutex> lock_sm(*sm);
+    unique_lock<mutex> session_lock(*sm, defer_lock);
 #  endif
-
+    session_lock.lock();
     session_store_lock.unlock();
 #endif
 
@@ -883,6 +883,7 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
 # endif
 #endif
 
+    session_lock.unlock();
     session->monitor->start();
   }
   catch (libfsw_exception& ex)
