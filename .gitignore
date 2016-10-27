@@ -118,8 +118,8 @@ version.texi
 # Template files
 Doxyfile
 build-aux/create-pot-template.sh
-libfswatch/libfswatch_config.h
-libfswatch/libfswatch_config.h.in
+libfswatch_config.h
+libfswatch_config.h.in
 scripts/fswatch-run-bash
 scripts/fswatch-run-zsh
 
