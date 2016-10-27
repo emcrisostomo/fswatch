@@ -21,8 +21,3 @@ libtool: $(LIBTOOL_DEPS)
 	$(SHELL) $(top_builddir)/config.status libtool
 
 SUBDIRS = src po doc
-
-dist-hook:
-# The recipe cannot assume a file in $(distdir) is writable.
-	chmod u+w $(distdir)/ChangeLog
-	git log --oneline --decorate >> $(distdir)/ChangeLog
