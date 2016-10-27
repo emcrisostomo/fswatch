@@ -26,6 +26,7 @@ AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([fswatch/src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
+AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([libfswatch/Makefile])
 AC_CONFIG_FILES([libfswatch/doc/Makefile libfswatch/doc/doxygen/Makefile])
 AC_CONFIG_FILES([libfswatch/src/Makefile libfswatch/src/libfswatch/Makefile libfswatch/po/Makefile.in])
@@ -40,9 +41,6 @@ TARGET_VENDOR=$target_vendor
 TARGET_OS=$target_os
 AC_SUBST([TARGET_VENDOR])
 AC_SUBST([TARGET_OS])
-
-# Other packages.
-AC_CONFIG_SUBDIRS([libfswatch])
 
 # Initialize Automake.
 AM_INIT_AUTOMAKE([-Wall -Werror gnu subdir-objects std-options 1.14])
@@ -69,7 +67,7 @@ AC_CHECK_PROGS([DOXYGEN], [doxygen])
 test -z "${DOXYGEN}" && AC_MSG_WARN([Doxygen support disabled])
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "${DOXYGEN}"])
-AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES(doc/doxygen/Doxyfile)])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([libfswatch/doc/doxygen/Doxyfile])])
 
 # Initialize gettext.
 AM_GNU_GETTEXT([external])
