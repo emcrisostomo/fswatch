@@ -22,15 +22,7 @@ libtool: $(LIBTOOL_DEPS)
 
 SUBDIRS = src po doc
 
-dist_doc_DATA  = README.md
-dist_doc_DATA += AUTHORS COPYING LICENSE NEWS
-
 dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
 	chmod u+w $(distdir)/ChangeLog
 	git log --oneline --decorate >> $(distdir)/ChangeLog
-
-# Manually distributing config.rpath seems not to be required any longer with
-# current Autotools.
-#
-# EXTRA_DIST = config/config.rpath
