@@ -13,11 +13,4 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-ACLOCAL_AMFLAGS = -I m4
-
-# Refresh configuration if libtool dependencies change
-LIBTOOL_DEPS = @LIBTOOL_DEPS@
-libtool: $(LIBTOOL_DEPS)
-	$(SHELL) $(top_builddir)/config.status libtool
-
 SUBDIRS = src po doc
