@@ -20,7 +20,7 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) $(top_builddir)/config.status libtool
 
-SUBDIRS = libfswatch src po doc
+SUBDIRS = libfswatch fswatch
 
 dist_man_MANS  = man/fswatch.7
 dist_doc_DATA  = README.bsd
