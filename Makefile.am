@@ -45,3 +45,6 @@ dist-hook:
 # current Autotools.
 #
 # EXTRA_DIST = config/config.rpath
+
+docker-images:
+	./docker/build-images.sh
