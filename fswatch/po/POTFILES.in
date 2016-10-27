@@ -15,4 +15,4 @@
 #
 # List of source files which contain translatable strings.
 #
-src/fswatch.cpp
+fswatch/src/fswatch.cpp

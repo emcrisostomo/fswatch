@@ -2,10 +2,6 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/fswatch.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/gettext.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/fswatch.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/filter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/libfswatch_map.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c++/fsevents_monitor.hpp" isTestSource="false" />
@@ -39,9 +35,12 @@
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/c/cmonitor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/src/libfswatch/gettext.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libfswatch/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libfswatch/libfswatch_config.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/config.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libfswatch_config.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/fswatch/src/fswatch.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/fswatch/src/fswatch.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/fswatch/src/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/fswatch/src/gettext.h" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
@@ -64,7 +63,6 @@
           <root url="file:///System/Library/Frameworks/InstantMessage.framework/Headers" />
           <root url="file:///System/Library/Frameworks/MapKit.framework/Headers" />
           <root url="file:///System/Library/Frameworks/DirectoryService.framework/Headers" />
-          <root url="file:///System/Library/Frameworks/ScriptingBridge.framework/Headers" />
           <root url="file:///System/Library/Frameworks/InstallerPlugins.framework/Headers" />
           <root url="file:///System/Library/Frameworks/ForceFeedback.framework/Headers" />
           <root url="file:///System/Library/Frameworks/CoreMediaIO.framework/Headers" />
@@ -140,6 +138,7 @@
           <root url="file:///System/Library/Frameworks/OpenDirectory.framework/Frameworks/CFOpenDirectory.framework/Headers" />
           <root url="file:///System/Library/Frameworks/IOBluetooth.framework/Headers" />
           <root url="file:///System/Library/Frameworks/IOBluetooth.framework/Frameworks/CoreBluetooth.framework/Headers" />
+          <root url="file:///System/Library/Frameworks/ScriptingBridge.framework/Headers" />
           <root url="file:///System/Library/Frameworks/CoreAudio.framework/Headers" />
           <root url="file:///System/Library/Frameworks/DiskArbitration.framework/Headers" />
           <root url="file:///System/Library/Frameworks/CoreBluetooth.framework/Headers" />
@@ -244,7 +243,6 @@
           <root url="file:///System/Library/Frameworks/InstantMessage.framework/Headers" />
           <root url="file:///System/Library/Frameworks/MapKit.framework/Headers" />
           <root url="file:///System/Library/Frameworks/DirectoryService.framework/Headers" />
-          <root url="file:///System/Library/Frameworks/ScriptingBridge.framework/Headers" />
           <root url="file:///System/Library/Frameworks/InstallerPlugins.framework/Headers" />
           <root url="file:///System/Library/Frameworks/ForceFeedback.framework/Headers" />
           <root url="file:///System/Library/Frameworks/CoreMediaIO.framework/Headers" />
@@ -320,6 +318,7 @@
           <root url="file:///System/Library/Frameworks/OpenDirectory.framework/Frameworks/CFOpenDirectory.framework/Headers" />
           <root url="file:///System/Library/Frameworks/IOBluetooth.framework/Headers" />
           <root url="file:///System/Library/Frameworks/IOBluetooth.framework/Frameworks/CoreBluetooth.framework/Headers" />
+          <root url="file:///System/Library/Frameworks/ScriptingBridge.framework/Headers" />
           <root url="file:///System/Library/Frameworks/CoreAudio.framework/Headers" />
           <root url="file:///System/Library/Frameworks/DiskArbitration.framework/Headers" />
           <root url="file:///System/Library/Frameworks/CoreBluetooth.framework/Headers" />

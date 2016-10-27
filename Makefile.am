@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2015 Enrico M. Crisostomo
+# Copyright (c) 2014-2016 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -20,7 +20,7 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) $(top_builddir)/config.status libtool
 
-SUBDIRS = libfswatch src po doc
+SUBDIRS = libfswatch fswatch
 
 dist_man_MANS  = man/fswatch.7
 dist_doc_DATA  = README.bsd
@@ -29,12 +29,14 @@ dist_doc_DATA += README.freebsd
 dist_doc_DATA += README.gnu-build-system
 dist_doc_DATA += README.illumos
 dist_doc_DATA += README.md
+dist_doc_DATA += README.libfswatch.md
 dist_doc_DATA += README.linux
 dist_doc_DATA += README.osx
 dist_doc_DATA += README.smartos
 dist_doc_DATA += README.solaris
 dist_doc_DATA += README.windows
 dist_doc_DATA += ABOUT-NLS AUTHORS CONTRIBUTING.md COPYING LICENSE NEWS
+dist_doc_DATA += AUTHORS.libfswatch NEWS.libfswatch
 
 dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
@@ -45,3 +47,6 @@ dist-hook:
 # current Autotools.
 #
 # EXTRA_DIST = config/config.rpath
+
+docker-images:
+	./docker/build-images.sh
