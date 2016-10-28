@@ -1134,6 +1134,11 @@ Exclude paths matching @command{@var{regex}}.
 
 Use extended regular expressions.
 
+@opsummary{filter-from}
+@item --filter-from
+
+Load filters from the specified @command{@var{file}}.
+
 @opsummary{fire-idle-events}
 @item --fire-idle-events
 
@@ -1515,6 +1520,59 @@ performed by @command{fswatch}.
 Since filters are implemented using the @samp{regcomp} library, this
 feature is built into @command{fswatch} only on systems where this
 library is available.
+
+@subsection Specifying Filters
+@cpindex path filter
+@cpindex path filter, file
+@opindex include@r{, detail}
+@opindex exclude@r{, detail}
+@opindex from-file@r{, detail}
+
+Path filters can be specified in two ways:
+
+@itemize
+@item
+By using the @option{--include} and @option{--exclude} options and the
+modifier options @option{--extended} and @option{--insensitive}.
+
+@item
+By loading them from a file using the @option{--from-file} option.
+@end itemize
+
+@subsubsection Filter File Format
+The filter file is made up of @emph{records} separated by a new line
+charactere, or formally a @acronym{ASCII} @samp{LF} (line feed)
+character.  The structure of the record is the following:
+
+@example
+type pattern
+@end example
+
+@noindent
+where @samp{type} indicated the filter type and @samp{pattern} is the
+filter regular expression.  @samp{type} may contain the following
+characters:
+
+@itemize
+@item
+@samp{+} or @samp{-}, to indicate respectively whether the filter is
+an inclusion or an exclusion filter.
+
+@item
+@samp{e} to use an extended regular expression.
+
+@item
+@samp{i} to use a case insensitive regular expression.
+@end itemize
+
+The following filter file instructs @command{fswatch} to ignore all
+files except those ending in @samp{.cpp}, ignoring case.
+
+@example
+- .*
++i \.cpp$
+@end example
+
 
 @subsection Types of Filters and Order of Execution
 @cpindex path filter, type
