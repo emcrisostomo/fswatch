@@ -92,6 +92,17 @@ Free Documentation License'.
 @node Version History
 @chapter Version History
 
+@section 1.9.3
+@itemize
+@item
+Fix issue 120: C binding is pulling in C++ headers and using C++
+constructs.
+
+@item
+Fix issue 128: C binding is pulling in C++ headers.
+
+@end itemize
+
 @section 1.9.2
 @itemize
 @item
