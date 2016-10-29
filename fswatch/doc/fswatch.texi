@@ -1492,7 +1492,6 @@ It is of type @command{NoOp}.
 @end itemize
 
 @section Filtering by Path
-@cpindex filter, by path
 @cpindex path filter
 @cpindex path filter, inclusion
 @cpindex path filter, exclusion
@@ -1551,6 +1550,7 @@ By loading them from a file using the @option{--from-file} option.
 @end itemize
 
 @subsubsection Filter File Format
+@cpindex path filter, file
 The filter file is made up of @emph{records} separated by a new line
 charactere, or formally a @acronym{ASCII} @samp{LF} (line feed)
 character.  The structure of the record is the following:
