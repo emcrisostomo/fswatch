@@ -510,7 +510,9 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
     if (!cevt->flags_num) cevt->flags = nullptr;
     else
     {
-      cevt->flags = static_cast<fsw_event_flag *> (malloc(sizeof (fsw_event_flag) * cevt->flags_num));
+      cevt->flags =
+        static_cast<fsw_event_flag *> (
+          malloc(sizeof(fsw_event_flag) * cevt->flags_num));
       if (!cevt->flags) throw int(FSW_ERR_MEMORY);
     }
 
@@ -550,8 +552,7 @@ FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
   do
   {
     handle = rand();
-  }
-  while (sessions.find(handle) != sessions.end());
+  } while (sessions.find(handle) != sessions.end());
 
   FSW_SESSION *session = new FSW_SESSION{};
 
@@ -635,7 +636,9 @@ FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char *path)
   return fsw_set_last_error(FSW_OK);
 }
 
-FSW_STATUS fsw_add_property(const FSW_HANDLE handle, const char * name, const char * value)
+FSW_STATUS fsw_add_property(const FSW_HANDLE handle,
+                            const char *name,
+                            const char *value)
 {
   if (!name || !value)
     return fsw_set_last_error(FSW_ERR_INVALID_PROPERTY);
@@ -656,7 +659,9 @@ FSW_STATUS fsw_add_property(const FSW_HANDLE handle, const char * name, const ch
   return fsw_set_last_error(FSW_OK);
 }
 
-FSW_STATUS fsw_set_callback(const FSW_HANDLE handle, const FSW_CEVENT_CALLBACK callback, void * data)
+FSW_STATUS fsw_set_callback(const FSW_HANDLE handle,
+                            const FSW_CEVENT_CALLBACK callback,
+                            void *data)
 {
   if (!callback)
     return fsw_set_last_error(int(FSW_ERR_INVALID_CALLBACK));
@@ -736,7 +741,8 @@ FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
   return fsw_set_last_error(FSW_OK);
 }
 
-FSW_STATUS fsw_set_directory_only(const FSW_HANDLE handle, const bool directory_only)
+FSW_STATUS fsw_set_directory_only(const FSW_HANDLE handle,
+                                  const bool directory_only)
 {
   try
   {
@@ -898,6 +904,51 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
   return fsw_set_last_error(FSW_OK);
 }
 
+FSW_STATUS fsw_stop_monitor(const FSW_HANDLE handle)
+{
+  try
+  {
+#ifdef HAVE_CXX_MUTEX
+    unique_lock<mutex> session_store_lock(session_store_mutex, defer_lock);
+    session_store_lock.lock();
+#endif
+
+    FSW_SESSION *session = get_session(handle);
+
+#ifdef HAVE_CXX_MUTEX
+# ifdef HAVE_CXX_ATOMIC
+    if (!session->running.load(memory_order_acquire))
+      return fsw_set_last_error(int(FSW_OK));
+# endif
+
+#  ifdef HAVE_CXX_UNIQUE_PTR
+    unique_ptr<mutex>& sm = session_mutexes.at(handle);
+    unique_lock<mutex> session_lock(*sm.get(), defer_lock);
+#  else
+    mutex * sm = session_mutexes.at(handle);
+    unique_lock<mutex> session_lock(*sm, defer_lock);
+#  endif
+
+    session_lock.lock();
+    session_store_lock.unlock();
+#endif
+
+    session->monitor->stop();
+
+    session_lock.unlock();
+  }
+  catch (libfsw_exception& ex)
+  {
+    return fsw_set_last_error(int(ex));
+  }
+  catch (int error)
+  {
+    return fsw_set_last_error(error);
+  }
+
+  return fsw_set_last_error(FSW_OK);
+}
+
 FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
 {
   int ret = FSW_OK;
@@ -920,6 +971,11 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
 
     if (session->monitor)
     {
+      if (session->running.load(memory_order_acquire))
+      {
+        return fsw_set_last_error(FSW_ERR_MONITOR_ALREADY_RUNNING);
+      }
+
       void *context = session->monitor->get_context();
 
       if (!context)
