@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.10.0:
+
+  * Issue 141: Add Docker files for Linux distributions used for testing.
+
 New in 1.9.3:
 
   * Only libfswatch has been updated.
