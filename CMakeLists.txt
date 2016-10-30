@@ -21,3 +21,4 @@ add_definitions(-DHAVE_CONFIG_H)
 
 add_subdirectory(libfswatch)
 add_subdirectory(fswatch/src)
+add_subdirectory(test/src)
