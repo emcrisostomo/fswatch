@@ -420,7 +420,6 @@ typedef struct FSW_SESSION
 #endif
 } FSW_SESSION;
 
-static bool srand_initialized = false;
 static bool fsw_libfswatch_verbose = false;
 
 #ifdef HAVE_CXX_UNIQUE_PTR
@@ -541,40 +540,27 @@ FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
 {
   SESSION_GUARD;
 
-  if (!srand_initialized)
-  {
-    srand(time(nullptr));
-    srand_initialized = true;
-  }
-
-  int handle;
-
-  do
-  {
-    handle = rand();
-  } while (sessions.find(handle) != sessions.end());
-
   FSW_SESSION *session = new FSW_SESSION{};
 
-  session->handle = handle;
+  session->handle = session;
   session->type = type;
 
   // Store the handle and a mutex to guard access to session instances.
 #ifdef HAVE_CXX_UNIQUE_PTR
-  sessions[handle] = unique_ptr<FSW_SESSION>(session);
+  sessions[session->handle] = unique_ptr<FSW_SESSION>(session);
 #else
-  sessions[handle] = session;
+  sessions[session->handle] = session;
 #endif
 
 #ifdef HAVE_CXX_MUTEX
 #  ifdef HAVE_CXX_UNIQUE_PTR
-  session_mutexes[handle] = unique_ptr<mutex>(new mutex);
+  session_mutexes[session->handle] = unique_ptr<mutex>(new mutex);
 #  else
-  session_mutexes[handle] = new mutex;
+  session_mutexes[session->handle] = new mutex;
 #  endif
 #endif
 
-  return handle;
+  return session->handle;
 }
 
 int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
