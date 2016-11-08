@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2016 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,10 +16,10 @@
 /**
  * @file
  * @brief Main `libfswatch` source file.
- * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
- * @version 1.8.0
+ * @version 1.10.0
  */
 /**
  * @mainpage
@@ -112,8 +112,8 @@
  * implement thread-safety when using `libfswatch`, therefore, is segregating
  * access to each monitor instance from a different thread.
  *
- * The C API, a layer above the C++ API, has been designed in order to provide
- * the same basic guarantee:
+ * Similarly, the C API has been designed in order to provide the same
+ * guarantees offered by the C++ API:
  *
  *   - Concurrently manipulating different monitoring sessions is thread safe.
  *   - Concurrently manipulating the same monitoring session is _not_ thread
@@ -275,6 +275,10 @@
 /**
  * @page history History
  *
+ * @section v900 9:0:0
+ *
+ *   -
+ *
  * @section v600 6:0:0
  *
  *   - fsw::monitor::stop(): added.
@@ -380,10 +384,6 @@
 
 #include "gettext_defs.h"
 #include <iostream>
-#ifdef HAVE_CXX_MUTEX
-#  include <mutex>
-#  include <atomic>
-#endif
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
@@ -401,7 +401,6 @@ using namespace fsw;
 
 typedef struct FSW_SESSION
 {
-  FSW_HANDLE handle;
   vector<string> paths;
   fsw_monitor_type type;
   fsw::monitor *monitor;
@@ -415,33 +414,9 @@ typedef struct FSW_SESSION
   vector<fsw_event_type_filter> event_type_filters;
   map<string, string> properties;
   void *data;
-#ifdef HAVE_CXX_ATOMIC
-  atomic<bool> running;
-#endif
 } FSW_SESSION;
 
 static bool fsw_libfswatch_verbose = false;
-
-#ifdef HAVE_CXX_UNIQUE_PTR
-static fsw_hash_map<FSW_HANDLE, unique_ptr<FSW_SESSION>> sessions;
-#else
-static fsw_hash_map<FSW_HANDLE, FSW_SESSION *> sessions;
-#endif
-
-#ifdef HAVE_CXX_MUTEX
-#  ifdef HAVE_CXX_UNIQUE_PTR
-static fsw_hash_map<FSW_HANDLE, unique_ptr<mutex>> session_mutexes;
-#  else
-static fsw_hash_map<FSW_HANDLE, mutex *> session_mutexes;
-#  endif
-static std::mutex session_store_mutex;
-
-#  define SESSION_GUARD \
-    std::lock_guard<std::mutex> session_lock(session_store_mutex);
-#else
-#  define SESSION_GUARD
-#endif
-
 static FSW_THREAD_LOCAL FSW_STATUS last_error;
 
 // Forward declarations.
@@ -538,29 +513,10 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
 
 FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
 {
-  SESSION_GUARD;
-
   FSW_SESSION *session = new FSW_SESSION{};
-
-  session->handle = session;
   session->type = type;
 
-  // Store the handle and a mutex to guard access to session instances.
-#ifdef HAVE_CXX_UNIQUE_PTR
-  sessions[session->handle] = unique_ptr<FSW_SESSION>(session);
-#else
-  sessions[session->handle] = session;
-#endif
-
-#ifdef HAVE_CXX_MUTEX
-#  ifdef HAVE_CXX_UNIQUE_PTR
-  session_mutexes[session->handle] = unique_ptr<mutex>(new mutex);
-#  else
-  session_mutexes[session->handle] = new mutex;
-#  endif
-#endif
-
-  return session->handle;
+  return session;
 }
 
 int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
@@ -580,8 +536,8 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
       return fsw_set_last_error(int(FSW_ERR_PATHS_NOT_SET));
 
     fsw_callback_context *context_ptr = new fsw_callback_context;
+    context_ptr->handle = session;
     context_ptr->callback = session->callback;
-    context_ptr->handle = session->handle;
     context_ptr->data = session->data;
 
     monitor *current_monitor = monitor_factory::create_monitor(type,
@@ -607,17 +563,8 @@ FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char *path)
   if (!path)
     return fsw_set_last_error(int(FSW_ERR_INVALID_PATH));
 
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-    session->paths.push_back(path);
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->paths.push_back(path);
 
   return fsw_set_last_error(FSW_OK);
 }
@@ -629,18 +576,8 @@ FSW_STATUS fsw_add_property(const FSW_HANDLE handle,
   if (!name || !value)
     return fsw_set_last_error(FSW_ERR_INVALID_PROPERTY);
 
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->properties[name] = value;
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->properties[name] = value;
 
   return fsw_set_last_error(FSW_OK);
 }
@@ -652,19 +589,9 @@ FSW_STATUS fsw_set_callback(const FSW_HANDLE handle,
   if (!callback)
     return fsw_set_last_error(int(FSW_ERR_INVALID_CALLBACK));
 
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->callback = callback;
-    session->data = data;
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->callback = callback;
+  session->data = data;
 
   return fsw_set_last_error(FSW_OK);
 }
@@ -672,18 +599,8 @@ FSW_STATUS fsw_set_callback(const FSW_HANDLE handle,
 FSW_STATUS fsw_set_allow_overflow(const FSW_HANDLE handle,
                                   const bool allow_overflow)
 {
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->allow_overflow = allow_overflow;
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->allow_overflow = allow_overflow;
 
   return fsw_set_last_error(FSW_OK);
 }
@@ -693,36 +610,16 @@ FSW_STATUS fsw_set_latency(const FSW_HANDLE handle, const double latency)
   if (latency < 0)
     return fsw_set_last_error(int(FSW_ERR_INVALID_LATENCY));
 
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->latency = latency;
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->latency = latency;
 
   return fsw_set_last_error(FSW_OK);
 }
 
 FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
 {
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->recursive = recursive;
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->recursive = recursive;
 
   return fsw_set_last_error(FSW_OK);
 }
@@ -730,18 +627,8 @@ FSW_STATUS fsw_set_recursive(const FSW_HANDLE handle, const bool recursive)
 FSW_STATUS fsw_set_directory_only(const FSW_HANDLE handle,
                                   const bool directory_only)
 {
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->directory_only = directory_only;
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->directory_only = directory_only;
 
   return fsw_set_last_error(FSW_OK);
 }
@@ -749,18 +636,8 @@ FSW_STATUS fsw_set_directory_only(const FSW_HANDLE handle,
 FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
                                    const bool follow_symlinks)
 {
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->follow_symlinks = follow_symlinks;
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->follow_symlinks = follow_symlinks;
 
   return fsw_set_last_error(FSW_OK);
 }
@@ -768,18 +645,8 @@ FSW_STATUS fsw_set_follow_symlinks(const FSW_HANDLE handle,
 FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
                                      const fsw_event_type_filter event_type)
 {
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->event_type_filters.push_back(event_type);
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->event_type_filters.push_back(event_type);
 
   return fsw_set_last_error(FSW_OK);
 }
@@ -787,78 +654,24 @@ FSW_STATUS fsw_add_event_type_filter(const FSW_HANDLE handle,
 FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
                           const fsw_cmonitor_filter filter)
 {
-  try
-  {
-    SESSION_GUARD;
-
-    FSW_SESSION *session = get_session(handle);
-
-    session->filters.push_back(
-      {filter.text, filter.type, filter.case_sensitive, filter.extended});
-  }
-  catch (int error)
-  {
-    return fsw_set_last_error(error);
-  }
+  FSW_SESSION *session = get_session(handle);
+  session->filters.push_back(
+    {filter.text, filter.type, filter.case_sensitive, filter.extended});
 
   return fsw_set_last_error(FSW_OK);
 }
-
-#ifdef HAVE_CXX_MUTEX
-
-template<typename T>
-class monitor_start_guard
-{
-  atomic<T>& a;
-  T val;
-
-public:
-
-  monitor_start_guard(atomic<T>& a,
-                      T val,
-                      memory_order sync = memory_order_seq_cst)
-    : a(a), val(val)
-  {
-  }
-
-  ~monitor_start_guard()
-  {
-    a.store(val, memory_order_release);
-  }
-};
-
-#endif
 
 FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
 {
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    unique_lock<mutex> session_store_lock(session_store_mutex, defer_lock);
-    session_store_lock.lock();
-#endif
-
     FSW_SESSION *session = get_session(handle);
-
-#ifdef HAVE_CXX_MUTEX
-# ifdef HAVE_CXX_ATOMIC
-    if (session->running.load(memory_order_acquire))
-      return fsw_set_last_error(int(FSW_ERR_MONITOR_ALREADY_RUNNING));
-# endif
-
-#  ifdef HAVE_CXX_UNIQUE_PTR
-    unique_ptr<mutex>& sm = session_mutexes.at(handle);
-    unique_lock<mutex> session_lock(*sm.get(), defer_lock);
-#  else
-    mutex * sm = session_mutexes.at(handle);
-    unique_lock<mutex> session_lock(*sm, defer_lock);
-#  endif
-    session_lock.lock();
-    session_store_lock.unlock();
-#endif
 
     if (!session->monitor)
       create_monitor(handle, session->type);
+
+    if (session->monitor->is_running())
+      return fsw_set_last_error(int(FSW_ERR_MONITOR_ALREADY_RUNNING));
 
     session->monitor->set_allow_overflow(session->allow_overflow);
     session->monitor->set_filters(session->filters);
@@ -868,14 +681,6 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
     session->monitor->set_recursive(session->recursive);
     session->monitor->set_directory_only(session->directory_only);
 
-#ifdef HAVE_CXX_MUTEX
-# ifdef HAVE_CXX_ATOMIC
-    session->running.store(true, memory_order_release);
-    monitor_start_guard<bool> guard(session->running, false);
-# endif
-#endif
-
-    session_lock.unlock();
     session->monitor->start();
   }
   catch (libfsw_exception& ex)
@@ -894,34 +699,15 @@ FSW_STATUS fsw_stop_monitor(const FSW_HANDLE handle)
 {
   try
   {
-#ifdef HAVE_CXX_MUTEX
-    unique_lock<mutex> session_store_lock(session_store_mutex, defer_lock);
-    session_store_lock.lock();
-#endif
-
     FSW_SESSION *session = get_session(handle);
 
-#ifdef HAVE_CXX_MUTEX
-# ifdef HAVE_CXX_ATOMIC
-    if (!session->running.load(memory_order_acquire))
+    if (session->monitor == nullptr)
+      return fsw_set_last_error(int(FSW_ERR_UNKNOWN_MONITOR_TYPE));
+
+    if (!session->monitor->is_running())
       return fsw_set_last_error(int(FSW_OK));
-# endif
-
-#  ifdef HAVE_CXX_UNIQUE_PTR
-    unique_ptr<mutex>& sm = session_mutexes.at(handle);
-    unique_lock<mutex> session_lock(*sm.get(), defer_lock);
-#  else
-    mutex * sm = session_mutexes.at(handle);
-    unique_lock<mutex> session_lock(*sm, defer_lock);
-#  endif
-
-    session_lock.lock();
-    session_store_lock.unlock();
-#endif
 
     session->monitor->stop();
-
-    session_lock.unlock();
   }
   catch (libfsw_exception& ex)
   {
@@ -941,23 +727,11 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
 
   try
   {
-    SESSION_GUARD;
-
     FSW_SESSION *session = get_session(handle);
-
-#ifdef HAVE_CXX_MUTEX
-#  ifdef HAVE_CXX_UNIQUE_PTR
-    const unique_ptr<mutex>& sm = session_mutexes[handle];
-    lock_guard<mutex> sm_lock(*sm.get());
-#  else
-    mutex * sm = session_mutexes[handle];
-    lock_guard<mutex> sm_lock(*sm);
-#  endif
-#endif
 
     if (session->monitor)
     {
-      if (session->running.load(memory_order_acquire))
+      if (session->monitor->is_running())
       {
         return fsw_set_last_error(FSW_ERR_MONITOR_ALREADY_RUNNING);
       }
@@ -971,31 +745,18 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
       }
       delete session->monitor;
     }
-
-    sessions.erase(handle);
   }
   catch (int error)
   {
     ret = error;
   }
 
-#ifdef HAVE_CXX_MUTEX
-  session_mutexes.erase(handle);
-#endif
-
   return fsw_set_last_error(ret);
 }
 
 FSW_SESSION *get_session(const FSW_HANDLE handle)
 {
-  if (sessions.find(handle) == sessions.end())
-    throw int(FSW_ERR_SESSION_UNKNOWN);
-
-#ifdef HAVE_CXX_UNIQUE_PTR
-  return sessions[handle].get();
-#else
-  return sessions[handle];
-#endif
+  return handle;
 }
 
 FSW_STATUS fsw_set_last_error(const FSW_STATUS error)
