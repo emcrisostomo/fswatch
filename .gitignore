@@ -5,6 +5,7 @@ fswatch_test
 .libs
 *.lo
 *.o
+cmake-build-debug/
 
 # Documentation
 libfswatch.pdf
