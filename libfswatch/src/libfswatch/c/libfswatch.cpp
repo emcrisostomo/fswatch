@@ -277,7 +277,20 @@
  *
  * @section v900 9:0:0
  *
- *   -
+ *   - Add fsw::monitor_filter::read_from_file() to load filters from a file.
+ *   - Add fsw_stop_monitor() function to stop a running monitor.
+ *   - Change FSW_HANDLE type.
+ *
+ * @section v600 8:0:2
+ *
+ *   - Add a mutex to protect the fsw::monitor::notify_events() method.
+ *   - Substitute C++ header names with C names in C headers.
+ *
+ * @section v600 7:0:1
+ *
+ *   - fsw::monitor::~monitor(): update to invoke fsw::monitor::stop().
+ *   - Close resources in monitor::on_stop() instead of doing it in destructors.
+ *   - Add inactivity callback.
  *
  * @section v600 6:0:0
  *
