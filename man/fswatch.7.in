@@ -445,7 +445,7 @@ job whenever some files change.
 Another requested feature is the possibility of receiving a single event and
 exit.  This is most useful when existing scripts processing events include the
 restart logic of
-.Nm.
+.Nm
 This use case is implemented by the
 .Op Fl 1, -one-event
 option:
@@ -555,10 +555,7 @@ exits 0 on success, and >0 if an error occurs.
 .Nm
 can be built on any system supporting at least one of the available monitors.
 .Sh BUGS
-See
-.UR
-https://github.com/emcrisostomo/fswatch/issues
-.UE
+See https://github.com/emcrisostomo/fswatch/issues
 for open issues or to create a new one.
 .Pp
 Bugs can also be submitted to @MAN_BUG_REPORT@.
