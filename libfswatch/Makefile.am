@@ -13,24 +13,4 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-ACLOCAL_AMFLAGS = -I m4
-
-# Refresh configuration if libtool dependencies change
-LIBTOOL_DEPS = @LIBTOOL_DEPS@
-libtool: $(LIBTOOL_DEPS)
-	$(SHELL) $(top_builddir)/config.status libtool
-
 SUBDIRS = src po doc
-
-dist_doc_DATA  = README.md
-dist_doc_DATA += AUTHORS COPYING LICENSE NEWS
-
-dist-hook:
-# The recipe cannot assume a file in $(distdir) is writable.
-	chmod u+w $(distdir)/ChangeLog
-	git log --oneline --decorate >> $(distdir)/ChangeLog
-
-# Manually distributing config.rpath seems not to be required any longer with
-# current Autotools.
-#
-# EXTRA_DIST = config/config.rpath

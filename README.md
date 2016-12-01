@@ -26,6 +26,7 @@ aforementioned APIs.
 Table of Contents
 -----------------
 
+  * [libfswatch](#libfswatch)
   * [Features](#features)
   * [Limitations](#limitations)
   * [Getting fswatch](#getting-fswatch)
@@ -36,6 +37,14 @@ Table of Contents
   * [Usage](#usage)
   * [Contributing](#contributing)
   * [Bug Reports](#bug-reports)
+
+libfswatch
+----------
+
+`fswatch` is a frontend of `libfswatch`, a library with C and C++ binding.  More
+information on `libfswatch` can be found [here][README.libfswatch.md]. 
+
+[README.libfswatch.md]: README.libfswatch.md
 
 Features
 --------

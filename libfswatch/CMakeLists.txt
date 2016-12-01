@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-include_directories(. src/libfswatch)
+include_directories(.. src/libfswatch)
 
 set(LIB_SOURCE_FILES
         src/libfswatch/c/cevent.cpp
@@ -29,6 +29,7 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/event.cpp
         src/libfswatch/c++/event.hpp
         src/libfswatch/c++/filter.hpp
+        src/libfswatch/c++/filter.cpp
         src/libfswatch/c++/libfswatch_exception.cpp
         src/libfswatch/c++/libfswatch_exception.hpp
         src/libfswatch/c++/libfswatch_map.hpp
@@ -43,7 +44,7 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/string/string_utils.hpp
         src/libfswatch/gettext.h
         src/libfswatch/gettext_defs.h
-        libfswatch_config.h)
+        ../libfswatch_config.h)
 
 INCLUDE(CheckIncludeFiles)
 
