@@ -46,8 +46,8 @@
 
 AC_DEFUN([EMC_PATH_PROG], [dnl
 AC_ARG_VAR([$1], [$5])
-AC_PATH_PROG([$1], [$2], [no], [$6])
-AS_VAR_IF([$1], [no],
+AC_PATH_PROG([$1], [$2], [$2notfound], [$6])
+AS_VAR_IF([$1], [$2notfound],
   [AS_UNSET($1)]
   [$4], [$3])
 ])dnl EMC_PATH_PROG

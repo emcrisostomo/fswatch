@@ -267,6 +267,9 @@ AS_VAR_IF(
 # Check for optional library functions.
 AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])
 
+# Configure package
+AX_GIT_CURRENT_BRANCH
+
 # Variables used in man files.
 MAN_DATE=$(date +'%B %d, %Y')
 FSWATCH=${PACKAGE_NAME}
