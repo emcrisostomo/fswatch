@@ -6,7 +6,7 @@
 #
 # DESCRIPTION
 #
-#   Sets the AX_GIT_CURRENT_BRANCH variable to the current git branch, if any,
+#   Sets the ax_git_current_branch variable to the current git branch, if any,
 #   otherwise it lets it unset.
 #
 # LICENSE
@@ -43,14 +43,15 @@
 
 AC_DEFUN_ONCE([AX_GIT_CURRENT_BRANCH],[dnl
 EMC_PATH_PROG([GIT], [git],             [], [AC_MSG_ERROR([git is required.  Install it and reconfigure the project.])], [git path])
-AS_VAR_SET([ax_git_current_branch], [$("${GIT}" symbolic-ref --short -q HEAD)])
+AS_VAR_SET([ax_git_current_branch], [$("${GIT}" rev-parse --symbolic-full-name --abbrev-ref HEAD)])
 AC_MSG_CHECKING([for current git branch])
 if test $? -eq 0 ;
 then
   AC_MSG_RESULT([${ax_git_current_branch}])
 else
   AC_MSG_RESULT([])
-  AC_MSG_WARN([Not in a branch])
+  AC_MSG_WARN([An error occurred while invoking git])
+
   AS_UNSET([ax_git_current_branch])
 fi
 ])dnl AX_GIT_CURRENT_BRANCH
