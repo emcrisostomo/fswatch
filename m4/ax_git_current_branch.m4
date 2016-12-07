@@ -54,4 +54,5 @@ else
 
   AS_UNSET([ax_git_current_branch])
 fi
+AC_SUBST([ax_git_current_branch])
 ])dnl AX_GIT_CURRENT_BRANCH

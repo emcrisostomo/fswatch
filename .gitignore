@@ -126,6 +126,8 @@ libfswatch_config.h
 libfswatch_config.h.in
 scripts/fswatch-run-bash
 scripts/fswatch-run-zsh
+docker/alpine/Dockerfile
+docker/debian/Dockerfile
 
 # Output files
 man/fswatch.7
