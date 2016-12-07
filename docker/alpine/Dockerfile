@@ -1,7 +1,6 @@
 FROM alpine
 MAINTAINER Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 
-ENV GT_VER 0.19.8
 ENV ROOT_HOME /root
 ENV FSWATCH_BRANCH master
 

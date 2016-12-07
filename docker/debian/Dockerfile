@@ -1,7 +1,7 @@
 FROM debian
 MAINTAINER Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 
-ENV GT_VER 0.19.8
+ENV GETTEXT_VER 0.19.8
 ENV ROOT_HOME /root
 ENV FSWATCH_BRANCH master
 
@@ -9,10 +9,10 @@ RUN apt-get -y update && apt-get install -y git autoconf automake libtool make g
 
 WORKDIR ${ROOT_HOME}
 RUN git clone https://github.com/emcrisostomo/fswatch.git
-RUN curl -O http://ftp.gnu.org/pub/gnu/gettext/gettext-${GT_VER}.tar.gz
-RUN tar -zxf gettext-${GT_VER}.tar.gz && rm gettext-${GT_VER}.tar.gz
-RUN cd gettext-${GT_VER} && ./configure && make && make install && ldconfig
-RUN rm -r gettext-${GT_VER}
+RUN curl -O http://ftp.gnu.org/pub/gnu/gettext/gettext-${GETTEXT_VER}.tar.gz
+RUN tar -zxf gettext-${GETTEXT_VER}.tar.gz && rm gettext-${GETTEXT_VER}.tar.gz
+RUN cd gettext-${GETTEXT_VER} && ./configure && make && make install && ldconfig
+RUN rm -r gettext-${GETTEXT_VER}
 
 WORKDIR ${ROOT_HOME}/fswatch
 RUN git checkout ${FSWATCH_BRANCH}
