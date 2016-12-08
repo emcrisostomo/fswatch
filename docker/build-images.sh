@@ -22,7 +22,7 @@ unsetopt glob_subst
 
 SCRIPT_HOME=${0:h}
 
-for i in ${SCRIPT_HOME}/*
+for i in ${SCRIPT_HOME}/*/
 do
   TAG=${i:t}
   [[ ${TAG} =~ "^[a-zA-Z0-9]+(/[a-zA-Z0-9]+)*$" ]] ||
