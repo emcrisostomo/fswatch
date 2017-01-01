@@ -3,10 +3,15 @@ NEWS
 
 New in 1.10.0:
 
-  * Add fsw_stop_monitor function to stop a running monitor.
+  * Add function to load filters from a file.
+
+  * Issue 137: Deadlock on C function fsw_destroy_session if fsw_start_monitor
+    is called.
 
   * Modify fsw_destroy_session function not to destroy a session that has a
     running monitor.
+
+  * Issue 143: Add fsw_stop_monitor to the C API.
 
 New in 1.9.3:
 

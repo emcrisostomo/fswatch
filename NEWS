@@ -3,6 +3,10 @@ NEWS
 
 New in 1.10.0:
 
+  * Merge fswatch and libfswatch Autotools project into one.
+
+  * Issue 60: Allow excluding file patterns by passing in a file.
+
   * Issue 141: Add Docker files for Linux distributions used for testing.
 
 New in 1.9.3:
