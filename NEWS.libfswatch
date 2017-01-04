@@ -3,7 +3,7 @@ NEWS
 
 New in 1.10.0:
 
-  * Add function to load filters from a file.
+  * Issue 60: Add function to load filters from a file.
 
   * Issue 137: Deadlock on C function fsw_destroy_session if fsw_start_monitor
     is called.
