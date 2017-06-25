@@ -33,7 +33,7 @@ AC_CONFIG_FILES([libfswatch/src/Makefile libfswatch/src/libfswatch/Makefile libf
 AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile fswatch/po/Makefile.in])
 AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_FILES([docker/alpine/Dockerfile])
-AC_CONFIG_FILES([docker/debian-9/Dockerfile])
+AC_CONFIG_FILES([docker/debian9/Dockerfile])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
