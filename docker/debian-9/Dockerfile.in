@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:9
 MAINTAINER Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 
 RUN apt-get -y update && apt-get install -y git autoconf automake libtool make g++ texinfo curl
