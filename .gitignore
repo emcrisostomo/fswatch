@@ -1,15 +1,18 @@
 # Binaries
-fswatch
+fswatch/src/fswatch
 fswatch.exe
+fswatch_test
 .libs
 *.lo
 *.o
+cmake-build-debug/
 
 # Documentation
-fswatch.pdf
 libfswatch.pdf
 libfswatch/doc/doxygen/html
 libfswatch/doc/doxygen/latex
+fswatch/doc/fswatch.html
+fswatch/doc/fswatch.pdf
 
 # Distribution files
 *.tar.gz
@@ -119,10 +122,12 @@ version.texi
 # Template files
 Doxyfile
 build-aux/create-pot-template.sh
-libfswatch/libfswatch_config.h
-libfswatch/libfswatch_config.h.in
+libfswatch_config.h
+libfswatch_config.h.in
 scripts/fswatch-run-bash
 scripts/fswatch-run-zsh
+docker/alpine/Dockerfile
+docker/debian9/Dockerfile
 
 # Output files
 man/fswatch.7

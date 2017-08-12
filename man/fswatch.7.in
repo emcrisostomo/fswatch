@@ -1,5 +1,5 @@
 .\"   $Id$
-.\" Copyright (c) 2013-2015 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+.\" Copyright (c) 2013-2017 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ Info documentation shipped with
 The
 .Nm
 command receives notifications when the contents of the specified files or
-directories are modified.  @FSWATCH@ implements three kind of monitors:
+directories are modified.  @FSWATCH@ implements six kind of monitors:
 .Bl -tag -width indent
 .It -
 A monitor based on the File System Events API of Apple OS X.
@@ -45,8 +45,13 @@ A monitor based on the File System Events API of Apple OS X.
 A monitor based on kqueue, an event notification interface introduces in FreeBSD
 4.1 and supported on most *BSD systems (including OS X).
 .It -
+A monitor based on the File Events Notification API of the Solaris kernel and
+its derivatives.
+.It -
 A monitor based on inotify, a Linux kernel subsystem that reports file system
 changes to applications.
+.It -
+A monitor based on the ReadDirectoryChangesW Microsoft Windows API.
 .It -
 A monitor which periodically stats the file system, saves file modification
 times in memory and manually calculates changes.
@@ -445,7 +450,7 @@ job whenever some files change.
 Another requested feature is the possibility of receiving a single event and
 exit.  This is most useful when existing scripts processing events include the
 restart logic of
-.Nm.
+.Nm
 This use case is implemented by the
 .Op Fl 1, -one-event
 option:
@@ -555,10 +560,7 @@ exits 0 on success, and >0 if an error occurs.
 .Nm
 can be built on any system supporting at least one of the available monitors.
 .Sh BUGS
-See
-.UR
-https://github.com/emcrisostomo/fswatch/issues
-.UE
+See https://github.com/emcrisostomo/fswatch/issues
 for open issues or to create a new one.
 .Pp
 Bugs can also be submitted to @MAN_BUG_REPORT@.

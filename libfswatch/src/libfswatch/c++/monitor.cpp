@@ -66,7 +66,7 @@ namespace fsw
 
 #ifdef HAVE_INACTIVITY_CALLBACK
     milliseconds epoch = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-    last_notification.store(epoch, memory_order_release);
+    last_notification.store(epoch);
 #endif
   }
 
@@ -286,7 +286,7 @@ namespace fsw
 
       milliseconds elapsed =
         duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-        - mon->last_notification.load(memory_order_acquire);
+        - mon->last_notification.load();
 
       // Sleep and loop again if sufficient time has not elapsed yet.
       if (elapsed < mon->get_latency_ms())
@@ -391,7 +391,7 @@ namespace fsw
     // Update the last notification timestamp
 #ifdef HAVE_INACTIVITY_CALLBACK
     milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-    last_notification.store(now, memory_order_release);
+    last_notification.store(now);
 #endif
 
     vector<event> filtered_events;

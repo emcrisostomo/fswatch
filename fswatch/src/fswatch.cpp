@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+#  include "libfswatch_config.h"
 #endif
 #include "gettext.h"
 #include "fswatch.hpp"
@@ -78,6 +78,7 @@ static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 static monitor *active_monitor = nullptr;
 static vector<monitor_filter> filters;
 static vector<fsw_event_type_filter> event_filters;
+static vector<string> filter_files;
 static bool _0flag = false;
 static bool _1flag = false;
 static bool aflag = false;
@@ -117,6 +118,7 @@ static const int OPT_EVENT_TYPE = 131;
 static const int OPT_ALLOW_OVERFLOW = 132;
 static const int OPT_MONITOR_PROPERTY = 133;
 static const int OPT_FIRE_IDLE_EVENTS = 134;
+static const int OPT_FILTER_FROM = 135;
 
 static void list_monitor_types(ostream& stream)
 {
@@ -129,9 +131,12 @@ static void list_monitor_types(ostream& stream)
 static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2013-2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
-  stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
-  stream << _("This is free software: you are free to change and redistribute it.\n");
+  stream <<
+  "Copyright (C) 2013-2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream <<
+  _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
+  stream <<
+  _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
   stream << "\n";
   stream << _("Written by Enrico M. Crisostomo.");
@@ -155,6 +160,8 @@ static void usage(ostream& stream)
   stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
+  stream << "     --filter-from=FILE\n";
+  stream << "                       " << _("Load filters from file.") << "\n";
   stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
   stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
   stream << "     --fire-idle-event " << _("Fire idle events.\n");
@@ -314,7 +321,8 @@ static void print_event_timestamp(const event& evt)
     strftime(time_format_buffer,
              TIME_FORMAT_BUFF_SIZE,
              tformat.c_str(),
-             tm_time) ? string(time_format_buffer) : string(_("<date format error>"));
+             tm_time) ? string(time_format_buffer) : string(
+      _("<date format error>"));
 
   cout << date;
 }
@@ -391,7 +399,7 @@ static void write_events(const vector<event>& events)
   }
 }
 
-static void process_events(const vector<event>& events, void *context)
+void process_events(const vector<event>& events, void *context)
 {
   if (oflag)
     write_one_batch_event(events);
@@ -421,9 +429,10 @@ static void start_monitor(int argc, char **argv, int optind)
                                                      paths,
                                                      process_events);
   else
-    active_monitor = monitor_factory::create_monitor(fsw_monitor_type::system_default_monitor_type,
-                                                     paths,
-                                                     process_events);
+    active_monitor = monitor_factory::create_monitor(
+      fsw_monitor_type::system_default_monitor_type,
+      paths,
+      process_events);
 
   /*
    * libfswatch supports case sensitivity and extended flags to be set on any
@@ -434,6 +443,21 @@ static void start_monitor(int argc, char **argv, int optind)
   {
     filter.case_sensitive = !Iflag;
     filter.extended = Eflag;
+  }
+
+  // Load filters from the specified files.
+  for (const auto& filter_file : filter_files)
+  {
+    auto filters_from_file =
+      monitor_filter::read_from_file(filter_file,
+                                     [](string f)
+                                     {
+                                       cerr << _("Invalid filter: ") << f << "\n";
+                                     });
+
+    std::move(filters_from_file.begin(),
+              filters_from_file.end(),
+              std::back_inserter(filters));
   }
 
   active_monitor->set_properties(monitor_properties);
@@ -467,6 +491,7 @@ static void parse_opts(int argc, char **argv)
     {"event-flag-separator", required_argument, nullptr,       OPT_EVENT_FLAG_SEPARATOR},
     {"exclude",              required_argument, nullptr,       'e'},
     {"extended",             no_argument,       nullptr,       'E'},
+    {"filter-from",          required_argument, nullptr,       OPT_FILTER_FROM},
     {"fire-idle-events",     no_argument,       nullptr,       OPT_FIRE_IDLE_EVENTS},
     {"follow-links",         no_argument,       nullptr,       'L'},
     {"format",               required_argument, nullptr,       OPT_FORMAT},
@@ -487,7 +512,7 @@ static void parse_opts(int argc, char **argv)
     {"utc-time",             no_argument,       nullptr,       'u'},
     {"verbose",              no_argument,       nullptr,       'v'},
     {"version",              no_argument,       &version_flag, true},
-    {nullptr,                0,                 nullptr,       0}
+    {nullptr, 0,                                nullptr,       0}
   };
 
   while ((ch = getopt_long(argc,
@@ -497,8 +522,8 @@ static void parse_opts(int argc, char **argv)
                            &option_index)) != -1)
   {
 #else
-  while ((ch = getopt(argc, argv, short_options.c_str())) != -1)
-  {
+    while ((ch = getopt(argc, argv, short_options.c_str())) != -1)
+    {
 #endif
 
     switch (ch)
@@ -638,6 +663,10 @@ static void parse_opts(int argc, char **argv)
       fieFlag = true;
       break;
 
+    case OPT_FILTER_FROM:
+      filter_files.push_back(optarg);
+      break;
+
     case '?':
       usage(cerr);
       exit(FSW_EXIT_UNK_OPT);
@@ -656,7 +685,9 @@ static void parse_opts(int argc, char **argv)
   // --format is incompatible with any other format option.
   if (format_flag && (tflag || xflag))
   {
-    cerr << _("--format is incompatible with any other format option such as -t and -x.") << endl;
+    cerr <<
+    _("--format is incompatible with any other format option such as -t and -x.") <<
+    endl;
     exit(FSW_EXIT_FORMAT);
   }
 
@@ -812,16 +843,23 @@ int main(int argc, char **argv)
     delete active_monitor;
     active_monitor = nullptr;
   }
+  catch (invalid_argument& ex)
+  {
+    cerr << ex.what() << "\n";
+
+    return FSW_EXIT_ERROR;
+  }
   catch (exception& conf)
   {
     cerr << _("An error occurred and the program will be terminated.\n");
-    cerr << conf.what() << endl;
+    cerr << conf.what() << "\n";
 
     return FSW_EXIT_ERROR;
   }
   catch (...)
   {
-    cerr << _("An unknown error occurred and the program will be terminated.") << endl;
+    cerr <<
+    _("An unknown error occurred and the program will be terminated.\n");
 
     return FSW_EXIT_ERROR;
   }

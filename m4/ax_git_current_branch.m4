@@ -1,27 +1,17 @@
-# ===========================================================================
-#      http://www.gnu.org/software/autoconf-archive/ax_append_flag.html
-# ===========================================================================
+# -*- Autoconf -*-
 #
 # SYNOPSIS
 #
-#   AX_APPEND_FLAG(FLAG, [FLAGS-VARIABLE])
+#   AX_GIT_CURRENT_BRANCH()
 #
 # DESCRIPTION
 #
-#   FLAG is appended to the FLAGS-VARIABLE shell variable, with a space
-#   added in between.
-#
-#   If FLAGS-VARIABLE is not specified, the current language's flags (e.g.
-#   CFLAGS) is used.  FLAGS-VARIABLE is not changed if it already contains
-#   FLAG.  If FLAGS-VARIABLE is unset in the shell, it is set to exactly
-#   FLAG.
-#
-#   NOTE: Implementation based on AX_CFLAGS_GCC_OPTION.
+#   Sets the ax_git_current_branch variable to the current git branch, if any,
+#   otherwise it lets it unset.
 #
 # LICENSE
 #
-#   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
-#   Copyright (c) 2011 Maarten Bosmans <mkbosmans@gmail.com>
+#   Copyright (c) 2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -49,21 +39,20 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 2
+#serial 1
 
-AC_DEFUN([AX_APPEND_FLAG],
-[AC_PREREQ(2.59)dnl for _AC_LANG_PREFIX
-AS_VAR_PUSHDEF([FLAGS], [m4_default($2,_AC_LANG_PREFIX[FLAGS])])dnl
-AS_VAR_SET_IF(FLAGS,
-  [case " AS_VAR_GET(FLAGS) " in
-    *" $1 "*)
-      AC_RUN_LOG([: FLAGS already contains $1])
-      ;;
-    *)
-      AC_RUN_LOG([: FLAGS="$FLAGS $1"])
-      AS_VAR_SET(FLAGS, ["AS_VAR_GET(FLAGS) $1"])
-      ;;
-   esac],
-  [AS_VAR_SET(FLAGS,["$1"])])
-AS_VAR_POPDEF([FLAGS])dnl
-])dnl AX_APPEND_FLAG
+AC_DEFUN_ONCE([AX_GIT_CURRENT_BRANCH],[dnl
+EMC_PATH_PROG([GIT], [git],             [], [AC_MSG_ERROR([git is required.  Install it and reconfigure the project.])], [git path])
+AS_VAR_SET([ax_git_current_branch], [$("${GIT}" rev-parse --symbolic-full-name --abbrev-ref HEAD)])
+AC_MSG_CHECKING([for current git branch])
+if test $? -eq 0 ;
+then
+  AC_MSG_RESULT([${ax_git_current_branch}])
+else
+  AC_MSG_RESULT([])
+  AC_MSG_WARN([An error occurred while invoking git])
+
+  AS_UNSET([ax_git_current_branch])
+fi
+AC_SUBST([ax_git_current_branch])
+])dnl AX_GIT_CURRENT_BRANCH

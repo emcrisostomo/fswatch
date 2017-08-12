@@ -25,6 +25,7 @@ libfswatch_la_SOURCES += c/libfswatch.cpp
 libfswatch_la_SOURCES += c/libfswatch_log.cpp
 libfswatch_la_SOURCES += c++/libfswatch_exception.cpp
 libfswatch_la_SOURCES += c++/event.cpp
+libfswatch_la_SOURCES += c++/filter.cpp
 libfswatch_la_SOURCES += c++/monitor.cpp
 libfswatch_la_SOURCES += c++/poll_monitor.cpp
 libfswatch_la_SOURCES += c++/path_utils.cpp
@@ -73,8 +74,8 @@ if USE_FSEVENTS
 endif
 
 # Define separate include directories for C and C++ headers.
-libfswatch_cdir = $(pkgincludedir)/c
-libfswatch_cppdir = $(pkgincludedir)/c++
+libfswatch_cdir = $(includedir)/libfswatch/c
+libfswatch_cppdir = $(includedir)/libfswatch/c++
 
 # Distribute C headers.
 libfswatch_c_HEADERS  = c/libfswatch.h
