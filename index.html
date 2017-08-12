@@ -1,106 +1,115 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
+<head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="fswatch : A cross-platform file change monitor with multiple backends: Apple OS X File System Events API, *BSD kqueue, Solaris/Illumos File Events Notification, Linux inotify and a stat-based backend.">
-
+    <meta name="description"
+          content="fswatch : A cross-platform file change monitor with multiple backends: Apple OS X File System Events, *BSD kqueue, Solaris/Illumos File Events Notification, Linux inotify, Microsoft Windows and a stat()-based backend.">
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
     <title>fswatch</title>
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/emcrisostomo/fswatch">View on GitHub</a>
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/emcrisostomo/fswatch">View on GitHub</a>
 
-          <h1 id="project_title">fswatch</h1>
-          <h2 id="project_tagline">A cross-platform file change monitor with
-          multiple backends: Apple OS X <em>File System Events</em> API, *BSD
-          <em>kqueue</em>, Solaris/Illumos <em>File Events Notification</em>,
-          Linux <em>inotify</em> and a stat()-based backend.</h2>
+        <h1 id="project_title">fswatch</h1>
+        <h2 id="project_tagline">A cross-platform file change monitor with
+            multiple backends: Apple OS X <em>File System Events</em> API, *BSD
+            <em>kqueue</em>, Solaris/Illumos <em>File Events Notification</em>,
+            Linux <em>inotify</em> and a stat()-based backend.</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/emcrisostomo/fswatch/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/emcrisostomo/fswatch/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/emcrisostomo/fswatch/zipball/master">Download this
+                project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/emcrisostomo/fswatch/tarball/master">Download this
+                project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
         <p><code>fswatch</code> is a file change monitor that receives notifications when the contents
-of the specified files or directories are modified.  <code>fswatch</code> implements four
-kinds of monitors:</p>
+            of the specified files or directories are modified. <code>fswatch</code> implements four
+            kinds of monitors:</p>
+        <ul>
+            <li>A monitor based on the <em>File System Events API</em> of Apple OS X.</li>
+            <li>A monitor based on <em>kqueue</em>, an event notification interface introduced in
+                FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+            </li>
+            <li>A monitor based on <em>inotify</em>, a Linux kernel subsystem that reports file
+                system changes to applications.
+            </li>
+            <li>A monitor based on <em>File Events Notification</em>, a Solaris/Illumos
+                kernel API that reports file events.
+            </li>
+            <li>A monitor based on ReadDirectoryChangesW, a Microsoft Windows API that reports changes to a directory.
+            </li>
+            <li>A monitor which periodically stats the file system, saves file modification
+                times in memory and manually calculates file system changes, which can work
+                on any operating system where <code>stat (2)</code> can be used.
+            </li>
+        </ul>
 
-<ul>
-<li>A monitor based on the <em>File System Events API</em> of Apple OS X.</li>
-<li>A monitor based on <em>kqueue</em>, an event notification interface introduced in
-FreeBSD 4.1 and supported on most *BSD systems (including OS X).</li>
-<li>A monitor based on <em>inotify</em>, a Linux kernel subsystem that reports file
-  system changes to applications.</li>
-<li>A monitor based on <em>File Events Notification</em>, a Solaris/Illumos
-kernel API that reports file events.</li>
-<li>A monitor which periodically stats the file system, saves file modification
-times in memory and manually calculates file system changes, which can work
-on any operating system where <code>stat (2)</code> can be used.</li>
-</ul>
+        <p><code>fswatch</code> should build and work correctly on any system shipping either of the
+            aforementioned APIs.</p>
 
-<p><code>fswatch</code> should build and work correctly on any system shipping either of the
-aforementioned APIs.</p>
+        <h2>
+            <a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span
+                    class="octicon octicon-link"></span></a>Table of Contents</h2>
 
-<h2>
-<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h2>
+        <ul>
+            <li><a href="getting.html">Getting fswatch</a></li>
+            <li><a href="documentation.html">Documentation</a></li>
+            <li><a href="usage.html">Usage</a></li>
+        </ul>
 
-<ul>
-<li><a href="getting.html">Getting fswatch</a></li>
-<li><a href="documentation.html">Documentation</a></li>
-<li><a href="usage.html">Usage</a></li>
-</ul>
+        <hr>
 
-<hr>
+        <p>Copyright (C) 2013-7 Enrico M. Crisostomo</p>
 
-<p>Copyright (C) 2013-2016 Enrico M. Crisostomo</p>
+        <p>This program is free software; you can redistribute it and/or modify
+            it under the terms of the GNU General Public License as published by
+            the Free Software Foundation; either version 3, or (at your option)
+            any later version.</p>
 
-<p>This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3, or (at your option)
-any later version.</p>
+        <p>This program is distributed in the hope that it will be useful,
+            but WITHOUT ANY WARRANTY; without even the implied warranty of
+            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+            GNU General Public License for more details.</p>
 
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
+        <p>You should have received a copy of the GNU General Public License
+            along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.
+        </p>
+    </section>
+</div>
 
-<p>You should have received a copy of the GNU General Public License
-along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Copyright (c) 2013-2016 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a></p>
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Copyright (c) 2013-2016 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a>
+        </p>
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+    </footer>
+</div>
 
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-6413880-5");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-6413880-5");
+        pageTracker._trackPageview();
+    } catch (err) {
+    }
+</script>
 
-
-  </body>
+</body>
 </html>
