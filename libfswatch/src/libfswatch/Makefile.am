@@ -74,8 +74,8 @@ if USE_FSEVENTS
 endif
 
 # Define separate include directories for C and C++ headers.
-libfswatch_cdir = $(pkgincludedir)/c
-libfswatch_cppdir = $(pkgincludedir)/c++
+libfswatch_cdir = $(includedir)/libfswatch/c
+libfswatch_cppdir = $(includedir)/libfswatch/c++
 
 # Distribute C headers.
 libfswatch_c_HEADERS  = c/libfswatch.h

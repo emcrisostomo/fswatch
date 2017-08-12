@@ -32,6 +32,8 @@ AC_CONFIG_FILES([libfswatch/doc/Makefile libfswatch/doc/doxygen/Makefile])
 AC_CONFIG_FILES([libfswatch/src/Makefile libfswatch/src/libfswatch/Makefile libfswatch/po/Makefile.in])
 AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile fswatch/po/Makefile.in])
 AC_CONFIG_FILES([man/fswatch.7])
+AC_CONFIG_FILES([docker/alpine/Dockerfile])
+AC_CONFIG_FILES([docker/debian9/Dockerfile])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -266,6 +268,9 @@ AS_VAR_IF(
 
 # Check for optional library functions.
 AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])
+
+# Configure package
+AX_GIT_CURRENT_BRANCH
 
 # Variables used in man files.
 MAN_DATE=$(date +'%B %d, %Y')

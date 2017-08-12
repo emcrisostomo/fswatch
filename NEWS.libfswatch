@@ -1,10 +1,26 @@
 NEWS
 ****
 
+New in 1.10.0:
+
+  * Add Doxygen documentation.
+
+  * Issue 60: Add function to load filters from a file.
+
+  * Issue 137: Deadlock on C function fsw_destroy_session if fsw_start_monitor
+    is called.
+
+  * Modify fsw_destroy_session function not to destroy a session that has a
+    running monitor.
+
+  * Issue 143: Add fsw_stop_monitor to the C API.
+
 New in 1.9.3:
 
   * Use C header names in C headers instead of C++.
+
   * Explicitly use the enum keyword when referring to enum types in C headers.
+
   * Remove default argument values from C headers.
 
 New in 1.9.2:

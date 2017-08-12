@@ -34,9 +34,14 @@ extern "C"
 #endif
 
 /**
+ * @brief Opaque type representing a monitoring session.
+ */
+struct FSW_SESSION;
+
+/**
  * @brief Handle to a monitoring session.
  */
-typedef unsigned int FSW_HANDLE;
+typedef struct FSW_SESSION *FSW_HANDLE;
 
 /**
  * @brief Status of a library call.

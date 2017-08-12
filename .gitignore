@@ -1,9 +1,11 @@
 # Binaries
 fswatch/src/fswatch
 fswatch.exe
+fswatch_test
 .libs
 *.lo
 *.o
+cmake-build-debug/
 
 # Documentation
 libfswatch.pdf
@@ -124,6 +126,8 @@ libfswatch_config.h
 libfswatch_config.h.in
 scripts/fswatch-run-bash
 scripts/fswatch-run-zsh
+docker/alpine/Dockerfile
+docker/debian9/Dockerfile
 
 # Output files
 man/fswatch.7
