@@ -92,6 +92,24 @@ Free Documentation License''.
 @node Version History
 @chapter Version History
 
+@section 1.10.0
+@itemize
+@item
+Fix issue 60: Allow excluding file patterns by passing a file.
+
+@item
+Fix issue 119: Merge @command{fswatch} and @file{libfswatch} Autotools
+projects into one.
+
+@item
+Fix issue 141: Add Docker files for Linux distributions used for
+testing.
+
+@item
+Add target to build @command{fswatch} on Alpine Linux and Debian.
+
+@end itemize
+
 @section 1.9.3
 @itemize
 @item
