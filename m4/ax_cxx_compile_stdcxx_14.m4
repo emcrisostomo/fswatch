@@ -1,6 +1,6 @@
-# ============================================================================
-#  http://www.gnu.org/software/autoconf-archive/ax_cxx_compile_stdcxx_14.html
-# ============================================================================
+# =============================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_cxx_compile_stdcxx_14.html
+# =============================================================================
 #
 # SYNOPSIS
 #
@@ -28,8 +28,7 @@
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 3
+#serial 5
 
-include([ax_cxx_compile_stdcxx.m4])
-
+AX_REQUIRE_DEFINED([AX_CXX_COMPILE_STDCXX])
 AC_DEFUN([AX_CXX_COMPILE_STDCXX_14], [AX_CXX_COMPILE_STDCXX([14], [$1], [$2])])
