@@ -1,5 +1,5 @@
 include_directories(../.. .)
-
+add_definitions(-DHAVE_CONFIG_H)
 set(SOURCE_FILES
         fswatch.cpp
         fswatch.hpp

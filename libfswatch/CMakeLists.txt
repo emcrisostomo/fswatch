@@ -14,6 +14,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 include_directories(.. src/libfswatch)
+add_definitions(-DHAVE_CONFIG_H)
 
 set(LIB_SOURCE_FILES
         src/libfswatch/c/cevent.cpp
