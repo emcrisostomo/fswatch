@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * Copyright (c) 2014-2017 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -131,7 +131,7 @@ static void list_monitor_types(ostream& stream)
 static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2013-2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << "Copyright (C) 2013-2017 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
   stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
   stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
