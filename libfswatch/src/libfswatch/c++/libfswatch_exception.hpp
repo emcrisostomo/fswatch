@@ -50,6 +50,10 @@ namespace fsw
      */
     libfsw_exception(std::string cause, int code = FSW_ERR_UNKNOWN_ERROR);
 
+    libfsw_exception( const libfsw_exception& other ) noexcept;
+
+    libfsw_exception& operator=(const libfsw_exception&) noexcept;
+
     /**
      * @brief Gets the error message.
      *
@@ -75,8 +79,8 @@ namespace fsw
     explicit operator int() const noexcept;
 
   private:
-    const std::string cause;
-    const int code;
+    std::string cause;
+    int code;
   };
 }
 
