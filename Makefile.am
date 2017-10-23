@@ -35,8 +35,14 @@ dist_doc_DATA += README.osx
 dist_doc_DATA += README.smartos
 dist_doc_DATA += README.solaris
 dist_doc_DATA += README.windows
-dist_doc_DATA += ABOUT-NLS AUTHORS CONTRIBUTING.md COPYING LICENSE NEWS
-dist_doc_DATA += AUTHORS.libfswatch NEWS.libfswatch
+dist_doc_DATA += ABOUT-NLS
+dist_doc_DATA += AUTHORS
+dist_doc_DATA += CONTRIBUTING.md
+dist_doc_DATA += COPYING
+dist_doc_DATA += LICENSE
+dist_doc_DATA += NEWS
+dist_doc_DATA += AUTHORS.libfswatch
+dist_doc_DATA += NEWS.libfswatch
 
 dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
