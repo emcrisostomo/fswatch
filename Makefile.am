@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2016 Enrico M. Crisostomo
+# Copyright (c) 2014-2017 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -35,7 +35,9 @@ dist_doc_DATA += README.osx
 dist_doc_DATA += README.smartos
 dist_doc_DATA += README.solaris
 dist_doc_DATA += README.windows
-dist_doc_DATA += ABOUT-NLS
+if USE_NLS
+  dist_doc_DATA += ABOUT-NLS
+endif
 dist_doc_DATA += AUTHORS
 dist_doc_DATA += CONTRIBUTING.md
 dist_doc_DATA += COPYING
