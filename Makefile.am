@@ -41,7 +41,6 @@ endif
 dist_doc_DATA += AUTHORS
 dist_doc_DATA += CONTRIBUTING.md
 dist_doc_DATA += COPYING
-dist_doc_DATA += LICENSE
 dist_doc_DATA += NEWS
 dist_doc_DATA += AUTHORS.libfswatch
 dist_doc_DATA += NEWS.libfswatch
