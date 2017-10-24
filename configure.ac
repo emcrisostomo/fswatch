@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (C) 2014-2016 Enrico M. Crisostomo
+# Copyright (C) 2014-2017 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -59,7 +59,7 @@ LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
 # OS-specific treatment
-AM_CONDITIONAL([OS_CYGWIN], [test "${target_os}" = "cygwin"])
+AM_CONDITIONAL([OS_CYGWIN], [test "x${target_os}" = "xcygwin"])
 
 # Set library interface version
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
@@ -74,6 +74,7 @@ AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([libfswatch/doc/doxygen/Doxyfile])])
 # Initialize gettext.
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.19.4])
+AM_CONDITIONAL([USE_NLS], [test "x${USE_NLS}" = "xyes"])
 
 # Configure C++ compiler
 AX_CXX_COMPILE_STDCXX_11
