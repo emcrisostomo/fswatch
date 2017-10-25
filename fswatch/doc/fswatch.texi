@@ -93,11 +93,15 @@ Free Documentation License''.
 @chapter Version History
 
 @section 1.11.0
-
 @itemize
 @item
 @opindex event@r{, mask}
-Update the @option{--event} option to accept a numeric event mask.
+Fix issue 174: Update the @option{--event} option to accept a numeric
+event mask.
+
+@item
+Fix issue 181: Make gettext an optional dependency.
+
 @end itemize
 
 @section 1.10.0
