@@ -92,6 +92,14 @@ Free Documentation License''.
 @node Version History
 @chapter Version History
 
+@section 1.11.0
+
+@itemize
+@item
+@opindex event@r{, mask}
+Update the @option{--event} option to accept a numeric event mask.
+@end itemize
+
 @section 1.10.0
 @itemize
 @item
@@ -1135,8 +1143,8 @@ on directory children.
 
 @opsummary{event}
 @item --event
-Filter events by @emph{type} using the specified event name
-(@pxref{Filtering by Event Type}).  Specified event names are
+Filter events by @emph{type} using the specified event name or numeric
+mask (@pxref{Filtering by Event Type}).  Specified event names are
 @emph{included} in the output.  Multiple event types can be specified
 using this option multiple times.
 
@@ -1688,17 +1696,22 @@ kinds of regular expressions is out of scope in this manual.
 @anchor{Filtering by Event Type}
 @cpindex filter, by event type
 @cpindex event type filter
-Events can be filtered by event type passing @command{fswatch} a list
-of event type @emph{names} to accept using the @option{--event}
+Events can be filtered by event type passing @command{fswatch} a list of
+event type @emph{names} or masks to accept using the @option{--event}
 option:
 
 @example
 $ fswatch -x --event Created --event Removed ~
+$ fswatch -x --event 10 ~
 @end example
 
-If no event type filters are specified @command{fswatch} will accept
-events of any type; on the other hand, as soon as a filter is
-specified, only events with a matching type will be accepted.
+In this example, the mask of the @command{Created} event is @command{2}
+and the mask of the @command{Removed} event is @command{8}, so the mask
+of both events is @command{10}.
+
+If no event type filters are specified, @command{fswatch} will accept
+events of any type; on the other hand, as soon as a filter is specified,
+only events with a matching type will be accepted.
 
 @section Latency
 @anchor{Latency}
