@@ -62,7 +62,7 @@ print_usage()
   print -- "${PROGNAME}"
   print
   print -- "Build the package from scratch by performing the following steps:"
-  print -- " - Clean the repository."
+  print -- " - Run the maintainer-clean target."
   print -- " - Bootstrap the autotools."
   print -- " - Configure the package."
   print -- " - Run the distcheck target."
