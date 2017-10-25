@@ -3,6 +3,8 @@ NEWS
 
 New in 1.11.0:
 
+  * Issue 174: Allow a numeric event mask to be specified.
+
   * Issue 181: Make gettext an optional dependency.
 
 New in 1.10.0:
