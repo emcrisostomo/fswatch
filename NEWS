@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.11.0:
+
+  * Issue 181: Make gettext an optional dependency.
+
 New in 1.10.0:
 
   * Issue 60: Allow excluding file patterns by passing in a file.
