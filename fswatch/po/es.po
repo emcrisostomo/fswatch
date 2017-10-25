@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.4.4\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2016-10-29 13:16+0200\n"
-"PO-Revision-Date: 2016-03-14 20:18+0100\n"
+"POT-Creation-Date: 2017-10-26 00:11+0200\n"
+"PO-Revision-Date: 2017-10-26 00:51+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: fswatch/src/fswatch.cpp:137
+#: fswatch/src/fswatch.cpp:135
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
 "html>.\n"
@@ -25,134 +25,143 @@ msgstr ""
 "Licencia GPLv3+: GNU GPL versión 3 o sucesiva <http://gnu.org/licenses/gpl."
 "html>.\n"
 
-#: fswatch/src/fswatch.cpp:139
+#: fswatch/src/fswatch.cpp:136
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "Éste es software libre: estás libre de cambiarlo y redistribuirlo.\n"
 
-#: fswatch/src/fswatch.cpp:140
+#: fswatch/src/fswatch.cpp:137
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "No hay NINGUNA GARANTÍA, en los límites permitidos por la ley.\n"
 
-#: fswatch/src/fswatch.cpp:142
+#: fswatch/src/fswatch.cpp:139
 msgid "Written by Enrico M. Crisostomo."
 msgstr "Escrito por Enrico M. Crisostomo."
 
-#: fswatch/src/fswatch.cpp:150 fswatch/src/fswatch.cpp:192
+#: fswatch/src/fswatch.cpp:147 fswatch/src/fswatch.cpp:189
 msgid "Usage:\n"
 msgstr "Uso:\n"
 
-#: fswatch/src/fswatch.cpp:151
+#: fswatch/src/fswatch.cpp:148
 msgid " [OPTION] ... path ...\n"
 msgstr " [OPCIÓN] ... ruta ...\n"
 
-#: fswatch/src/fswatch.cpp:153 fswatch/src/fswatch.cpp:195
+#: fswatch/src/fswatch.cpp:150 fswatch/src/fswatch.cpp:192
 msgid "Options:\n"
 msgstr "Opciones:\n"
 
-#: fswatch/src/fswatch.cpp:154
+#: fswatch/src/fswatch.cpp:151
 msgid "Use the ASCII NUL character (0) as line separator.\n"
 msgstr "Usa el carácter ASCII NUL (0) como separador de línea.\n"
 
-#: fswatch/src/fswatch.cpp:155
+#: fswatch/src/fswatch.cpp:152
 msgid "Exit fswatch after the first set of events is received.\n"
 msgstr "Sal de fswatch después de recibir el primer conjunto de eventos.\n"
 
-#: fswatch/src/fswatch.cpp:156
+#: fswatch/src/fswatch.cpp:153
 msgid "Allow a monitor to overflow and report it as a change event.\n"
 msgstr "Permite a un monitor desbordar y comunicarlo como evento de cambio.\n"
 
-#: fswatch/src/fswatch.cpp:157
+#: fswatch/src/fswatch.cpp:154
 msgid "Print a marker at the end of every batch.\n"
 msgstr "Muestra un marcador al final de cada batch.\n"
 
-#: fswatch/src/fswatch.cpp:158
-msgid "Filter the event by the specified type.\n"
-msgstr "Filtra eventos del tipo especificado.\n"
-
-#: fswatch/src/fswatch.cpp:159
+#: fswatch/src/fswatch.cpp:155
 msgid "Watch file accesses.\n"
 msgstr "Observa accesos a ficheros.\n"
 
-#: fswatch/src/fswatch.cpp:160
+#: fswatch/src/fswatch.cpp:156
 msgid "Watch directories only.\n"
 msgstr "Observa solo carpetas.\n"
 
-#: fswatch/src/fswatch.cpp:161
+#: fswatch/src/fswatch.cpp:157
 msgid "Exclude paths matching REGEX.\n"
 msgstr "Excluye rutas que satisfacen a REGEX.\n"
 
-#: fswatch/src/fswatch.cpp:162
+#: fswatch/src/fswatch.cpp:158
 msgid "Use extended regular expressions.\n"
 msgstr "Usa expresiones regulares extendidas.\n"
 
-#: fswatch/src/fswatch.cpp:164
+#: fswatch/src/fswatch.cpp:160
 msgid "Load filters from file."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:165
+#: fswatch/src/fswatch.cpp:161
 msgid "Use the specified record format."
 msgstr "Usa el monitor especificado."
 
-#: fswatch/src/fswatch.cpp:166
+#: fswatch/src/fswatch.cpp:162
 msgid "Print the event time using the specified format.\n"
 msgstr ""
 "Muestra el marcador de tiempo del evento usando el formato especificado.\n"
 
-#: fswatch/src/fswatch.cpp:167
+#: fswatch/src/fswatch.cpp:163
 msgid "Fire idle events.\n"
 msgstr "Disparando evento de inactividad.\n"
 
-#: fswatch/src/fswatch.cpp:168
+#: fswatch/src/fswatch.cpp:164
 msgid "Show this message.\n"
 msgstr "Enseña este mensaje.\n"
 
-#: fswatch/src/fswatch.cpp:169
+#: fswatch/src/fswatch.cpp:165
 msgid "Include paths matching REGEX.\n"
 msgstr "Incluye rutas que satisfacen a REGEX.\n"
 
-#: fswatch/src/fswatch.cpp:170
+#: fswatch/src/fswatch.cpp:166
 msgid "Use case insensitive regular expressions.\n"
 msgstr "Usa expresiones regulares no sensibles a mayúsculas.\n"
 
-#: fswatch/src/fswatch.cpp:171
+#: fswatch/src/fswatch.cpp:167
 msgid "Set the latency.\n"
 msgstr "Establece la latencia.\n"
 
-#: fswatch/src/fswatch.cpp:172
+#: fswatch/src/fswatch.cpp:168
 msgid "Follow symbolic links.\n"
 msgstr "Sigue a los enlaces simbólicos.\n"
 
-#: fswatch/src/fswatch.cpp:173
+#: fswatch/src/fswatch.cpp:169
 msgid "List the available monitors.\n"
 msgstr "Muestra la lista de los monitors disponibles.\n"
 
-#: fswatch/src/fswatch.cpp:174
+#: fswatch/src/fswatch.cpp:170
 msgid "Use the specified monitor.\n"
 msgstr "Usa el monitor especificado.\n"
 
-#: fswatch/src/fswatch.cpp:176
+#: fswatch/src/fswatch.cpp:172
 msgid "Define the specified property.\n"
 msgstr "Define la propiedad especificada.\n"
 
-#: fswatch/src/fswatch.cpp:177
+#: fswatch/src/fswatch.cpp:173
 msgid "Print a numeric event mask.\n"
 msgstr "Muestra una máscara de evento numérica.\n"
 
-#: fswatch/src/fswatch.cpp:178
+#: fswatch/src/fswatch.cpp:174
 msgid "Print a single message with the number of change events.\n"
 msgstr "Muestra un único mensaje con el número de eventos de cambio.\n"
 
-#: fswatch/src/fswatch.cpp:179
+#: fswatch/src/fswatch.cpp:175
 msgid "Recurse subdirectories.\n"
 msgstr "Procesa recursivamente a las carpetas.\n"
 
-#: fswatch/src/fswatch.cpp:180
+#: fswatch/src/fswatch.cpp:176
 msgid "Print the event timestamp.\n"
 msgstr "Muestra el marcador de tiempo del evento.\n"
 
-#: fswatch/src/fswatch.cpp:181
+#: fswatch/src/fswatch.cpp:177
 msgid "Print the event time as UTC time.\n"
 msgstr "Muestra el marcador de tiempo en formato UTC.\n"
+
+#: fswatch/src/fswatch.cpp:178
+msgid "Print the event flags.\n"
+msgstr "Muestra a los flags de evento.\n"
+
+#: fswatch/src/fswatch.cpp:179
+msgid "Filter the event by the specified type.\n"
+msgstr "Filtra eventos del tipo especificado.\n"
+
+#: fswatch/src/fswatch.cpp:181
+msgid "Print event flags using the specified separator."
+msgstr ""
+"Muestra el marcador de tiempo del evento usando el formato especificado."
 
 #: fswatch/src/fswatch.cpp:182
 msgid "Print verbose output.\n"
@@ -166,16 +175,7 @@ msgstr "Muestra la versión de "
 msgid " and exit.\n"
 msgstr " y sal.\n"
 
-#: fswatch/src/fswatch.cpp:184
-msgid "Print the event flags.\n"
-msgstr "Muestra a los flags de evento.\n"
-
-#: fswatch/src/fswatch.cpp:186
-msgid "Print event flags using the specified separator."
-msgstr ""
-"Muestra el marcador de tiempo del evento usando el formato especificado."
-
-#: fswatch/src/fswatch.cpp:221
+#: fswatch/src/fswatch.cpp:218
 msgid ""
 "Available monitors in this platform:\n"
 "\n"
@@ -183,7 +183,7 @@ msgstr ""
 "Monitors disponibles en esta plataforma:\n"
 "\n"
 
-#: fswatch/src/fswatch.cpp:224
+#: fswatch/src/fswatch.cpp:221
 msgid ""
 "\n"
 "See the man page for more information.\n"
@@ -193,96 +193,94 @@ msgstr ""
 "Consulta a la página man para más informaciones.\n"
 "\n"
 
-#: fswatch/src/fswatch.cpp:226
+#: fswatch/src/fswatch.cpp:223
 msgid "Report bugs to <"
 msgstr "Envía bugs a <"
 
-#: fswatch/src/fswatch.cpp:227
+#: fswatch/src/fswatch.cpp:224
 msgid " home page: <"
 msgstr " home page: <"
 
-#: fswatch/src/fswatch.cpp:238
+#: fswatch/src/fswatch.cpp:235
 msgid "Executing termination handler.\n"
 msgstr "Ejecutando el manejador de terminación.\n"
 
-#: fswatch/src/fswatch.cpp:260
+#: fswatch/src/fswatch.cpp:281
 msgid "Invalid value: "
 msgstr "Valor inválido: "
 
-#: fswatch/src/fswatch.cpp:266
+#: fswatch/src/fswatch.cpp:287
 msgid "Value out of range: "
 msgstr "Valor fuera de rango: "
 
-#: fswatch/src/fswatch.cpp:282
+#: fswatch/src/fswatch.cpp:303
 msgid "SIGTERM handler registered.\n"
 msgstr "Gestor de SIGTERM registrado.\n"
 
-#: fswatch/src/fswatch.cpp:286
+#: fswatch/src/fswatch.cpp:307
 msgid "SIGTERM handler registration failed."
 msgstr "Registración del gestor de SIGTERM fallada."
 
-#: fswatch/src/fswatch.cpp:291
+#: fswatch/src/fswatch.cpp:312
 msgid "SIGABRT handler registered.\n"
 msgstr "Gestor de SIGABRT registrado.\n"
 
-#: fswatch/src/fswatch.cpp:295
+#: fswatch/src/fswatch.cpp:316
 msgid "SIGABRT handler registration failed."
 msgstr "Registración del gestor de SIGABRT fallada."
 
-#: fswatch/src/fswatch.cpp:300
+#: fswatch/src/fswatch.cpp:321
 msgid "SIGINT handler registered.\n"
 msgstr "Gestor de SIGINT registrado.\n"
 
-#: fswatch/src/fswatch.cpp:304
+#: fswatch/src/fswatch.cpp:325
 msgid "SIGINT handler registration failed"
 msgstr "Registración del gestor de SIGINT fallada"
 
-#: fswatch/src/fswatch.cpp:325
+#: fswatch/src/fswatch.cpp:346
 msgid "<date format error>"
 msgstr "<formato de data erróneo>"
 
-#: fswatch/src/fswatch.cpp:422
+#: fswatch/src/fswatch.cpp:443
 #, c-format
 msgid "Adding path: %s\n"
 msgstr "Añadiendo ruta: %s\n"
 
-#: fswatch/src/fswatch.cpp:455
-#, fuzzy
+#: fswatch/src/fswatch.cpp:476
 msgid "Invalid filter: "
-msgstr "Valor inválido: "
+msgstr "Filtro inválido: "
 
-#: fswatch/src/fswatch.cpp:654
+#: fswatch/src/fswatch.cpp:676
 msgid "Invalid property format."
 msgstr "Formato de propiedad inválido."
 
-#: fswatch/src/fswatch.cpp:689
+#: fswatch/src/fswatch.cpp:711
 msgid ""
 "--format is incompatible with any other format option such as -t and -x."
 msgstr ""
 "--format no es compatible con otras opciones de formato tales como -t y -x."
 
-#: fswatch/src/fswatch.cpp:696
+#: fswatch/src/fswatch.cpp:719
 msgid "--format is incompatible with -o."
 msgstr "--format no es compatible con -o."
 
-#: fswatch/src/fswatch.cpp:711
+#: fswatch/src/fswatch.cpp:734
 msgid "Invalid format."
 msgstr "Nombre de monitor inválido."
 
-#: fswatch/src/fswatch.cpp:823
+#: fswatch/src/fswatch.cpp:846
 msgid "Invalid number of arguments."
 msgstr "Número de argumentos inválidos."
 
-#: fswatch/src/fswatch.cpp:829
+#: fswatch/src/fswatch.cpp:852
 msgid "Invalid monitor name."
 msgstr "Nombre de monitor inválido."
 
-#: fswatch/src/fswatch.cpp:854
+#: fswatch/src/fswatch.cpp:877
 msgid "An error occurred and the program will be terminated.\n"
 msgstr "Ha ocurrido un error y el programa terminará.\n"
 
-#: fswatch/src/fswatch.cpp:862
-#, fuzzy
+#: fswatch/src/fswatch.cpp:884
 msgid "An unknown error occurred and the program will be terminated.\n"
 msgstr "Ha ocurrido un error desconocido y el programa terminará."
 
