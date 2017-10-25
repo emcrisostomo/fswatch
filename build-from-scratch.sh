@@ -26,6 +26,8 @@ PROGNAME=${0:t}
 PROGDIR=${0:h}
 BUG_REPORT=enrico.m.crisostomo@gmail.com
 PACKAGE_VERSION=1.0.0
+typeset -r LIBFSWATCH_DOC_DIR=libfswatch/doc/doxygen
+typeset -r FSWATCH_DOC_DIR=fswatch/doc
 typeset -i ARGS_PROCESSED=0
 typeset -a help_flag
 typeset -a verbose_flag
@@ -134,13 +136,13 @@ rm -rf dist
 ./configure ${configure_opts}
 make -j distcheck
 make -C fswatch html pdf
-make -C libfswatch/doc/doxygen doxygen
+make -C ${LIBFSWATCH_DOC_DIR} doxygen
 mkdir -p dist/fswatch/pdf
 mkdir -p dist/libfswatch/pdf
-cp -r libfswatch/doc/doxygen/html dist/libfswatch
-cp libfswatch/doc/doxygen/latex/refman.pdf dist/libfswatch/pdf
-cp -r fswatch/doc/fswatch.html dist/fswatch
-cp fswatch/doc/fswatch.pdf dist/fswatch/pdf
+cp -r ${LIBFSWATCH_DOC_DIR}/html             dist/libfswatch
+cp    ${LIBFSWATCH_DOC_DIR}/latex/refman.pdf dist/libfswatch/pdf
+cp -r ${FSWATCH_DOC_DIR}/fswatch.html        dist/fswatch
+cp    ${FSWATCH_DOC_DIR}/fswatch.pdf         dist/fswatch/pdf
 make maintainer-clean
 
 # Local variables:
