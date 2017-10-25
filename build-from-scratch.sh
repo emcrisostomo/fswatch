@@ -32,7 +32,7 @@ typeset -a verbose_flag
 typeset -a version_flag
 VERBOSE=0
 typeset -a configure_opts
-REQUIRED_PROGS=( git )
+REQUIRED_PROGS=( doxygen git )
 
 for p in ${REQUIRED_PROGS}
 do
@@ -129,9 +129,18 @@ fi
 
 cd ${PROGDIR}
 make maintainer-clean || true
+rm -rf dist
 ./autogen.sh
 ./configure ${configure_opts}
-make distcheck
+make -j distcheck
+make -C fswatch html pdf
+make -C libfswatch/doc/doxygen doxygen
+mkdir -p dist/fswatch/pdf
+mkdir -p dist/libfswatch/pdf
+cp -r libfswatch/doc/doxygen/html dist/libfswatch
+cp libfswatch/doc/doxygen/latex/refman.pdf dist/libfswatch/pdf
+cp -r fswatch/doc/fswatch.html dist/fswatch
+cp fswatch/doc/fswatch.pdf dist/fswatch/pdf
 make maintainer-clean
 
 # Local variables:
