@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * Copyright (c) 2014-2017 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -131,12 +131,9 @@ static void list_monitor_types(ostream& stream)
 static void print_version(ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream <<
-  "Copyright (C) 2013-2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
-  stream <<
-  _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
-  stream <<
-  _("This is free software: you are free to change and redistribute it.\n");
+  stream << "Copyright (C) 2013-2017 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
+  stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
   stream << "\n";
   stream << _("Written by Enrico M. Crisostomo.");
@@ -155,7 +152,6 @@ static void usage(ostream& stream)
   stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
   stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
-  stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
   stream << " -a, --access          " << _("Watch file accesses.\n");
   stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
@@ -179,11 +175,12 @@ static void usage(ostream& stream)
   stream << " -r, --recursive       " << _("Recurse subdirectories.\n");
   stream << " -t, --timestamp       " << _("Print the event timestamp.\n");
   stream << " -u, --utc-time        " << _("Print the event time as UTC time.\n");
-  stream << " -v, --verbose         " << _("Print verbose output.\n");
-  stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
   stream << " -x, --event-flags     " << _("Print the event flags.\n");
+  stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
   stream << "     --event-flag-separator=STRING\n";
   stream << "                       " << _("Print event flags using the specified separator.") << "\n";
+  stream << " -v, --verbose         " << _("Print verbose output.\n");
+  stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
   stream << "\n";
 #else
   string option_string = "[01adeEfhilLMmnortuvx]";
@@ -239,8 +236,32 @@ static void close_handler(int signal)
   close_monitor();
 }
 
+static bool parse_event_bitmask(const char *optarg)
+{
+  try
+  {
+    auto bitmask = std::stoul(optarg, nullptr, 10);
+
+    for (auto& item : FSW_ALL_EVENT_FLAGS)
+    {
+      if ((bitmask & item) == item)
+      {
+        event_filters.push_back({item});
+      }
+    }
+
+    return true;
+  }
+  catch (std::invalid_argument& ex)
+  {
+    return false;
+  }
+}
+
 static bool parse_event_filter(const char *optarg)
 {
+  if (parse_event_bitmask(optarg)) return true;
+
   try
   {
     event_filters.push_back({event::get_event_flag_by_name(optarg)});
@@ -452,7 +473,8 @@ static void start_monitor(int argc, char **argv, int optind)
       monitor_filter::read_from_file(filter_file,
                                      [](string f)
                                      {
-                                       cerr << _("Invalid filter: ") << f << "\n";
+                                       cerr << _("Invalid filter: ") << f
+                                            << "\n";
                                      });
 
     std::move(filters_from_file.begin(),
@@ -686,8 +708,9 @@ static void parse_opts(int argc, char **argv)
   if (format_flag && (tflag || xflag))
   {
     cerr <<
-    _("--format is incompatible with any other format option such as -t and -x.") <<
-    endl;
+         _("--format is incompatible with any other format option such as -t and -x.")
+         <<
+         endl;
     exit(FSW_EXIT_FORMAT);
   }
 
@@ -858,8 +881,7 @@ int main(int argc, char **argv)
   }
   catch (...)
   {
-    cerr <<
-    _("An unknown error occurred and the program will be terminated.\n");
+    cerr << _("An unknown error occurred and the program will be terminated.\n");
 
     return FSW_EXIT_ERROR;
   }
