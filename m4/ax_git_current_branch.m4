@@ -45,10 +45,13 @@ AC_DEFUN_ONCE([AX_GIT_CURRENT_BRANCH],[dnl
 EMC_PATH_PROG([GIT], [git],             [], [AC_MSG_ERROR([git is required.  Install it and reconfigure the project.])], [git path])
 AC_MSG_CHECKING([for current git branch])
 AS_VAR_SET([ax_git_current_branch], [$("${GIT}" rev-parse --symbolic-full-name --abbrev-ref HEAD)])
-AS_IF([test $? -eq 0], [AC_MSG_RESULT([${ax_git_current_branch}])], [dnl
-  AC_MSG_RESULT([])
-  AC_MSG_WARN([An error occurred while invoking git])
-  AS_UNSET([ax_git_current_branch])
-])
+AS_IF(dnl
+  [test $? -eq 0],
+  [AC_MSG_RESULT([${ax_git_current_branch}])],
+  [
+    AC_MSG_RESULT([])
+    AC_MSG_WARN([An error occurred while invoking git])
+    AS_UNSET([ax_git_current_branch])
+  ])
 AC_SUBST([ax_git_current_branch])
 ])dnl AX_GIT_CURRENT_BRANCH
