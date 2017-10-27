@@ -69,8 +69,7 @@ AM_CONDITIONAL([OS_CYGWIN], [test "x${target_os}" = "xcygwin"])
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
 
 # Checks for programs.
-AC_CHECK_PROGS([DOXYGEN], [doxygen])
-test -z "${DOXYGEN}" && AC_MSG_WARN([Doxygen support disabled])
+EMC_PATH_PROG([DOXYGEN], [doxygen], [], [AC_MSG_WARN([Doxygen support disabled])], [doxygen path])
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "${DOXYGEN}"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([libfswatch/doc/doxygen/Doxyfile])])
