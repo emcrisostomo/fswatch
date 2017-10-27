@@ -14,7 +14,7 @@
 #
 # LICENSE
 #
-#   Copyright (c) 2015, Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+#   Copyright (c) 2015-2017 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -41,13 +41,15 @@
 #   Macro released by the Autoconf Archive. When you make and distribute a
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
-
-#serial 1
+#serial 2
 
 AC_DEFUN([EMC_PATH_PROG], [dnl
 AC_ARG_VAR([$1], [$5])
-AC_PATH_PROG([$1], [$2], [$2notfound], [$6])
-AS_VAR_IF([$1], [$2notfound],
-  [AS_UNSET($1)]
-  [$4], [$3])
+AC_PATH_PROG([$1], [$2], [], [$6])
+AS_VAR_SET_IF([ac_cv_path_$1],
+  [$3],
+  [
+    AS_UNSET($1)
+    $4
+  ])
 ])dnl EMC_PATH_PROG
