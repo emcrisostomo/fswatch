@@ -1,0 +1,384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for fswatch (version 1.11.1,
+26 October 2017), a cross-platform file change monitor with multiple
+backends: Apple OS X File System Events, *BSD kqueue,
+Solaris/Illumos File Events Notification, Linux inotify,
+Microsoft Windows ReadDirectoryChangesW and a
+stat()-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts. A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.5, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Tutorial Introduction to fswatch (fswatch 1.11.1)</title>
+
+<meta name="description" content="Tutorial Introduction to fswatch (fswatch 1.11.1)">
+<meta name="keywords" content="Tutorial Introduction to fswatch (fswatch 1.11.1)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="Invoking-fswatch.html#Invoking-fswatch" rel="next" title="Invoking fswatch">
+<link href="Introduction.html#Introduction" rel="prev" title="Introduction">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="Tutorial-Introduction-to-fswatch"></a>
+<div class="header">
+<p>
+Next: <a href="Invoking-fswatch.html#Invoking-fswatch" accesskey="n" rel="next">Invoking <code>fswatch</code></a>, Previous: <a href="Introduction.html#Introduction" accesskey="p" rel="prev">Introduction</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="Tutorial-Introduction-to-fswatch-1"></a>
+<h2 class="chapter">3 Tutorial Introduction to <code>fswatch</code></h2>
+<a name="index-tutorial"></a>
+<p>This chapter is a tutorial walk-through on the most common use cases
+where <code>fswatch</code> is useful:
+</p>
+<ul>
+<li> Detecting file system changes.
+</li><li> Observing file system changes.
+</li><li> Processing <code>fswatch</code> output.
+</li></ul>
+
+<a name="Detecting-File-System-Changes"></a>
+<h3 class="section">3.1 Detecting File System Changes</h3>
+<a name="index-changes_002c-detecting"></a>
+<a name="index-fswatch_002c-bulk-mode"></a>
+<p>A common use case is <em>detecting</em> file system changes in a set of
+file system objects<a name="DOCF1" href="#FOOT1"><sup>1</sup></a> where
+the <em>details</em> of a change are irrelevant.  This mode of operation
+is called <em>bulk mode</em> and <code>fswatch</code> will only dump a
+single event record per batch<a name="DOCF2" href="#FOOT2"><sup>2</sup></a>  containing the number
+of affected file system objects.  No other details are avaible in the
+event record.
+</p>
+<a name="index-rsync"></a>
+<p>The most common application of this mode of operation is performing a
+bulk action on all the observed file system objects, such as a
+synchronization with <code>rsync</code>, which will serve us as an
+example.  In this case, a change event triggers the execution of a
+synchronization script, no matter the event type kind nor the object
+the event affects.
+</p>
+<p>To run <code>fswatch</code> in batch mode, the (<samp>-o</samp>,
+<samp>--one-per-batch</samp>) must be used:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -o <var>path</var> ...
+2
+10
+</pre></div>
+
+<p>The (<samp>-l</samp>, <samp>--latency</samp>) option can be used to set the
+latency according to the requirements:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -o -l 5 <var>path</var> ...
+4
+7
+</pre></div>
+
+<p>This way, you can respond to change events in a way which is (or can
+easily be) path-independent (because you are not receiving any event
+detail) and you prefer to &lsquo;bubble&rsquo; events together to reduce the
+overhead of the command being executed.
+</p>
+<p>In bulk mode the output of <code>fswatch</code> is guaranteed to have the
+following structure:
+</p>
+<div class="example">
+<pre class="example"><var>number</var>\n
+</pre></div>
+
+<p><a name="index-read"></a>
+<a name="index-xargs-1"></a>
+where &lsquo;<samp>number</samp>&rsquo; is an integer value and &lsquo;<samp>\n</samp>&rsquo; is the new line
+character.  A line with this structure is very easy to read with
+either <code>xargs</code> or the <code>read</code> builtin:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -o <var>path</var> | while read <var>num</var> ; \
+  do \
+    ... \
+  done
+</pre></div>
+
+<p>In many scripts of this kind, the <var>num</var> variable can even be
+ignored.
+</p>
+<a name="Observing-File-System-Changes-1"></a>
+<h3 class="section">3.2 Observing File System Changes</h3>
+<a name="Observing-File-System-Changes"></a><a name="index-changes_002c-observing"></a>
+<a name="index-fswatch_002c-main-mode"></a>
+<p>Besides the batch mode, <code>fswatch</code> provides a <em>main</em> mode
+providing the full change events details and the file system objects
+they refer to.  The main mode is <code>fswatch</code>&rsquo;s <em>default</em>
+mode of operation and needs no specific flags to be activated.
+</p>
+<p>In this mode, <code>fswatch</code> outputs change events to the standard
+output.  By default, only the affected file name is printed and the
+change event record structure has the following structure:
+</p>
+<div class="example">
+<pre class="example"><var>path</var>\n
+</pre></div>
+
+<p>where <var>path</var> is the full path of the changed file system object.
+</p>
+<p><code>fswatch</code> lets users customize the format of the event record
+and the information it includes.  For example:
+</p>
+<ul>
+<li> <a name="index-timestamp_002c-add"></a>
+The event <em>timestamp</em> can be added.
+
+</li><li> <a name="index-event-mask_002c-add"></a>
+The event mask can be added in either textual or numerical form.
+
+</li><li> <a name="index-record_002c-format"></a>
+The event record can be defined using a <code>printf</code>-like format
+string.
+
+</li></ul>
+
+<a name="Event-details"></a>
+<h4 class="subsection">3.2.1 Event details</h4>
+<p>Beside the full path of the change object, details on the kind of
+change event can be obtained using the (<samp>-x</samp>,
+<samp>--event-flags</samp>) option:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -xr <var>/path/to/observe</var>
+/path/to/observe Created Renamed OwnerModified IsFile
+...
+</pre></div>
+
+<p>In this case, a space-separated list of change flags are printed after
+the path of the changed object.  The record structure is thus:
+</p>
+<div class="example">
+<pre class="example">/absolute-path flag ( flag)*
+</pre></div>
+
+<p>where &lsquo;<samp>flag</samp>&rsquo; is an event flag.  At least one event flag is always
+present, and additional ones are &lsquo;bubbled&rsquo; into the same record and
+separated by space.  For more information on event flags see <a href="Invoking-fswatch.html#Event-Flags">Event Flags</a>.
+</p>
+<a name="Parseability-Issues"></a>
+<h4 class="subsection">3.2.2 Parseability Issues</h4>
+<a name="index-parseability"></a>
+<a name="index-record_002c-parsing"></a>
+<p>The default record format is intuitive and human-readable.  However,
+since a Unix file name may contain any character but the path
+separator &lsquo;<samp>/</samp>&rsquo; and the &lsquo;<samp>NUL</samp>&rsquo;<a name="DOCF3" href="#FOOT3"><sup>3</sup></a> character, it suffers from two classes of
+parseability issues:
+</p>
+<ul>
+<li> The default choice of using &lsquo;<samp>\n</samp>&rsquo; as record separator may lead to
+unexpected results because a file name can legally contain &lsquo;<samp>\n</samp>&rsquo;.
+<a name="index-find"></a>
+<a name="index-xargs-2"></a>
+For this reason, along the line of what other tools such as
+<code>find</code> and <code>xargs</code> already do, the &lsquo;<samp>NUL</samp>&rsquo;
+character (&lsquo;<samp>\0</samp>&rsquo;) can alternatively be used:
+
+<div class="example">
+<pre class="example">/absolute-path( flag)*\0
+</pre></div>
+
+</li><li> Since a file name may contain spaces, this record structure is not
+unambigually parseable if more than one event flag is present: in this
+case, any subset <em>[0, x], x &lt; n - 1</em> of the <em>n</em> event flags
+may be part or the file name and hence any parse result would be
+indeterminate.
+
+</li></ul>
+
+<p>Both issues can be solved using a custom record format (see <a href="Invoking-fswatch.html#Custom-Record-Formats">Custom Record Formats</a>).
+</p>
+<a name="Numeric-Event-Flags-1"></a>
+<h4 class="subsection">3.2.3 Numeric Event Flags</h4>
+<a name="index-event_002c-flags"></a>
+<a name="index-event_002c-flags_002c-numeric"></a>
+<p>Instead of using user-friendly event flag <em>names</em>, as seen in the
+previous section, <em>numeric</em> event flags can be used instead.
+Currently, the real advantage this method offers, despite possibly
+cleaner flag-decoding logic, is the availability of a non-ambigous
+event record representation.
+</p>
+<p>To instruct <code>fswatch</code> to print numeric event flags, the
+(<samp>-n</samp>, <samp>--numeric</samp>) option must be used:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -xnr <var>/path/to/observe</var>
+/absolute-path 2058
+</pre></div>
+
+<p>The numeric event flag value is the bitwise OR of the individual event
+flag values, that are powers of 2.  In the previous example, the flag
+<em>2058</em> is decomposed in powers of 2 as <em>2058 = 2048 + 8 + 2
+= 2^{11} + 2^3 + 2</em>, that is, the first, the third and the eleventh
+event flags.
+</p>
+<a name="Processing-fswatch-Output"></a>
+<h3 class="section">3.3 Processing <code>fswatch</code> Output</h3>
+<a name="index-record_002c-parsing-1"></a>
+<a name="index-record_002c-piping"></a>
+<p>Very often you wish to not only receive an event, but also react to
+it.  The simplest way to do it is piping the output of
+<code>fswatch</code> to another process.  Since in Unix and Unix-like
+file system file names may potentially contain any character but
+&lsquo;<samp>NUL</samp>&rsquo; (&lsquo;<samp>\0</samp>&rsquo;) and the path separator (&lsquo;<samp>/</samp>&rsquo;),
+<code>fswatch</code> has a specific mode of operation when its output
+must be piped to another process.  When the (<samp>-0</samp>,
+<samp>--print0</samp>) option is used, <code>fswatch</code> will use the
+&lsquo;<samp>NUL</samp>&rsquo; character as record separator, thus allowing any other
+character to appear in a path.
+<a name="index-read-1"></a>
+This is important because many commands and shell builtins (such as
+<code>read</code>) split lines using the newline character (&lsquo;<samp>\n</samp>&rsquo;)
+and words using the characters in <code>$IFS</code>, which by default
+contains characters which may be present in a file name, resulting in
+a wrong event path being received and processed.
+</p>
+<a name="index-xargs-3"></a>
+<p>The simplest way to pipe <code>fswatch</code>&rsquo;s output to another program
+is using <code>xargs</code>:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -0 (<var>opts</var>)* (<var>paths</var>)+ | xargs -0 -n 1 -I {} <var>command</var>
+</pre></div>
+
+<p>The command in this example does the following:
+</p>
+<ul>
+<li> <code>fswatch -0</code> will split records using the &lsquo;<samp>NUL</samp>&rsquo;
+character.
+
+</li><li> <code>xargs -0</code> will split records using the &lsquo;<samp>NUL</samp>&rsquo; character.
+This is required to correctly match impedance with <code>fswatch</code>.
+
+</li><li> <code>xargs -n 1</code> will invoke <code><var>command</var></code> every record.  If
+you want to do it every <code><var>x</var></code> records, then use <code>xargs
+-n <var>x</var></code>.
+
+</li><li> <code>xargs -I {}</code> will substitute occurrences of <code>{}</code> in
+<code><var>command</var></code> with the parsed argument.  If the command you are
+running does not need the event path name, just delete this option.
+If you prefer using another replacement string, substitute <code>{}</code>
+with another string of your choice.
+</li></ul>
+
+<a name="Detecting-the-Boundaries-of-a-Batch-of-Changes"></a>
+<h3 class="section">3.4 Detecting the Boundaries of a Batch of Changes</h3>
+<a name="index-batch-marker"></a>
+<a name="index-batch_002dmarker_002c-detail"></a>
+<p>If a process or script is piped to <code>fswatch</code> output, sometimes
+it would be desirable to detect the &lsquo;boundaries&rsquo; of a batch of
+changes.  This way, the process receiving the stream of changes would
+rely on the timings imposed by the latency settings of
+<code>fswatch</code> to start a phase of events <em>processing</em> after a
+phase or events <em>gathering</em>.  The <samp>--batch-marker</samp> option
+can be used to accomplish this task:
+</p>
+<div class="example">
+<pre class="example">$ fswatch --batch-marker -r ~
+/home/fswatch/.zsh_history.LOCK
+NoOp
+/home/fswatch/.zsh_history.new
+/home/fswatch/.zsh_history
+/home/fswatch/.zsh_history.LOCK
+NoOp
+</pre></div>
+
+<p>In this example, the &lsquo;<samp>NoOp</samp>&rsquo; records mark the end of the 1 second
+batches of events output by <code>fswatch</code>.  The batch marker can
+be customized.  For more information <a href="Invoking-fswatch.html#Batch-Marker">Batch Marker</a>.
+</p>
+<a name="Receiving-a-Single-Event"></a>
+<h3 class="section">3.5 Receiving a Single Event</h3>
+<a name="index-single-event"></a>
+<a name="index-one_002devent_002c-detail"></a>
+<p>Another feature of <code>fswatch</code> is the possibility of receiving a
+<em>single</em> event and exit.  This is most useful when existing
+scripts processing events include the restart logic of
+<code>fswatch</code>.  This use case is implemented by the <samp>-1</samp>,
+<samp>--one-event</samp> option:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -1 /path/to/watch
+/path/to/watch/child0
+/path/to/watch/child1
+...
+$
+</pre></div>
+
+<div class="footnote">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h3><a name="FOOT1" href="#DOCF1">(1)</a></h3>
+<p>In the context of this manual (unless
+specified otherwise), <em>file system object</em> refers undistinctively
+to <em>files</em>, <em>directories</em> and <em>symbolic links</em>.</p>
+<h3><a name="FOOT2" href="#DOCF2">(2)</a></h3>
+<p>A <em>batch</em> is an iteration
+of <code>fswatch</code> scanning logic, whose frequency is <em>\nu =
+l^{-1}</em>, where <em>l</em> is the <em>latency</em>.</p>
+<h3><a name="FOOT3" href="#DOCF3">(3)</a></h3>
+<p>Depending on the file
+system being used, other restrictions may apply.  However, for file
+system portability reasons, you should consider &lsquo;<samp>NUL</samp>&rsquo; as the only
+forbidden character.</p>
+</div>
+<hr>
+<div class="header">
+<p>
+Next: <a href="Invoking-fswatch.html#Invoking-fswatch" accesskey="n" rel="next">Invoking <code>fswatch</code></a>, Previous: <a href="Introduction.html#Introduction" accesskey="p" rel="prev">Introduction</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for fswatch (version 1.11.1,
+26 October 2017), a cross-platform file change monitor with multiple
+backends: Apple OS X File System Events, *BSD kqueue,
+Solaris/Illumos File Events Notification, Linux inotify,
+Microsoft Windows ReadDirectoryChangesW and a
+stat()-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts. A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.5, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Monitors (fswatch 1.11.1)</title>
+
+<meta name="description" content="Monitors (fswatch 1.11.1)">
+<meta name="keywords" content="Monitors (fswatch 1.11.1)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License" rel="next" title="GNU Free Documentation License">
+<link href="Invoking-fswatch.html#Invoking-fswatch" rel="prev" title="Invoking fswatch">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="Monitors"></a>
+<div class="header">
+<p>
+Next: <a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License" accesskey="n" rel="next">GNU Free Documentation License</a>, Previous: <a href="Invoking-fswatch.html#Invoking-fswatch" accesskey="p" rel="prev">Invoking <code>fswatch</code></a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="Monitors-1"></a>
+<h2 class="chapter">5 Monitors</h2>
+<a name="index-monitor_002c-available"></a>
+<p><code>fswatch</code> is a file system monitoring utility that achieves
+portability across multiple platforms by decoupling the front-end (the
+<code>fswatch</code> itself) from back-end logic.  Back-end logic is
+encapsulated in multiple, system-specific <em>monitors</em>, interacting
+with different monitoring <acronym>API</acronym>s.  Since each operating system
+may ship a different set of <acronym>API</acronym>s<a name="DOCF16" href="#FOOT16"><sup>16</sup></a>, each operating system will support the
+corresponding set of monitors.
+</p>
+<p>The list of available monitors is decided at build time by the
+<code>configure</code> script.  Monitors cannot be currently plugged-in
+but recompiling the <code>libfswatch</code> library (shipped with
+<code>fswath</code>).  The list of available monitors can be obtained in
+the help message:
+</p>
+<div class="example">
+<pre class="example">$ fswatch --help
+[...]
+Available monitors in this platform:
+
+  fsevents_monitor
+  kqueue_monitor
+  poll_monitor
+[...]
+</pre></div>
+
+<a name="Available-Monitors"></a>
+<h3 class="section">5.1 Available Monitors</h3>
+<a name="index-monitors_002c-available"></a>
+<p>Currently, the available monitors are:
+</p>
+<ul>
+<li> The <em>FSEvents</em> monitor, a monitor based on the File System Events
+<acronym>API</acronym> of Apple OS X (see <a href="#The-FSEvents-Monitor">The FSEvents Monitor</a>).
+
+</li><li> The <em>kqueue</em> monitor, a monitor based on <em>kqueue</em>, an event
+notification interface introduced in FreeBSD 4.1 and supported on most
+*BSD systems (including OS X) (see <a href="#The-kqueue-Monitor">The kqueue Monitor</a>).
+
+</li><li> The <em>File Events Notification</em> monitor, a monitor based on the
+File Events Notification <acronym>API</acronym> of the Solaris/Illumos kernel
+(see <a href="#The-File-Events-Notification-Monitor">The File Events Notification Monitor</a>).
+
+</li><li> The <em>inotify</em> monitor, a Linux kernel subsystem that reports file
+system changes to applications (see <a href="#The-inotify-Monitor">The inotify Monitor</a>).
+
+</li><li> The <em>Windows</em> monitor, a monitor that uses the Microsoft Windows&rsquo;
+<code>ReadDirectoryChangesW</code> function and reads change events
+asynchronously.
+
+</li><li> The <em>poll</em> monitor, a monitor that periodically stats the file
+system, saves file modification times in memory and manually
+calculates file system changes, which can work on any operating system
+where <code>stat</code> can be used (see <a href="#The-Poll-Monitor">The Poll Monitor</a>).
+</li></ul>
+
+<p>Each monitor has its own strengths, weakness and peculiarities.
+Although <code>fswatch</code> strives to provide a uniform experience no
+matter which monitor is used, it is still important for users to know
+which monitor they are using and to be aware of existing bugs,
+limitations, corner cases or pathological behaviour.
+</p>
+<a name="The-FSEvents-Monitor-1"></a>
+<h3 class="section">5.2 The FSEvents Monitor</h3>
+<a name="The-FSEvents-Monitor"></a><a name="index-FSEvents-monitor"></a>
+<a name="index-monitor_002c-FSEvents-1"></a>
+<p>The FSEvents monitor, available only on Apple OS X, has no known
+limitations and scales very well with the number of files being
+observed.  In fact, I observed no performance degradation when testing
+<code>fswatch</code> observing changes on a filesystem of 500
+<acronym>GB</acronym> over long periods of time.  This is the default monitor
+on Apple OS X.
+</p>
+<a name="Peculiarities"></a>
+<h4 class="subsection">5.2.1 Peculiarities</h4>
+<a name="index-monitor_002c-FSEvents_002c-peculiarities"></a>
+<p>The (<samp>--recursive</samp>, <samp>-r</samp>) and (<samp>--directories</samp>,
+<samp>-d</samp>) options have no effect when used with the FSEvents
+monitor since the FSEvents <acronym>API</acronym> already monitors a
+directory&rsquo;s children by default.  There is no overhead nor
+resource-consumption issue with this behaviour, but users processing
+the output must be aware that for each directory <em>multiple</em>
+events may be generated by its children.
+</p>
+<a name="The-kqueue-Monitor-1"></a>
+<h3 class="section">5.3 The kqueue Monitor</h3>
+<a name="The-kqueue-Monitor"></a><a name="index-kqueue-monitor"></a>
+<a name="index-monitor_002c-kqueue-1"></a>
+<a name="index-kevent"></a>
+<p>The kqueue monitor, available on any *BSD system featuring the
+<code>kevent</code> function, is very similar in principle to other
+similar <acronym>API</acronym>s (such as FSEvents and inotify) but has
+important drawback and limitations.
+</p>
+<a name="Peculiarities-1"></a>
+<h4 class="subsection">5.3.1 Peculiarities</h4>
+<a name="index-monitor_002c-kqueue_002c-peculiarities"></a>
+<p>The kqueue monitor <em>requires a file descriptor to be opened for
+every file being watched</em>.  As a result, this monitor scales
+<em>badly</em> with the number of files being observed and may begin to
+misbehave as soon as the <code>fswatch</code> process runs out of file
+descriptors.  In this case, <code>fswatch</code> dumps one error on
+standard error for every file that cannot be opened so that users are
+notified and can take action, including terminating the
+<code>fswatch</code> session.  Beware that on some systems the maximum
+number of file descriptors that can be opened by a process is set to a
+<em>very low value</em> (values as low as 256 are not uncommon), even if
+the operating system may allow a much larger value.
+</p>
+<p>If you are running out of file descriptors when using this monitor and
+you cannot reduce the number of observed items, either:
+</p>
+<ul>
+<li> Consider raising the number of maximum open file descriptors (check
+your OS&rsquo; documentation).
+
+</li><li> Consider using the (<samp>--directories</samp>, <samp>-d</samp>) option.
+
+</li><li> Consider using another monitor.
+</li></ul>
+
+<a name="The-File-Events-Notification-Monitor-1"></a>
+<h3 class="section">5.4 The File Events Notification Monitor</h3>
+<a name="The-File-Events-Notification-Monitor"></a><a name="index-File-Events-Notification-monitor"></a>
+<a name="index-monitor_002c-File-Events-Notification"></a>
+<p>The <em>File Events Notification</em> monitor is backed by the File
+Events Notification <acronym>API</acronym> of the Solaris/Illumos kernel.  This
+monitor is very efficient, it suffers from no known
+resource-exhaustion problems and it scales very well with the number
+of objects being watched.  This monitor is the default monitor on
+systems running a Solaris or Illumos kernel providing this
+<acronym>API</acronym>.
+</p>
+<a name="The-inotify-Monitor-1"></a>
+<h3 class="section">5.5 The inotify Monitor</h3>
+<a name="The-inotify-Monitor"></a><a name="index-inotify-monitor"></a>
+<a name="index-monitor_002c-inotify-1"></a>
+<a name="index-inotify_005finit"></a>
+<a name="index-inotify_005frm_005fwatch"></a>
+<a name="index-inotify_005fadd_005fwatch"></a>
+<p>The <em>inotify</em> monitor is backed by the inotify <acronym>API</acronym> and
+the <code>inotify_*</code> set of functions, introduced on Linux since
+kernel 2.6.13.  Similarly to the FSEvents <acronym>API</acronym>, inotify is
+very efficient, it suffers from no known resource-exhaustion problems
+and it scales very well with the number of objects being watched.
+This monitor is the default monitor on systems running inotify-enabled
+Linux kernels.
+</p>
+<a name="Peculiarities-2"></a>
+<h4 class="subsection">5.5.1 Peculiarities</h4>
+<a name="index-monitor_002c-inotify_002c-peculiarities"></a>
+<a name="Queue-Overflow"></a>
+<h4 class="subsubsection">5.5.1.1 Queue Overflow</h4>
+<a name="index-monitor_002c-inotify_002c-queue-overflow"></a>
+<a name="index-monitor_002c-inotify_002c-overflow"></a>
+<a name="index-queue-overflow"></a>
+<p>The inotify monitor may suffer a queue overflow if events are
+generated faster than they are read from the queue.  In any case, the
+application is guaranteed to receive an overflow notification which
+can be handled to gracefully recover.
+</p>
+<p>By default, the <code>fswatch</code> process is terminated after the
+notification is sent by throwing an exception.  Using the
+<samp>--allow-overflow</samp> option makes <code>fswatch</code> emit a change
+event of type <code>Overflow</code> without exiting.
+</p>
+<a name="Duplicate-Events"></a>
+<h4 class="subsubsection">5.5.1.2 Duplicate Events</h4>
+<a name="index-monitor_002c-inotify_002c-duplicate-events"></a>
+<p>The inotify <acronym>API</acronym> sends events for the <em>direct</em> child
+elements of a watched directory and it scales pretty well with the
+number of watched items.  For this reason, depending on the number of
+files to watch, it may sometimes be preferable to non-recursively
+watch a common parent directory and filter received events rather than
+adding a huge number of file watches.  If recursive watches are used,
+then duplicate change events will be received:
+</p>
+<ul>
+<li> One generated by the parent directory of the file that has changed.
+
+</li><li> One generated by the file that has changed.
+</li></ul>
+
+<a name="The-Windows-monitor-1"></a>
+<h3 class="section">5.6 The Windows monitor</h3>
+<a name="The-Windows-monitor"></a><a name="index-Windows-monitor"></a>
+<a name="index-monitor_002c-Windows"></a>
+<p>The Windows monitor uses the Windows&rsquo; <code>ReadDirectoryChangesW</code>
+function for each watched path and asynchronously waits for change
+events using overlapped I/O.  The Windows monitor is the default
+choice on Windows because it is the best performing monitor on that
+platform and it is affected by virtually no limitations.
+</p>
+<a name="Peculiarities-3"></a>
+<h4 class="subsection">5.6.1 Peculiarities</h4>
+<a name="index-monitor_002c-Windows_002c-peculiarities"></a>
+<a name="Buffer-Overflow"></a>
+<h4 class="subsubsection">5.6.1.1 Buffer Overflow</h4>
+<a name="index-monitor_002c-Windows_002c-buffer-overflow"></a>
+<a name="index-monitor_002c-Windows_002c-overflow"></a>
+<a name="index-buffer-overflow"></a>
+<p>The Windows monitor may suffer a buffer overflow if events are
+generated faster than they can be stored in the buffer allocated by
+the operating system when <code>ReadDirectoryChangesW</code> is first called
+on a watched path.  Once the buffer has been created, it is never
+resized and will live until the file handle events are listened upon
+is closed.
+</p>
+<p>Another source of overflow is the size of the buffer passed to
+<code>ReadDirectoryChangesW</code> by its caller.  Unless the one created by
+Windows, this buffer&rsquo;s size can be tuned by the user.  The custom
+<code>windows.ReadDirectoryChangesW.buffer.size</code> property can be used
+to programmatically set the size of the buffer (in bytes) when
+<code>fswatch</code> is invoked, as shown in the following example where a 4
+kilobytes buffer is used:
+</p>
+<div class="example">
+<pre class="example">$ fswatch --monitor-property \
+    windows.ReadDirectoryChangesW.buffer.size=4096 \
+    ~
+</pre></div>
+
+<p>By default, the <code>fswatch</code> process is terminated after the
+notification is sent by throwing an exception.  Using the
+<code>--allow-overflow</code> option makes <code>fswatch</code> emit a change
+event of type <code>Overflow</code> without exiting.
+</p>
+<a name="Directory-Watching"></a>
+<h4 class="subsubsection">5.6.1.2 Directory Watching</h4>
+<p>The Windows <acronym>API</acronym> lets user watch <em>directory</em>, not
+<em>files</em>.  <code>fswatch</code> currently passes path arguments to the
+underlying monitor as they are: as a consequence, if a path
+corresponds to a file, the monitor will emit an error and will not be
+able to watch it.
+</p>
+<p>For the same reasons, the (<samp>--directories</samp>/<samp>-d</samp>) has no
+effect when using this monitor.
+</p>
+<a name="Recursivity"></a>
+<h4 class="subsubsection">5.6.1.3 Recursivity</h4>
+<p>The Windows <acronym>API</acronym> will return change events related to a
+watched directory and any children of its, at any depth.  Essentially,
+the subtree rooted at a directory is <em>recursively</em> watched even
+if the <code>-r</code> option is not used explicitly.
+</p>
+<a name="The-Poll-Monitor-1"></a>
+<h3 class="section">5.7 The Poll Monitor</h3>
+<a name="The-Poll-Monitor"></a><a name="index-Poll-monitor"></a>
+<a name="index-monitor_002c-poll-1"></a>
+<p>The poll monitor was added as a fallback mechanisms in the cases where
+no other monitor could be used, including:
+</p>
+<ul>
+<li> Operating system without any sort of file events <acronym>API</acronym>.
+
+</li><li> Situations where the limitations of the available monitors cannot be
+overcome<a name="DOCF17" href="#FOOT17"><sup>17</sup></a>.
+</li></ul>
+
+<p>The poll monitor, available on any platform, only relies on available
+<acronym>CPU</acronym> and memory to perform its task.
+</p>
+<a name="Peculiarities-4"></a>
+<h4 class="subsection">5.7.1 Peculiarities</h4>
+<a name="index-monitor_002c-poll_002c-peculiarities"></a>
+
+<a name="Performance-Problems"></a>
+<h4 class="subsubsection">5.7.1.1 Performance Problems</h4>
+<a name="index-monitor_002c-poll_002c-performanc"></a>
+<p>The resource consumption of this monitor increases increases
+<em>linearly</em> with the number of files being watched (the resulting
+system performance will probably degrade <em>linearly</em> or quicker).
+</p>
+<a name="index-stat-1"></a>
+<p>The authors&rsquo; experience indicates that <code>fswatch</code> requires
+approximately 150 <acronym>MB</acronym> of <acronym>RAM</acronym> memory to observe a
+hierarchy of 500,000 files with a minimum path length of 32
+characters.  A common bottleneck of the poll monitor is disk access,
+since <code>stat()</code>-ing a great number of files may take a
+<em>huge</em> amount of time.  In this case, the latency
+(see <a href="Invoking-fswatch.html#Latency">Latency</a>) should be set to a sufficiently large value in order
+to reduce the performance degradation that may result from frequent
+disk access; this monitor, in fact, will re-scan <em>all</em> the
+monitored object hierarchy looking for differences <em>every</em> time
+its &lsquo;monitoring loop&rsquo; is repeated.
+</p>
+<blockquote>
+<p><b>Note:</b> Using a disk drive with lower latencies may certainly help, although
+the authors suspect that switching to an operating system with proper
+file monitoring <acronym>API</acronym>s is a better solution when performance
+problems with the poll monitors are experienced or when
+<code>fswatch</code> should drive mission-critical processes.
+</p></blockquote>
+
+<a name="Missing-Events-and-Missing-Event-Flags"></a>
+<h4 class="subsubsection">5.7.1.2 Missing Events and Missing Event Flags</h4>
+<a name="index-monitor_002c-poll_002c-missing-events"></a>
+<a name="index-missing-events"></a>
+<p>Since this monitor periodically checks the state of monitored objects
+looking for differences, it may miss events happened between one scan
+and another.  Let&rsquo;s suppose, for example, that a file <samp>file</samp>
+exists at time <em>t_0</em> when a scan occurs.  The poll monitors
+detects <samp>file</samp> and saves the relevant attributes in memory.
+<samp>file</samp> is then updated, moved to another place and recreated with
+the same name.  The chain of events<a name="DOCF18" href="#FOOT18"><sup>18</sup></a>
+occurred to <samp>file</samp> are:
+</p>
+<ul>
+<li> <code>Updated</code>
+
+</li><li> <code>MovedFrom</code> (or <code>Deleted</code>)
+
+</li><li> <code>Created</code>
+
+</li><li> <code>Link</code>
+</li></ul>
+
+<p>At time <em>t_1</em>, another scan runs and the poll monitor detects
+that the modification date has changed.  The poll monitor can only
+infer that a &lsquo;change&rsquo; has occurred and raises an <code>Updated</code>
+event; other events that would be noticed and raised by other
+<acronym>API</acronym>s are effectively <em>lost</em> since they go unnoticed.
+</p>
+<p>The odds of incurring such a loss is inversely proportional to the
+latency <em>l</em>: reducing the latency helps alleviating this problem,
+although on the other hands it also results in linearly increasing
+resource usage.
+</p>
+<a name="How-to-Choose-a-Monitor"></a>
+<h3 class="section">5.8 How to Choose a Monitor</h3>
+<p><code>fswatch</code> already chooses the &lsquo;best&rsquo; monitor for your platform
+if you do not specify any.  However, a specific monitor may be better
+suited to specific use cases.  Please, see <a href="#Monitors">Monitors</a> to get a
+description of all the available monitors and their limitations.
+</p>
+<p>Usage recommendations are as follows:
+</p>
+<ul>
+<li> On Apple OS X, use only the FSEvents monitor (which is the default
+behaviour).
+
+</li><li> On Solaris/Illumos-based systems, use the File Events Notification
+monitor.
+
+</li><li> On Linux, use the inotify monitor (which is the default behaviour).
+
+</li><li> If the number of files to observe is sufficiently small, use the
+kqueue monitor.  Beware that on some systems the maximum number of
+file descriptors that can be opened by a process is set to a very
+<em>low</em> value (values as low as 256 are not uncommon), even if the
+operating system may allow a much larger value.  In this case, check
+your OS documentation to raise this limit on either a per process or a
+system-wide basis.
+
+</li><li> If feasible, watch directories instead of watching files.  Properly
+crafting the receiving side of the events to deal with directories may
+sensibly reduce the monitor resource consumption.
+
+</li><li> <a name="index-stat-2"></a>
+If none of the above applies, use the poll monitor.  The authors&rsquo;
+experience indicates that fswatch requires approximately 150
+<acronym>MB</acronym> of <acronym>RAM</acronym> memory to observe a hierarchy of 500,000
+files with a minimum path length of 32 characters.  A common
+bottleneck of the poll monitor is disk access, since
+<code>stat()</code>-ing a great number of files may take a huge amount of
+time.  In this case, the latency should be set to a sufficiently large
+value in order to reduce the performance degradation that may result
+from frequent disk access.
+</li></ul>
+
+<div class="footnote">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h3><a name="FOOT16" href="#DOCF16">(16)</a></h3>
+<p>In fact, only OS X
+supports more than one such <acronym>API</acronym>: BSD&rsquo;s <em>kqueue</em> and
+<em>FSEvents</em>.</p>
+<h3><a name="FOOT17" href="#DOCF17">(17)</a></h3>
+<p>E.g.: observing a number of files greater than the
+available file descriptors on a system using the kqueue monitor.</p>
+<h3><a name="FOOT18" href="#DOCF18">(18)</a></h3>
+<p>The actual chain of
+events may in fact vary depending on the monitor being used.</p>
+</div>
+<hr>
+<div class="header">
+<p>
+Next: <a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License" accesskey="n" rel="next">GNU Free Documentation License</a>, Previous: <a href="Invoking-fswatch.html#Invoking-fswatch" accesskey="p" rel="prev">Invoking <code>fswatch</code></a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
