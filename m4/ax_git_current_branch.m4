@@ -11,7 +11,7 @@
 #
 # LICENSE
 #
-#   Copyright (c) 2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+#   Copyright (c) 2016-2017 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -39,20 +39,16 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 1
+#serial 2
 
 AC_DEFUN_ONCE([AX_GIT_CURRENT_BRANCH],[dnl
 EMC_PATH_PROG([GIT], [git],             [], [AC_MSG_ERROR([git is required.  Install it and reconfigure the project.])], [git path])
-AS_VAR_SET([ax_git_current_branch], [$("${GIT}" rev-parse --symbolic-full-name --abbrev-ref HEAD)])
 AC_MSG_CHECKING([for current git branch])
-if test $? -eq 0 ;
-then
-  AC_MSG_RESULT([${ax_git_current_branch}])
-else
+AS_VAR_SET([ax_git_current_branch], [$("${GIT}" rev-parse --symbolic-full-name --abbrev-ref HEAD)])
+AS_IF([test $? -eq 0], [AC_MSG_RESULT([${ax_git_current_branch}])], [dnl
   AC_MSG_RESULT([])
   AC_MSG_WARN([An error occurred while invoking git])
-
   AS_UNSET([ax_git_current_branch])
-fi
+])
 AC_SUBST([ax_git_current_branch])
 ])dnl AX_GIT_CURRENT_BRANCH
