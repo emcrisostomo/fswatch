@@ -32,8 +32,6 @@ AC_CONFIG_FILES([libfswatch/doc/Makefile libfswatch/doc/doxygen/Makefile])
 AC_CONFIG_FILES([libfswatch/src/Makefile libfswatch/src/libfswatch/Makefile libfswatch/po/Makefile.in])
 AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile fswatch/po/Makefile.in])
 AC_CONFIG_FILES([man/fswatch.7])
-AC_CONFIG_FILES([docker/alpine/Dockerfile])
-AC_CONFIG_FILES([docker/debian9/Dockerfile])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -57,6 +55,12 @@ AC_PROG_CXX([clang++ g++])
 LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
+
+# Configure package
+AC_ARG_ENABLE([docker],
+  [AS_HELP_STRING([--enable-docker], [enable docker (default=no)])],
+  [use_docker=${enableval}],
+  [use_docker=no])
 
 # OS-specific treatment
 AM_CONDITIONAL([OS_CYGWIN], [test "x${target_os}" = "xcygwin"])
@@ -270,8 +274,14 @@ AS_VAR_IF(
 # Check for optional library functions.
 AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])
 
-# Configure package
-AX_GIT_CURRENT_BRANCH
+# Create Dockerfile for test build containers
+AS_VAR_IF([use_docker], [yes],
+  [
+    AX_GIT_CURRENT_BRANCH
+    AC_CONFIG_FILES([docker/alpine/Dockerfile])
+    AC_CONFIG_FILES([docker/debian9/Dockerfile])
+  ],
+  [])
 
 # Variables used in man files.
 MAN_DATE=$(date +'%B %d, %Y')
