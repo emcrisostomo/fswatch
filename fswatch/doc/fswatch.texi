@@ -92,6 +92,19 @@ Free Documentation License''.
 @node Version History
 @chapter Version History
 
+@section 1.11.2
+@itemize
+@item
+Fix issue 182: Generate a single message catalog for both
+@command{fswatch} and @file{libfswatch}.
+@end itemize
+
+@section 1.11.1
+@itemize
+@item
+Fix issue 182: Remove mandatory dependency to git.
+@end itemize
+
 @section 1.11.0
 @itemize
 @item
