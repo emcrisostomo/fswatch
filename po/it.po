@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.4.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2017-10-27 19:10+0100\n"
+"POT-Creation-Date: 2017-10-29 13:59+0100\n"
 "PO-Revision-Date: 2017-10-27 20:04+0100\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -207,6 +207,7 @@ msgid "Executing termination handler.\n"
 msgstr "Eseguendo il gestore di finalizzazione.\n"
 
 #: fswatch/src/fswatch.cpp:281
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:210
 msgid "Invalid value: "
 msgstr "Valore invalido: "
 
@@ -283,12 +284,6 @@ msgstr "Errore, il programma sarà terminato.\n"
 #: fswatch/src/fswatch.cpp:884
 msgid "An unknown error occurred and the program will be terminated.\n"
 msgstr "Errore sconosciuto, il programma sarà terminato.\n"
-
-#~ msgid "Done.\n"
-#~ msgstr "Fatto.\n"
-
-#~ msgid "Latency set to: "
-#~ msgstr "Latenza impostata a: "
 
 #: libfswatch/src/libfswatch/c++/event.cpp:74
 msgid "Unknown event type: "
@@ -553,10 +548,6 @@ msgstr "GetOverlappedResult ha restituito %d bytes\n"
 msgid "ReadDirectoryChangesW: %s\n"
 msgstr "ReadDirectoryChangesW: %s\n"
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:210
-msgid "Invalid value: "
-msgstr "Valore invalido: "
-
 #: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:75
 #: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:76
 msgid "malloc failed."
@@ -595,6 +586,12 @@ msgstr "Chiudendo handle: %d.\n"
 msgid "cygwin_create_path could not allocate memory to convert the path."
 msgstr ""
 "cygwin_create_path non ha potuto allocare memoria per convertire il path."
+
+#~ msgid "Done.\n"
+#~ msgstr "Fatto.\n"
+
+#~ msgid "Latency set to: "
+#~ msgstr "Latenza impostata a: "
 
 #~ msgid "::select() on inotify descriptor encountered an error."
 #~ msgstr "::select() sul descrittore inotify è andata in errore."

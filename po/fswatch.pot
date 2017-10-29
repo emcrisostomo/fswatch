@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.11.1\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2017-10-27 19:10+0100\n"
+"POT-Creation-Date: 2017-10-29 13:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -197,6 +197,7 @@ msgid "Executing termination handler.\n"
 msgstr ""
 
 #: fswatch/src/fswatch.cpp:281
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:210
 msgid "Invalid value: "
 msgstr ""
 
@@ -535,10 +536,6 @@ msgstr ""
 #: libfswatch/src/libfswatch/c++/windows_monitor.cpp:195
 #, c-format
 msgid "ReadDirectoryChangesW: %s\n"
-msgstr ""
-
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:210
-msgid "Invalid value: "
 msgstr ""
 
 #: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:75
