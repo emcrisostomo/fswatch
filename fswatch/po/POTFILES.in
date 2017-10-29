@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2015 Enrico M. Crisostomo
+# Copyright (c) 2014-2017 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,3 +16,20 @@
 # List of source files which contain translatable strings.
 #
 fswatch/src/fswatch.cpp
+libfswatch/src/libfswatch/c/libfswatch.cpp
+libfswatch/src/libfswatch/c/libfswatch_log.cpp
+libfswatch/src/libfswatch/c++/event.cpp
+libfswatch/src/libfswatch/c++/fen_monitor.cpp
+libfswatch/src/libfswatch/c++/fsevents_monitor.cpp
+libfswatch/src/libfswatch/c++/inotify_monitor.cpp
+libfswatch/src/libfswatch/c++/kqueue_monitor.cpp
+libfswatch/src/libfswatch/c++/libfswatch_exception.cpp
+libfswatch/src/libfswatch/c++/monitor.cpp
+libfswatch/src/libfswatch/c++/path_utils.cpp
+libfswatch/src/libfswatch/c++/poll_monitor.cpp
+libfswatch/src/libfswatch/c++/windows_monitor.cpp
+libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp
+libfswatch/src/libfswatch/c++/windows/win_error_message.cpp
+libfswatch/src/libfswatch/c++/windows/win_handle.cpp
+libfswatch/src/libfswatch/c++/windows/win_paths.cpp
+libfswatch/src/libfswatch/c++/windows/win_strings.cpp
