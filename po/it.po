@@ -1,11 +1,11 @@
 # fswatch.
-# Copyright (C) 2014, Enrico M. Crisostomo
+# Copyright (C) 2017 Enrico M. Crisostomo
 # This file is distributed under the same license as the fswatch package.
-# Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>, 2014.
+# Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.4.3\n"
+"Project-Id-Version: fswatch 1.11.2\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
 "POT-Creation-Date: 2017-10-29 13:59+0100\n"
 "PO-Revision-Date: 2017-10-27 20:04+0100\n"
