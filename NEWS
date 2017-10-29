@@ -1,6 +1,15 @@
 NEWS
 ****
 
+New in 1.11.2:
+
+  * Issue 182: Generate a single message catalog for both fswatch and
+    libfswatch.
+
+New in 1.11.1:
+
+  * Issue 182: Remove mandatory dependency to git.
+
 New in 1.11.0:
 
   * Issue 174: Allow a numeric event mask to be specified.
