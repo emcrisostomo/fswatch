@@ -1,0 +1,489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for fswatch (version 1.11.2,
+29 October 2017), a cross-platform file change monitor with multiple
+backends: Apple OS X File System Events, *BSD kqueue,
+Solaris/Illumos File Events Notification, Linux inotify,
+Microsoft Windows ReadDirectoryChangesW and a
+stat()-based backend.
+
+Copyright (C) 2013-2015 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts. A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.5, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Version History (fswatch 1.11.2)</title>
+
+<meta name="description" content="Version History (fswatch 1.11.2)">
+<meta name="keywords" content="Version History (fswatch 1.11.2)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="Introduction.html#Introduction" rel="next" title="Introduction">
+<link href="index.html#Top" rel="prev" title="Top">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="Version-History"></a>
+<div class="header">
+<p>
+Next: <a href="Introduction.html#Introduction" accesskey="n" rel="next">Introduction</a>, Previous: <a href="index.html#Top" accesskey="p" rel="prev">Top</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="Version-History-1"></a>
+<h2 class="chapter">1 Version History</h2>
+
+<a name="g_t1_002e11_002e2"></a>
+<h3 class="section">1.1 1.11.2</h3>
+<ul>
+<li> Fix issue 182: Generate a single message catalog for both
+<code>fswatch</code> and <samp>libfswatch</samp>.
+</li></ul>
+
+<a name="g_t1_002e11_002e1"></a>
+<h3 class="section">1.2 1.11.1</h3>
+<ul>
+<li> Fix issue 182: Remove mandatory dependency to git.
+</li></ul>
+
+<a name="g_t1_002e11_002e0"></a>
+<h3 class="section">1.3 1.11.0</h3>
+<ul>
+<li> <a name="index-event_002c-mask"></a>
+Fix issue 174: Update the <samp>--event</samp> option to accept a numeric
+event mask.
+
+</li><li> Fix issue 181: Make gettext an optional dependency.
+
+</li></ul>
+
+<a name="g_t1_002e10_002e0"></a>
+<h3 class="section">1.4 1.10.0</h3>
+<ul>
+<li> Fix issue 60: Allow excluding file patterns by passing a file.
+
+</li><li> Fix issue 119: Merge <code>fswatch</code> and <samp>libfswatch</samp> Autotools
+projects into one.
+
+</li><li> Fix issue 141: Add Docker files for Linux distributions used for
+testing.
+
+</li><li> Add target to build <code>fswatch</code> on Alpine Linux and Debian.
+
+</li></ul>
+
+<a name="g_t1_002e9_002e3"></a>
+<h3 class="section">1.5 1.9.3</h3>
+<ul>
+<li> Fix issue 120: C binding is pulling in C++ headers and using C++
+constructs.
+
+</li><li> Fix issue 128: C binding is pulling in C++ headers.
+
+</li></ul>
+
+<a name="g_t1_002e9_002e2"></a>
+<h3 class="section">1.6 1.9.2</h3>
+<ul>
+<li> Fix issue 118: v. 1.9.0 breaks the <samp>-1</samp> option.
+
+</li><li> <samp>libfswatch</samp> <acronym>API</acronym> version set to 8:0:2.
+</li></ul>
+
+<a name="g_t1_002e9_002e1"></a>
+<h3 class="section">1.7 1.9.1</h3>
+<ul>
+<li> <samp>libfswatch</samp> <acronym>API</acronym> version set to 7:0:1.
+</li></ul>
+
+<a name="g_t1_002e9_002e0"></a>
+<h3 class="section">1.8 1.9.0</h3>
+<ul>
+<li> Fix issue 114: <code>fswatch</code> does not track newly created
+directories recursively when using the <em>inotify</em> monitor.
+
+</li><li> Add the possibility of scheduling a periodic event.
+</li></ul>
+
+<a name="g_t1_002e8_002e0"></a>
+<h3 class="section">1.9 1.8.0</h3>
+<ul>
+<li> Add preemptive monitor stop support.
+</li></ul>
+
+<a name="g_t1_002e7_002e0"></a>
+<h3 class="section">1.10 1.7.0</h3>
+<ul>
+<li> Fix issue 35: Support Solaris/Illumos File Events Notification
+<acronym>API</acronym>.
+
+</li><li> <a name="index-directories_002c-inception"></a>
+Fix issue 98: Add (<samp>-d</samp>, <samp>--directories</samp>) option to
+request the monitor to watch directories only during a recursive scan.
+
+</li><li> Fix issue 99: A monitor using the File Events Notification
+<acronym>API</acronym> of the Solaris/Illumos kernel has been added.
+
+</li><li> Fix issue 101: Add flag to watch file accesses.
+</li></ul>
+
+<a name="g_t1_002e6_002e0"></a>
+<h3 class="section">1.11 1.6.0</h3>
+<ul>
+<li> <code>fswatch</code> can be built on Microsoft Windows using Cygwin.
+
+</li><li> A monitor for Microsoft Windows has been added.
+
+</li><li> <a name="index-fsw_005fevent_005fflag_003a_003aOverflow"></a>
+<a name="index-allow_002doverflow_002c-inception"></a>
+<code>fswatch</code> can survive monitor overflows and notify them as a
+specially crafted change event (of type <code>Overflow</code>) if invoked
+with the <samp>--allow-overflow</samp> option.
+</li></ul>
+
+<a name="g_t1_002e5_002e1"></a>
+<h3 class="section">1.12 1.5.1</h3>
+
+<ul>
+<li> <a name="index-fswatch_002drun"></a>
+<code>fswatch-run</code> scripts have been removed.
+
+</li><li> <a name="index-Bash"></a>
+<a name="index-Zsh"></a>
+As a consequence of the <code>fswatch-run</code> removal, dependency on at
+least one supported shell (Zsh and Bash) has been removed.
+</li></ul>
+
+<a name="g_t1_002e5_002e0"></a>
+<h3 class="section">1.13 1.5.0</h3>
+
+<ul>
+<li> <a name="index-event_002c-inception"></a>
+Added the <samp>--event</samp> option to allow filtering by event type.
+</li></ul>
+
+<a name="g_t1_002e4_002e7"></a>
+<h3 class="section">1.14 1.4.7</h3>
+
+<ul>
+<li> Fix bug in exclusion filter ordering (PR 75).
+
+</li><li> <a name="index-README_002emd"></a>
+<samp>README.md</samp> improvements.
+
+</li><li> Documentation improvements.
+</li></ul>
+
+<a name="g_t1_002e4_002e6"></a>
+<h3 class="section">1.15 1.4.6</h3>
+
+<ul>
+<li> <a name="index-fsw_005fdestroy_005fsession"></a>
+Fix issue 74: Assertion failed on <code>fsw_destroy_session</code>.
+</li></ul>
+
+<a name="g_t1_002e4_002e5_002e3"></a>
+<h3 class="section">1.16 1.4.5.3</h3>
+
+<ul>
+<li> Fix issue 67: 100% <acronym>CPU</acronym> usage while using <samp>libfswatch</samp>.
+This issue only affects the <em>inotify</em> monitor.
+</li></ul>
+
+<a name="g_t1_002e4_002e5_002e2"></a>
+<h3 class="section">1.17 1.4.5.2</h3>
+
+<ul>
+<li> Fix issue 66: Exclude items with <code>poll_monitor</code> not
+considered.
+</li></ul>
+
+<a name="g_t1_002e4_002e5_002e1"></a>
+<h3 class="section">1.18 1.4.5.1</h3>
+
+<ul>
+<li> <a name="index-FreeBSD"></a>
+Do not distribute wrapper scripts for shells which are not installed
+(the FreeBSD port system checks shebangs and complains).
+</li></ul>
+
+<a name="g_t1_002e4_002e5"></a>
+<h3 class="section">1.19 1.4.5</h3>
+
+<ul>
+<li> Add custom record formats.
+</li></ul>
+
+<a name="g_t1_002e4_002e4"></a>
+<h3 class="section">1.20 1.4.4</h3>
+
+<ul>
+<li> <a name="index-GNU-gettext"></a>
+<a name="index-gettext"></a>
+<a name="index-gettext-1"></a>
+Localize <code>fswatch</code> and <samp>libfswatch</samp> using <acronym>GNU</acronym>
+<code>gettext</code>.
+
+</li><li> Add Spanish (<code>es</code>) localization.
+
+</li><li> Add Italian (<code>it</code>) localization.
+</li></ul>
+
+<a name="g_t1_002e4_002e3_002e2"></a>
+<h3 class="section">1.21 1.4.3.2</h3>
+
+<ul>
+<li> <a name="index-Makefile_002eam"></a>
+Fix <samp>Makefile.am</samp> because of broken link when <var>DESTDIR</var>
+installs are performed.
+</li></ul>
+
+<a name="g_t1_002e4_002e3_002e1"></a>
+<h3 class="section">1.22 1.4.3.1</h3>
+
+<ul>
+<li> <a name="index-fswatch_002drun-1"></a>
+<a name="index-xargs"></a>
+<a name="index-Zsh-1"></a>
+Fix bug in <code>fswatch-run</code> wrapper script for Zsh which caused last
+argument not to be split when passed to <samp>xargs</samp>.
+</li></ul>
+
+<a name="g_t1_002e4_002e3"></a>
+<h3 class="section">1.23 1.4.3</h3>
+
+<ul>
+<li> <a name="index-batch-marker_002c-inception"></a>
+Add batch marker feature to delimit the boundaries of a batch of
+events.
+
+</li><li> Add Texinfo documentation.
+
+</li><li> <samp>libfswatch</samp> <acronym>API</acronym> is now versioned.
+
+</li><li> <a name="index-Autoconf"></a>
+Improved Autoconf checks.
+
+</li><li> The <em>inotify</em> monitor now waits for events and honours the
+latency settings.
+
+</li><li> <a name="index-ChangeLog"></a>
+<a name="index-Git"></a>
+<a name="index-git"></a>
+Automaticaly generate the <samp>ChangeLog</samp> file using Git.
+
+</li><li> <a name="index-autogen_002esh"></a>
+Update <samp>autogen.sh</samp> to honour some commonly used environment
+variables.
+</li></ul>
+
+<a name="g_t1_002e4_002e2"></a>
+<h3 class="section">1.24 1.4.2</h3>
+
+<ul>
+<li> The <em>inotify</em> monitor now provides the same functionality
+provided by all the other monitors.  Recursive directory monitoring is
+now implemented.
+
+</li><li> <a name="index-Git-1"></a>
+<a name="index-git-1"></a>
+Version and revision is now determined dynamically using Git by
+ancillary scripts invoked by the <acronym>GNU</acronym> Build System.
+</li></ul>
+
+<a name="g_t1_002e4_002e1_002e1"></a>
+<h3 class="section">1.25 1.4.1.1</h3>
+
+<ul>
+<li> <a name="index-Apple-OS-X"></a>
+<a name="index-C_002b_002b11"></a>
+<code>fswatch</code> does not compile on OS X &lt; 10.9 because some
+required C++11 classes are not supported by its C++ runtime.
+</li></ul>
+
+<a name="g_t1_002e4_002e1"></a>
+<h3 class="section">1.26 1.4.1</h3>
+
+<ul>
+<li> <a name="index-Apple-OS-X-1"></a>
+<a name="index-C_002b_002b11-1"></a>
+<code>fswatch</code> does not compile on OS X &lt; 10.9 because some
+required C++11 classes are not supported by its C++ runtime.
+</li></ul>
+
+<a name="g_t1_002e4_002e0"></a>
+<h3 class="section">1.27 1.4.0</h3>
+
+<ul>
+<li> <a name="index-C_002b_002b"></a>
+<a name="index-C"></a>
+The <samp>libfswatch</samp> library has been added with bindings for C and
+C++.
+
+</li><li> <code>fswatch</code> let users specify the monitor to use by name.
+</li></ul>
+
+<a name="g_t1_002e3_002e9"></a>
+<h3 class="section">1.28 1.3.9</h3>
+
+<ul>
+<li> <a name="index-include_002c-inception"></a>
+Fix Issue 23: Add <samp>--include</samp> option.
+
+</li><li> <a name="index-include_002c-inception-1"></a>
+Fix Issue 25: Add <samp>--include</samp> option.
+
+</li><li> <a name="index-include"></a>
+Paths can be included using <samp>-i</samp>/<samp>--include</samp> and
+providing a set of regular expressions.
+</li></ul>
+
+<a name="g_t1_002e3_002e8"></a>
+<h3 class="section">1.29 1.3.8</h3>
+
+<ul>
+<li> Fix Issue 34: Diagnostic messages were output by the <em>inotify</em>
+monitor even if <code>fswatch</code> was not run in verbose mode.
+</li></ul>
+
+<a name="g_t1_002e3_002e7"></a>
+<h3 class="section">1.30 1.3.7</h3>
+
+<ul>
+<li> Fix Issue 32: Problems building <code>fswatch</code> 1.3.6 on Mac
+v. 10.8.5.
+
+</li><li> <a name="index-C_002b_002b11-2"></a>
+<a name="index-C_002b_002b_002c-initializer-list"></a>
+Remove usages of C++11 initializer lists so that <code>fswatch</code>
+builds with older compilers.
+</li></ul>
+
+<a name="g_t1_002e3_002e6"></a>
+<h3 class="section">1.31 1.3.6</h3>
+
+<ul>
+<li> <a name="index-fswatch_002drun-2"></a>
+Fix Issue 26: <code>fswatch-run</code> cannot run a command with arguments.
+
+</li><li> <a name="index-fswatch_002drun-3"></a>
+<a name="index-Zsh-2"></a>
+<a name="index-Bash-1"></a>
+<code>fswatch-run</code> scripts are provided for Zsh and Bash.
+
+</li><li> <a name="index-Zsh-3"></a>
+<a name="index-Bash-2"></a>
+System is scanned during installation to check for Zsh and Bash
+availability.  Path of found shells is substituted in the
+corresponding scripts, otherwise the default <code>/bin/<var>shell</var></code>
+is used.
+
+</li><li> <a name="index-fswatch_002drun-4"></a>
+<a name="index-Zsh-4"></a>
+<a name="index-Bash-3"></a>
+If a supported shell is found, the <code>fswatch-run</code> symbolic link is
+created in the installation directory to the corresponding script.
+The lookup order of the shells is:
+
+<ul>
+<li> Zsh.
+
+</li><li> Bash.
+
+</li></ul>
+
+</li></ul>
+
+<a name="g_t1_002e3_002e5"></a>
+<h3 class="section">1.32 1.3.5</h3>
+
+<ul>
+<li> Fix Issue 27: Redirect usage text to standard error unless <samp>-h</samp>
+or <samp>--help</samp>.
+
+</li><li> Fix bug to write usage to standard error when invalid arguments are
+specified.
+</li></ul>
+
+<a name="g_t1_002e3_002e4"></a>
+<h3 class="section">1.33 1.3.4</h3>
+
+<ul>
+<li> <a name="index-fswatch_002drun-5"></a>
+Fix bug in <code>fswatch-run</code> script to allow arguments to be passed
+to the command to run.
+</li></ul>
+
+<a name="g_t1_002e3_002e3"></a>
+<h3 class="section">1.34 1.3.3</h3>
+
+<ul>
+<li> <a name="index-one_002dper_002dbatch_002c-inception"></a>
+Add <samp>-o</samp>/<samp>--one-per-batch</samp> option to print a single
+message with the number of change events in the current batch.
+
+</li><li> <a name="index-fswatch_002drun-6"></a>
+Add <code>fswatch-run</code> shell script to mimic the behaviour of
+earlier <code>fswatch</code> versions and launch the specified command
+when change events are received.
+
+</li></ul>
+
+<a name="g_t1_002e3_002e2"></a>
+<h3 class="section">1.35 1.3.2</h3>
+
+<ul>
+<li> <a name="index-fsw-1"></a>
+<a name="index-fsw"></a>
+<code>fswatch</code> has been merged with <code>fsw</code>.
+</li></ul>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="Introduction.html#Introduction" accesskey="n" rel="next">Introduction</a>, Previous: <a href="index.html#Top" accesskey="p" rel="prev">Top</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
