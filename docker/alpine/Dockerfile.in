@@ -1,7 +1,7 @@
 FROM alpine
 MAINTAINER Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 
-RUN apk add --no-cache git autoconf automake libtool gettext gettext-dev make g++ texinfo curl
+RUN apk add --no-cache file git autoconf automake libtool gettext gettext-dev make g++ texinfo curl
 
 ENV ROOT_HOME /root
 ENV FSWATCH_BRANCH @ax_git_current_branch@
