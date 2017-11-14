@@ -758,6 +758,8 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
       }
       delete session->monitor;
     }
+
+    delete session;
   }
   catch (int error)
   {
