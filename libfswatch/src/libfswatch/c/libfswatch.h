@@ -183,6 +183,11 @@ extern "C"
   FSW_STATUS fsw_stop_monitor(const FSW_HANDLE handle);
 
   /**
+   * Checks if monitor exists and running.
+   */
+  bool fsw_is_running(const FSW_HANDLE handle);
+
+  /**
    * Destroys an existing session and invalidates its handle.
    */
   FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle);
