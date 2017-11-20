@@ -183,7 +183,7 @@ extern "C"
   FSW_STATUS fsw_stop_monitor(const FSW_HANDLE handle);
 
   /**
-   * Checks if monitor exists and running.
+   * Checks if a monitor exists and is running.
    */
   bool fsw_is_running(const FSW_HANDLE handle);
 
