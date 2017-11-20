@@ -674,7 +674,8 @@ FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
   return fsw_set_last_error(FSW_OK);
 }
 
-bool fsw_is_running(const FSW_HANDLE handle) {
+bool fsw_is_running(const FSW_HANDLE handle)
+{
   FSW_SESSION *session = get_session(handle);
 
   if (!session->monitor)
