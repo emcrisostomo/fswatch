@@ -88,17 +88,17 @@ namespace fsw
     // parsing paths
     vector<CFStringRef> dirs;
 
-    for (string path : paths)
+    for (const string& path : paths)
     {
-      dirs.push_back(CFStringCreateWithCString(NULL,
+      dirs.push_back(CFStringCreateWithCString(nullptr,
                                                path.c_str(),
                                                kCFStringEncodingUTF8));
     }
 
-    if (dirs.size() == 0) return;
+    if (dirs.empty()) return;
 
     CFArrayRef pathsToWatch =
-      CFArrayCreate(NULL,
+      CFArrayCreate(nullptr,
                     reinterpret_cast<const void **> (&dirs[0]),
                     dirs.size(),
                     &kCFTypeArrayCallBacks);
@@ -111,7 +111,7 @@ namespace fsw
     context->copyDescription = nullptr;
 
     FSW_ELOG(_("Creating FSEvent stream...\n"));
-    stream = FSEventStreamCreate(NULL,
+    stream = FSEventStreamCreate(nullptr,
                                  &fsevents_monitor::fsevents_callback,
                                  context,
                                  pathsToWatch,
@@ -209,10 +209,10 @@ namespace fsw
 
     for (size_t i = 0; i < numEvents; ++i)
     {
-      events.push_back({((char **) eventPaths)[i], curr_time, decode_flags(eventFlags[i])});
+      events.emplace_back(((char **) eventPaths)[i], curr_time, decode_flags(eventFlags[i]));
     }
 
-    if (events.size() > 0)
+    if (!events.empty())
     {
       fse_monitor->notify_events(events);
     }
