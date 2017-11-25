@@ -691,7 +691,15 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
     FSW_SESSION *session = get_session(handle);
 
     if (!session->monitor)
-      create_monitor(handle, session->type);
+    {
+      FSW_STATUS ret = create_monitor(handle, session->type);
+
+      if (ret != FSW_OK)
+        return fsw_set_last_error(ret);
+    }
+
+    if (session->monitor == nullptr) // create_monitor returned OK, but monitor were not created
+      return fsw_set_last_error(FSW_ERR_UNKNOWN_MONITOR_TYPE);
 
     if (session->monitor->is_running())
       return fsw_set_last_error(int(FSW_ERR_MONITOR_ALREADY_RUNNING));
@@ -768,6 +776,8 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
       }
       delete session->monitor;
     }
+
+    delete session;
   }
   catch (int error)
   {
