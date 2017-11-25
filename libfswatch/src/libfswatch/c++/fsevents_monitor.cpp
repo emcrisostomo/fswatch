@@ -125,9 +125,7 @@ namespace fsw
     // Fire the event loop
     run_loop = CFRunLoopGetCurrent();
 
-#ifdef HAVE_CXX_MUTEX
-    run_loop_lock.unlock();
-#endif
+    // Loop Initialization
 
     FSW_ELOG(_("Scheduling stream with run loop...\n"));
     FSEventStreamScheduleWithRunLoop(stream,
@@ -137,8 +135,27 @@ namespace fsw
     FSW_ELOG(_("Starting event stream...\n"));
     FSEventStreamStart(stream);
 
+#ifdef HAVE_CXX_MUTEX
+    run_loop_lock.unlock();
+#endif
+
+    // Loop
+
     FSW_ELOG(_("Starting run loop...\n"));
     CFRunLoopRun();
+
+    // Deinitialization part
+
+    FSW_ELOG(_("Stopping event stream...\n"));
+    FSEventStreamStop(stream);
+
+    FSW_ELOG(_("Invalidating event stream...\n"));
+    FSEventStreamInvalidate(stream);
+
+    FSW_ELOG(_("Releasing event stream...\n"));
+    FSEventStreamRelease(stream);
+
+    stream = nullptr;
   }
 
   /*
@@ -151,18 +168,7 @@ namespace fsw
     FSW_ELOG(_("Stopping run loop...\n"));
     CFRunLoopStop(run_loop);
 
-    run_loop = nullptr;
-
-    FSW_ELOG(_("Stopping event stream...\n"));
-    FSEventStreamStop(stream);
-
-    FSW_ELOG(_("Invalidating event stream...\n"));
-    FSEventStreamInvalidate(stream);
-
-    FSW_ELOG(_("Releasing event stream...\n"));
-    FSEventStreamRelease(stream);
-
-    stream = nullptr;
+    run_loop = nullptr;    
   }
 
   static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
