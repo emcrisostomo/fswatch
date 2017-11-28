@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.12.0-develop:
+
+  * Issue 192: Make the build reproducible.
+
 New in 1.11.2:
 
   * Issue 182: Generate a single message catalog for both fswatch and
