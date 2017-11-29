@@ -3,16 +3,6 @@ NEWS
 
 New in 1.12.0-develop:
 
-  * Issue 185: Fix C99 compatibility in cevent.h.
-
-  * Issue 186: Session memory is not freed.
-
-  * Issue 188: Fix segmentation fault when starting monitor.
-
-  * Issue 189: Add function to the C API to check that a monitor is running.
-
-  * Issue 190: Fix stop sequence for FSEvents monitor.
-
   * Issue 192: Make the build reproducible.
 
 New in 1.11.2:
