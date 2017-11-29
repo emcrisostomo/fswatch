@@ -285,10 +285,16 @@ AS_VAR_IF([use_docker], [yes],
   [])
 
 # Variables used in man files.
-MAN_DATE=$(date +'%B %d, %Y')
-if test -n "$SOURCE_DATE_EPOCH"; then
-  MAN_DATE=$(LC_ALL=C date --utc --date=@$SOURCE_DATE_EPOCH +'%B %d, %Y')
+AX_DATE
+
+if test -n "${SOURCE_DATE_EPOCH}"
+then
+  AS_VAR_IF([ax_cv_date_gnu], [yes], [MAN_DATE=$(LC_ALL=C        date --utc --date=@${SOURCE_DATE_EPOCH} +'%B %d, %Y')])
+  AS_VAR_IF([ax_cv_date_bsd], [yes], [MAN_DATE=$(LC_ALL=C TZ=UTC date            -r ${SOURCE_DATE_EPOCH} +'%B %d, %Y')])
+else
+  MAN_DATE=$(date +'%B %d, %Y')
 fi
+
 FSWATCH=${PACKAGE_NAME}
 MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
 
