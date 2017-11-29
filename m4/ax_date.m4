@@ -54,6 +54,16 @@ AC_DEFUN([AX_DATE], [dnl
       ax_cv_date_bsd=yes
     fi
   ])
+  AC_CACHE_CHECK([for date type], [ax_cv_date_type], [
+    ax_cv_date_type=unknown
+    if test "x${ax_cv_date_gnu}" = "xyes"
+    then
+      ax_cv_date_type=gnu
+    elif test "x${ax_cv_date_bsd}" = "xyes"
+    then
+      ax_cv_date_type=bsd
+    fi
+  ])
   AS_VAR_IF([ax_cv_date_gnu], [yes], [
     AC_CACHE_CHECK([whether GNU date supports --date], [ax_cv_date_gnu_date], [
       ax_cv_date_gnu_date=no
