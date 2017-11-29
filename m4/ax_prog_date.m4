@@ -2,11 +2,44 @@
 #
 # SYNOPSIS
 #
-#   AX_DATE()
+#   AX_PROG_DATE()
 #
 # DESCRIPTION
 #
-#   Check whether date is GNU date or BSD date.
+#   This macro tries to determine the type of the date (1) command and some of
+#   its non-standard capabilities.
+#
+#   The type is determined as follow:
+#
+#     * If the version string contains "GNU", then:
+#       - The variable ax_cv_prog_date_gnu is set to "yes".
+#       - The variable ax_cv_prog_date_type is set to "gnu".
+#
+#     * If date supports the "-v 1d" option, then:
+#       - The variable ax_cv_prog_date_bsd is set to "yes".
+#       - The variable ax_cv_prog_date_type is set to "bsd".
+#
+#     * If both previous checks fail, then:
+#       - The variable ax_cv_prog_date_type is set to "unknown".
+#
+#   The following capabilities of GNU date are checked:
+#
+#     * If date supports the --date arg option, then:
+#       - The variable ax_cv_prog_date_gnu_date is set to "yes".
+#
+#     * If date supports the --utc arg option, then:
+#       - The variable ax_cv_prog_date_gnu_utc is set to "yes".
+#
+#   The following capabilities of BSD date are checked:
+#
+#     * If date supports the -v 1d  option, then:
+#       - The variable ax_cv_prog_date_bsd_adjust is set to "yes".
+#
+#     * If date supports the -r arg option, then:
+#       - The variable ax_cv_prog_date_bsd_date is set to "yes".
+#
+#   All the aforementioned variables are set to "no" before a check is
+#   performed.
 #
 # LICENSE
 #
@@ -39,53 +72,62 @@
 #   exception to the GPL to apply to your modified version as well.
 #serial 1
 
-AC_DEFUN([AX_DATE], [dnl
-  AC_CACHE_CHECK([for GNU date], [ax_cv_date_gnu], [
-    ax_cv_date_gnu=no
+AC_DEFUN([AX_PROG_DATE], [dnl
+  AC_CACHE_CHECK([for GNU date], [ax_cv_prog_date_gnu], [
+    ax_cv_prog_date_gnu=no
     if date --version 2>/dev/null | head -1 | grep -q GNU
     then
-      ax_cv_date_gnu=yes
+      ax_cv_prog_date_gnu=yes
     fi
   ])
-  AC_CACHE_CHECK([for BSD date], [ax_cv_date_bsd], [
-    ax_cv_date_bsd=no
+  AC_CACHE_CHECK([for BSD date], [ax_cv_prog_date_bsd], [
+    ax_cv_prog_date_bsd=no
     if date -v 1d > /dev/null 2>&1
     then
-      ax_cv_date_bsd=yes
+      ax_cv_prog_date_bsd=yes
     fi
   ])
-  AC_CACHE_CHECK([for date type], [ax_cv_date_type], [
-    ax_cv_date_type=unknown
-    if test "x${ax_cv_date_gnu}" = "xyes"
+  AC_CACHE_CHECK([for date type], [ax_cv_prog_date_type], [
+    ax_cv_prog_date_type=unknown
+    if test "x${ax_cv_prog_date_gnu}" = "xyes"
     then
-      ax_cv_date_type=gnu
-    elif test "x${ax_cv_date_bsd}" = "xyes"
+      ax_cv_prog_date_type=gnu
+    elif test "x${ax_cv_prog_date_bsd}" = "xyes"
     then
-      ax_cv_date_type=bsd
+      ax_cv_prog_date_type=bsd
     fi
   ])
-  AS_VAR_IF([ax_cv_date_gnu], [yes], [
-    AC_CACHE_CHECK([whether GNU date supports --date], [ax_cv_date_gnu_date], [
-      ax_cv_date_gnu_date=no
+  AS_VAR_IF([ax_cv_prog_date_gnu], [yes], [
+    AC_CACHE_CHECK([whether GNU date supports --date], [ax_cv_prog_date_gnu_date], [
+      ax_cv_prog_date_gnu_date=no
       if date --date=@1512031231 > /dev/null 2>&1
       then
-        ax_cv_date_gnu_date=yes
+        ax_cv_prog_date_gnu_date=yes
       fi
     ])
-    AC_CACHE_CHECK([whether GNU date supports --utc], [ax_cv_date_gnu_utc], [
-      ax_cv_date_gnu_utc=no
+    AC_CACHE_CHECK([whether GNU date supports --utc], [ax_cv_prog_date_gnu_utc], [
+      ax_cv_prog_date_gnu_utc=no
       if date --utc > /dev/null 2>&1
       then
-        ax_cv_date_gnu_utc=yes
+        ax_cv_prog_date_gnu_utc=yes
       fi
     ])
   ])
-  AS_VAR_IF([ax_cv_date_bsd], [yes], [
-    AC_CACHE_CHECK([whether BSD date supports -r], [ax_cv_date_bsd_date], [
-      ax_cv_date_bsd_date=no
+  AS_VAR_IF([ax_cv_prog_date_bsd], [yes], [
+    AC_CACHE_CHECK([whether BSD date supports -r], [ax_cv_prog_date_bsd_date], [
+      ax_cv_prog_date_bsd_date=no
       if date -r 1512031231 > /dev/null 2>&1
       then
-        ax_cv_date_bsd_date=yes
+        ax_cv_prog_date_bsd_date=yes
+      fi
+    ])
+  ])
+    AS_VAR_IF([ax_cv_prog_date_bsd], [yes], [
+    AC_CACHE_CHECK([whether BSD date supports -v], [ax_cv_prog_date_bsd_adjust], [
+      ax_cv_prog_date_bsd_adjust=no
+      if date -v 1d > /dev/null 2>&1
+      then
+        ax_cv_prog_date_bsd_adjust=yes
       fi
     ])
   ])
