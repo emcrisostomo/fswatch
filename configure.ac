@@ -285,7 +285,7 @@ AS_VAR_IF([use_docker], [yes],
   [])
 
 # Variables used in man files.
-AX_DATE
+AX_PROG_DATE
 
 if test -n "${SOURCE_DATE_EPOCH}"
 then
