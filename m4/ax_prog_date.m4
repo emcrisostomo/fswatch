@@ -131,4 +131,4 @@ AC_DEFUN([AX_PROG_DATE], [dnl
       fi
     ])
   ])
-])dnl EMC_PATH_PROG
+])dnl AX_PROG_DATE
