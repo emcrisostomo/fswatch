@@ -10,6 +10,10 @@ New in 1.11.2:
   * Issue 182: Generate a single message catalog for both fswatch and
     libfswatch.
 
+  * NLS support can be disabled.
+
+  * gettext is an optional dependency.
+
 New in 1.11.1:
 
   * Issue 182: Remove mandatory dependency to git.
