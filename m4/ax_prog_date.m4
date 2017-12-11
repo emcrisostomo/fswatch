@@ -1,4 +1,6 @@
-# -*- Autoconf -*-
+# ===========================================================================
+#       https://www.gnu.org/software/autoconf-archive/ax_prog_date.html
+# ===========================================================================
 #
 # SYNOPSIS
 #
@@ -6,8 +8,8 @@
 #
 # DESCRIPTION
 #
-#   This macro tries to determine the type of the date (1) command and some of
-#   its non-standard capabilities.
+#   This macro tries to determine the type of the date (1) command and some
+#   of its non-standard capabilities.
 #
 #   The type is determined as follow:
 #
@@ -70,7 +72,8 @@
 #   Macro released by the Autoconf Archive. When you make and distribute a
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
-#serial 1
+
+#serial 3
 
 AC_DEFUN([AX_PROG_DATE], [dnl
   AC_CACHE_CHECK([for GNU date], [ax_cv_prog_date_gnu], [
