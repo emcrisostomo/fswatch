@@ -127,6 +127,7 @@ libfswatch_config.h.in
 scripts/fswatch-run-bash
 scripts/fswatch-run-zsh
 docker/alpine/Dockerfile
+docker/alpine-no-gettext/Dockerfile
 docker/debian9/Dockerfile
 
 # Output files
