@@ -289,8 +289,8 @@ AX_PROG_DATE
 
 if test -n "${SOURCE_DATE_EPOCH}"
 then
-  AS_VAR_IF([ax_cv_date_gnu], [yes], [MAN_DATE=$(LC_ALL=C        date --utc --date=@${SOURCE_DATE_EPOCH} +'%B %d, %Y')])
-  AS_VAR_IF([ax_cv_date_bsd], [yes], [MAN_DATE=$(LC_ALL=C TZ=UTC date            -r ${SOURCE_DATE_EPOCH} +'%B %d, %Y')])
+  AS_VAR_IF([ax_cv_prog_date_gnu], [yes], [MAN_DATE=$(LC_ALL=C        date --utc --date=@${SOURCE_DATE_EPOCH} +'%B %d, %Y')])
+  AS_VAR_IF([ax_cv_prog_date_bsd], [yes], [MAN_DATE=$(LC_ALL=C TZ=UTC date            -r ${SOURCE_DATE_EPOCH} +'%B %d, %Y')])
 else
   MAN_DATE=$(date +'%B %d, %Y')
 fi
