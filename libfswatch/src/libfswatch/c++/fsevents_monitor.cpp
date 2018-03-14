@@ -117,7 +117,7 @@ namespace fsw
                                  pathsToWatch,
                                  kFSEventStreamEventIdSinceNow,
                                  latency,
-                                 kFSEventStreamCreateFlagFileEvents);
+                                 (kFSEventStreamCreateFlagFileEvents | kFSEventStreamCreateFlagNoDefer));
 
     if (!stream)
       throw libfsw_exception(_("Event stream could not be created."));
