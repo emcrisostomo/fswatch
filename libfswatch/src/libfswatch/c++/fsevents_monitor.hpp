@@ -47,10 +47,8 @@ namespace fsw
     fsevents_monitor(std::vector<std::string> paths,
                      FSW_EVENT_CALLBACK *callback,
                      void *context = nullptr);
-    /**
-     * @brief Destroys an instance of this class.
-     */
-    virtual ~fsevents_monitor();
+    fsevents_monitor(const fsevents_monitor& orig) = delete;
+    fsevents_monitor& operator=(const fsevents_monitor& that) = delete;
 
   protected:
     /**

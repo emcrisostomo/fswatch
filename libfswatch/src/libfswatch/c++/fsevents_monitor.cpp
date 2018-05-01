@@ -73,9 +73,6 @@ namespace fsw
   {
   }
 
-  fsevents_monitor::~fsevents_monitor()
-  {
-  }
 
   void fsevents_monitor::run()
   {
@@ -168,7 +165,7 @@ namespace fsw
     FSW_ELOG(_("Stopping run loop...\n"));
     CFRunLoopStop(run_loop);
 
-    run_loop = nullptr;    
+    run_loop = nullptr;
   }
 
   static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
