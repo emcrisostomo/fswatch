@@ -670,7 +670,7 @@ static void parse_opts(int argc, char **argv)
     case OPT_MONITOR_PROPERTY:
     {
       string param(optarg);
-      size_t eq_pos = param.find_first_of("=");
+      size_t eq_pos = param.find_first_of('=');
       if (eq_pos == string::npos)
       {
         cerr << _("Invalid property format.") << endl;
