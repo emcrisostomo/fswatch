@@ -686,7 +686,7 @@ static void parse_opts(int argc, char **argv)
       break;
 
     case OPT_FILTER_FROM:
-      filter_files.push_back(optarg);
+      filter_files.emplace_back(optarg);
       break;
 
     case '?':
