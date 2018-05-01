@@ -68,9 +68,6 @@ namespace fsw
     void on_stop() override;
 
   private:
-    fsevents_monitor(const fsevents_monitor& orig) = delete;
-    fsevents_monitor& operator=(const fsevents_monitor& that) = delete;
-
     static void fsevents_callback(ConstFSEventStreamRef streamRef,
                                   void *clientCallBackInfo,
                                   size_t numEvents,
