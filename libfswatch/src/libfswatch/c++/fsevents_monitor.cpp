@@ -107,6 +107,9 @@ namespace fsw
     context->release = nullptr;
     context->copyDescription = nullptr;
 
+    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
+    if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
+
     FSW_ELOG(_("Creating FSEvent stream...\n"));
     stream = FSEventStreamCreate(nullptr,
                                  &fsevents_monitor::fsevents_callback,
@@ -114,7 +117,7 @@ namespace fsw
                                  pathsToWatch,
                                  kFSEventStreamEventIdSinceNow,
                                  latency,
-                                 kFSEventStreamCreateFlagFileEvents);
+                                 streamFlags);
 
     if (!stream)
       throw libfsw_exception(_("Event stream could not be created."));
@@ -213,5 +216,12 @@ namespace fsw
     {
       fse_monitor->notify_events(events);
     }
+  }
+
+  bool fsevents_monitor::no_defer()
+  {
+    std::string no_defer = get_property(DARWIN_EVENTSTREAM_NO_DEFER);
+
+    return (no_defer == "true");
   }
 }
