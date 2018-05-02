@@ -26,6 +26,7 @@
 #include <thread>
 #include <regex.h>
 #include <sstream>
+#include <utility>
 #include <time.h>
 
 using namespace std;
@@ -145,7 +146,7 @@ namespace fsw
 
   void monitor::set_properties(const map<string, string> options)
   {
-    properties = std::move(options);
+    properties = options;
   }
 
   string monitor::get_property(string name)
@@ -174,7 +175,7 @@ namespace fsw
   bool monitor::accept_event_type(fsw_event_flag event_type) const
   {
     // If no filters are set, then accept the event.
-    if (event_type_filters.size() == 0) return true;
+    if (event_type_filters.empty()) return true;
 
     // If filters are set, accept the event only if present amongst the filters.
     for (const auto& filter : event_type_filters)
@@ -248,7 +249,10 @@ namespace fsw
     type = fsw_monitor_type::poll_monitor_type;
 #endif
 
-    return monitor_factory::create_monitor(type, paths, callback, context);
+    return monitor_factory::create_monitor(type,
+                                           std::move(paths),
+                                           callback,
+                                           context);
   }
 
   monitor *monitor_factory::create_monitor(fsw_monitor_type type,
@@ -362,7 +366,7 @@ namespace fsw
   vector<fsw_event_flag> monitor::filter_flags(const event& evt) const
   {
     // If there is nothing to filter, just return the original vector.
-    if (event_type_filters.size() == 0) return evt.get_flags();
+    if (event_type_filters.empty()) return evt.get_flags();
 
     vector<fsw_event_flag> filtered_flags;
 
@@ -400,15 +404,14 @@ namespace fsw
     {
       // Filter flags
       vector<fsw_event_flag> filtered_flags = filter_flags(event);
-      if (filtered_flags.size() == 0) continue;
 
+      if (filtered_flags.empty()) continue;
       if (!accept_path(event.get_path())) continue;
 
-      filtered_events.push_back(
-        {event.get_path(), event.get_time(), filtered_flags});
+      filtered_events.emplace_back(event.get_path(), event.get_time(), filtered_flags);
     }
 
-    if (filtered_events.size() > 0)
+    if (!filtered_events.empty())
     {
       FSW_ELOG(string_utils::string_from_format(_("Notifying events #: %d.\n"),
                                                 filtered_events.size()).c_str());
@@ -441,7 +444,7 @@ namespace fsw
     if (i == creators_by_string().end())
       return nullptr;
 
-    return i->second(paths, callback, context);
+    return i->second(std::move(paths), callback, context);
   }
 
   bool monitor_factory::exists_type(const string& name)
