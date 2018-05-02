@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.11.2\n"
+"Project-Id-Version: fswatch 1.11.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2017-10-29 15:54+0100\n"
-"PO-Revision-Date: 2017-10-27 20:04+0100\n"
+"POT-Creation-Date: 2018-05-02 17:21+0200\n"
+"PO-Revision-Date: 2018-05-02 17:29+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -86,7 +86,7 @@ msgstr "Usa espressioni regolari estese.\n"
 
 #: fswatch/src/fswatch.cpp:160
 msgid "Load filters from file."
-msgstr ""
+msgstr "Carica filtri da file."
 
 #: fswatch/src/fswatch.cpp:161
 msgid "Use the specified record format."
@@ -343,7 +343,7 @@ msgstr "Evento da sorgente inattesa"
 msgid "Creating FSEvent stream...\n"
 msgstr "Creando il flusso FSEvent...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:123
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:125
 msgid "Event stream could not be created."
 msgstr "Il flusso di eventi non può essere creato."
 
@@ -355,31 +355,31 @@ msgstr "Pianificando il flusso con il ciclo di esecuzione...\n"
 msgid "Starting event stream...\n"
 msgstr "Facendo partire il flusso di eventi...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:140
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:146
 msgid "Starting run loop...\n"
 msgstr "Facendo partire il ciclo di esecuzione...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:149
-msgid "run loop is null"
-msgstr "ciclo di esecuzione nullo"
-
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:151
-msgid "Stopping run loop...\n"
-msgstr "Fermando il ciclo di esecuzione...\n"
-
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:156
 msgid "Stopping event stream...\n"
 msgstr "Fermando il flusso di eventi...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:159
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:154
 msgid "Invalidating event stream...\n"
 msgstr "Invalidando il flusso di eventi...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:162
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:157
 msgid "Releasing event stream...\n"
 msgstr "Liberando il flusso di eventi...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:195
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:168
+msgid "run loop is null"
+msgstr "ciclo di esecuzione nullo"
+
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:170
+msgid "Stopping run loop...\n"
+msgstr "Fermando il ciclo di esecuzione...\n"
+
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:203
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "Il contesto del callback non può essere convertita a fsevents_monitor."
 
