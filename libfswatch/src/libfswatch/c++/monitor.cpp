@@ -27,7 +27,7 @@
 #include <regex.h>
 #include <sstream>
 #include <utility>
-#include <time.h>
+#include <ctime>
 
 using namespace std;
 using namespace std::chrono;
