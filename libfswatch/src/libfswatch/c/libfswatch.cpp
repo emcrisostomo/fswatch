@@ -275,6 +275,16 @@
 /**
  * @page history History
  *
+ * @section v1001 10:0:1
+ *
+ *   - Fix C99 compatibility in cevent.h by not implying enum.
+ *   - Free session memory.
+ *   - Fix segmentation fault when starting monitor.
+ *   - Add fsw_is_running() function to the C API to check that a monitor is
+ *     running.
+ *   - Fix stop sequence in fsw::fsevents_monitor::run() and in
+ *     fsw::fsevents_monitor::on_stop().
+ *
  * @section v900 9:0:0
  *
  *   - Add fsw::monitor_filter::read_from_file() to load filters from a file.

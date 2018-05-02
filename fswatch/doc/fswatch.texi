@@ -92,6 +92,12 @@ Free Documentation License''.
 @node Version History
 @chapter Version History
 
+@section 1.11.3
+@itemize
+@item
+Fix issue 192: Make the build reproducible.
+@end itemize
+
 @section 1.11.2
 @itemize
 @item
