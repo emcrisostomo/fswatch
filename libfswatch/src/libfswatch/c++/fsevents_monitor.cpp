@@ -119,6 +119,8 @@ namespace fsw
                                  latency,
                                  streamFlags);
 
+    delete context;
+
     if (!stream)
       throw libfsw_exception(_("Event stream could not be created."));
 
