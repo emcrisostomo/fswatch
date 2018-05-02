@@ -13,6 +13,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-m4_define([LIBFSWATCH_VERSION], [1.11.3])
+m4_define([LIBFSWATCH_VERSION], [1.12.0-develop])
 m4_define([LIBFSWATCH_API_VERSION], [10:0:1])
 m4_define([LIBFSWATCH_REVISION], [1])
