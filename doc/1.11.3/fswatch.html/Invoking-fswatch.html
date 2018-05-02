@@ -1,0 +1,1244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for fswatch (version 1.11.3,
+1 May 2018), a cross-platform file change monitor with multiple
+backends: Apple OS X File System Events, *BSD kqueue,
+Solaris/Illumos File Events Notification, Linux inotify,
+Microsoft Windows ReadDirectoryChangesW and a
+stat()-based backend.
+
+Copyright (C) 2013-2018 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts. A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.5, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Invoking fswatch (fswatch 1.11.3)</title>
+
+<meta name="description" content="Invoking fswatch (fswatch 1.11.3)">
+<meta name="keywords" content="Invoking fswatch (fswatch 1.11.3)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html#Index-of-Functions" rel="index" title="Index of Functions">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#Top" rel="up" title="Top">
+<link href="Monitors.html#Monitors" rel="next" title="Monitors">
+<link href="Tutorial-Introduction-to-fswatch.html#Tutorial-Introduction-to-fswatch" rel="prev" title="Tutorial Introduction to fswatch">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a name="Invoking-fswatch"></a>
+<div class="header">
+<p>
+Next: <a href="Monitors.html#Monitors" accesskey="n" rel="next">Monitors</a>, Previous: <a href="Tutorial-Introduction-to-fswatch.html#Tutorial-Introduction-to-fswatch" accesskey="p" rel="prev">Tutorial Introduction to <code>fswatch</code></a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<a name="Invoking-fswatch-1"></a>
+<h2 class="chapter">4 Invoking <code>fswatch</code></h2>
+<a name="index-syntax"></a>
+<p>This chapter is about how <code>fswatch</code> is invoked.  There are
+many options and two styles for writing them.
+</p>
+<a name="Synopsis-of-fswatch"></a>
+<h3 class="section">4.1 Synopsis of <code>fswatch</code></h3>
+<p><code>fswatch</code> is invoked using the following syntax:
+</p>
+<div class="example">
+<pre class="example">fswatch (options)* (paths)+
+</pre></div>
+
+<p><a name="index-realpath"></a>
+<code>fswatch</code> interprets file names as being relative to the
+working directory and canonicalizes them using <code>realpath</code>.
+</p>
+<p>If a directory is used as an argument, the directory object is watched
+and, optionally and depending on the monitor being used, the directory
+is scanned recursively and all its children are watched as well.
+</p>
+<p>Depending on the monitor being used, recursively scanning huge
+directory hierarchies or big set of files may be resource consuming,
+<acronym>CPU</acronym> intensive or even impossible.  The characteristics of
+the available monitors in a system should be assessed in order to
+choose the best monitor according to the specific needs.
+</p>
+<p>Besides successful exits<a name="DOCF4" href="#FOOT4"><sup>4</sup></a>, indicated with the exit
+code 0, <code>fswatch</code> may exit with an error.  <code>fswatch</code>
+will try to print a diagnostic description on <code>stderr</code> when an
+unexpected error occurs.
+</p>
+<a name="index-exit-codes"></a>
+<a name="index-error-codes"></a>
+<p>The documented<a name="DOCF5" href="#FOOT5"><sup>5</sup></a> exit codes of <code>fswatch</code> are the
+following:
+</p>
+<dl compact="compact">
+<dt>0</dt>
+<dd><p><code>FSW_EXIT_OK</code>: No error occurred.
+</p>
+</dd>
+<dt>1</dt>
+<dd><p><code>FSW_EXIT_UNK_OPT</code>: An unknown option was input.
+</p>
+</dd>
+<dt>2</dt>
+<dd><p><code>FSW_EXIT_USAGE</code>: Help message was requested.
+</p>
+</dd>
+<dt>3</dt>
+<dd><p><code>FSW_EXIT_LATENCY</code>: Invalid latency.
+</p>
+</dd>
+<dt>4</dt>
+<dd><p><code>FSW_EXIT_STREAM</code>: A stream related problem occurred.
+</p>
+</dd>
+<dt>5</dt>
+<dd><p><code>FSW_EXIT_ERROR</code>: An unkown error occurred.
+</p>
+</dd>
+<dt>6</dt>
+<dd><p><code>FSW_EXIT_ENFILE</code>: A file could not be opened.
+</p>
+</dd>
+<dt>7</dt>
+<dd><p><code>FSW_EXIT_OPT</code>: Unused.
+</p>
+</dd>
+<dt>8</dt>
+<dd><p><code>FSW_EXIT_MONITOR_NAME</code>: The specified monitor does not exist.
+</p>
+</dd>
+<dt>9</dt>
+<dd><p><code>FSW_EXIT_FORMAT</code>: The specified monitor is invalid.
+</p>
+</dd>
+</dl>
+
+<a name="The-Two-Option-Styles"></a>
+<h3 class="section">4.2 The Two Option Styles</h3>
+<p><code>fswatch</code> implements two option styles which are common in
+Unix and Unix-like operating systems and GNU software: <em>short</em>
+and <em>long</em> options.  The biggest difference between short and
+long options are argument placing (for options taking one).
+</p>
+<a name="index-getopt_005flong"></a>
+<p>Whether long options are available in a system depend on the
+availability of the <code>getopt_long</code> function at build time.  For
+this reason, users should familiarise themselves with short options
+and use them when possible and do not rely on long options to be
+available on any <code>fswatch</code> installation.
+</p>
+<a name="Long-Options"></a>
+<h4 class="subsection">4.2.1 Long Options</h4>
+<a name="index-options_002c-long"></a>
+<a name="index-long-options"></a>
+<a name="index-getopt_005flong-1"></a>
+<p>In systems where the <code>getopt_long</code> function is available, each
+short option has a corresponding long option with a <em>mnemonic</em>
+name starting with two dashes (e.g.: <samp>--version</samp>).  Long
+options are meant to be easy to remember and to provide hints about
+what a command is going to perform.  The following command:
+</p>
+<div class="example">
+<pre class="example">$ fswatch --event-flags --numeric --recursive ~
+</pre></div>
+
+<p>is clearer than:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -xnr ~
+</pre></div>
+
+<p>If a long option takes an argument, it can be specified in two ways,
+depending on whether the argument is optional or mandatory:
+</p>
+<ul>
+<li> Separating the argument from the option name with an equal sign, if
+the argument is of either kind.
+
+<div class="example">
+<pre class="example">$ fswatch --latency=5 ~
+</pre></div>
+
+</li><li> Separating the argument from the option name with any amount of white
+space, if the argument is mandatory.
+
+<div class="example">
+<pre class="example">$ fswatch --latency 5 ~
+</pre></div>
+
+</li></ul>
+
+<a name="Short-Options"></a>
+<h4 class="subsection">4.2.2 Short Options</h4>
+<a name="index-options_002c-short"></a>
+<a name="index-short-options"></a>
+<p>Most options have a <em>short</em> form consisting of a dash followed by
+a single character, such as <samp>-l</samp> (which is equivalent to
+<samp>--latency</samp>).  When available, a short form is interchangeable
+with the long one.
+</p>
+<p>If a short option takes an argument, it can be specified in two ways:
+</p>
+<ul>
+<li> Separating the argument from the option name with any amount of white
+space:
+
+<div class="example">
+<pre class="example">$ fswatch -l 5 ~
+</pre></div>
+
+</li><li> Joining the argument to the option name:
+
+<div class="example">
+<pre class="example">$ fswatch -l5 ~
+</pre></div>
+</li></ul>
+
+<p>Short options can be stuck together provided all the options but the
+last one take no argument, in which case it can be specified as
+described above.  The command:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -xnrl 5 ~
+</pre></div>
+
+<p>is equivalent to:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -x -n -r -l 5 ~
+</pre></div>
+
+<p>where &lsquo;<samp>5</samp>&rsquo; is the argument of <samp>-l</samp>.
+</p>
+<a name="fswatch-Options"></a>
+<h3 class="section">4.3 <code>fswatch</code> Options</h3>
+<a name="index-options"></a>
+<a name="index-options_002c-list"></a>
+<p>In the following table you can find the list, in alphabetical order,
+of <code>fswatch</code>&rsquo;s options.
+</p>
+<dl compact="compact">
+<dd>
+<a name="g_t_002d_002daccess"></a><a name="index-access_002c-summary"></a>
+</dd>
+<dt><samp>--access</samp></dt>
+<dt><samp>-a</samp></dt>
+<dd>
+<p>Monitor file access.  This functionality is supported by selected
+monitors only.
+</p>
+<a name="g_t_002d_002dallow_002doverflow"></a><a name="index-allow_002doverflow_002c-summary"></a>
+</dd>
+<dt><samp>--allow-overflow</samp></dt>
+<dd>
+<p>Sets the allow overflow flag of the monitor.  When this flag is set,
+monitor buffer overflows are reported as change events of type
+<code>fsw_event_flag::Overflow</code>.
+</p>
+<a name="g_t_002d_002dbatch_002dmarker"></a><a name="index-batch_002dmarker_002c-summary"></a>
+</dd>
+<dt><samp>--batch-marker</samp></dt>
+<dd>
+<p>Print a marker at the end of every batch.
+</p>
+<a name="g_t_002d_002ddirectories"></a><a name="index-directories_002c-summary"></a>
+</dd>
+<dt><samp>--directories</samp></dt>
+<dt><samp>-d</samp></dt>
+<dd>
+<p>Request the monitor to watch directories only during a recursive scan.
+This feature helps reducing the number of open file descriptors if a
+generic change event for a directory is acceptable instead of events
+on directory children.
+</p>
+<a name="g_t_002d_002devent"></a><a name="index-event_002c-summary"></a>
+</dd>
+<dt><samp>--event</samp></dt>
+<dd><p>Filter events by <em>type</em> using the specified event name or numeric
+mask (see <a href="#Filtering-by-Event-Type">Filtering by Event Type</a>).  Specified event names are
+<em>included</em> in the output.  Multiple event types can be specified
+using this option multiple times.
+</p>
+<a name="g_t_002d_002devent_002dflags"></a><a name="index-event_002dflags_002c-summary"></a>
+</dd>
+<dt><samp>--event-flags</samp></dt>
+<dt><samp>-x</samp></dt>
+<dd>
+<p>Print the event flags.
+</p>
+<a name="g_t_002d_002devent_002dflag_002dseparator"></a><a name="index-event_002dflag_002dseparator_002c-summary"></a>
+</dd>
+<dt><samp>--event-flag-separator</samp></dt>
+<dd>
+<p>Use the specified string as event flag separator.
+</p>
+<a name="g_t_002d_002dexclude"></a><a name="index-exclude_002c-summary"></a>
+</dd>
+<dt><samp>--exclude</samp></dt>
+<dt><samp>-e</samp></dt>
+<dd>
+<p>Exclude paths matching <code><var>regex</var></code>.
+</p>
+<a name="g_t_002d_002dextended"></a><a name="index-extended_002c-summary"></a>
+</dd>
+<dt><samp>--extended</samp></dt>
+<dt><samp>-E</samp></dt>
+<dd>
+<p>Use extended regular expressions.
+</p>
+<a name="g_t_002d_002dfilter_002dfrom"></a><a name="index-filter_002dfrom_002c-summary"></a>
+</dd>
+<dt><samp>--filter-from</samp></dt>
+<dd>
+<p>Load filters from the specified <code><var>file</var></code>.
+</p>
+<a name="g_t_002d_002dfire_002didle_002devents"></a><a name="index-fire_002didle_002devents_002c-summary"></a>
+</dd>
+<dt><samp>--fire-idle-events</samp></dt>
+<dd>
+<p>Fire idle events.
+</p>
+<a name="g_t_002d_002dfollow_002dlinks"></a><a name="index-follow_002dlinks_002c-summary"></a>
+</dd>
+<dt><samp>--follow-links</samp></dt>
+<dt><samp>-L</samp></dt>
+<dd><p>Symbolic links are followed instead of being watched as file system
+objects.
+</p>
+<a name="g_t_002d_002dformat"></a><a name="index-format_002c-summary"></a>
+</dd>
+<dt><samp>--format</samp></dt>
+<dd>
+<p>Use the specified record format.
+</p>
+<a name="g_t_002d_002dformat_002dtime"></a><a name="index-format_002dtime_002c-summary"></a>
+</dd>
+<dt><samp>--format-time</samp></dt>
+<dt><samp>-f</samp></dt>
+<dd>
+<p>Print the event time using the specified <code><var>format</var></code>.
+</p>
+<a name="g_t_002d_002dhelp"></a><a name="index-help_002c-summary"></a>
+</dd>
+<dt><samp>--help</samp></dt>
+<dt><samp>-h</samp></dt>
+<dd>
+<p>Show the help message.
+</p>
+<a name="g_t_002d_002dinclude"></a><a name="index-include_002c-summary"></a>
+</dd>
+<dt><samp>--include</samp></dt>
+<dt><samp>-i</samp></dt>
+<dd>
+<p>Include paths matching <code><var>regex</var></code>.
+</p>
+<a name="g_t_002d_002dinsensitive"></a><a name="index-insensitive_002c-summary"></a>
+</dd>
+<dt><samp>--insensitive</samp></dt>
+<dt><samp>-I</samp></dt>
+<dd>
+<p>Use case insensitive regular expressions.
+</p>
+<a name="g_t_002d_002dlatency"></a><a name="index-latency_002c-summary"></a>
+</dd>
+<dt><samp>--latency</samp></dt>
+<dt><samp>-l</samp></dt>
+<dd>
+<p>Set the latency using the specified <code><var>value</var></code>.
+</p>
+<a name="g_t_002d_002dlist_002dmonitors"></a><a name="index-list_002dmonitors_002c-summary"></a>
+</dd>
+<dt><samp>--list-monitors</samp></dt>
+<dt><samp>-M</samp></dt>
+<dd>
+<p>List the available monitors.
+</p>
+<a name="g_t_002d_002dmonitor"></a><a name="index-monitor_002c-summary"></a>
+</dd>
+<dt><samp>--monitor</samp></dt>
+<dt><samp>-m</samp></dt>
+<dd>
+<p>Use the specified <code><var>monitor</var></code>.
+</p>
+<a name="g_t_002d_002dmonitor_002dproperty"></a><a name="index-monitor_002dproperty_002c-summary"></a>
+</dd>
+<dt><samp>--monitor-property</samp></dt>
+<dd>
+<p>Pass the specified property to the monitor (see <a href="#Monitor-Tunables">Monitor Tunables</a>).
+</p>
+<a name="g_t_002d_002dnumeric"></a><a name="index-numeric_002c-summary"></a>
+</dd>
+<dt><samp>--numeric</samp></dt>
+<dt><samp>-n</samp></dt>
+<dd>
+<p>Print a numeric event mask.
+</p>
+<a name="g_t_002d_002done_002dper_002dbatch"></a><a name="index-one_002dper_002dbatch_002c-summary"></a>
+</dd>
+<dt><samp>--one-per-batch</samp></dt>
+<dt><samp>-o</samp></dt>
+<dd>
+<p>Print a single message with the number of change events in the current
+batch.
+</p>
+<a name="g_t_002d_002done_002devent"></a><a name="index-one_002devent_002c-summary"></a>
+</dd>
+<dt><samp>--one-event</samp></dt>
+<dt><samp>-1</samp></dt>
+<dd>
+<p>Exit <code>fswatch</code> after the first set of events is received.
+</p>
+<a name="g_t_002d_002dprint0"></a><a name="index-print0_002c-summary"></a>
+</dd>
+<dt><samp>--print0</samp></dt>
+<dt><samp>-0</samp></dt>
+<dd>
+<p>Use the <acronym>ASCII</acronym> &lsquo;<samp>NUL</samp>&rsquo; (&lsquo;<samp>\0</samp>&rsquo;) as record separator.
+</p>
+<a name="g_t_002d_002drecursive"></a><a name="index-recursive_002c-summary"></a>
+</dd>
+<dt><samp>--recursive</samp></dt>
+<dt><samp>-r</samp></dt>
+<dd>
+<p>Recurse subdirectories.
+</p>
+<a name="g_t_002d_002dtimestamp"></a><a name="index-timestamp_002c-summary"></a>
+</dd>
+<dt><samp>--timestamp</samp></dt>
+<dt><samp>-t</samp></dt>
+<dd>
+<p>Print the event timestamp.
+</p>
+<a name="g_t_002d_002dutc_002dtime"></a><a name="index-utc_002dtime_002c-summary"></a>
+</dd>
+<dt><samp>--utc-time</samp></dt>
+<dt><samp>-u</samp></dt>
+<dd>
+<p>Print the event time as <acronym>UTC</acronym> time.
+</p>
+<a name="g_t_002d_002dverbose"></a><a name="index-verbose_002c-summary"></a>
+</dd>
+<dt><samp>--verbose</samp></dt>
+<dt><samp>-v</samp></dt>
+<dd>
+<p>Print verbose output.
+</p>
+<a name="g_t_002d_002dversion"></a><a name="index-version_002c-summary"></a>
+</dd>
+<dt><samp>--version</samp></dt>
+<dd>
+<p>Print the version of fswatch and exit.
+</p>
+</dd>
+</dl>
+
+<a name="Whitespace-and-Record-Format-1"></a>
+<h3 class="section">4.4 Whitespace and Record Format</h3>
+<a name="Whitespace-and-Record-Format"></a><a name="index-whitespace"></a>
+<a name="index-record_002c-format-1"></a>
+<p>As seen in <a href="Tutorial-Introduction-to-fswatch.html#Observing-File-System-Changes">Observing File System Changes</a>, file names may contain
+characters such as &lsquo;<samp>\n</samp>&rsquo; which are commonly used as line
+separators.  Many commonly used Unix commands and shell builtins use
+characters in the <code>$IFS</code> environment
+variable<a name="DOCF6" href="#FOOT6"><sup>6</sup></a>  as
+<em>separators</em> to split words.  By default, <code>$IFS</code> contains the
+characters &lsquo;<samp> </samp>&rsquo; (<kbd>SPC</kbd>), &lsquo;<samp>\t</samp>&rsquo;, &lsquo;<samp>\n</samp>&rsquo; and &lsquo;<samp>\0</samp>&rsquo;
+(&lsquo;<samp>NUL</samp>&rsquo;).
+</p>
+<p>Therefore, if a file contains such a separator character (and all but
+&lsquo;<samp>NUL</samp>&rsquo; are <em>legal</em>), then a parsing ambiguity may arise when
+using certain record formats such as:
+</p>
+<div class="example">
+<pre class="example"><var>path</var>( <var>flag</var>)+
+</pre></div>
+
+<p>In this case, for example, if <em>n &gt; 1</em> <var>flags</var> are present in
+the record, and hence more than one &lsquo;<samp> </samp>&rsquo; (<kbd>SPC</kbd>) is present,
+then it is not known whether any subset containing a number <em>x</em>
+of consecutive flags (<em>x &lt; n</em>) is part of the path or not.
+</p>
+<p>The same reasoning applies when splitting <em>lines</em> instead of
+<em>words</em>: since &lsquo;<samp>\n</samp>&rsquo; may be a legal file name character, then
+it is now known whether &lsquo;<samp>\n</samp>&rsquo; indicates a record&rsquo;s end or simply
+is part of a file name.
+</p>
+<p>For this reason, in order to avoid parsing ambiguity, this options
+instructs <code>fswatch</code> to use <acronym>ASCII</acronym> &lsquo;<samp>NUL</samp>&rsquo; as
+record separator.
+</p>
+<blockquote>
+<p><b>Warning:</b> The use of the <samp>--print0</samp> solves the <em>line</em> splitting
+ambiguity but not the <em>word</em> splitting ambiguity when using
+textual event flags.  A solution to this problem is provided by
+<em>custom record formats</em> (see <a href="#Custom-Record-Formats">Custom Record Formats</a>).
+</p>
+<p>Another way to get an unambiguous record format is using
+<em>numeric</em> event flags (see <a href="#Numeric-Event-Flags">Numeric Event Flags</a>).
+</p></blockquote>
+
+<a name="Custom-Record-Formats-1"></a>
+<h3 class="section">4.5 Custom Record Formats</h3>
+<a name="Custom-Record-Formats"></a><a name="index-record_002c-format_002c-custom"></a>
+<p>To solve the problem of line splitting ambiguities and to provide
+users the possibilities of tailoring the record format to their needs,
+<code>fswatch</code> allows users to specify the event record
+<em>format</em> using the <samp>--format</samp> option.
+</p>
+<p>This options requires a <code>printf</code>-like<a name="DOCF7" href="#FOOT7"><sup>7</sup></a>
+<em>format string</em> ordinary text containing zero or more
+<em>directives</em>.  Characters not belonging to a format directive are
+copied unchanged to the output, while directives are interpreted and
+replaced with the result of their evaluation.
+</p>
+<a name="Format-Directives"></a>
+<h4 class="subsection">4.5.1 Format Directives</h4>
+<a name="index-record_002c-format_002c-directives"></a>
+<a name="index-record_002c-format_002c-escape-character"></a>
+<p>Directives start with &lsquo;<samp>%</samp>&rsquo; which is always treated as a special
+character: either it marks the beginning of a directive or it is
+interpreted as an escape character<a name="DOCF8" href="#FOOT8"><sup>8</sup></a>.
+</p>
+<p>The available directives are:
+</p>
+<dl compact="compact">
+<dt><code>%%</code></dt>
+<dd><a name="index-_0025_0025_002c-format-directive"></a>
+<p>Inserts the &lsquo;<samp>%</samp>&rsquo; character.
+</p>
+</dd>
+<dt><code>%0</code></dt>
+<dd><a name="index-_00250_002c-format-directive"></a>
+<p>Inserts an <acronym>ASCII</acronym> &lsquo;<samp>NUL</samp>&rsquo; (&lsquo;<samp>0</samp>&rsquo;) character.
+</p>
+</dd>
+<dt><code>%n</code></dt>
+<dd><a name="index-_0025n_002c-format-directive"></a>
+<p>Inserts a <em>newline</em> character.
+</p>
+</dd>
+<dt><code>%f</code></dt>
+<dd><a name="index-_0025f_002c-format-directive"></a>
+<p>Inserts the list of event flags, separated by default by the space
+character (&lsquo;<samp> </samp>&rsquo;) or by the separator specified with the
+<samp>--event-flag-separator</samp> option (see <a href="#Event-Flag-Separator">Event Flag Separator</a>).
+</p>
+</dd>
+<dt><code>%p</code></dt>
+<dd><a name="index-_0025p_002c-format-directive"></a>
+<p>Inserts the path.
+</p>
+</dd>
+<dt><code>%t</code></dt>
+<dd><a name="index-_0025t_002c-format-directive"></a>
+<p>Inserts the timestamp, formatted with <code>strftime</code> using the
+format optionally specified with the <samp>--format-time</samp> option.
+</p></dd>
+</dl>
+
+<a name="Record-Termination"></a>
+<h4 class="subsection">4.5.2 Record Termination</h4>
+<p>Each record is terminated by either a newline character (&lsquo;<samp>\n</samp>&rsquo;) or
+an <acronym>ASCII</acronym> &lsquo;<samp>NUL</samp>&rsquo; character when <samp>-0</samp> is specified.
+The record termination character has the following characteristics:
+</p>
+<ul>
+<li> It is <em>not</em> part of the format string.
+
+</li><li> Its value can only be chosen between &lsquo;<samp>\n</samp>&rsquo; and &lsquo;<samp>NUL</samp>&rsquo; (&lsquo;<samp>\0</samp>&rsquo;).
+
+</li><li> It cannot be suppressed.
+</li></ul>
+
+<a name="Event-Flag-Separator-1"></a>
+<h4 class="subsection">4.5.3 Event Flag Separator</h4>
+<a name="Event-Flag-Separator"></a><a name="index-event-flag_002c-separator"></a>
+<a name="index-format_002c-event-flag-separator"></a>
+<p>When the list of event flags is printed, textual items are separated
+by default by spaces (&lsquo;<samp> </samp>&rsquo;).  The user can specify an alternate
+event flag separator using the <samp>--event-flag-separator</samp> and
+passing the desired separator string as argument.
+</p>
+<p>For instance, if the user wants event flags to be separated by a
+comma, the following command can be used:
+</p>
+<div class="example">
+<pre class="example">$ fswatch --event-flag-separator=, -x (options)* (paths)+
+</pre></div>
+
+<a name="Builtin-Formats"></a>
+<h4 class="subsection">4.5.4 Builtin Formats</h4>
+<a name="index-format_002c-builtin"></a>
+<p>The format used by <code>fswatch</code> when a custom format is not
+specified is determined as follows<a name="DOCF9" href="#FOOT9"><sup>9</sup></a>:
+</p>
+<ul>
+<li> &lsquo;<samp>%t </samp>&rsquo; is added at the beginning of the format string if
+<samp>-t</samp> is used.
+
+</li><li> &lsquo;<samp>%p</samp>&rsquo; is always appended to the format string.
+
+</li><li> &lsquo;<samp> %f</samp>&rsquo; is added at the end of the format string if <samp>-x</samp> is
+used.
+</li></ul>
+
+<a name="Batch-Marker-1"></a>
+<h3 class="section">4.6 Batch Marker</h3>
+<a name="Batch-Marker"></a><a name="index-batch-marker-1"></a>
+<a name="index-batch_002dmarker_002c-detail-1"></a>
+<p>Since <code>fswatch</code> typically outputs an <em>endless</em> event
+stream, processing parties parsing its output may be interested in
+&lsquo;batch event processing&rsquo;: that is, processing batches of events
+instead of endlessly processing events one by one.
+</p>
+<p>To support this use case, <code>fswatch</code> provides the
+<samp>--batch-marker</samp> option; when specified, <code>fswatch</code> will
+output a customizable &lsquo;batch marker record&rsquo; processing parties can use
+as batch <em>delimiters</em>.  Batch demarcation is made naturally using
+the monitor&rsquo;s processing loop and its latency setting: every time the
+monitor loops (typically when latency is elapsed), then a batch marker
+is printed as final record, as shown in the next example:
+</p>
+<div class="example">
+<pre class="example">$ fswatch --batch-marker -r ~
+/home/fswatch/.zsh_history.LOCK
+NoOp
+/home/fswatch/.zsh_history.new
+/home/fswatch/.zsh_history
+/home/fswatch/.zsh_history.LOCK
+NoOp
+</pre></div>
+
+<p>By default, the batch marker takes the form of a single-line record:
+</p>
+<div class="example">
+<pre class="example">NoOp(\n | \0)
+</pre></div>
+
+<p>terminated with either &lsquo;<samp>\n</samp>&rsquo; or &lsquo;<samp>NUL</samp>&rsquo; (&lsquo;<samp>\0</samp>&rsquo;) depending
+on other <code>fswatch</code> settings.  However, the user can customize
+it by providing the desired marker string as optional argument to
+<samp>--batch-marker</samp>:
+</p>
+<div class="example">
+<pre class="example">% ./fswatch --batch-marker=&quot;*** BATCH END ***&quot; -r ~
+/home/fswatch/.zsh_history.LOCK
+*** BATCH END ***
+</pre></div>
+
+<a name="Idle-events"></a>
+<h3 class="section">4.7 Idle events</h3>
+<a name="index-event_002c-idle"></a>
+<p>An <em>idle</em> event is a special event type that can optionally be
+emitted by <code>fswatch</code> if no change events were collected in a
+period of time whose average length is equal to the monitor latency
+(see <a href="#Latency">Latency</a>).  Idle events come in handy when an observer wants
+to perform an operation every time a change is detected <em>or</em>
+after a specified amount of time even if no changes were detected.
+</p>
+<p>Idle events were introduced in version 1.9.0 and are available only
+when <code>fswatch</code> is built on a platform that supports C++11
+threads (<code>std::thread</code>) and can be enabled using the
+<samp>--fire-idle-events</samp> option.
+</p>
+<p>An idle event has got the following characteristics:
+</p>
+<ul>
+<li> It has an empty path.
+
+</li><li> It is of type <code>NoOp</code>.
+</li></ul>
+
+<a name="Filtering-by-Path"></a>
+<h3 class="section">4.8 Filtering by Path</h3>
+<a name="index-path-filter"></a>
+<a name="index-path-filter_002c-inclusion"></a>
+<a name="index-path-filter_002c-exclusion"></a>
+<p>Filters are <em>regular expression</em> which are evaluated against the
+monitored object path to determine whether a path must be accepted or
+rejected.  Sometimes, the exclusion of a path may result in the
+exclusion of an object from the list of monitored objects, while other
+times a path must be evaluated only when an event is detected and in
+this case the corresponding object cannot be removed from the
+monitored object list in advance<a name="DOCF10" href="#FOOT10"><sup>10</sup></a>.
+</p>
+<p>Event though event <em>filtering</em> is commonly performed when
+processing <code>fswatch</code> output, the possibility of filtering
+paths &lsquo;at the source&rsquo; provides not only a greater amount of
+flexbility, but also:
+</p>
+<ul>
+<li> Improved performance, since <code>fswatch</code> will only monitor
+matching objects<a name="DOCF11" href="#FOOT11"><sup>11</sup></a>.
+
+</li><li> Less resource pressure, especially when resource-intensive monitors
+are used.  This is especially important when using monitors that rely
+on the availability of open file descriptors for any monitored object.
+
+</li><li> Simpler processing logic, since part of the path filtering logic is
+performed by <code>fswatch</code>.
+</li></ul>
+
+<a name="index-regcomp"></a>
+<p>Since filters are implemented using the &lsquo;<samp>regcomp</samp>&rsquo; library, this
+feature is built into <code>fswatch</code> only on systems where this
+library is available.
+</p>
+<a name="Specifying-Filters"></a>
+<h4 class="subsection">4.8.1 Specifying Filters</h4>
+<a name="index-path-filter-1"></a>
+<a name="index-path-filter_002c-file"></a>
+<a name="index-include_002c-detail"></a>
+<a name="index-exclude_002c-detail"></a>
+<a name="index-from_002dfile_002c-detail"></a>
+
+<p>Path filters can be specified in two ways:
+</p>
+<ul>
+<li> By using the <samp>--include</samp> and <samp>--exclude</samp> options and the
+modifier options <samp>--extended</samp> and <samp>--insensitive</samp>.
+
+</li><li> By loading them from a file using the <samp>--from-file</samp> option.
+</li></ul>
+
+<a name="Filter-File-Format"></a>
+<h4 class="subsubsection">4.8.1.1 Filter File Format</h4>
+<a name="index-path-filter_002c-file-1"></a>
+<p>The filter file is made up of <em>records</em> separated by a new line
+charactere, or formally a <acronym>ASCII</acronym> &lsquo;<samp>LF</samp>&rsquo; (line feed)
+character.  The structure of the record is the following:
+</p>
+<div class="example">
+<pre class="example">type pattern
+</pre></div>
+
+<p>where &lsquo;<samp>type</samp>&rsquo; indicated the filter type and &lsquo;<samp>pattern</samp>&rsquo; is the
+filter regular expression.  &lsquo;<samp>type</samp>&rsquo; may contain the following
+characters:
+</p>
+<ul>
+<li> &lsquo;<samp>+</samp>&rsquo; or &lsquo;<samp>-</samp>&rsquo;, to indicate respectively whether the filter is
+an inclusion or an exclusion filter.
+
+</li><li> &lsquo;<samp>e</samp>&rsquo; to use an extended regular expression.
+
+</li><li> &lsquo;<samp>i</samp>&rsquo; to use a case insensitive regular expression.
+</li></ul>
+
+<p>The following filter file instructs <code>fswatch</code> to ignore all
+files except those ending in &lsquo;<samp>.cpp</samp>&rsquo;, ignoring case.
+</p>
+<div class="example">
+<pre class="example">- .*
++i \.cpp$
+</pre></div>
+
+
+<a name="Types-of-Filters-and-Order-of-Execution"></a>
+<h4 class="subsection">4.8.2 Types of Filters and Order of Execution</h4>
+<a name="index-path-filter_002c-type"></a>
+<a name="index-path-filter_002c-exexution-order"></a>
+<a name="index-path-filter_002c-inclusion-1"></a>
+<a name="index-path-filter_002c-exclusion-1"></a>
+<p>Two types of filters are available:
+</p>
+<ul>
+<li> <em>Inclusion</em> filters.
+
+</li><li> <em>Exclusion</em> filters.
+</li></ul>
+
+<p>As their name indicates, they are used to include and exclude paths
+from the monitored object list and from resulting events.
+<code>fswatch</code> processes filters this way:
+</p>
+<ul>
+<li> If a path matches an including filter, the path is accepted no matter
+any other filter.
+
+</li><li> If a path matches an excluding filter, the path is rejected.
+
+</li><li> If a path matches no filters, the path is accepted.
+</li></ul>
+
+<p>Said another way:
+</p>
+<ul>
+<li> All paths are accepted <em>by default</em>, unless an exclusion filter
+says otherwise.
+
+</li><li> Inclusion filters may override any other exclusion filter.
+
+</li><li> The order in the definition of filters in the command line has no effect.
+</li></ul>
+
+<a name="Filter-Modifiers"></a>
+<h4 class="subsection">4.8.3 Filter Modifiers</h4>
+<a name="index-path-filter_002c-modifier"></a>
+<a name="index-regcomp-1"></a>
+<p>Filters are regular expression executed using the
+<a href="http://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html"><code>regcomp</code> function</a> which is able to interpret case-sensitive
+and case-insensitive <em>basic</em> and <em>extended</em> regular
+expressions as described in
+<a href="http://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html">Base Definitions volume of <acronym>IEEE</acronym> Std 1003.1-2001,
+Chapter 9, Regular Expressions</a>.
+</p>
+<a name="index-patch-filter_002c-case-sensitivity"></a>
+<p>The (<samp>--insensitive</samp>, <samp>-I</samp>) option instructs
+<code>fswatch</code> to use case insensitive regular expressions.  The
+following example adds an exclusion filter so that <code>fswatch</code>
+ignores any file system object whose name ends with <kbd>.log</kbd>, no
+matter the case.
+</p>
+<div class="example">
+<pre class="example">$ fswatch -Ie &quot;.*\.log$&quot; ~
+</pre></div>
+
+<a name="index-path-filter_002c-regular-expression"></a>
+<a name="index-path-filter_002c-extended-regular-expression"></a>
+<p>The (<samp>--extended</samp>, <samp>-E</samp>) option instructs
+<code>fswatch</code> to use extended regular expressions, such as:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -Ee &quot;xl[st]+&quot; ~
+</pre></div>
+
+<p>Treating the characteristics and the difference between different
+kinds of regular expressions is out of scope in this manual.
+</p>
+<a name="Filtering-by-Event-Type-1"></a>
+<h3 class="section">4.9 Filtering by Event Type</h3>
+<a name="Filtering-by-Event-Type"></a><a name="index-filter_002c-by-event-type"></a>
+<a name="index-event-type-filter"></a>
+<p>Events can be filtered by event type passing <code>fswatch</code> a list of
+event type <em>names</em> or masks to accept using the <samp>--event</samp>
+option:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -x --event Created --event Removed ~
+$ fswatch -x --event 10 ~
+</pre></div>
+
+<p>In this example, the mask of the <code>Created</code> event is <code>2</code>
+and the mask of the <code>Removed</code> event is <code>8</code>, so the mask
+of both events is <code>10</code>.
+</p>
+<p>If no event type filters are specified, <code>fswatch</code> will accept
+events of any type; on the other hand, as soon as a filter is specified,
+only events with a matching type will be accepted.
+</p>
+<a name="Latency-1"></a>
+<h3 class="section">4.10 Latency</h3>
+<a name="Latency"></a><a name="index-latency"></a>
+<a name="index-latency_002c-detail"></a>
+<p>The <em>latency</em> <em>l</em>, expressed in seconds, is the amount of
+time that passes between the moment <code>fswatch</code> outputs a set of
+detected changes and the next.  What happens during the time
+in-between is a monitor-specific implementation detail.
+</p>
+<p>Some <acronym>API</acronym>s, such as OS X&rsquo;s FSEvents, implement the concept of
+latency themselves and <code>fswatch</code> appears idle in between.
+Only when the specified amount of time passes, change events are
+received, processed and written to standard output.  Others, such as
+Linux&rsquo;s inotify, do not<a name="DOCF12" href="#FOOT12"><sup>12</sup></a>; in this case, the inotify monitor <em>waits</em>
+for events a maximum of <em>l</em> seconds; after that, the monitor
+logic loops again, performs house-keeping activities<a name="DOCF13" href="#FOOT13"><sup>13</sup></a>
+and starts waiting again.
+</p>
+<p>The important thing to keep in mind is that latency and a monitor&rsquo;s
+behaviour are implementation-dependent: check the documentation of the
+monitor you are using to get further information about how latency is
+handled.
+</p>
+<a name="Symbolic-Links"></a>
+<h3 class="section">4.11 Symbolic Links</h3>
+<a name="index-symbolic-link"></a>
+<a name="index-follow_002dlinks_002c-detail"></a>
+<p>Symbolic links are commonly used file system objects and, as it is
+customary for file system utilities, <code>fswatch</code> can either
+<em>follow</em> them and monitor the linked object<a name="DOCF14" href="#FOOT14"><sup>14</sup></a> or monitor the link
+itself.
+</p>
+<a name="Event-Flags-1"></a>
+<h3 class="section">4.12 Event Flags</h3>
+<a name="Event-Flags"></a><a name="index-event-flag"></a>
+<a name="index-event_002dflags_002c-detail"></a>
+<p>Event flags identify the kind of change a file system object has
+undergone.  Many of them directly map to common file system operations
+(such as creation, deletion, update, etc.), others are less common
+(such as attribute modification), and others are monitor and platform
+specific.
+</p>
+<p>Currently, <code>fswatch</code> maps monitor-specific event flags to
+&lsquo;global&rsquo; event flags acting as a sort of &lsquo;greatest common denominator&rsquo;
+of all the available monitor flags.  The list of all the available
+global event flags, defined in <samp>c/cevent.h</samp>, is the following:
+</p>
+<dl compact="compact">
+<dt><code>NoOp</code></dt>
+<dd><p>Idle event, optionally issued when no changes were detected.
+</p>
+</dd>
+<dt><code>PlatformSpecific</code></dt>
+<dd><p>This event maps a platform-specific event that has no corresponding
+flag.
+</p>
+</dd>
+<dt><code>Created</code></dt>
+<dd><p>The object has been created.
+</p>
+</dd>
+<dt><code>Updated</code></dt>
+<dd><p>The object has been updated.  The kind of update is monitor-dependent.
+</p>
+</dd>
+<dt><code>Removed</code></dt>
+<dd><p>The object has been removed.
+</p>
+</dd>
+<dt><code>Renamed</code></dt>
+<dd><p>The object has been renamed.
+</p>
+</dd>
+<dt><code>OwnerModified</code></dt>
+<dd><p>The object&rsquo;s owner has changed.
+</p>
+</dd>
+<dt><code>AttributeModified</code></dt>
+<dd><p>An object&rsquo;s attribute has changed.
+</p>
+</dd>
+<dt><code>MovedFrom</code></dt>
+<dd><p>The object has moved from this location to a new location of the same
+file system.
+</p>
+</dd>
+<dt><code>MovedTo</code></dt>
+<dd><p>The object has moved from another location in the same file system
+into this location.
+</p>
+</dd>
+<dt><code>IsFile</code></dt>
+<dd><p>The object is a regular file.
+</p>
+</dd>
+<dt><code>IsDir</code></dt>
+<dd><p>The object is a directory.
+</p>
+</dd>
+<dt><code>IsSymLink</code></dt>
+<dd><p>The object is a symbolic link.
+</p>
+</dd>
+<dt><code>Link</code></dt>
+<dd><p>The object link count has changed.
+</p>
+</dd>
+<dt><code>Overflow</code></dt>
+<dd><p>The monitor has overflowed.
+</p></dd>
+</dl>
+
+<a name="Peculiarities-and-Pitfalls"></a>
+<h4 class="subsection">4.12.1 Peculiarities and Pitfalls</h4>
+<a name="index-event-flag_002c-peculiarities"></a>
+<a name="index-event-flag_002c-pitfalls"></a>
+<p>As you can see, the list of event flags contains element whose meaning
+is overlapping, at least partially.  <code>Link</code>, for instance, may
+be equivalent to <code>Create</code> or <code>Removed</code>, depending on
+the whether the new link count is 1 or 0.  <code>MovedFrom</code> and
+<code>MovedTo</code> may be equivalent to <code>Create</code> and
+<code>Removed</code> if the monitor is unable to discern a move operation
+has taken place (which is not always possible, as in the case of the
+poll monitor).
+</p>
+<p><code>fswatch</code> is unable to univocally map the specific flags of
+all the monitors consistently.  Forcefully, the mapping depends on the
+capabilities of the monitor which, in turn, depend on the capabilities
+of the <acronym>API</acronym> being used.
+</p>
+<p>For this reason, when processing change events, either the behaviour
+of the underlying monitor is known and taken into account, or all the
+flags which could possibly be attached at the operation being looked
+for must be taken into account.
+</p>
+<blockquote>
+<p><b>Warning:</b> As already explained (see <a href="#Whitespace-and-Record-Format">Whitespace and Record Format</a>), the
+record format when using event flags in textual form is ambiguous.
+For this reason, using numeric event flags (see <a href="#Numeric-Event-Flags">Numeric Event Flags</a>) or a custom record format (see <a href="#Custom-Record-Formats">Custom Record Formats</a>) is
+recommended when <code>fswatch</code> output must be processed.
+</p></blockquote>
+
+<a name="Numeric-Event-Flags-2"></a>
+<h4 class="subsection">4.12.2 Numeric Event Flags</h4>
+<a name="Numeric-Event-Flags"></a><a name="index-event-flag_002c-numeric"></a>
+<a name="index-numeric_002c-detail"></a>
+<p>When using the (<samp>--numeric</samp>, <samp>-n</samp>) <code>fswatch</code>
+will output event flags in <em>numeric</em> format.  A change event
+record may have multiple event flags and the numeric value is
+calculated as the bitwise <code>or</code> of the numeric values of all
+the flags.  Since the value of an event flag is guaranteed to be
+unique and to be a number <em>n</em> in the form <em>n = 2^k</em> for a
+certain integer <em>k</em>, then the numeric value of a set of event
+flags is univocally determined.
+</p>
+<p>To check whether a given event flag is present when processing
+<code>fswatch</code> output, iti s sufficient to check whether its bit is
+set to 1 in the event value.  Let&rsquo;s suppose we want to check whether
+the event flag whose value is <em>e</em> is present in a record whose
+flag numerical value is <em>n</em>.  If the result <em>r</em> of
+</p>
+
+<p>where <em>\wedge</em> is the bitwise <code>and</code> operator, is <em>r
+&gt; 0</em>, then the flag <em>e</em> is present in <em>n</em>.
+</p>
+<p>The numeric value of all the event flags is the following:
+</p>
+<ul>
+<li> <code>NoOp</code>: 0
+</li><li> <code>PlatformSpecific</code>: 1
+</li><li> <code>Created</code>: 2
+</li><li> <code>Updated</code>: 4
+</li><li> <code>Removed</code>: 8
+</li><li> <code>Renamed</code>: 16
+</li><li> <code>OwnerModified</code>: 32
+</li><li> <code>AttributeModified</code>: 64
+</li><li> <code>MovedFrom</code>: 128
+</li><li> <code>MovedTo</code>: 256
+</li><li> <code>IsFile</code>: 512
+</li><li> <code>IsDir</code>: 1024
+</li><li> <code>IsSymLink</code>: 2048
+</li><li> <code>Link</code>: 4096
+</li><li> <code>Overflow</code>: 8192
+</li></ul>
+
+<a name="Choosing-a-Monitor-1"></a>
+<h3 class="section">4.13 Choosing a Monitor</h3>
+<a name="Choosing-a-Monitor"></a><a name="index-monitor_002c-choosing"></a>
+<a name="index-monitor_002c-detail"></a>
+<p><code>fswatch</code> is a front-end to multiple <em>monitors</em>, each
+taking advantage of different monitoring <acronym>API</acronym>s that may be
+available in a system.  When building <code>fswatch</code>,
+<code>configure</code> scans the system to check which <acronym>API</acronym>s are
+available and builds support for all of them.
+</p>
+<p>A &lsquo;special&rsquo; monitor, the <em>poll</em> monitor, manually scans the file
+system looking for differences.  This is a fallback monitor for
+situations where other, more efficient <acronym>API</acronym>s are not
+available.  The poll monitor is available on any system providing the
+<code>stat</code> function.
+</p>
+<p>Although <code>fswatch</code> chooses the &lsquo;best&rsquo; monitor between the
+available ones, a user may wish to use another.  A specific monitor
+can be chosen using the (<samp>--monitor</samp>, <samp>-m</samp>) option.  The
+list of available monitors can be obtained using the
+(<samp>--list-monitors</samp>, <samp>-M</samp>) option or at the end of the
+help message:
+</p>
+<div class="example">
+<pre class="example">$ fswatch --list-monitors
+  fsevents_monitor
+  kqueue_monitor
+  poll_monitor
+</pre></div>
+
+<div class="example">
+<pre class="example">$ fswatch --help
+[...]
+Available monitors in this platform:
+
+  fsevents_monitor
+  kqueue_monitor
+  poll_monitor
+[...]
+</pre></div>
+
+<p>A monitor can then be chosen by passing the mandatory
+&lsquo;<samp><var>name</var></samp>&rsquo; argument to the <samp>-m</samp> option:
+</p>
+<div class="example">
+<pre class="example">$ fswatch -m kqueue_monitor ~
+</pre></div>
+
+<p>In this case, the &lsquo;<samp>kqueue_monitor</samp>&rsquo; is manually chosen.
+</p>
+<a name="Recursive-Scanning"></a>
+<h3 class="section">4.14 Recursive Scanning</h3>
+<a name="index-recursive-scanning"></a>
+<a name="index-monitor_002c-recursive-scanning"></a>
+<a name="index-recursive_002c-detail"></a>
+<p><code>fswatch</code>&rsquo;s behaviour when scanning a directory may vary on a
+monitor by monitor basis.  The semantics of the (<samp>--recursive</samp>,
+<samp>-r</samp>) option is: recursively scan subdirectories.  However,
+implementations may silently add &lsquo;<em>if the monitor does not do so
+already</em>&rsquo;.  Since each monitor uses a different <acronym>API</acronym>, its
+behaviour depends on that of the backing <acronym>API</acronym>, and it is
+monitor-specific.
+</p>
+<ul>
+<li> The OS X <em>FSEvents</em> <acronym>API</acronym> will always recurse
+subdirectories when monitoring a directory.  In this case, even though
+<samp>-r</samp> is not specified, the monitor will monitor a directory&rsquo;s
+children nonetheless and there is no way to avoid it<a name="DOCF15" href="#FOOT15"><sup>15</sup></a>.
+
+</li><li> The <em>kqueue</em> monitor opens a file descriptor for each watched
+file.  When <samp>-r</samp> is used and a directory is watched,
+<code>fswatch</code> will walk the file system hierarchy rooted at the
+directory and will open a file descriptor for each children to
+establish a watch on it.
+
+</li><li> The <em>File Events Notification</em> monitor does not recurse
+subdirectories by default.  If a directory is watched, change events
+for the directory are received and even if some of them may be
+triggered by changes to some of the directory children, no details
+about their source will be provided.  When the <samp>-r</samp> option is
+specified, the monitor will walk the file system hierarchy rooted at
+the directory and will watch all of its children.
+
+</li><li> The <em>inotify</em> and <code>ReadDirectoryChangesW</code> <acronym>API</acronym>
+returns change events for first-level children of a directory.  When
+the <samp>-r</samp> option is not specified, change events for a watched
+directory&rsquo;s children are received.  When the <samp>-r</samp> is specified,
+the monitor will walk the file system hierarchy rooted at the watched
+directory and will establish a watch on every directory object found.
+</li></ul>
+
+<p>In general, users should always use the <samp>-r</samp> option according
+to its semantics, no matter what the monitor does.  The only case when
+<samp>-r</samp> is &lsquo;not&rsquo; honoured is when a monitor <em>adds</em>
+information by recursively monitoring children even when <samp>-r</samp>
+is not specified.  Please notice that when this happens, there may be
+no performance overhead since the backing <acronym>API</acronym> is
+specifically designed to behave like this.
+</p>
+<p>The authors think this is not a problem.  If you think this behaviour
+can be improved, please fill a bug report (see <a href="Introduction.html#Reporting-Bugs-and-Suggestions">Reporting Bugs and Suggestions</a>).
+</p>
+<a name="Recursively-Watching-Directories"></a>
+<h4 class="subsection">4.14.1 Recursively Watching Directories</h4>
+<a name="index-monitor_002c-recursive-scanning_002c-directories"></a>
+<p>Some monitors such as the <em>kqueue</em> monitor require a file
+descriptor to be open for each watched file system object.  This
+imposes a limitation on the maximum number of files that can be
+watched by <code>fswatch</code>.  Before version 1.7, a user could only
+overcome this problem by increasing the maximum number of open file
+handles on its system.
+</p>
+<p><code>fswatch</code> 1.7.0 introduced a new option,
+<samp>-d</samp>/<samp>--directories</samp>; when this option is used with a
+monitor that supports it, only directory objects will be watched
+during recursive scans.  When a change occurs on a file, instead of
+reporting <em>which</em> file has changed and how, <code>fswatch</code>
+will report a change event on the parent directory: this way, the
+number of required open file handles decreases at the expense of
+change event information granularity.
+</p>
+<a name="Monitor-Tunables-1"></a>
+<h3 class="section">4.15 Monitor Tunables</h3>
+<a name="Monitor-Tunables"></a><a name="index-monitor_002c-tunable"></a>
+<p>Some monitors may accept monitor-specific parameters to tune their
+behaviour.  To this purpose, <code>fswatch</code> offers a mechanism to
+pass key-value pair which are literally passed to the underlying
+monitor.  A key-value pair <code>(k, v)</code> can be passed to a monitor
+using the <code>--monitor-property</code> option:
+</p>
+<div class="example">
+<pre class="example">$ fswatch --monitor-property k=v ~
+</pre></div>
+
+<p>Multiple key-value pairs can be passed by using the
+<code>--monitor-property</code> option multiple times.
+</p>
+<div class="footnote">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h3><a name="FOOT4" href="#DOCF4">(4)</a></h3>
+<p>Depending on the monitor and options
+being used, <code>fswatch</code> may not exit unless <em>stopped</em> with
+a signal such as <code>TERM</code> or <code>QUIT</code>.</p>
+<h3><a name="FOOT5" href="#DOCF5">(5)</a></h3>
+<p>Exit codes are documented in <samp>c/error.h</samp>
+of <code>libfswatch</code>.</p>
+<h3><a name="FOOT6" href="#DOCF6">(6)</a></h3>
+<p><acronym title="Internal Field Separators">IFS</acronym> (Internal Field Separators).</p>
+<h3><a name="FOOT7" href="#DOCF7">(7)</a></h3>
+<p>Although the
+available directive are much less than what <code>printf</code> offers.</p>
+<h3><a name="FOOT8" href="#DOCF8">(8)</a></h3>
+<p>Which is the same as
+considering escaped characters the result of a directive.</p>
+<h3><a name="FOOT9" href="#DOCF9">(9)</a></h3>
+<p>In the following example,
+the record termination character is not shown.</p>
+<h3><a name="FOOT10" href="#DOCF10">(10)</a></h3>
+<p>This behaviour is
+monitor-specific.</p>
+<h3><a name="FOOT11" href="#DOCF11">(11)</a></h3>
+<p>Whether an object whose path is matched by
+an exclusion filter is monitored or not is a monitor-specific
+implementation detail.</p>
+<h3><a name="FOOT12" href="#DOCF12">(12)</a></h3>
+<p>inotify publishes changes on a file
+identified by a descriptor which is <code>read</code> by
+<code>fswatch</code>.</p>
+<h3><a name="FOOT13" href="#DOCF13">(13)</a></h3>
+<p>Such as
+re-scanning objects which did not exist in the previous iteration.</p>
+<h3><a name="FOOT14" href="#DOCF14">(14)</a></h3>
+<p>When
+following links, the resolution is recursive: that is, if a link
+points to another symbolic link, this link is followed as well, and so
+on, until an object of a different kind is found.</p>
+<h3><a name="FOOT15" href="#DOCF15">(15)</a></h3>
+<p>But
+manually filtering out events based on paths, but <code>fswatch</code>
+does not do so <em>by design</em>.</p>
+</div>
+<hr>
+<div class="header">
+<p>
+Next: <a href="Monitors.html#Monitors" accesskey="n" rel="next">Monitors</a>, Previous: <a href="Tutorial-Introduction-to-fswatch.html#Tutorial-Introduction-to-fswatch" accesskey="p" rel="prev">Tutorial Introduction to <code>fswatch</code></a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html#Index-of-Functions" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
