@@ -69,7 +69,7 @@ namespace fsw
   fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
                                      FSW_EVENT_CALLBACK *callback,
                                      void *context) :
-    monitor(paths_to_monitor, callback, context)
+    monitor(std::move(paths_to_monitor), callback, context)
   {
   }
 
