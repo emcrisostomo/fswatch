@@ -165,9 +165,8 @@ namespace fsw
      * For the same reason, the directory_only flag is ignored and treated as if
      * it were always set to true.
      */
-    if (!accept_non_dirs && !is_dir) return;
-
-    if (!is_dir && directory_only && !accept_non_dirs) return;
+    if (!is_dir && !accept_non_dirs) return;
+    if (!is_dir && directory_only) return;
     if (!is_dir && !accept_path(path)) return;
     if (!add_watch(path, fd_stat)) return;
     if (!recursive || !is_dir) return;
