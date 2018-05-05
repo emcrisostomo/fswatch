@@ -176,7 +176,7 @@ namespace fsw
 
     for (const string& child : children)
     {
-      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
+      if (child == "." || child == "..") continue;
 
       /*
        * Scan children but only watch directories.
