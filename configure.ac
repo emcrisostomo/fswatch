@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (C) 2014-2017 Enrico M. Crisostomo
+# Copyright (C) 2014-2018 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -21,7 +21,7 @@ AC_PREREQ([2.69])
 m4_include([m4/fswatch_version.m4])
 m4_include([m4/libfswatch_version.m4])
 AC_INIT([fswatch], LIBFSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
-AC_COPYRIGHT([2017 (C) Enrico M. Crisostomo])
+AC_COPYRIGHT([2013-2018 (C) Enrico M. Crisostomo])
 AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([fswatch/src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
@@ -257,7 +257,6 @@ AC_CHECK_TYPE([std::unique_ptr<std::string>],
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_CHECK_FUNCS([modf],     [], [AC_MSG_ERROR([The modf function cannot be found.])])
 AC_CHECK_FUNCS([realpath], [], [AC_MSG_ERROR([The realpath function cannot be found.])])
-AC_CHECK_FUNCS([regcomp],  [], [AC_MSG_ERROR([The regcomp function cannot be found.])])
 AC_CHECK_FUNCS([select],   [], [AC_MSG_ERROR([The select function cannot be found.])])
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([atexit],    [], [AC_MSG_ERROR([The atexit function cannot be found.])])

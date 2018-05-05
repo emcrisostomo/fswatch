@@ -24,7 +24,7 @@
 #include <cstdlib>
 #include <memory>
 #include <thread>
-#include <regex.h>
+#include <regex>
 #include <sstream>
 #include <utility>
 #include <ctime>
@@ -36,7 +36,7 @@ namespace fsw
 {
   struct compiled_monitor_filter
   {
-    regex_t regex;
+    std::regex regex;
     fsw_filter_type type;
   };
 
@@ -66,7 +66,8 @@ namespace fsw
     }
 
 #ifdef HAVE_INACTIVITY_CALLBACK
-    milliseconds epoch = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    milliseconds epoch =
+      duration_cast<milliseconds>(system_clock::now().time_since_epoch());
     last_notification.store(epoch);
 #endif
   }
@@ -94,7 +95,7 @@ namespace fsw
 
   milliseconds monitor::get_latency_ms() const
   {
-    return milliseconds((long long)(latency * 1000 * 1.1));
+    return milliseconds((long long) (latency * 1000 * 1.1));
   }
 
   void monitor::set_recursive(bool recursive)
@@ -112,7 +113,8 @@ namespace fsw
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(const vector<fsw_event_type_filter>& filters)
+  void
+  monitor::set_event_type_filters(const vector<fsw_event_type_filter>& filters)
   {
     event_type_filters.clear();
 
@@ -121,13 +123,17 @@ namespace fsw
 
   void monitor::add_filter(const monitor_filter& filter)
   {
-    regex_t regex;
-    int flags = 0;
+    std::regex::flag_type regex_flags = std::regex::basic;
 
-    if (!filter.case_sensitive) flags |= REG_ICASE;
-    if (filter.extended) flags |= REG_EXTENDED;
+    if (filter.extended) regex_flags = std::regex::extended;
+    if (!filter.case_sensitive) regex_flags |= std::regex::icase;
 
-    if (regcomp(&regex, filter.text.c_str(), flags))
+    try
+    {
+      this->filters.push_back({regex(filter.text, regex_flags),
+                               filter.type});
+    }
+    catch (std::regex_error& error)
     {
       throw libfsw_exception(
         string_utils::string_from_format(
@@ -135,8 +141,6 @@ namespace fsw
           filter.text.c_str()),
         FSW_ERR_INVALID_REGEX);
     }
-
-    this->filters.push_back({regex, filter.type});
   }
 
   void monitor::set_property(const std::string& name, const std::string& value)
@@ -201,7 +205,7 @@ namespace fsw
 
     for (const auto& filter : filters)
     {
-      if (regexec(&filter.regex, path, 0, nullptr, 0) == 0)
+      if (std::regex_match(path, filter.regex))
       {
         if (filter.type == fsw_filter_type::filter_include) return true;
 
@@ -225,8 +229,6 @@ namespace fsw
   monitor::~monitor()
   {
     stop();
-
-    for (auto& re : filters) regfree(&re.regex);
   }
 
   static monitor *create_default_monitor(vector<string> paths,
@@ -276,6 +278,7 @@ namespace fsw
   }
 
 #ifdef HAVE_INACTIVITY_CALLBACK
+
   void monitor::inactivity_callback(monitor *mon)
   {
     if (!mon) throw libfsw_exception(_("Callback argument cannot be null."));
@@ -298,7 +301,8 @@ namespace fsw
         milliseconds to_sleep = mon->get_latency_ms() - elapsed;
         seconds max_sleep_time(2);
 
-        std::this_thread::sleep_for(to_sleep > max_sleep_time ? max_sleep_time : to_sleep);
+        std::this_thread::sleep_for(
+          to_sleep > max_sleep_time ? max_sleep_time : to_sleep);
         continue;
       }
 
@@ -314,6 +318,7 @@ namespace fsw
 
     FSW_ELOG(_("Inactivity notification thread: exiting\n"));
   }
+
 #endif
 
   void monitor::start()
@@ -328,7 +333,8 @@ namespace fsw
     std::unique_ptr<std::thread> inactivity_thread;
 #ifdef HAVE_INACTIVITY_CALLBACK
     if (fire_idle_event)
-      inactivity_thread.reset(new std::thread(monitor::inactivity_callback, this));
+      inactivity_thread.reset(
+        new std::thread(monitor::inactivity_callback, this));
 #endif
 
     // Fire the monitor run loop.
@@ -394,7 +400,9 @@ namespace fsw
 
     // Update the last notification timestamp
 #ifdef HAVE_INACTIVITY_CALLBACK
-    milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    milliseconds now =
+      duration_cast<milliseconds>(
+        system_clock::now().time_since_epoch());
     last_notification.store(now);
 #endif
 
@@ -408,7 +416,9 @@ namespace fsw
       if (filtered_flags.empty()) continue;
       if (!accept_path(event.get_path())) continue;
 
-      filtered_events.emplace_back(event.get_path(), event.get_time(), filtered_flags);
+      filtered_events.emplace_back(event.get_path(),
+                                   event.get_time(),
+                                   filtered_flags);
     }
 
     if (!filtered_events.empty())
@@ -427,7 +437,8 @@ namespace fsw
     return creator_by_string_map;
   }
 
-  map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>& monitor_factory::creators_by_type()
+  map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>&
+  monitor_factory::creators_by_type()
   {
     static map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR> creator_by_type_map;
 

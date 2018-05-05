@@ -92,6 +92,13 @@ Free Documentation License''.
 @node Version History
 @chapter Version History
 
+@section 1.12.0
+@itemize
+@item
+Fix issue 178: Migrate usages of POSIX regular expressions
+(@code{<regex.h>}) to the C++11 regex library (@code{<regex>}).
+@end itemize
+
 @section 1.11.3
 @itemize
 @item
@@ -1576,9 +1583,9 @@ performed by @command{fswatch}.
 @end itemize
 
 @fnindex @command{regcomp}
-Since filters are implemented using the @samp{regcomp} library, this
-feature is built into @command{fswatch} only on systems where this
-library is available.
+Filters are implemented using the C++11 @code{<regex>} library.  This
+feature is now required to successfully build @command{libfswatch} and
+@command{fswatch}.
 
 @subsection Specifying Filters
 @cpindex path filter
