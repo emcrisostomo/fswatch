@@ -100,7 +100,7 @@ namespace fsw
                     dirs.size(),
                     &kCFTypeArrayCallBacks);
 
-    FSEventStreamContext *context = new FSEventStreamContext();
+    auto *context = new FSEventStreamContext();
     context->version = 0;
     context->info = this;
     context->retain = nullptr;
@@ -195,8 +195,7 @@ namespace fsw
                                            const FSEventStreamEventFlags eventFlags[],
                                            const FSEventStreamEventId eventIds[])
   {
-    fsevents_monitor *fse_monitor =
-      static_cast<fsevents_monitor *> (clientCallBackInfo);
+    auto *fse_monitor = static_cast<fsevents_monitor *> (clientCallBackInfo);
 
     if (!fse_monitor)
     {
