@@ -29,7 +29,6 @@
 #include <utility>
 #include <ctime>
 
-using namespace std;
 using namespace std::chrono;
 
 namespace fsw
@@ -41,11 +40,11 @@ namespace fsw
   };
 
 #ifdef HAVE_CXX_MUTEX
-  #define FSW_MONITOR_RUN_GUARD unique_lock<mutex> run_guard(run_mutex);
+  #define FSW_MONITOR_RUN_GUARD std::unique_lock<std::mutex> run_guard(run_mutex);
   #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock();
   #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock();
 
-  #define FSW_MONITOR_NOTIFY_GUARD unique_lock<mutex> notify_guard(notify_mutex);
+  #define FSW_MONITOR_NOTIFY_GUARD std::unique_lock<std::mutex> notify_guard(notify_mutex);
 #else
   #define FSW_MONITOR_RUN_GUARD
   #define FSW_MONITOR_RUN_GUARD_LOCK
@@ -54,7 +53,7 @@ namespace fsw
   #define FSW_MONITOR_NOTIFY_GUARD
 #endif
 
-  monitor::monitor(vector<string> paths,
+  monitor::monitor(std::vector<std::string> paths,
                    FSW_EVENT_CALLBACK *callback,
                    void *context) :
     paths(std::move(paths)), callback(callback), context(context), latency(1)
@@ -114,7 +113,7 @@ namespace fsw
   }
 
   void
-  monitor::set_event_type_filters(const vector<fsw_event_type_filter>& filters)
+  monitor::set_event_type_filters(const std::vector<fsw_event_type_filter>& filters)
   {
     event_type_filters.clear();
 
@@ -130,7 +129,7 @@ namespace fsw
 
     try
     {
-      this->filters.push_back({regex(filter.text, regex_flags),
+      this->filters.push_back({std::regex(filter.text, regex_flags),
                                filter.type});
     }
     catch (std::regex_error& error)
@@ -148,17 +147,17 @@ namespace fsw
     properties[name] = value;
   }
 
-  void monitor::set_properties(const map<string, string> options)
+  void monitor::set_properties(const std::map<std::string, std::string> options)
   {
     properties = options;
   }
 
-  string monitor::get_property(string name)
+  std::string monitor::get_property(std::string name)
   {
     return properties[name];
   }
 
-  void monitor::set_filters(const vector<monitor_filter>& filters)
+  void monitor::set_filters(const std::vector<monitor_filter>& filters)
   {
     for (const monitor_filter& filter : filters)
     {
@@ -194,7 +193,7 @@ namespace fsw
     return false;
   }
 
-  bool monitor::accept_path(const string& path) const
+  bool monitor::accept_path(const std::string& path) const
   {
     return accept_path(path.c_str());
   }
@@ -231,7 +230,7 @@ namespace fsw
     stop();
   }
 
-  static monitor *create_default_monitor(vector<string> paths,
+  static monitor *create_default_monitor(std::vector<std::string> paths,
                                          FSW_EVENT_CALLBACK *callback,
                                          void *context)
   {
@@ -258,7 +257,7 @@ namespace fsw
   }
 
   monitor *monitor_factory::create_monitor(fsw_monitor_type type,
-                                           vector<string> paths,
+                                           std::vector<std::string> paths,
                                            FSW_EVENT_CALLBACK *callback,
                                            void *context)
   {
@@ -287,7 +286,7 @@ namespace fsw
 
     for (;;)
     {
-      unique_lock<mutex> run_guard(mon->run_mutex);
+      std::unique_lock<std::mutex> run_guard(mon->run_mutex);
       if (mon->should_stop) break;
       run_guard.unlock();
 
@@ -310,7 +309,7 @@ namespace fsw
       time_t curr_time;
       time(&curr_time);
 
-      vector<event> events;
+      std::vector<event> events;
       events.push_back({"", curr_time, {NoOp}});
 
       mon->notify_events(events);
@@ -369,12 +368,12 @@ namespace fsw
     return this->running;
   }
 
-  vector<fsw_event_flag> monitor::filter_flags(const event& evt) const
+  std::vector<fsw_event_flag> monitor::filter_flags(const event& evt) const
   {
     // If there is nothing to filter, just return the original vector.
     if (event_type_filters.empty()) return evt.get_flags();
 
-    vector<fsw_event_flag> filtered_flags;
+    std::vector<fsw_event_flag> filtered_flags;
 
     for (auto const& flag : evt.get_flags())
     {
@@ -384,7 +383,7 @@ namespace fsw
     return filtered_flags;
   }
 
-  void monitor::notify_overflow(const string& path) const
+  void monitor::notify_overflow(const std::string& path) const
   {
     if (!allow_overflow) throw libfsw_exception(_("Event queue overflow."));
 
@@ -394,7 +393,7 @@ namespace fsw
     notify_events({{path, curr_time, {fsw_event_flag::Overflow}}});
   }
 
-  void monitor::notify_events(const vector<event>& events) const
+  void monitor::notify_events(const std::vector<event>& events) const
   {
     FSW_MONITOR_NOTIFY_GUARD;
 
@@ -406,12 +405,12 @@ namespace fsw
     last_notification.store(now);
 #endif
 
-    vector<event> filtered_events;
+    std::vector<event> filtered_events;
 
     for (auto const& event : events)
     {
       // Filter flags
-      vector<fsw_event_flag> filtered_flags = filter_flags(event);
+      std::vector<fsw_event_flag> filtered_flags = filter_flags(event);
 
       if (filtered_flags.empty()) continue;
       if (!accept_path(event.get_path())) continue;
@@ -430,23 +429,23 @@ namespace fsw
     }
   }
 
-  map<string, FSW_FN_MONITOR_CREATOR>& monitor_factory::creators_by_string()
+  std::map<std::string, FSW_FN_MONITOR_CREATOR>& monitor_factory::creators_by_string()
   {
-    static map<string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
+    static std::map<std::string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
 
     return creator_by_string_map;
   }
 
-  map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>&
+  std::map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>&
   monitor_factory::creators_by_type()
   {
-    static map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR> creator_by_type_map;
+    static std::map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR> creator_by_type_map;
 
     return creator_by_type_map;
   }
 
-  monitor *monitor_factory::create_monitor(const string& name,
-                                           vector<string> paths,
+  monitor *monitor_factory::create_monitor(const std::string& name,
+                                           std::vector<std::string> paths,
                                            FSW_EVENT_CALLBACK *callback,
                                            void *context)
   {
@@ -458,7 +457,7 @@ namespace fsw
     return i->second(std::move(paths), callback, context);
   }
 
-  bool monitor_factory::exists_type(const string& name)
+  bool monitor_factory::exists_type(const std::string& name)
   {
     auto i = creators_by_string().find(name);
 
@@ -472,7 +471,7 @@ namespace fsw
     return (i != creators_by_type().end());
   }
 
-  void monitor_factory::register_creator(const string& name,
+  void monitor_factory::register_creator(const std::string& name,
                                          FSW_FN_MONITOR_CREATOR creator)
   {
     creators_by_string()[name] = creator;
@@ -485,9 +484,9 @@ namespace fsw
   }
 
 
-  vector<string> monitor_factory::get_types()
+  std::vector<std::string> monitor_factory::get_types()
   {
-    vector<string> types;
+    std::vector<std::string> types;
 
     for (const auto& i : creators_by_string())
     {
