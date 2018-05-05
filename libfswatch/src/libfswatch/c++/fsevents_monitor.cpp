@@ -25,8 +25,6 @@
 #    include <mutex>
 #  endif
 
-using namespace std;
-
 namespace fsw
 {
   typedef struct FSEventFlagType
@@ -35,9 +33,9 @@ namespace fsw
     fsw_event_flag type;
   } FSEventFlagType;
 
-  static vector<FSEventFlagType> create_flag_type_vector()
+  static std::vector<FSEventFlagType> create_flag_type_vector()
   {
-    vector<FSEventFlagType> flags;
+    std::vector<FSEventFlagType> flags;
     flags.push_back({kFSEventStreamEventFlagNone, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagMustScanSubDirs, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagUserDropped, fsw_event_flag::PlatformSpecific});
@@ -62,11 +60,11 @@ namespace fsw
     return flags;
   }
 
-  static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
+  static const std::vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
 
   REGISTER_MONITOR_IMPL(fsevents_monitor, fsevents_monitor_type);
 
-  fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
+  fsevents_monitor::fsevents_monitor(std::vector<std::string> paths_to_monitor,
                                      FSW_EVENT_CALLBACK *callback,
                                      void *context) :
     monitor(std::move(paths_to_monitor), callback, context)
@@ -77,15 +75,15 @@ namespace fsw
   void fsevents_monitor::run()
   {
 #ifdef HAVE_CXX_MUTEX
-    unique_lock<mutex> run_loop_lock(run_mutex);
+    std::unique_lock<std::mutex> run_loop_lock(run_mutex);
 #endif
 
     if (stream) return;
 
     // parsing paths
-    vector<CFStringRef> dirs;
+    std::vector<CFStringRef> dirs;
 
-    for (const string& path : paths)
+    for (const std::string& path : paths)
     {
       dirs.push_back(CFStringCreateWithCString(nullptr,
                                                path.c_str(),
@@ -173,9 +171,9 @@ namespace fsw
     run_loop = nullptr;
   }
 
-  static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
+  static std::vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
   {
-    vector<fsw_event_flag> evt_flags;
+    std::vector<fsw_event_flag> evt_flags;
 
     for (const FSEventFlagType& type : event_flag_type)
     {
@@ -203,7 +201,7 @@ namespace fsw
     }
 
     // Build the notification objects.
-    vector<event> events;
+    std::vector<event> events;
 
     time_t curr_time;
     time(&curr_time);
