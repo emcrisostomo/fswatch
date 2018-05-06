@@ -23,13 +23,14 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <iostream>
+#include <utility>
 #include "c/libfswatch_log.h"
 #include "path_utils.hpp"
 #include "libfswatch_map.hpp"
 
 #if defined HAVE_STRUCT_STAT_ST_MTIME
-#  define FSW_MTIME(stat) (stat.st_mtime)
-#  define FSW_CTIME(stat) (stat.st_ctime)
+#  define FSW_MTIME(stat) ((stat).st_mtime)
+#  define FSW_CTIME(stat) ((stat).st_ctime)
 #elif defined HAVE_STRUCT_STAT_ST_MTIMESPEC
 #  define FSW_MTIME(stat) (stat.st_mtimespec.tv_sec)
 #  define FSW_CTIME(stat) (stat.st_ctimespec.tv_sec)
@@ -48,7 +49,7 @@ namespace fsw
   poll_monitor::poll_monitor(std::vector<std::string> paths,
                              FSW_EVENT_CALLBACK *callback,
                              void *context) :
-    monitor(paths, callback, context)
+    monitor(std::move(paths), callback, context)
   {
     previous_data = new poll_monitor_data();
     new_data = new poll_monitor_data();
@@ -96,9 +97,9 @@ namespace fsw
         flags.push_back(fsw_event_flag::AttributeModified);
       }
 
-      if (flags.size() > 0)
+      if (!flags.empty())
       {
-        events.push_back({path, curr_time, flags});
+        events.emplace_back(path, curr_time, flags);
       }
 
       previous_data->tracked_files.erase(path);
@@ -107,7 +108,7 @@ namespace fsw
     {
       std::vector<fsw_event_flag> flags;
       flags.push_back(fsw_event_flag::Created);
-      events.push_back({path, curr_time, flags});
+      events.emplace_back(path, curr_time, flags);
     }
 
     return true;
@@ -156,7 +157,7 @@ namespace fsw
 
     for (auto& removed : previous_data->tracked_files)
     {
-      events.push_back({removed.first, curr_time, flags});
+      events.emplace_back(removed.first, curr_time, flags);
     }
   }
 
@@ -210,7 +211,7 @@ namespace fsw
 
       collect_data();
 
-      if (events.size())
+      if (!events.empty())
       {
         notify_events(events);
         events.clear();
