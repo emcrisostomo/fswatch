@@ -204,7 +204,7 @@ namespace fsw
 
     for (const auto& filter : filters)
     {
-      if (std::regex_match(path, filter.regex))
+      if (std::regex_search(path, filter.regex))
       {
         if (filter.type == fsw_filter_type::filter_include) return true;
 
