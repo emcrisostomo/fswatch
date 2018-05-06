@@ -34,20 +34,18 @@
 #  include <unistd.h>
 #  include <fcntl.h>
 
-using namespace std;
-
 namespace fsw
 {
 
   struct kqueue_monitor_load
   {
-    fsw_hash_map<string, int> descriptors_by_file_name;
-    fsw_hash_map<int, string> file_names_by_descriptor;
+    fsw_hash_map<std::string, int> descriptors_by_file_name;
+    fsw_hash_map<int, std::string> file_names_by_descriptor;
     fsw_hash_map<int, mode_t> file_modes;
     fsw_hash_set<int> descriptors_to_remove;
     fsw_hash_set<int> descriptors_to_rescan;
 
-    void add_watch(int fd, const string& path, const struct stat& fd_stat)
+    void add_watch(int fd, const std::string& path, const struct stat& fd_stat)
     {
       descriptors_by_file_name[path] = fd;
       file_names_by_descriptor[fd] = path;
@@ -56,7 +54,7 @@ namespace fsw
 
     void remove_watch(int fd)
     {
-      string name = file_names_by_descriptor[fd];
+      std::string name = file_names_by_descriptor[fd];
       file_names_by_descriptor.erase(fd);
       descriptors_by_file_name.erase(name);
       file_modes.erase(fd);
@@ -64,7 +62,7 @@ namespace fsw
       close(fd);
     }
 
-    void remove_watch(const string& path)
+    void remove_watch(const std::string& path)
     {
       int fd = descriptors_by_file_name[path];
       descriptors_by_file_name.erase(path);
@@ -81,9 +79,9 @@ namespace fsw
     fsw_event_flag type;
   } KqueueFlagType;
 
-  static vector<KqueueFlagType> create_flag_type_vector()
+  static std::vector<KqueueFlagType> create_flag_type_vector()
   {
-    vector<KqueueFlagType> flags;
+    std::vector<KqueueFlagType> flags;
     flags.push_back({NOTE_DELETE, fsw_event_flag::Removed});
     flags.push_back({NOTE_WRITE, fsw_event_flag::Updated});
     flags.push_back({NOTE_EXTEND, fsw_event_flag::PlatformSpecific});
@@ -95,11 +93,11 @@ namespace fsw
     return flags;
   }
 
-  static const vector<KqueueFlagType> event_flag_type = create_flag_type_vector();
+  static const std::vector<KqueueFlagType> event_flag_type = create_flag_type_vector();
 
   REGISTER_MONITOR_IMPL(kqueue_monitor, kqueue_monitor_type);
 
-  kqueue_monitor::kqueue_monitor(vector<string> paths_to_monitor,
+  kqueue_monitor::kqueue_monitor(std::vector<std::string> paths_to_monitor,
                                  FSW_EVENT_CALLBACK *callback,
                                  void *context) :
     monitor(paths_to_monitor, callback, context), load(new kqueue_monitor_load())
@@ -112,9 +110,9 @@ namespace fsw
     delete load;
   }
 
-  static vector<fsw_event_flag> decode_flags(uint32_t flag)
+  static std::vector<fsw_event_flag> decode_flags(uint32_t flag)
   {
-    vector<fsw_event_flag> evt_flags;
+    std::vector<fsw_event_flag> evt_flags;
 
     for (const KqueueFlagType& type : event_flag_type)
     {
@@ -140,12 +138,12 @@ namespace fsw
     return ts;
   }
 
-  bool kqueue_monitor::is_path_watched(const string& path) const
+  bool kqueue_monitor::is_path_watched(const std::string& path) const
   {
     return load->descriptors_by_file_name.find(path) != load->descriptors_by_file_name.end();
   }
 
-  bool kqueue_monitor::add_watch(const string& path, const struct stat& fd_stat)
+  bool kqueue_monitor::add_watch(const std::string& path, const struct stat& fd_stat)
   {
     // check if the path is already watched and if it is,
     // skip it and return false.
@@ -180,14 +178,14 @@ namespace fsw
     return true;
   }
 
-  bool kqueue_monitor::scan(const string& path, bool is_root_path)
+  bool kqueue_monitor::scan(const std::string& path, bool is_root_path)
   {
     struct stat fd_stat;
     if (!lstat_path(path, fd_stat)) return false;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
-      string link_path;
+      std::string link_path;
       if (read_link_path(path, link_path))
         return scan(link_path);
 
@@ -202,9 +200,9 @@ namespace fsw
     if (!recursive) return true;
     if (!is_dir) return true;
 
-    vector<string> children = get_directory_children(path);
+    std::vector<std::string> children = get_directory_children(path);
 
-    for (const string& child : children)
+    for (const std::string& child : children)
     {
       if (child == "." || child == "..") continue;
 
@@ -231,7 +229,7 @@ namespace fsw
 
     while (fd != load->descriptors_to_rescan.end())
     {
-      string fd_path = load->file_names_by_descriptor[*fd];
+      std::string fd_path = load->file_names_by_descriptor[*fd];
 
       // Rescan the hierarchy rooted at fd_path.
       // If the path does not exist any longer, nothing needs to be done since
@@ -253,7 +251,7 @@ namespace fsw
 
   void kqueue_monitor::scan_root_paths()
   {
-    for (string& path : paths)
+    for (std::string& path : paths)
     {
       if (is_path_watched(path)) continue;
 
@@ -283,8 +281,8 @@ namespace fsw
     kq = -1;
   }
 
-  int kqueue_monitor::wait_for_events(const vector<struct kevent>& changes,
-                                      vector<struct kevent>& event_list)
+  int kqueue_monitor::wait_for_events(const std::vector<struct kevent>& changes,
+                                      std::vector<struct kevent>& event_list)
   {
     struct timespec ts = create_timespec_from_latency(latency);
 
@@ -305,13 +303,13 @@ namespace fsw
     return event_num;
   }
 
-  void kqueue_monitor::process_events(const vector<struct kevent>& changes,
-                                      const vector<struct kevent>& event_list,
+  void kqueue_monitor::process_events(const std::vector<struct kevent>& changes,
+                                      const std::vector<struct kevent>& event_list,
                                       int event_num)
   {
     time_t curr_time;
     time(&curr_time);
-    vector<event> events;
+    std::vector<event> events;
 
     for (auto i = 0; i < event_num; ++i)
     {
@@ -368,7 +366,7 @@ namespace fsw
     for(;;)
     {
 #ifdef HAVE_CXX_MUTEX
-      unique_lock<mutex> run_guard(run_mutex);
+      std::unique_lock<std::mutex> run_guard(run_mutex);
       if (should_stop) break;
       run_guard.unlock();
 #endif
@@ -382,10 +380,10 @@ namespace fsw
       // scan the root paths to check whether someone is missing
       scan_root_paths();
 
-      vector<struct kevent> changes;
-      vector<struct kevent> event_list;
+      std::vector<struct kevent> changes;
+      std::vector<struct kevent> event_list;
 
-      for (const pair<int, string>& fd_path : load->file_names_by_descriptor)
+      for (const std::pair<int, std::string>& fd_path : load->file_names_by_descriptor)
       {
         struct kevent change;
 
