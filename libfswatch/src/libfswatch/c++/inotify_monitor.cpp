@@ -295,7 +295,7 @@ namespace fsw
     }
 
     /*
-     * An file could be moved to a path which is being observed.  The clobbered
+     * A file could be moved to a path which is being observed.  The clobbered
      * file is handled by the corresponding IN_DELETE_SELF event.
      */
 
