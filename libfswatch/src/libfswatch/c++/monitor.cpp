@@ -195,11 +195,6 @@ namespace fsw
 
   bool monitor::accept_path(const std::string& path) const
   {
-    return accept_path(path.c_str());
-  }
-
-  bool monitor::accept_path(const char *path) const
-  {
     bool is_excluded = false;
 
     for (const auto& filter : filters)

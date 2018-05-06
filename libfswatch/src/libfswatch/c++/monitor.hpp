@@ -454,17 +454,6 @@ namespace fsw
     bool accept_path(const std::string& path) const;
 
     /**
-     * @brief Check whether a path should be accepted.
-     *
-     * This function checks @p path against the path filters of the monitor to
-     * determine whether it should be _accepted_.
-     *
-     * @param event_type The path to check.
-     * @return @c true if the path is accepted, @c false otherwise.
-     */
-    bool accept_path(const char *path) const;
-
-    /**
      * @brief Notify change events.
      *
      * This function notifies change events using the provided callback.
