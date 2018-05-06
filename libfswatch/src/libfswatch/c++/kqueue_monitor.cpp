@@ -204,9 +204,9 @@ namespace fsw
 
     vector<string> children = get_directory_children(path);
 
-    for (string& child : children)
+    for (const string& child : children)
     {
-      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
+      if (child == "." || child == "..") continue;
 
       scan(path + "/" + child, false);
     }
