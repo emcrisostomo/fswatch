@@ -38,15 +38,18 @@
 
 namespace fsw
 {
+  using std::vector;
+  using std::string;
+
   typedef struct poll_monitor::poll_monitor_data
   {
-    fsw_hash_map<std::string, poll_monitor::watched_file_info> tracked_files;
+    fsw_hash_map<string, poll_monitor::watched_file_info> tracked_files;
   }
   poll_monitor_data;
 
   REGISTER_MONITOR_IMPL(poll_monitor, poll_monitor_type);
 
-  poll_monitor::poll_monitor(std::vector<std::string> paths,
+  poll_monitor::poll_monitor(vector<string> paths,
                              FSW_EVENT_CALLBACK *callback,
                              void *context) :
     monitor(std::move(paths), callback, context)
@@ -62,7 +65,7 @@ namespace fsw
     delete new_data;
   }
 
-  bool poll_monitor::initial_scan_callback(const std::string& path,
+  bool poll_monitor::initial_scan_callback(const string& path,
                                            const struct stat& stat)
   {
     if (previous_data->tracked_files.count(path))
@@ -74,7 +77,7 @@ namespace fsw
     return true;
   }
 
-  bool poll_monitor::intermediate_scan_callback(const std::string& path,
+  bool poll_monitor::intermediate_scan_callback(const string& path,
                                                 const struct stat& stat)
   {
     if (new_data->tracked_files.count(path)) return false;
@@ -85,7 +88,7 @@ namespace fsw
     if (previous_data->tracked_files.count(path))
     {
       watched_file_info pwfi = previous_data->tracked_files[path];
-      std::vector<fsw_event_flag> flags;
+      vector<fsw_event_flag> flags;
 
       if (FSW_MTIME(stat) > pwfi.mtime)
       {
@@ -106,7 +109,7 @@ namespace fsw
     }
     else
     {
-      std::vector<fsw_event_flag> flags;
+      vector<fsw_event_flag> flags;
       flags.push_back(fsw_event_flag::Created);
       events.emplace_back(path, curr_time, flags);
     }
@@ -114,21 +117,21 @@ namespace fsw
     return true;
   }
 
-  bool poll_monitor::add_path(const std::string& path,
+  bool poll_monitor::add_path(const string& path,
                               const struct stat& fd_stat,
                               poll_monitor_scan_callback poll_callback)
   {
     return ((*this).*(poll_callback))(path, fd_stat);
   }
 
-  void poll_monitor::scan(const std::string& path, poll_monitor_scan_callback fn)
+  void poll_monitor::scan(const string& path, poll_monitor_scan_callback fn)
   {
     struct stat fd_stat;
     if (!lstat_path(path, fd_stat)) return;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
-      std::string link_path;
+      string link_path;
       if (read_link_path(path, link_path))
         scan(link_path, fn);
 
@@ -140,9 +143,9 @@ namespace fsw
     if (!recursive) return;
     if (!S_ISDIR(fd_stat.st_mode)) return;
 
-    std::vector<std::string> children = get_directory_children(path);
+    vector<string> children = get_directory_children(path);
 
-    for (const std::string& child : children)
+    for (const string& child : children)
     {
       if (child == "." || child == "..") continue;
 
@@ -152,7 +155,7 @@ namespace fsw
 
   void poll_monitor::find_removed_files()
   {
-    std::vector<fsw_event_flag> flags;
+    vector<fsw_event_flag> flags;
     flags.push_back(fsw_event_flag::Removed);
 
     for (auto& removed : previous_data->tracked_files)
@@ -172,7 +175,7 @@ namespace fsw
   {
     poll_monitor_scan_callback fn = &poll_monitor::intermediate_scan_callback;
 
-    for (std::string& path : paths)
+    for (string& path : paths)
     {
       scan(path, fn);
     }
@@ -185,7 +188,7 @@ namespace fsw
   {
     poll_monitor_scan_callback fn = &poll_monitor::initial_scan_callback;
 
-    for (std::string& path : paths)
+    for (string& path : paths)
     {
       scan(path, fn);
     }

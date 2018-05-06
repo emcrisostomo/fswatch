@@ -27,15 +27,18 @@
 
 namespace fsw
 {
+  using std::vector;
+  using std::string;
+  
   typedef struct FSEventFlagType
   {
     FSEventStreamEventFlags flag;
     fsw_event_flag type;
   } FSEventFlagType;
 
-  static std::vector<FSEventFlagType> create_flag_type_vector()
+  static vector<FSEventFlagType> create_flag_type_vector()
   {
-    std::vector<FSEventFlagType> flags;
+    vector<FSEventFlagType> flags;
     flags.push_back({kFSEventStreamEventFlagNone, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagMustScanSubDirs, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagUserDropped, fsw_event_flag::PlatformSpecific});
@@ -60,11 +63,11 @@ namespace fsw
     return flags;
   }
 
-  static const std::vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
+  static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
 
   REGISTER_MONITOR_IMPL(fsevents_monitor, fsevents_monitor_type);
 
-  fsevents_monitor::fsevents_monitor(std::vector<std::string> paths_to_monitor,
+  fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
                                      FSW_EVENT_CALLBACK *callback,
                                      void *context) :
     monitor(std::move(paths_to_monitor), callback, context)
@@ -81,9 +84,9 @@ namespace fsw
     if (stream) return;
 
     // parsing paths
-    std::vector<CFStringRef> dirs;
+    vector<CFStringRef> dirs;
 
-    for (const std::string& path : paths)
+    for (const string& path : paths)
     {
       dirs.push_back(CFStringCreateWithCString(nullptr,
                                                path.c_str(),
@@ -171,9 +174,9 @@ namespace fsw
     run_loop = nullptr;
   }
 
-  static std::vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
+  static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
   {
-    std::vector<fsw_event_flag> evt_flags;
+    vector<fsw_event_flag> evt_flags;
 
     for (const FSEventFlagType& type : event_flag_type)
     {
@@ -201,14 +204,16 @@ namespace fsw
     }
 
     // Build the notification objects.
-    std::vector<event> events;
+    vector<event> events;
 
     time_t curr_time;
     time(&curr_time);
 
     for (size_t i = 0; i < numEvents; ++i)
     {
-      events.emplace_back(((char **) eventPaths)[i], curr_time, decode_flags(eventFlags[i]));
+      events.emplace_back(((char **) eventPaths)[i],
+                          curr_time,
+                          decode_flags(eventFlags[i]));
     }
 
     if (!events.empty())
@@ -219,7 +224,7 @@ namespace fsw
 
   bool fsevents_monitor::no_defer()
   {
-    std::string no_defer = get_property(DARWIN_EVENTSTREAM_NO_DEFER);
+    string no_defer = get_property(DARWIN_EVENTSTREAM_NO_DEFER);
 
     return (no_defer == "true");
   }
