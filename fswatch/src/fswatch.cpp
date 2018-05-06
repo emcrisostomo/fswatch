@@ -865,6 +865,13 @@ int main(int argc, char **argv)
     delete active_monitor;
     active_monitor = nullptr;
   }
+  catch (libfsw_exception& lex)
+  {
+    std::cerr << lex.what() << "\n";
+    std::cerr << "Status code: " << lex.error_code() << "\n";
+
+    return FSW_EXIT_ERROR;
+  }
   catch (std::invalid_argument& ex)
   {
     std::cerr << ex.what() << "\n";
