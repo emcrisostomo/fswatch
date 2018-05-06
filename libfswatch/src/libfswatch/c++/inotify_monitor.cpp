@@ -36,15 +36,13 @@
 #include "libfswatch_set.hpp"
 #include "path_utils.hpp"
 
-using namespace std;
-
 namespace fsw
 {
 
   struct inotify_monitor_impl
   {
     int inotify_monitor_handle = -1;
-    vector<event> events;
+    std::vector<event> events;
     /*
      * A map of file names by descriptor is kept in sync because the name field
      * of the inotify_event structure is present only when it identifies a
@@ -67,7 +65,7 @@ namespace fsw
     fsw_hash_map<int, string> wd_to_path;
     fsw_hash_set<int> descriptors_to_remove;
     fsw_hash_set<int> watches_to_remove;
-    vector<string> paths_to_rescan;
+    std::vector<string> paths_to_rescan;
     time_t curr_time;
   };
 
@@ -75,7 +73,7 @@ namespace fsw
 
   REGISTER_MONITOR_IMPL(inotify_monitor, inotify_monitor_type);
 
-  inotify_monitor::inotify_monitor(vector<string> paths_to_monitor,
+  inotify_monitor::inotify_monitor(std::vector<string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK *callback,
                                    void *context) :
     monitor(paths_to_monitor, callback, context),
@@ -95,7 +93,7 @@ namespace fsw
     // close inotify watchers
     for (auto inotify_desc_pair : impl->watched_descriptors)
     {
-      ostringstream log;
+      std::ostringstream log;
       log << _("Removing: ") << inotify_desc_pair << "\n";
       FSW_ELOG(log.str().c_str());
 
@@ -114,7 +112,7 @@ namespace fsw
     delete impl;
   }
 
-  bool inotify_monitor::add_watch(const string& path,
+  bool inotify_monitor::add_watch(const std::string& path,
                                   const struct stat& fd_stat)
   {
     // TODO: Consider optionally adding the IN_EXCL_UNLINK flag.
@@ -132,7 +130,7 @@ namespace fsw
       impl->wd_to_path[inotify_desc] = path;
       impl->path_to_wd[path] = inotify_desc;
 
-      ostringstream log;
+      std::ostringstream log;
       log << _("Added: ") << path << "\n";
       FSW_ELOG(log.str().c_str());
     }
@@ -140,14 +138,14 @@ namespace fsw
     return (inotify_desc != -1);
   }
 
-  void inotify_monitor::scan(const string& path, const bool accept_non_dirs)
+  void inotify_monitor::scan(const std::string& path, const bool accept_non_dirs)
   {
     struct stat fd_stat;
     if (!lstat_path(path, fd_stat)) return;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
-      string link_path;
+      std::string link_path;
       if (read_link_path(path, link_path))
         scan(link_path, accept_non_dirs);
 
@@ -171,9 +169,9 @@ namespace fsw
     if (!add_watch(path, fd_stat)) return;
     if (!recursive || !is_dir) return;
 
-    vector<string> children = get_directory_children(path);
+    std::vector<std::string> children = get_directory_children(path);
 
-    for (const string& child : children)
+    for (const std::string& child : children)
     {
       if (child == "." || child == "..") continue;
 
@@ -184,14 +182,14 @@ namespace fsw
     }
   }
 
-  bool inotify_monitor::is_watched(const string& path) const
+  bool inotify_monitor::is_watched(const std::string& path) const
   {
     return (impl->path_to_wd.find(path) != impl->path_to_wd.end());
   }
 
   void inotify_monitor::scan_root_paths()
   {
-    for (string& path : paths)
+    for (std::string& path : paths)
     {
       if (!is_watched(path)) scan(path);
     }
@@ -199,7 +197,7 @@ namespace fsw
 
   void inotify_monitor::preprocess_dir_event(struct inotify_event *event)
   {
-    vector<fsw_event_flag> flags;
+    std::vector<fsw_event_flag> flags;
 
     if (event->mask & IN_ISDIR) flags.push_back(fsw_event_flag::IsDir);
     if (event->mask & IN_MOVE_SELF) flags.push_back(fsw_event_flag::Updated);
@@ -219,7 +217,7 @@ namespace fsw
 
   void inotify_monitor::preprocess_node_event(struct inotify_event *event)
   {
-    vector<fsw_event_flag> flags;
+    std::vector<fsw_event_flag> flags;
 
     if (event->mask & IN_ACCESS) flags.push_back(fsw_event_flag::PlatformSpecific);
     if (event->mask & IN_ATTRIB) flags.push_back(fsw_event_flag::AttributeModified);
@@ -241,7 +239,7 @@ namespace fsw
     if (event->mask & IN_OPEN) flags.push_back(fsw_event_flag::PlatformSpecific);
 
     // Build the file name.
-    ostringstream filename_stream;
+    std::ostringstream filename_stream;
     filename_stream << impl->wd_to_path[event->wd];
 
     if (event->len > 1)
@@ -256,7 +254,7 @@ namespace fsw
     }
 
     {
-      ostringstream log;
+      std::ostringstream log;
       log << _("Generic event: ") << event->wd << "::" << filename_stream.str() << "\n";
       FSW_ELOG(log.str().c_str());
     }
@@ -267,7 +265,7 @@ namespace fsw
      */
     if (event->mask & IN_IGNORED)
     {
-      ostringstream log;
+      std::ostringstream log;
       log << "IN_IGNORED: " << event->wd << "::" << filename_stream.str() << "\n";
       FSW_ELOG(log.str().c_str());
 
@@ -288,7 +286,7 @@ namespace fsw
      */
     if (event->mask & IN_MOVE_SELF)
     {
-      ostringstream log;
+      std::ostringstream log;
       log << "IN_MOVE_SELF: " << event->wd << "::" << filename_stream.str() << "\n";
       FSW_ELOG(log.str().c_str());
 
@@ -307,7 +305,7 @@ namespace fsw
      */
     if (event->mask & IN_DELETE_SELF)
     {
-      ostringstream log;
+      std::ostringstream log;
       log << "IN_DELETE_SELF: " << event->wd << "::" << filename_stream.str() << "\n";
       FSW_ELOG(log.str().c_str());
 
@@ -348,7 +346,7 @@ namespace fsw
       }
       else
       {
-        ostringstream log;
+        std::ostringstream log;
         log << _("Removed: ") << *wtd << "\n";
         FSW_ELOG(log.str().c_str());
       }
@@ -361,7 +359,7 @@ namespace fsw
 
     while (fd != impl->descriptors_to_remove.end())
     {
-      const string& curr_path = impl->wd_to_path[*fd];
+      const std::string& curr_path = impl->wd_to_path[*fd];
       impl->path_to_wd.erase(curr_path);
       impl->wd_to_path.erase(*fd);
       impl->watched_descriptors.erase(*fd);
@@ -372,7 +370,7 @@ namespace fsw
     // Process paths to be rescanned
     std::for_each(impl->paths_to_rescan.begin(),
 		  impl->paths_to_rescan.end(),
-		  [this] (const string& p)
+		  [this] (const std::string& p)
 		  {
 		    this->scan(p);
 		  }
@@ -390,7 +388,7 @@ namespace fsw
     for(;;)
     {
 #ifdef HAVE_CXX_MUTEX
-      unique_lock<mutex> run_guard(run_mutex);
+      std::unique_lock<std::mutex> run_guard(run_mutex);
       if (should_stop) break;
       run_guard.unlock();
 #endif
@@ -437,7 +435,7 @@ namespace fsw
                                 BUFFER_SIZE);
 
       {
-        ostringstream log;
+        std::ostringstream log;
         log << _("Number of records: ") << record_num << "\n";
         FSW_ELOG(log.str().c_str());
       }
