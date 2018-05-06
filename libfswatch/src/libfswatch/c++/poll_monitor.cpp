@@ -27,8 +27,6 @@
 #include "path_utils.hpp"
 #include "libfswatch_map.hpp"
 
-using namespace std;
-
 #if defined HAVE_STRUCT_STAT_ST_MTIME
 #  define FSW_MTIME(stat) (stat.st_mtime)
 #  define FSW_CTIME(stat) (stat.st_ctime)
@@ -41,13 +39,13 @@ namespace fsw
 {
   typedef struct poll_monitor::poll_monitor_data
   {
-    fsw_hash_map<string, poll_monitor::watched_file_info> tracked_files;
+    fsw_hash_map<std::string, poll_monitor::watched_file_info> tracked_files;
   }
   poll_monitor_data;
 
   REGISTER_MONITOR_IMPL(poll_monitor, poll_monitor_type);
 
-  poll_monitor::poll_monitor(vector<string> paths,
+  poll_monitor::poll_monitor(std::vector<std::string> paths,
                              FSW_EVENT_CALLBACK *callback,
                              void *context) :
     monitor(paths, callback, context)
@@ -63,7 +61,7 @@ namespace fsw
     delete new_data;
   }
 
-  bool poll_monitor::initial_scan_callback(const string& path,
+  bool poll_monitor::initial_scan_callback(const std::string& path,
                                            const struct stat& stat)
   {
     if (previous_data->tracked_files.count(path))
@@ -75,7 +73,7 @@ namespace fsw
     return true;
   }
 
-  bool poll_monitor::intermediate_scan_callback(const string& path,
+  bool poll_monitor::intermediate_scan_callback(const std::string& path,
                                                 const struct stat& stat)
   {
     if (new_data->tracked_files.count(path)) return false;
@@ -86,7 +84,7 @@ namespace fsw
     if (previous_data->tracked_files.count(path))
     {
       watched_file_info pwfi = previous_data->tracked_files[path];
-      vector<fsw_event_flag> flags;
+      std::vector<fsw_event_flag> flags;
 
       if (FSW_MTIME(stat) > pwfi.mtime)
       {
@@ -107,7 +105,7 @@ namespace fsw
     }
     else
     {
-      vector<fsw_event_flag> flags;
+      std::vector<fsw_event_flag> flags;
       flags.push_back(fsw_event_flag::Created);
       events.push_back({path, curr_time, flags});
     }
@@ -115,21 +113,21 @@ namespace fsw
     return true;
   }
 
-  bool poll_monitor::add_path(const string& path,
+  bool poll_monitor::add_path(const std::string& path,
                               const struct stat& fd_stat,
                               poll_monitor_scan_callback poll_callback)
   {
     return ((*this).*(poll_callback))(path, fd_stat);
   }
 
-  void poll_monitor::scan(const string& path, poll_monitor_scan_callback fn)
+  void poll_monitor::scan(const std::string& path, poll_monitor_scan_callback fn)
   {
     struct stat fd_stat;
     if (!lstat_path(path, fd_stat)) return;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
     {
-      string link_path;
+      std::string link_path;
       if (read_link_path(path, link_path))
         scan(link_path, fn);
 
@@ -141,9 +139,9 @@ namespace fsw
     if (!recursive) return;
     if (!S_ISDIR(fd_stat.st_mode)) return;
 
-    vector<string> children = get_directory_children(path);
+    std::vector<std::string> children = get_directory_children(path);
 
-    for (const string& child : children)
+    for (const std::string& child : children)
     {
       if (child == "." || child == "..") continue;
 
@@ -153,7 +151,7 @@ namespace fsw
 
   void poll_monitor::find_removed_files()
   {
-    vector<fsw_event_flag> flags;
+    std::vector<fsw_event_flag> flags;
     flags.push_back(fsw_event_flag::Removed);
 
     for (auto& removed : previous_data->tracked_files)
@@ -173,7 +171,7 @@ namespace fsw
   {
     poll_monitor_scan_callback fn = &poll_monitor::intermediate_scan_callback;
 
-    for (string& path : paths)
+    for (std::string& path : paths)
     {
       scan(path, fn);
     }
@@ -186,7 +184,7 @@ namespace fsw
   {
     poll_monitor_scan_callback fn = &poll_monitor::initial_scan_callback;
 
-    for (string& path : paths)
+    for (std::string& path : paths)
     {
       scan(path, fn);
     }
@@ -199,7 +197,7 @@ namespace fsw
     for (;;)
     {
 #ifdef HAVE_CXX_MUTEX
-      unique_lock<mutex> run_guard(run_mutex);
+      std::unique_lock<std::mutex> run_guard(run_mutex);
       if (should_stop) break;
       run_guard.unlock();
 #endif
