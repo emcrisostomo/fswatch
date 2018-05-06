@@ -197,7 +197,7 @@ namespace fsw
     bool is_dir = S_ISDIR(fd_stat.st_mode);
 
     if (!is_dir && !is_root_path && directory_only) return true;
-    if (!is_dir && !accept_path(path)) return true;
+    if (!accept_path(path)) return true;
     if (!add_watch(path, fd_stat)) return false;
     if (!recursive) return true;
     if (!is_dir) return true;

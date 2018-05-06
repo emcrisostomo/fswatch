@@ -165,7 +165,7 @@ namespace fsw
      */
     if (!is_dir && !accept_non_dirs) return;
     if (!is_dir && directory_only) return;
-    if (!is_dir && !accept_path(path)) return;
+    if (!accept_path(path)) return;
     if (!add_watch(path, fd_stat)) return;
     if (!recursive || !is_dir) return;
 

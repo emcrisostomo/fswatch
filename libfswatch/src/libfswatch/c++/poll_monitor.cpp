@@ -136,7 +136,7 @@ namespace fsw
       return;
     }
 
-    if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return;
+    if (!accept_path(path)) return;
     if (!add_path(path, fd_stat, fn)) return;
     if (!recursive) return;
     if (!S_ISDIR(fd_stat.st_mode)) return;
