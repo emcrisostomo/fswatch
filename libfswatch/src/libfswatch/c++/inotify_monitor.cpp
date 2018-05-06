@@ -50,7 +50,7 @@ namespace fsw
      * for easy retrieval.
      */
     fsw_hash_set<int> watched_descriptors;
-    fsw_hash_map<string, int> path_to_wd;
+    fsw_hash_map<std::string, int> path_to_wd;
     /*
      * Since the inotify API maintains only works with watch
      * descriptors a cache maintaining a relationship between a watch
@@ -62,10 +62,10 @@ namespace fsw
      *   between watch descriptors and pathnames.  Be aware that directory
      *   renamings may affect multiple cached pathnames.
      */
-    fsw_hash_map<int, string> wd_to_path;
+    fsw_hash_map<int, std::string> wd_to_path;
     fsw_hash_set<int> descriptors_to_remove;
     fsw_hash_set<int> watches_to_remove;
-    std::vector<string> paths_to_rescan;
+    std::vector<std::string> paths_to_rescan;
     time_t curr_time;
   };
 
@@ -73,7 +73,7 @@ namespace fsw
 
   REGISTER_MONITOR_IMPL(inotify_monitor, inotify_monitor_type);
 
-  inotify_monitor::inotify_monitor(std::vector<string> paths_to_monitor,
+  inotify_monitor::inotify_monitor(std::vector<std::string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK *callback,
                                    void *context) :
     monitor(paths_to_monitor, callback, context),
