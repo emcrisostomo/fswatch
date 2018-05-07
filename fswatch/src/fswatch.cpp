@@ -226,13 +226,17 @@ static void usage(std::ostream& stream)
 
 static void close_monitor()
 {
+  // TODO: signal an atomic variable rather than invoking monitor::stop()
   if (active_monitor) active_monitor->stop();
 }
 
-static void close_handler(int signal)
+namespace
 {
-  FSW_ELOG(_("Executing termination handler.\n"));
-  close_monitor();
+  extern "C" void close_handler(int signal)
+  {
+    FSW_ELOG(_("Executing termination handler.\n"));
+    close_monitor();
+  }
 }
 
 static bool parse_event_bitmask(const char *optarg)
@@ -292,37 +296,9 @@ static bool validate_latency(double latency)
 
 static void register_signal_handlers()
 {
-  struct sigaction action;
-  action.sa_handler = close_handler;
-  sigemptyset(&action.sa_mask);
-  action.sa_flags = 0;
-
-  if (sigaction(SIGTERM, &action, nullptr) == 0)
-  {
-    FSW_ELOG(_("SIGTERM handler registered.\n"));
-  }
-  else
-  {
-    std::cerr << _("SIGTERM handler registration failed.") << std::endl;
-  }
-
-  if (sigaction(SIGABRT, &action, nullptr) == 0)
-  {
-    FSW_ELOG(_("SIGABRT handler registered.\n"));
-  }
-  else
-  {
-    std::cerr << _("SIGABRT handler registration failed.") << std::endl;
-  }
-
-  if (sigaction(SIGINT, &action, nullptr) == 0)
-  {
-    FSW_ELOG(_("SIGINT handler registered.\n"));
-  }
-  else
-  {
-    std::cerr << _("SIGINT handler registration failed") << std::endl;
-  }
+  std::signal(SIGTERM, close_handler);
+  std::signal(SIGABRT, close_handler);
+  std::signal(SIGINT, close_handler);
 }
 
 static void print_event_path(const event& evt)
