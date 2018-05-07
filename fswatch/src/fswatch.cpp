@@ -229,10 +229,13 @@ static void close_monitor()
   if (active_monitor) active_monitor->stop();
 }
 
-static void close_handler(int signal)
+namespace
 {
-  FSW_ELOG(_("Executing termination handler.\n"));
-  close_monitor();
+  extern "C" void close_handler(int signal)
+  {
+    FSW_ELOG(_("Executing termination handler.\n"));
+    close_monitor();
+  }
 }
 
 static bool parse_event_bitmask(const char *optarg)
