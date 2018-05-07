@@ -25,6 +25,7 @@ autom4te.cache/
 .idea/tasks.xml
 .idea/dataSources.*
 .idea/dictionaries
+.idea/shelf
 out/*
 
 # Eclipse CDT
