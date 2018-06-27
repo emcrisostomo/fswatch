@@ -14,4 +14,4 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-SUBDIRS = src doc
+SUBDIRS = src/libfswatch doc/doxygen
