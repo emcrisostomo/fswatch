@@ -40,7 +40,7 @@
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 9
+#serial 10
 
 dnl  This macro is based on the code from the AX_CXX_COMPILE_STDCXX_11 macro
 dnl  (serial version number 13).
@@ -577,19 +577,11 @@ m4_define([_AX_CXX_COMPILE_STDCXX_testbody_new_in_17], [[
 
 #error "This is not a C++ compiler"
 
-#elif __cplusplus <= 201402L
+#elif __cplusplus < 201703L
 
 #error "This is not a C++17 compiler"
 
 #else
-
-#if defined(__clang__)
-  #define REALLY_CLANG
-#else
-  #if defined(__GNUC__)
-    #define REALLY_GCC
-  #endif
-#endif
 
 #include <initializer_list>
 #include <utility>
@@ -598,16 +590,12 @@ m4_define([_AX_CXX_COMPILE_STDCXX_testbody_new_in_17], [[
 namespace cxx17
 {
 
-#if !defined(REALLY_CLANG)
   namespace test_constexpr_lambdas
   {
-
-    // TODO: test it with clang++ from git
 
     constexpr int foo = [](){return 42;}();
 
   }
-#endif // !defined(REALLY_CLANG)
 
   namespace test::nested_namespace::definitions
   {
@@ -842,11 +830,8 @@ namespace cxx17
 
   }
 
-#if !defined(REALLY_CLANG)
   namespace test_template_argument_deduction_for_class_templates
   {
-
-    // TODO: test it with clang++ from git
 
     template <typename T1, typename T2>
     struct pair
@@ -866,7 +851,6 @@ namespace cxx17
     }
 
   }
-#endif // !defined(REALLY_CLANG)
 
   namespace test_non_type_auto_template_parameters
   {
@@ -880,11 +864,8 @@ namespace cxx17
 
   }
 
-#if !defined(REALLY_CLANG)
   namespace test_structured_bindings
   {
-
-    // TODO: test it with clang++ from git
 
     int arr[2] = { 1, 2 };
     std::pair<int, int> pr = { 1, 2 };
@@ -917,13 +898,9 @@ namespace cxx17
     const auto [ x3, y3 ] = f3();
 
   }
-#endif // !defined(REALLY_CLANG)
 
-#if !defined(REALLY_CLANG)
   namespace test_exception_spec_type_system
   {
-
-    // TODO: test it with clang++ from git
 
     struct Good {};
     struct Bad {};
@@ -942,7 +919,6 @@ namespace cxx17
     static_assert (std::is_same_v<Good, decltype(f(g1, g2))>);
 
   }
-#endif // !defined(REALLY_CLANG)
 
   namespace test_inline_variables
   {
@@ -967,6 +943,6 @@ namespace cxx17
 
 }  // namespace cxx17
 
-#endif  // __cplusplus <= 201402L
+#endif  // __cplusplus < 201703L
 
 ]])
