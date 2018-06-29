@@ -97,6 +97,10 @@ Free Documentation License''.
 @item
 Fix issue 178: Migrate usages of POSIX regular expressions
 (@code{<regex.h>}) to the C++11 regex library (@code{<regex>}).
+
+@item
+Fix issue 191: Wrong error message is printed when @emph{inotify} event
+queue overflows.
 @end itemize
 
 @section 1.11.3

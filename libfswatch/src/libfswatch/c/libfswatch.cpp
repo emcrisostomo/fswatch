@@ -275,6 +275,12 @@
 /**
  * @page history History
  *
+ * @section v1011 10:1:1
+ *
+ *   - Migrate usages of POSIX regular expressions (<regex.h>) to the C++11
+ *    regex library (<regex>).
+ *   - Wrong error message is printed when inotify event queue overflows.
+ *
  * @section v1001 10:0:1
  *
  *   - Fix C99 compatibility in cevent.h by not implying enum.

@@ -1,6 +1,13 @@
 NEWS
 ****
 
+New in 1.12.0:
+
+  * Issue 178: Migrate usages of POSIX regular expressions (<regex.h>) to the
+    C++11 regex library (<regex>).
+
+  * Issue 191: Wrong error message is printed when inotify event queue overflows.
+
 New in 1.11.3:
 
   * Issue 192: Make the build reproducible.
