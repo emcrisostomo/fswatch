@@ -30,6 +30,9 @@ set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "loc
 
 set(CMAKE_CXX_STANDARD 11)
 
+# Add option to choose between shared and static libraries
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+
 # include modules
 include(FindGettext)
 include(FindIntl)
