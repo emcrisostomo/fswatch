@@ -26,8 +26,8 @@
 #ifndef LIBFSW_MAP_H
 #  define LIBFSW_MAP_H
 
-#  ifdef HAVE_CONFIG_H
-#    include "libfswatch_config.h"
+#  ifdef HAVE_CMAKE_CONFIG_H
+#    include "cmake_config.h"
 #  endif
 
 #  if defined(HAVE_UNORDERED_MAP)

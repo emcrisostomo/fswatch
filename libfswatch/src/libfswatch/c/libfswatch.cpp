@@ -407,8 +407,8 @@
  *   - The order in the filter definition has no effect.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include "libfswatch_config.h"
+#ifdef HAVE_CMAKE_CONFIG_H
+#  include "cmake_config.h"
 #endif
 
 #include "gettext_defs.h"
