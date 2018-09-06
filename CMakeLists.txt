@@ -34,7 +34,12 @@ set(CMAKE_CXX_STANDARD 11)
 include(FindGettext)
 include(FindIntl)
 include(CheckIncludeFileCXX)
+include(CheckStructHasMember)
 include(CheckSymbolExists)
+
+# checks
+check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MTIME)
+check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_ST_MTIMESPEC)
 
 # Add a configuration file processed by cmake
 configure_file(${PROJECT_SOURCE_DIR}/cmake_config.h.in ${PROJECT_BINARY_DIR}/cmake_config.h)
