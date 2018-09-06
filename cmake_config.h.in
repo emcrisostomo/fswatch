@@ -1,0 +1,12 @@
+#cmakedefine HAVE_CONFIG_H
+#cmakedefine HAVE_GETOPT_H
+#cmakedefine HAVE_GETOPT_LONG
+#cmakedefine ENABLE_NLS        @ENABLE_NLS@
+#cmakedefine LOCALEDIR         "@LOCALEDIR@"
+#cmakedefine PACKAGE           "@PACKAGE@"
+#cmakedefine PACKAGE_NAME      "@PACKAGE_NAME@"
+#cmakedefine PACKAGE_VERSION   "@PACKAGE_VERSION@"
+#cmakedefine PACKAGE_STRING    "@PACKAGE_STRING@"
+#cmakedefine PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
+#cmakedefine PACKAGE_TARNAME   "@PACKAGE_TARNAME@"
+#cmakedefine PACKAGE_URL       "@PACKAGE_URL@"
