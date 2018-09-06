@@ -38,4 +38,5 @@ if (USE_NLS)
 endif ()
 
 target_include_directories(fswatch PUBLIC ../.. .)
+target_include_directories(fswatch PRIVATE ${PROJECT_BINARY_DIR})
 target_link_libraries(fswatch PUBLIC libfswatch)
