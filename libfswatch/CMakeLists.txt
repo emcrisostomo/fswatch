@@ -60,7 +60,7 @@ if (HAVE_SYS_INOTIFY_H)
             src/libfswatch/c++/inotify_monitor.cpp)
 endif (HAVE_SYS_INOTIFY_H)
 
-CHECK_INCLUDE_FILES(sys/event.h HAVE_SYS_EVENT_H)
+check_include_files(sys/event.h HAVE_SYS_EVENT_H)
 
 if (HAVE_SYS_EVENT_H)
     set(LIBFSWATCH_HEADER_FILES
@@ -71,7 +71,7 @@ if (HAVE_SYS_EVENT_H)
             src/libfswatch/c++/kqueue_monitor.cpp)
 endif (HAVE_SYS_EVENT_H)
 
-CHECK_INCLUDE_FILES(port.h HAVE_PORT_H)
+check_include_files(port.h HAVE_PORT_H)
 
 if (HAVE_PORT_H)
     set(LIBFSWATCH_HEADER_FILES
@@ -83,7 +83,7 @@ if (HAVE_PORT_H)
 endif (HAVE_PORT_H)
 
 if (WIN32)
-    CHECK_INCLUDE_FILES(sys/cygwin.h HAVE_CYGWIN)
+    check_include_files(sys/cygwin.h HAVE_CYGWIN)
 
     if (HAVE_CYGWIN)
         set(LIBFSWATCH_HEADER_FILES
@@ -108,7 +108,7 @@ if (WIN32)
 endif (WIN32)
 
 if (APPLE)
-    CHECK_INCLUDE_FILES(CoreServices/CoreServices.h HAVE_FSEVENTS_FILE_EVENTS)
+    check_include_files(CoreServices/CoreServices.h HAVE_FSEVENTS_FILE_EVENTS)
 
     if (HAVE_FSEVENTS_FILE_EVENTS)
         find_library(CORESERVICES_LIBRARY CoreServices)
@@ -127,33 +127,10 @@ endif (APPLE)
 add_library(libfswatch ${LIB_SOURCE_FILES} ${LIBFSWATCH_HEADER_FILES})
 
 # check for gettext and libintl
-check_include_file_cxx(getopt.h HAVE_GETOPT_H)
-
-if (HAVE_GETOPT_H)
-    check_symbol_exists(getopt_long getopt.h HAVE_GETOPT_LONG)
-endif (HAVE_GETOPT_H)
-
-# If both gettext and libintl are found, define the USE_NLS variable to
-# optionally disable them
-if (Intl_FOUND AND GETTEXT_FOUND)
-    option(USE_NLS "Use NLS" ON)
-endif ()
-
 if (USE_NLS)
-    set(ENABLE_NLS 1)
-
     if (Intl_LIBRARIES)
-        target_link_libraries(libfswatch ${Intl_LIBRARIES})
+        target_link_libraries(libfswatch PRIVATE ${Intl_LIBRARIES})
     endif ()
-
-    # gettext configuration
-    set(LINGUAS en en@quot en@boldquot it es)
-
-    foreach (language ${LINGUAS})
-        configure_file(${PROJECT_SOURCE_DIR}/po/${language}.po ${PROJECT_BINARY_DIR}/${language}.po COPYONLY)
-    endforeach ()
-
-    gettext_process_pot_file(po/${PACKAGE}.pot ALL INSTALL_DESTINATION share/locale LANGUAGES ${LINGUAS})
 endif ()
 
 target_include_directories(libfswatch PUBLIC .. src/libfswatch)
