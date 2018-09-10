@@ -55,12 +55,12 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  const FSW_HANDLE handle = fsw_init_session(fsevents_monitor_type);
+  FSW_HANDLE handle = fsw_init_session(fsevents_monitor_type);
 
-  if (FSW_INVALID_HANDLE == handle)
+  if (handle == NULL)
   {
     fsw_last_error();
-    printf("Invalid fswatch handle: %d\n", handle);
+    printf("Invalid fswatch handle: %p\n", handle);
     return 2;
   }
 
