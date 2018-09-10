@@ -104,7 +104,7 @@ if (CYGWIN)
                 src/libfswatch/c++/windows/win_paths.cpp
                 src/libfswatch/c++/windows/win_strings.cpp
                 src/libfswatch/c++/windows_monitor.cpp)
-        add_definitions(-DHAVE_WINDOWS)
+        set(HAVE_WINDOWS ON CACHE BOOL "Enable Windows support")
     endif (HAVE_CYGWIN)
 endif (CYGWIN)
 
