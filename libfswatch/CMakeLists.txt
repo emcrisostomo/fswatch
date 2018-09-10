@@ -33,7 +33,8 @@ set(LIBFSWATCH_HEADER_FILES
         src/libfswatch/c++/poll_monitor.hpp
         src/libfswatch/c++/string/string_utils.hpp
         src/libfswatch/gettext.h
-        src/libfswatch/gettext_defs.h)
+        src/libfswatch/gettext_defs.h
+        ${PROJECT_BINARY_DIR}/cmake_config.h)
 
 set(LIB_SOURCE_FILES
         src/libfswatch/c/cevent.cpp
