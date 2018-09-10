@@ -48,9 +48,32 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/poll_monitor.cpp
         src/libfswatch/c++/string/string_utils.cpp)
 
-include(CheckIncludeFiles)
+check_include_file_cxx(mutex HAVE_CXX_MUTEX)
 
-check_include_files(sys/inotify.h HAVE_SYS_INOTIFY_H)
+if (NOT HAVE_CXX_MUTEX)
+    message(WARNING "${PROJECT_NAME} is not thread-safe because required C++11 library classes are not available.")
+endif (NOT HAVE_CXX_MUTEX)
+
+check_include_file_cxx(atomic HAVE_CXX_ATOMIC)
+
+if (NOT HAVE_CXX_ATOMIC)
+    message(WARNING "<atomic> unavailable: some functionalities will not be built.")
+endif (NOT HAVE_CXX_ATOMIC)
+
+check_cxx_symbol_exists(atexit cstdlib HAVE_ATEXIT)
+check_cxx_symbol_exists(modf math.h HAVE_MODF)
+check_cxx_symbol_exists(realpath cstdlib HAVE_REALPATH)
+check_cxx_symbol_exists(select sys/select.h HAVE_SELECT)
+check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
+check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
+
+if (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+    set(HAVE_CXX_THREAD_LOCAL ON CACHE BOOL "Enable C++ thread_local support")
+endif (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+
+check_cxx_symbol_exists(thread_local cstdlib HAVE_CXX_THREAD_LOCAL)
+
+check_include_file_cxx(sys/inotify.h HAVE_SYS_INOTIFY_H)
 
 if (HAVE_SYS_INOTIFY_H)
     set(LIBFSWATCH_HEADER_FILES
@@ -61,7 +84,7 @@ if (HAVE_SYS_INOTIFY_H)
             src/libfswatch/c++/inotify_monitor.cpp)
 endif (HAVE_SYS_INOTIFY_H)
 
-check_include_files(sys/event.h HAVE_SYS_EVENT_H)
+check_include_file_cxx(sys/event.h HAVE_SYS_EVENT_H)
 
 if (HAVE_SYS_EVENT_H)
     set(LIBFSWATCH_HEADER_FILES
@@ -72,7 +95,7 @@ if (HAVE_SYS_EVENT_H)
             src/libfswatch/c++/kqueue_monitor.cpp)
 endif (HAVE_SYS_EVENT_H)
 
-check_include_files(port.h HAVE_PORT_H)
+check_include_file_cxx(port.h HAVE_PORT_H)
 
 if (HAVE_PORT_H)
     set(LIBFSWATCH_HEADER_FILES
@@ -84,7 +107,7 @@ if (HAVE_PORT_H)
 endif (HAVE_PORT_H)
 
 if (CYGWIN)
-    check_include_files(sys/cygwin.h HAVE_CYGWIN)
+    check_include_file_cxx(sys/cygwin.h HAVE_CYGWIN)
 
     if (HAVE_CYGWIN)
         set(LIBFSWATCH_HEADER_FILES
@@ -109,7 +132,7 @@ if (CYGWIN)
 endif (CYGWIN)
 
 if (APPLE)
-    check_include_files(CoreServices/CoreServices.h HAVE_FSEVENTS_FILE_EVENTS)
+    check_include_file_cxx(CoreServices/CoreServices.h HAVE_FSEVENTS_FILE_EVENTS)
 
     if (HAVE_FSEVENTS_FILE_EVENTS)
         find_library(CORESERVICES_LIBRARY CoreServices)

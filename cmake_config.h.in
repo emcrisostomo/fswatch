@@ -7,14 +7,23 @@
 #cmakedefine PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
 #cmakedefine PACKAGE_TARNAME   "@PACKAGE_TARNAME@"
 #cmakedefine PACKAGE_URL       "@PACKAGE_URL@"
+#cmakedefine HAVE_ATEXIT
 #cmakedefine HAVE_CONFIG_H
+#cmakedefine HAVE_CXX_ATOMIC
 #cmakedefine HAVE_CXX_MUTEX
+#cmakedefine HAVE_CXX_UNIQUE_PTR
+#cmakedefine HAVE_MODF
 #cmakedefine HAVE_FSEVENTS_FILE_EVENTS
 #cmakedefine HAVE_GETOPT_H
 #cmakedefine HAVE_GETOPT_LONG
 #cmakedefine HAVE_PORT_H
+#cmakedefine HAVE_REALPATH
+#cmakedefine HAVE_SELECT
+#cmakedefine HAVE_SETLOCALE
+#cmakedefine HAVE_STRTOD
 #cmakedefine HAVE_STRUCT_STAT_ST_MTIME @HAVE_STRUCT_STAT_ST_MTIME@
 #cmakedefine HAVE_STRUCT_STAT_ST_MTIMESPEC @HAVE_STRUCT_STAT_ST_MTIMESPEC@
 #cmakedefine HAVE_SYS_EVENT_H
 #cmakedefine HAVE_SYS_INOTIFY_H
+#cmakedefine HAVE_CXX_THREAD_LOCAL
 #cmakedefine HAVE_WINDOWS

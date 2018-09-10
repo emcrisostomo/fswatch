@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.8)
 project(fswatch VERSION 1.13.0 LANGUAGES C CXX)
 
 #@formatter:off
-set(PACKAGE           "fswatch")
+set(PACKAGE           "${PROJECT_NAME}")
 set(PACKAGE_NAME      "${PACKAGE}")
 set(PACKAGE_VERSION   "${PROJECT_VERSION}-develop")
 set(PACKAGE_STRING    "${PACKAGE_NAME} ${PACKAGE_VERSION}")
@@ -38,13 +38,13 @@ include(FindGettext)
 include(FindIntl)
 include(CheckIncludeFileCXX)
 include(CheckStructHasMember)
-include(CheckSymbolExists)
+include(CheckCXXSymbolExists)
 
 # check for gettext and libintl
 check_include_file_cxx(getopt.h HAVE_GETOPT_H)
 
 if (HAVE_GETOPT_H)
-    check_symbol_exists(getopt_long getopt.h HAVE_GETOPT_LONG)
+    check_cxx_symbol_exists(getopt_long getopt.h HAVE_GETOPT_LONG)
 endif (HAVE_GETOPT_H)
 
 # If both gettext and libintl are found, define the USE_NLS variable to
