@@ -573,16 +573,16 @@ msgid "cygwin_create_path could not allocate memory to convert the path."
 msgstr ""
 
 #~ msgid "Error: "
-#~ msgstr "Error: "
+#~ msgstr ""
 
 #~ msgid "Done.\n"
-#~ msgstr "Hecho.\n"
+#~ msgstr ""
 
 #~ msgid "Latency set to: "
-#~ msgstr "Establece la latencia a: "
+#~ msgstr ""
 
 #~ msgid "::select() on inotify descriptor encountered an error."
-#~ msgstr "::select() sobre el descriptor inotify encontró un error."
+#~ msgstr ""
 
 #~ msgid "Notice: "
-#~ msgstr "Aviso: "
+#~ msgstr ""
