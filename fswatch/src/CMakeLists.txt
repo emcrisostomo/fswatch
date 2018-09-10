@@ -1,11 +1,11 @@
 add_definitions(-DHAVE_CONFIG_H)
-set(SOURCE_FILES
+set(FSWATCH_SRC_FILES
         fswatch.cpp
         fswatch.hpp
         gettext.h
-        ../../libfswatch_config.h)
+        ${PROJECT_BINARY_DIR}/cmake_config.h)
 
-add_executable(fswatch ${SOURCE_FILES})
+add_executable(fswatch ${FSWATCH_SRC_FILES})
 
 # check for gettext and libintl
 if (USE_NLS)
