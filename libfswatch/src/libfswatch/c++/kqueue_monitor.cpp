@@ -13,8 +13,8 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CONFIG_H
-#  include "libfswatch_config.h"
+#ifdef HAVE_CMAKE_CONFIG_H
+#  include "cmake_config.h"
 #endif
 
 #ifdef HAVE_SYS_EVENT_H
