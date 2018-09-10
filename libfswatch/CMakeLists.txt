@@ -83,7 +83,7 @@ if (HAVE_PORT_H)
             src/libfswatch/c++/fen_monitor.cpp)
 endif (HAVE_PORT_H)
 
-if (WIN32)
+if (CYGWIN)
     check_include_files(sys/cygwin.h HAVE_CYGWIN)
 
     if (HAVE_CYGWIN)
@@ -106,7 +106,7 @@ if (WIN32)
                 src/libfswatch/c++/windows_monitor.cpp)
         add_definitions(-DHAVE_WINDOWS)
     endif (HAVE_CYGWIN)
-endif (WIN32)
+endif (CYGWIN)
 
 if (APPLE)
     check_include_files(CoreServices/CoreServices.h HAVE_FSEVENTS_FILE_EVENTS)
