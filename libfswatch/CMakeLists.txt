@@ -138,7 +138,7 @@ target_include_directories(libfswatch PUBLIC .. src/libfswatch)
 target_include_directories(libfswatch PUBLIC src)
 target_include_directories(libfswatch PUBLIC ${Intl_INCLUDE_DIRS})
 target_include_directories(libfswatch PRIVATE ${PROJECT_BINARY_DIR})
-target_link_libraries(libfswatch ${EXTRA_LIBS})
+target_link_libraries(libfswatch PRIVATE ${EXTRA_LIBS})
 
 install(TARGETS libfswatch DESTINATION lib)
 install(FILES ${LIBFSWATCH_HEADER_FILES} DESTINATION include/libfswatch)
