@@ -48,8 +48,6 @@ typedef struct FSW_SESSION *FSW_HANDLE;
  */
 typedef int FSW_STATUS;
 
-#define FSW_INVALID_HANDLE -1
-
 #if defined(HAVE_CXX_THREAD_LOCAL)
 # define FSW_THREAD_LOCAL thread_local
 #else
