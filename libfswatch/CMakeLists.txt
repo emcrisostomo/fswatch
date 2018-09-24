@@ -67,7 +67,7 @@ check_cxx_symbol_exists(select sys/select.h HAVE_SELECT)
 check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
 check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
 
-find_library(PTHREAD_LIBRARY pthread_create)
+find_library(PTHREAD_LIBRARY pthread)
 set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
 
 if (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
