@@ -67,6 +67,9 @@ check_cxx_symbol_exists(select sys/select.h HAVE_SELECT)
 check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
 check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
 
+find_library(PTHREAD_LIBRARY pthread_create)
+set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
+
 if (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
     set(HAVE_CXX_THREAD_LOCAL ON CACHE BOOL "Enable C++ thread_local support")
 endif (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
@@ -136,7 +139,7 @@ if (APPLE)
 
     if (HAVE_FSEVENTS_FILE_EVENTS)
         find_library(CORESERVICES_LIBRARY CoreServices)
-        set(EXTRA_LIBS ${CORESERVICES_LIBRARY})
+        set(EXTRA_LIBS ${EXTRA_LIBS} ${CORESERVICES_LIBRARY})
 
         set(LIBFSWATCH_HEADER_FILES
                 ${LIBFSWATCH_HEADER_FILES}
