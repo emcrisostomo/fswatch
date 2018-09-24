@@ -151,7 +151,7 @@ if (APPLE)
     endif (HAVE_FSEVENTS_FILE_EVENTS)
 endif (APPLE)
 
-add_library(libfswatch ${LIB_SOURCE_FILES} ${LIBFSWATCH_HEADER_FILES})
+add_library(fswatch ${LIB_SOURCE_FILES} ${LIBFSWATCH_HEADER_FILES})
 
 # check for gettext and libintl
 if (USE_NLS)
