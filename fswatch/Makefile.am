@@ -14,4 +14,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-SUBDIRS = src doc
+if HAVE_MAKEINFO
+TEXINFO_TARGETS = doc
+endif
+
+SUBDIRS = src $(TEXINFO_TARGETS)
