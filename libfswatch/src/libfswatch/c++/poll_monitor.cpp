@@ -34,6 +34,8 @@
 #elif defined HAVE_STRUCT_STAT_ST_MTIMESPEC
 #  define FSW_MTIME(stat) (stat.st_mtimespec.tv_sec)
 #  define FSW_CTIME(stat) (stat.st_ctimespec.tv_sec)
+#else
+#  error "Either HAVE_STRUCT_STAT_ST_MTIME or HAVE_STRUCT_STAT_ST_MTIMESPEC must be defined"
 #endif
 
 namespace fsw
