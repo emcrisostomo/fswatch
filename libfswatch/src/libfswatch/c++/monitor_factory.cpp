@@ -112,28 +112,6 @@ namespace fsw
 #undef fsw_quote
   }
 
-  fsw_hash_set<fsw_monitor_type>&
-  monitor_factory::creators_by_type()
-  {
-    static fsw_hash_set<fsw_monitor_type> creator_by_type_set;
-
-#if defined(HAVE_FSEVENTS_FILE_EVENTS)
-    creator_by_type_set.insert(fsw_monitor_type::fsevents_monitor_type);
-#elif defined(HAVE_SYS_EVENT_H)
-    creator_by_type_set.insert(fsw_monitor_type::kqueue_monitor_type);
-#elif defined(HAVE_PORT_H)
-    creator_by_type_set.insert(fsw_monitor_type::fen_monitor_type);
-#elif defined(HAVE_SYS_INOTIFY_H)
-    creator_by_type_set.insert(fsw_monitor_type::inotify_monitor_type);
-#elif defined(HAVE_WINDOWS)
-    creator_by_type_set.insert(fsw_monitor_type::windows_monitor_type);
-#else
-    creator_by_type_set.insert(fsw_monitor_type::poll_monitor_type);
-#endif
-
-    return creator_by_type_set;
-  }
-
   monitor *monitor_factory::create_monitor(const std::string& name,
                                            std::vector<std::string> paths,
                                            FSW_EVENT_CALLBACK *callback,
@@ -152,13 +130,6 @@ namespace fsw
     auto i = creators_by_string().find(name);
 
     return (i != creators_by_string().end());
-  }
-
-  bool monitor_factory::exists_type(const fsw_monitor_type& type)
-  {
-    auto i = creators_by_type().find(type);
-
-    return (i != creators_by_type().end());
   }
 
   std::vector<std::string> monitor_factory::get_types()

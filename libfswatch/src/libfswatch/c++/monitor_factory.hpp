@@ -112,21 +112,11 @@ namespace fsw
      */
     static bool exists_type(const std::string& name);
 
-    /**
-     * @brief Checks whether a monitor of the type specified @p type.
-     *
-     * @param type The type of the monitor to look for.
-     * @return `true` if @p name specifies a valid monitor type, `false`
-     * otherwise.
-     */
-    static bool exists_type(const fsw_monitor_type& type);
-
     monitor_factory() = delete;
     monitor_factory(const monitor_factory& orig) = delete;
     monitor_factory& operator=(const monitor_factory& that) = delete;
   private:
     static std::map<std::string, fsw_monitor_type>& creators_by_string();
-    static fsw_hash_set<fsw_monitor_type>& creators_by_type();
   };
 }
 
