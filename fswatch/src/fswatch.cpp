@@ -30,6 +30,7 @@
 #include <map>
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
+#include "libfswatch/c++/monitor_factory.hpp"
 #include "libfswatch/c/error.h"
 #include "libfswatch/c/libfswatch.h"
 #include "libfswatch/c/libfswatch_log.h"

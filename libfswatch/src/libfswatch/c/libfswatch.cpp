@@ -423,6 +423,7 @@
 #include "../c++/libfswatch_map.hpp"
 #include "../c++/filter.hpp"
 #include "../c++/monitor.hpp"
+#include "../c++/monitor_factory.hpp"
 #include "../c++/libfswatch_exception.hpp"
 
 using namespace std;
