@@ -23,13 +23,17 @@
 #include "libfswatch_exception.hpp"
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
   #include "fsevents_monitor.hpp"
-#elif defined(HAVE_SYS_EVENT_H)
+#endif
+#if defined(HAVE_SYS_EVENT_H)
   #include "kqueue_monitor.hpp"
-#elif defined(HAVE_PORT_H)
+#endif
+#if defined(HAVE_PORT_H)
   #include "fen_monitor.hpp"
-#elif defined(HAVE_SYS_INOTIFY_H)
+#endif
+#if defined(HAVE_SYS_INOTIFY_H)
   #include "inotify_monitor.hpp"
-#elif defined(HAVE_WINDOWS)
+#endif
+#if defined(HAVE_WINDOWS)
   #include "windows_monitor.hpp"
 #endif
 #include "poll_monitor.hpp"
@@ -96,17 +100,20 @@ namespace fsw
 
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
     creator_by_string_set[fsw_quote(fsevents_monitor)] = fsw_monitor_type::fsevents_monitor_type;
-#elif defined(HAVE_SYS_EVENT_H)
-    creator_by_string_set[fsw_quote(kqueue_monitor)] = fsw_monitor_type::kqueue_monitor_type;
-#elif defined(HAVE_PORT_H)
-    creator_by_string_set[fsw_quote(fen_monitor)] = fsw_monitor_type::fen_monitor_type;
-#elif defined(HAVE_SYS_INOTIFY_H)
-    creator_by_string_set[fsw_quote(inotify_monitor)] = fsw_monitor_type::inotify_monitor_type;
-#elif defined(HAVE_WINDOWS)
-    creator_by_string_set[fsw_quote(windows_monitor)] = fsw_monitor_type::windows_monitor_type;
-#else
-    creator_by_string_set[fsw_quote(poll_monitor)] = fsw_monitor_type::poll_monitor_type;
 #endif
+#if defined(HAVE_SYS_EVENT_H)
+    creator_by_string_set[fsw_quote(kqueue_monitor)] = fsw_monitor_type::kqueue_monitor_type;
+#endif
+#if defined(HAVE_PORT_H)
+    creator_by_string_set[fsw_quote(fen_monitor)] = fsw_monitor_type::fen_monitor_type;
+#endif
+#if defined(HAVE_SYS_INOTIFY_H)
+    creator_by_string_set[fsw_quote(inotify_monitor)] = fsw_monitor_type::inotify_monitor_type;
+#endif
+#if defined(HAVE_WINDOWS)
+    creator_by_string_set[fsw_quote(windows_monitor)] = fsw_monitor_type::windows_monitor_type;
+#endif
+    creator_by_string_set[fsw_quote(poll_monitor)] = fsw_monitor_type::poll_monitor_type;
 
     return creator_by_string_set;
 #undef fsw_quote
