@@ -1,3 +1,5 @@
+#include <utility>
+
 /*
  * Copyright (c) 2014-2018 Enrico M. Crisostomo
  *
@@ -142,7 +144,7 @@ namespace fsw
     if (i == creators_by_string().end())
       return nullptr;
 
-    return create_monitor(i->second, paths, callback, context);
+    return create_monitor(i->second, std::move(paths), callback, context);
   }
 
   bool monitor_factory::exists_type(const std::string& name)
