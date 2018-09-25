@@ -708,23 +708,6 @@ namespace fsw
      */
     static bool exists_type(const fsw_monitor_type& type);
 
-    /**
-     * @brief Registers a @p creator for the specified monitor type @p name.
-     *
-     * @param name The name of the monitor type.
-     * @param creator The monitor creator function.
-     */
-    static void register_creator(const std::string& name,
-                                 FSW_FN_MONITOR_CREATOR creator);
-    /**
-     * @brief Registers a @p creator for the specified monitor @p type.
-     *
-     * @param type The monitor type.
-     * @param creator The monitor creator function.
-     */
-    static void register_creator_by_type(const fsw_monitor_type& type,
-                                         FSW_FN_MONITOR_CREATOR creator);
-
     monitor_factory() = delete;
     monitor_factory(const monitor_factory& orig) = delete;
     monitor_factory& operator=(const monitor_factory& that) = delete;
