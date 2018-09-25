@@ -33,10 +33,6 @@
 
 namespace fsw
 {
-  typedef monitor *(*FSW_FN_MONITOR_CREATOR)(std::vector<std::string> paths,
-                                             FSW_EVENT_CALLBACK *callback,
-                                             void *context);
-
   /**
    * @brief Object factory class for fsw::monitor instances.
    *
