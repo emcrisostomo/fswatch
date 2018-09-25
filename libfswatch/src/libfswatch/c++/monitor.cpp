@@ -466,19 +466,6 @@ namespace fsw
     return (i != creators_by_type().end());
   }
 
-  void monitor_factory::register_creator(const std::string& name,
-                                         FSW_FN_MONITOR_CREATOR creator)
-  {
-    creators_by_string()[name] = creator;
-  }
-
-  void monitor_factory::register_creator_by_type(const fsw_monitor_type& type,
-                                                 FSW_FN_MONITOR_CREATOR creator)
-  {
-    creators_by_type()[type] = creator;
-  }
-
-
   std::vector<std::string> monitor_factory::get_types()
   {
     std::vector<std::string> types;
