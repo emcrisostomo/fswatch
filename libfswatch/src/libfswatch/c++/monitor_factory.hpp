@@ -29,6 +29,7 @@
 #  define FSW__MONITOR_FACTORY_H
 
 #include "monitor.hpp"
+#include "libfswatch_set.hpp"
 
 namespace fsw
 {
@@ -128,8 +129,8 @@ namespace fsw
     monitor_factory(const monitor_factory& orig) = delete;
     monitor_factory& operator=(const monitor_factory& that) = delete;
   private:
-    static std::map<std::string, FSW_FN_MONITOR_CREATOR>& creators_by_string();
-    static std::map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>& creators_by_type();
+    static std::map<std::string, fsw_monitor_type>& creators_by_string();
+    static fsw_hash_set<fsw_monitor_type>& creators_by_type();
   };
 }
 

@@ -19,6 +19,18 @@
 #include "gettext_defs.h"
 #include "monitor_factory.hpp"
 #include "libfswatch_exception.hpp"
+#if defined(HAVE_FSEVENTS_FILE_EVENTS)
+  #include "fsevents_monitor.hpp"
+#elif defined(HAVE_SYS_EVENT_H)
+  #include "kqueue_monitor.hpp"
+#elif defined(HAVE_PORT_H)
+  #include "fen_monitor.hpp"
+#elif defined(HAVE_SYS_INOTIFY_H)
+  #include "inotify_monitor.hpp"
+#elif defined(HAVE_WINDOWS)
+  #include "windows_monitor.hpp"
+#endif
+#include "poll_monitor.hpp"
 
 namespace fsw
 {
@@ -59,28 +71,65 @@ namespace fsw
       return create_default_monitor(paths, callback, context);
 
     default:
-      auto c = creators_by_type().find(type);
-
-      if (c == creators_by_type().end())
-        throw libfsw_exception("Unsupported monitor.",
-                               FSW_ERR_UNKNOWN_MONITOR_TYPE);
-      return c->second(paths, callback, context);
+#if defined(HAVE_FSEVENTS_FILE_EVENTS)
+      return new fsevents_monitor(paths, callback, context);
+#elif defined(HAVE_SYS_EVENT_H)
+      return new kqueue_monitor(paths, callback, context);
+#elif defined(HAVE_PORT_H)
+      return new fen_monitor(paths, callback, context);
+#elif defined(HAVE_SYS_INOTIFY_H)
+      return new inotify_monitor(paths, callback, context);
+#elif defined(HAVE_WINDOWS)
+      return new windows_monitor(paths, callback, context);
+#else
+      return new poll_monitor(paths, callback, context);
+#endif
     }
   }
 
-  std::map<std::string, FSW_FN_MONITOR_CREATOR>& monitor_factory::creators_by_string()
+  std::map<std::string, fsw_monitor_type>& monitor_factory::creators_by_string()
   {
-    static std::map<std::string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
+#define fsw_quote(x) #x
+    static std::map<std::string, fsw_monitor_type> creator_by_string_set;
 
-    return creator_by_string_map;
+#if defined(HAVE_FSEVENTS_FILE_EVENTS)
+    creator_by_string_set[fsw_quote(fsevents_monitor)] = fsw_monitor_type::fsevents_monitor_type;
+#elif defined(HAVE_SYS_EVENT_H)
+    creator_by_string_set[fsw_quote(kqueue_monitor)] = fsw_monitor_type::kqueue_monitor_type;
+#elif defined(HAVE_PORT_H)
+    creator_by_string_set[fsw_quote(fen_monitor)] = fsw_monitor_type::fen_monitor_type;
+#elif defined(HAVE_SYS_INOTIFY_H)
+    creator_by_string_set[fsw_quote(inotify_monitor)] = fsw_monitor_type::inotify_monitor_type;
+#elif defined(HAVE_WINDOWS)
+    creator_by_string_set[fsw_quote(windows_monitor)] = fsw_monitor_type::windows_monitor_type;
+#else
+    creator_by_string_set[fsw_quote(poll_monitor)] = fsw_monitor_type::poll_monitor_type;
+#endif
+
+    return creator_by_string_set;
+#undef fsw_quote
   }
 
-  std::map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>&
+  fsw_hash_set<fsw_monitor_type>&
   monitor_factory::creators_by_type()
   {
-    static std::map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR> creator_by_type_map;
+    static fsw_hash_set<fsw_monitor_type> creator_by_type_set;
 
-    return creator_by_type_map;
+#if defined(HAVE_FSEVENTS_FILE_EVENTS)
+    creator_by_type_set.insert(fsw_monitor_type::fsevents_monitor_type);
+#elif defined(HAVE_SYS_EVENT_H)
+    creator_by_type_set.insert(fsw_monitor_type::kqueue_monitor_type);
+#elif defined(HAVE_PORT_H)
+    creator_by_type_set.insert(fsw_monitor_type::fen_monitor_type);
+#elif defined(HAVE_SYS_INOTIFY_H)
+    creator_by_type_set.insert(fsw_monitor_type::inotify_monitor_type);
+#elif defined(HAVE_WINDOWS)
+    creator_by_type_set.insert(fsw_monitor_type::windows_monitor_type);
+#else
+    creator_by_type_set.insert(fsw_monitor_type::poll_monitor_type);
+#endif
+
+    return creator_by_type_set;
   }
 
   monitor *monitor_factory::create_monitor(const std::string& name,
@@ -93,7 +142,7 @@ namespace fsw
     if (i == creators_by_string().end())
       return nullptr;
 
-    return i->second(std::move(paths), callback, context);
+    return create_monitor(i->second, paths, callback, context);
   }
 
   bool monitor_factory::exists_type(const std::string& name)
