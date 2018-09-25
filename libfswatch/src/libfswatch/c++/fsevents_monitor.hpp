@@ -38,8 +38,6 @@ namespace fsw
    */
   class fsevents_monitor : public monitor
   {
-  REGISTER_MONITOR(fsevents_monitor, fsevents_monitor_type);
-
   public:
 
     /**

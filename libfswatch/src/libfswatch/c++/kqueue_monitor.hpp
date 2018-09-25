@@ -47,8 +47,6 @@ namespace fsw
    */
   class kqueue_monitor : public monitor
   {
-    REGISTER_MONITOR(kqueue_monitor, kqueue_monitor_type);
-
   public:
     /**
      * @brief Constructs an instance of this class.

@@ -632,12 +632,8 @@ namespace fsw
    * monitors and get an instance of a monitor either by _type_ or by _name_.
    *
    * In order for monitor types to be visible to the factory they have to be
-   * _registered_.  Currently, monitor implementations can be registered using
-   * the register_creator() and register_creator_by_type(), or using:
-   *
-   *   * The fsw::monitor_registrant helper class.
-   *   * The ::REGISTER_MONITOR macro.
-   *   * The ::REGISTER_MONITOR_IMPL macro.
+   * _registered_.  Currently, monitor implementations are registered at compile
+   * time.
    *
    * The same monitor type cannot be used to register multiple monitor
    * implementations.  No checks are in place to detect this situation and the
@@ -736,89 +732,6 @@ namespace fsw
     static std::map<std::string, FSW_FN_MONITOR_CREATOR>& creators_by_string();
     static std::map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>& creators_by_type();
   };
-
-  /**
-   * @brief Helper class to register monitor factories.
-   *
-   * The constructor of this class perform the registration of the given
-   * (name, type) pair in the monitor_factory registry.  This class is used by
-   * the REGISTER_MONITOR and REGISTER_MONITOR_IMPL macros.
-   *
-   * @see fsw::monitor_factory
-   */
-  template<class M>
-  class monitor_registrant
-  {
-  public:
-
-    /**
-     * @brief Constructs a monitor registrant for the specified @p type.
-     *
-     * @param name The name of the type whose factory is being registered.
-     * @param type The type whose factory is being registered.
-     */
-    monitor_registrant(const std::string& name, const fsw_monitor_type& type)
-    {
-      FSW_FN_MONITOR_CREATOR default_creator =
-        [](std::vector<std::string> paths,
-           FSW_EVENT_CALLBACK *callback,
-           void *context = nullptr) -> monitor *
-        {
-          return new M(paths, callback, context);
-        };
-
-      monitor_factory::register_creator(name, default_creator);
-      monitor_factory::register_creator_by_type(type, default_creator);
-    }
-  };
-
-  /**
-   * This macro is used to simplify the registration process of a monitor
-   * type.  Since registration of a monitor type is usually performed once, a
-   * static private instance monitor_factory_registrant of the
-   * monitor_registrant class is declared by this macro in the enclosing class.
-   *
-   * Beware that since this macro adds a private qualifier, every field
-   * declared after it must be correctly qualified.
-   *
-   * The use of the REGISTER_MONITOR macro in a class
-   * must always be matched by a corresponding use of the REGISTER_MONITOR_IMPL
-   * macro in the class definition.
-   *
-   * To register class my_monitor with type my_type,
-   * use the REGISTER_MONITOR macro as in the following example:
-   *
-   * [my_class.h]
-   * class my_monitor
-   * {
-   *   REGISTER_MONITOR(my_monitor, my_monitor_type);
-   *   ...
-   * };
-   *
-   */
-#  define REGISTER_MONITOR(classname, monitor_type) \
-private: \
-static const monitor_registrant<classname> monitor_factory_registrant;
-
-  /**
-   * This macro is used to simplify the registration process of a monitor
-   * type.  Since registration of a monitor type is usually performed once, a
-   * static private instance monitor_factory_registrant of the
-   * monitor_registrant class is defined in the monitor class specified by
-   * classname.
-   *
-   * A invocation of the REGISTER_MONITOR_IMPL macro must always be matched by
-   * an invocation of the REGISTER_MONITOR macro in the class declaration.
-   *
-   * To register class my_monitor with type my_type,
-   * use the REGISTER_MONITOR macro as in the following example:
-   *
-   * [my_class.cpp]
-   *
-   * REGISTER_MONITOR_IMPL(my_monitor, my_monitor_type);
-   */
-#  define REGISTER_MONITOR_IMPL(classname, monitor_type) \
-const monitor_registrant<classname> classname::monitor_factory_registrant(#classname, monitor_type);
 }
 
 #endif  /* FSW__MONITOR_H */

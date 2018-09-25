@@ -52,8 +52,6 @@ namespace fsw
    */
   class fen_monitor : public monitor
   {
-    REGISTER_MONITOR(fen_monitor, fen_monitor_type);
-
   public:
     /**
      * @brief Constructs an instance of this class.

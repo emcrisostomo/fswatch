@@ -95,8 +95,6 @@ namespace fsw
 
   static const std::vector<KqueueFlagType> event_flag_type = create_flag_type_vector();
 
-  REGISTER_MONITOR_IMPL(kqueue_monitor, kqueue_monitor_type);
-
   kqueue_monitor::kqueue_monitor(std::vector<std::string> paths_to_monitor,
                                  FSW_EVENT_CALLBACK *callback,
                                  void *context) :
