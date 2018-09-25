@@ -18,6 +18,7 @@
 #endif
 #include "gettext_defs.h"
 #include "monitor_factory.hpp"
+#include "libfswatch_exception.hpp"
 
 namespace fsw
 {
