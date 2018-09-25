@@ -109,7 +109,9 @@ if (HAVE_PORT_H)
             src/libfswatch/c++/fen_monitor.cpp)
 endif (HAVE_PORT_H)
 
-if (CYGWIN)
+check_cxx_symbol_exists(FindFirstChangeNotification windows.h HAVE_WINDOWS_HEADER)
+
+if (HAVE_WINDOWS_HEADER AND CYGWIN)
     check_include_file_cxx(sys/cygwin.h HAVE_CYGWIN)
 
     if (HAVE_CYGWIN)
@@ -132,7 +134,7 @@ if (CYGWIN)
                 src/libfswatch/c++/windows_monitor.cpp)
         set(HAVE_WINDOWS ON CACHE BOOL "Enable Windows support")
     endif (HAVE_CYGWIN)
-endif (CYGWIN)
+endif (HAVE_WINDOWS_HEADER AND CYGWIN)
 
 if (APPLE)
     check_include_file_cxx(CoreServices/CoreServices.h HAVE_FSEVENTS_FILE_EVENTS)
