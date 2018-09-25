@@ -615,10 +615,6 @@ namespace fsw
 # endif
 #endif
   };
-
-  typedef monitor *(*FSW_FN_MONITOR_CREATOR)(std::vector<std::string> paths,
-                                             FSW_EVENT_CALLBACK *callback,
-                                             void *context);
 }
 
 #endif  /* FSW__MONITOR_H */
