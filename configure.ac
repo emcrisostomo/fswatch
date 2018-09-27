@@ -63,6 +63,16 @@ AC_ARG_ENABLE([docker],
   [use_docker=${enableval}],
   [use_docker=no])
 
+# Check compiler
+AX_COMPILER_VENDOR
+AX_COMPILER_VERSION
+
+# GCC 4.9 is the first compiler that implements <regex>: 4.8 shipped a broken
+# implementation, so we have to explicitly check for a version >= 4.9
+AS_VAR_IF([ax_cv_cxx_compiler_vendor], [gnu], [dnl
+  AX_COMPARE_VERSION([${ax_cv_cxx_compiler_version}], [lt], [4.9], [AC_MSG_ERROR([GCC v. 4.9 is required])])
+])
+
 # OS-specific treatment
 AM_CONDITIONAL([OS_CYGWIN], [test "x${target_os}" = "xcygwin"])
 
