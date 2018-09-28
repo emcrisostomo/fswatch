@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * Copyright (c) 2014-2018 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -18,33 +18,34 @@
 #endif
 #include "gettext_defs.h"
 #include "monitor.hpp"
+#include "monitor_factory.hpp"
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
 #include "string/string_utils.hpp"
 #include <cstdlib>
 #include <memory>
 #include <thread>
-#include <regex.h>
+#include <regex>
 #include <sstream>
-#include <time.h>
+#include <utility>
+#include <ctime>
 
-using namespace std;
 using namespace std::chrono;
 
 namespace fsw
 {
   struct compiled_monitor_filter
   {
-    regex_t regex;
+    std::regex regex;
     fsw_filter_type type;
   };
 
 #ifdef HAVE_CXX_MUTEX
-  #define FSW_MONITOR_RUN_GUARD unique_lock<mutex> run_guard(run_mutex);
+  #define FSW_MONITOR_RUN_GUARD std::unique_lock<std::mutex> run_guard(run_mutex);
   #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock();
   #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock();
 
-  #define FSW_MONITOR_NOTIFY_GUARD unique_lock<mutex> notify_guard(notify_mutex);
+  #define FSW_MONITOR_NOTIFY_GUARD std::unique_lock<std::mutex> notify_guard(notify_mutex);
 #else
   #define FSW_MONITOR_RUN_GUARD
   #define FSW_MONITOR_RUN_GUARD_LOCK
@@ -53,7 +54,7 @@ namespace fsw
   #define FSW_MONITOR_NOTIFY_GUARD
 #endif
 
-  monitor::monitor(vector<string> paths,
+  monitor::monitor(std::vector<std::string> paths,
                    FSW_EVENT_CALLBACK *callback,
                    void *context) :
     paths(std::move(paths)), callback(callback), context(context), latency(1)
@@ -65,8 +66,9 @@ namespace fsw
     }
 
 #ifdef HAVE_INACTIVITY_CALLBACK
-    milliseconds epoch = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-    last_notification.store(epoch, memory_order_release);
+    milliseconds epoch =
+      duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    last_notification.store(epoch);
 #endif
   }
 
@@ -93,7 +95,7 @@ namespace fsw
 
   milliseconds monitor::get_latency_ms() const
   {
-    return milliseconds((long long)(latency * 1000 * 1.1));
+    return milliseconds((long long) (latency * 1000 * 1.1));
   }
 
   void monitor::set_recursive(bool recursive)
@@ -111,7 +113,8 @@ namespace fsw
     this->event_type_filters.push_back(filter);
   }
 
-  void monitor::set_event_type_filters(const vector<fsw_event_type_filter>& filters)
+  void
+  monitor::set_event_type_filters(const std::vector<fsw_event_type_filter>& filters)
   {
     event_type_filters.clear();
 
@@ -120,13 +123,17 @@ namespace fsw
 
   void monitor::add_filter(const monitor_filter& filter)
   {
-    regex_t regex;
-    int flags = 0;
+    std::regex::flag_type regex_flags = std::regex::basic;
 
-    if (!filter.case_sensitive) flags |= REG_ICASE;
-    if (filter.extended) flags |= REG_EXTENDED;
+    if (filter.extended) regex_flags = std::regex::extended;
+    if (!filter.case_sensitive) regex_flags |= std::regex::icase;
 
-    if (regcomp(&regex, filter.text.c_str(), flags))
+    try
+    {
+      this->filters.push_back({std::regex(filter.text, regex_flags),
+                               filter.type});
+    }
+    catch (std::regex_error& error)
     {
       throw libfsw_exception(
         string_utils::string_from_format(
@@ -134,8 +141,6 @@ namespace fsw
           filter.text.c_str()),
         FSW_ERR_INVALID_REGEX);
     }
-
-    this->filters.push_back({regex, filter.type});
   }
 
   void monitor::set_property(const std::string& name, const std::string& value)
@@ -143,17 +148,17 @@ namespace fsw
     properties[name] = value;
   }
 
-  void monitor::set_properties(const map<string, string> options)
+  void monitor::set_properties(const std::map<std::string, std::string> options)
   {
-    properties = std::move(options);
+    properties = options;
   }
 
-  string monitor::get_property(string name)
+  std::string monitor::get_property(std::string name)
   {
     return properties[name];
   }
 
-  void monitor::set_filters(const vector<monitor_filter>& filters)
+  void monitor::set_filters(const std::vector<monitor_filter>& filters)
   {
     for (const monitor_filter& filter : filters)
     {
@@ -174,7 +179,7 @@ namespace fsw
   bool monitor::accept_event_type(fsw_event_flag event_type) const
   {
     // If no filters are set, then accept the event.
-    if (event_type_filters.size() == 0) return true;
+    if (event_type_filters.empty()) return true;
 
     // If filters are set, accept the event only if present amongst the filters.
     for (const auto& filter : event_type_filters)
@@ -189,18 +194,13 @@ namespace fsw
     return false;
   }
 
-  bool monitor::accept_path(const string& path) const
-  {
-    return accept_path(path.c_str());
-  }
-
-  bool monitor::accept_path(const char *path) const
+  bool monitor::accept_path(const std::string& path) const
   {
     bool is_excluded = false;
 
     for (const auto& filter : filters)
     {
-      if (regexec(&filter.regex, path, 0, nullptr, 0) == 0)
+      if (std::regex_search(path, filter.regex))
       {
         if (filter.type == fsw_filter_type::filter_include) return true;
 
@@ -224,54 +224,10 @@ namespace fsw
   monitor::~monitor()
   {
     stop();
-
-    for (auto& re : filters) regfree(&re.regex);
-  }
-
-  static monitor *create_default_monitor(vector<string> paths,
-                                         FSW_EVENT_CALLBACK *callback,
-                                         void *context)
-  {
-    fsw_monitor_type type;
-
-#if defined(HAVE_FSEVENTS_FILE_EVENTS)
-    type = fsw_monitor_type::fsevents_monitor_type;
-#elif defined(HAVE_SYS_EVENT_H)
-    type = fsw_monitor_type::kqueue_monitor_type;
-#elif defined(HAVE_PORT_H)
-    type = fsw_monitor_type::fen_monitor_type;
-#elif defined(HAVE_SYS_INOTIFY_H)
-    type = fsw_monitor_type::inotify_monitor_type;
-#elif defined(HAVE_WINDOWS)
-    type = fsw_monitor_type::windows_monitor_type;
-#else
-    type = fsw_monitor_type::poll_monitor_type;
-#endif
-
-    return monitor_factory::create_monitor(type, paths, callback, context);
-  }
-
-  monitor *monitor_factory::create_monitor(fsw_monitor_type type,
-                                           vector<string> paths,
-                                           FSW_EVENT_CALLBACK *callback,
-                                           void *context)
-  {
-    switch (type)
-    {
-    case system_default_monitor_type:
-      return create_default_monitor(paths, callback, context);
-
-    default:
-      auto c = creators_by_type().find(type);
-
-      if (c == creators_by_type().end())
-        throw libfsw_exception("Unsupported monitor.",
-                               FSW_ERR_UNKNOWN_MONITOR_TYPE);
-      return c->second(paths, callback, context);
-    }
   }
 
 #ifdef HAVE_INACTIVITY_CALLBACK
+
   void monitor::inactivity_callback(monitor *mon)
   {
     if (!mon) throw libfsw_exception(_("Callback argument cannot be null."));
@@ -280,13 +236,13 @@ namespace fsw
 
     for (;;)
     {
-      unique_lock<mutex> run_guard(mon->run_mutex);
+      std::unique_lock<std::mutex> run_guard(mon->run_mutex);
       if (mon->should_stop) break;
       run_guard.unlock();
 
       milliseconds elapsed =
         duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-        - mon->last_notification.load(memory_order_acquire);
+        - mon->last_notification.load();
 
       // Sleep and loop again if sufficient time has not elapsed yet.
       if (elapsed < mon->get_latency_ms())
@@ -294,7 +250,8 @@ namespace fsw
         milliseconds to_sleep = mon->get_latency_ms() - elapsed;
         seconds max_sleep_time(2);
 
-        std::this_thread::sleep_for(to_sleep > max_sleep_time ? max_sleep_time : to_sleep);
+        std::this_thread::sleep_for(
+          to_sleep > max_sleep_time ? max_sleep_time : to_sleep);
         continue;
       }
 
@@ -302,7 +259,7 @@ namespace fsw
       time_t curr_time;
       time(&curr_time);
 
-      vector<event> events;
+      std::vector<event> events;
       events.push_back({"", curr_time, {NoOp}});
 
       mon->notify_events(events);
@@ -310,6 +267,7 @@ namespace fsw
 
     FSW_ELOG(_("Inactivity notification thread: exiting\n"));
   }
+
 #endif
 
   void monitor::start()
@@ -324,7 +282,8 @@ namespace fsw
     std::unique_ptr<std::thread> inactivity_thread;
 #ifdef HAVE_INACTIVITY_CALLBACK
     if (fire_idle_event)
-      inactivity_thread.reset(new std::thread(monitor::inactivity_callback, this));
+      inactivity_thread.reset(
+        new std::thread(monitor::inactivity_callback, this));
 #endif
 
     // Fire the monitor run loop.
@@ -359,12 +318,12 @@ namespace fsw
     return this->running;
   }
 
-  vector<fsw_event_flag> monitor::filter_flags(const event& evt) const
+  std::vector<fsw_event_flag> monitor::filter_flags(const event& evt) const
   {
     // If there is nothing to filter, just return the original vector.
-    if (event_type_filters.size() == 0) return evt.get_flags();
+    if (event_type_filters.empty()) return evt.get_flags();
 
-    vector<fsw_event_flag> filtered_flags;
+    std::vector<fsw_event_flag> filtered_flags;
 
     for (auto const& flag : evt.get_flags())
     {
@@ -374,7 +333,7 @@ namespace fsw
     return filtered_flags;
   }
 
-  void monitor::notify_overflow(const string& path) const
+  void monitor::notify_overflow(const std::string& path) const
   {
     if (!allow_overflow) throw libfsw_exception(_("Event queue overflow."));
 
@@ -384,103 +343,40 @@ namespace fsw
     notify_events({{path, curr_time, {fsw_event_flag::Overflow}}});
   }
 
-  void monitor::notify_events(const vector<event>& events) const
+  void monitor::notify_events(const std::vector<event>& events) const
   {
     FSW_MONITOR_NOTIFY_GUARD;
 
     // Update the last notification timestamp
 #ifdef HAVE_INACTIVITY_CALLBACK
-    milliseconds now = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-    last_notification.store(now, memory_order_release);
+    milliseconds now =
+      duration_cast<milliseconds>(
+        system_clock::now().time_since_epoch());
+    last_notification.store(now);
 #endif
 
-    vector<event> filtered_events;
+    std::vector<event> filtered_events;
 
     for (auto const& event : events)
     {
       // Filter flags
-      vector<fsw_event_flag> filtered_flags = filter_flags(event);
-      if (filtered_flags.size() == 0) continue;
+      std::vector<fsw_event_flag> filtered_flags = filter_flags(event);
 
+      if (filtered_flags.empty()) continue;
       if (!accept_path(event.get_path())) continue;
 
-      filtered_events.push_back(
-        {event.get_path(), event.get_time(), filtered_flags});
+      filtered_events.emplace_back(event.get_path(),
+                                   event.get_time(),
+                                   filtered_flags);
     }
 
-    if (filtered_events.size() > 0)
+    if (!filtered_events.empty())
     {
       FSW_ELOG(string_utils::string_from_format(_("Notifying events #: %d.\n"),
                                                 filtered_events.size()).c_str());
 
       callback(filtered_events, context);
     }
-  }
-
-  map<string, FSW_FN_MONITOR_CREATOR>& monitor_factory::creators_by_string()
-  {
-    static map<string, FSW_FN_MONITOR_CREATOR> creator_by_string_map;
-
-    return creator_by_string_map;
-  }
-
-  map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR>& monitor_factory::creators_by_type()
-  {
-    static map<fsw_monitor_type, FSW_FN_MONITOR_CREATOR> creator_by_type_map;
-
-    return creator_by_type_map;
-  }
-
-  monitor *monitor_factory::create_monitor(const string& name,
-                                           vector<string> paths,
-                                           FSW_EVENT_CALLBACK *callback,
-                                           void *context)
-  {
-    auto i = creators_by_string().find(name);
-
-    if (i == creators_by_string().end())
-      return nullptr;
-
-    return i->second(paths, callback, context);
-  }
-
-  bool monitor_factory::exists_type(const string& name)
-  {
-    auto i = creators_by_string().find(name);
-
-    return (i != creators_by_string().end());
-  }
-
-  bool monitor_factory::exists_type(const fsw_monitor_type& type)
-  {
-    auto i = creators_by_type().find(type);
-
-    return (i != creators_by_type().end());
-  }
-
-  void monitor_factory::register_creator(const string& name,
-                                         FSW_FN_MONITOR_CREATOR creator)
-  {
-    creators_by_string()[name] = creator;
-  }
-
-  void monitor_factory::register_creator_by_type(const fsw_monitor_type& type,
-                                                 FSW_FN_MONITOR_CREATOR creator)
-  {
-    creators_by_type()[type] = creator;
-  }
-
-
-  vector<string> monitor_factory::get_types()
-  {
-    vector<string> types;
-
-    for (const auto& i : creators_by_string())
-    {
-      types.push_back(i.first);
-    }
-
-    return types;
   }
 
   void monitor::on_stop()

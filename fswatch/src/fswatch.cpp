@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * Copyright (c) 2014-2017 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -31,6 +31,7 @@
 #include "libfswatch/c++/path_utils.hpp"
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
+#include "libfswatch/c++/monitor_factory.hpp"
 #include "libfswatch/c/error.h"
 #include "libfswatch/c/libfswatch.h"
 #include "libfswatch/c/libfswatch_log.h"
@@ -42,7 +43,6 @@
 
 #define _(String) gettext(String)
 
-using namespace std;
 using namespace fsw;
 
 /*
@@ -51,7 +51,7 @@ using namespace fsw;
 static void print_event_flags(const event& evt);
 static void print_event_path(const event& evt);
 static void print_event_timestamp(const event& evt);
-static int printf_event_validate_format(const string& fmt);
+static int printf_event_validate_format(const std::string& fmt);
 
 static FSW_EVENT_CALLBACK process_events;
 
@@ -69,17 +69,17 @@ struct printf_event_callbacks event_format_callbacks
     print_event_timestamp
   };
 
-static int printf_event(const string& fmt,
+static int printf_event(const std::string& fmt,
                         const event& evt,
                         const struct printf_event_callbacks& callback,
-                        ostream& os = cout);
+                        std::ostream& os = std::cout);
 
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
 static monitor *active_monitor = nullptr;
-static vector<monitor_filter> filters;
-static vector<fsw_event_type_filter> event_filters;
-static vector<string> filter_files;
+static std::vector<monitor_filter> filters;
+static std::vector<fsw_event_type_filter> event_filters;
+static std::vector<std::string> filter_files;
 static bool _0flag = false;
 static bool _1flag = false;
 static bool aflag = false;
@@ -100,13 +100,13 @@ static bool vflag = false;
 static int version_flag = false;
 static bool xflag = false;
 static double lvalue = 1.0;
-static string monitor_name;
-static string tformat = "%c";
-static string batch_marker = event::get_event_flag_name(fsw_event_flag::NoOp);
+static std::string monitor_name;
+static std::string tformat = "%c";
+static std::string batch_marker = event::get_event_flag_name(fsw_event_flag::NoOp);
 static int format_flag = false;
-static string format;
-static string event_flag_separator = " ";
-static map<string, string> monitor_properties;
+static std::string format;
+static std::string event_flag_separator = " ";
+static std::map<std::string, std::string> monitor_properties;
 
 /*
  * OPT_* variables are used as getopt_long values for long options that do not
@@ -121,7 +121,7 @@ static const int OPT_MONITOR_PROPERTY = 133;
 static const int OPT_FIRE_IDLE_EVENTS = 134;
 static const int OPT_FILTER_FROM = 135;
 
-static void list_monitor_types(ostream& stream)
+static void list_monitor_types(std::ostream& stream)
 {
   for (const auto& type : monitor_factory::get_types())
   {
@@ -129,22 +129,19 @@ static void list_monitor_types(ostream& stream)
   }
 }
 
-static void print_version(ostream& stream)
+static void print_version(std::ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream <<
-  "Copyright (C) 2013-2016 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
-  stream <<
-  _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
-  stream <<
-  _("This is free software: you are free to change and redistribute it.\n");
+  stream << "Copyright (C) 2013-2018 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
+  stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
   stream << "\n";
   stream << _("Written by Enrico M. Crisostomo.");
-  stream << endl;
+  stream << std::endl;
 }
 
-static void usage(ostream& stream)
+static void usage(std::ostream& stream)
 {
 #ifdef HAVE_GETOPT_LONG
   stream << PACKAGE_STRING << "\n\n";
@@ -156,7 +153,6 @@ static void usage(ostream& stream)
   stream << " -1, --one-event       " << _("Exit fswatch after the first set of events is received.\n");
   stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
-  stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
   stream << " -a, --access          " << _("Watch file accesses.\n");
   stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
@@ -180,14 +176,15 @@ static void usage(ostream& stream)
   stream << " -r, --recursive       " << _("Recurse subdirectories.\n");
   stream << " -t, --timestamp       " << _("Print the event timestamp.\n");
   stream << " -u, --utc-time        " << _("Print the event time as UTC time.\n");
-  stream << " -v, --verbose         " << _("Print verbose output.\n");
-  stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
   stream << " -x, --event-flags     " << _("Print the event flags.\n");
+  stream << "     --event=TYPE      " << _("Filter the event by the specified type.\n");
   stream << "     --event-flag-separator=STRING\n";
   stream << "                       " << _("Print event flags using the specified separator.") << "\n";
+  stream << " -v, --verbose         " << _("Print verbose output.\n");
+  stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
   stream << "\n";
 #else
-  string option_string = "[01adeEfhilLMmnortuvx]";
+  std::string option_string = "[01adeEfhilLMmnortuvx]";
 
   stream << PACKAGE_STRING << "\n\n";
   stream << _("Usage:\n");
@@ -226,7 +223,7 @@ static void usage(ostream& stream)
 
   stream << _("Report bugs to <") << PACKAGE_BUGREPORT << ">.\n";
   stream << PACKAGE << _(" home page: <") << PACKAGE_URL << ">.";
-  stream << endl;
+  stream << std::endl;
 }
 
 static void close_monitor()
@@ -234,14 +231,41 @@ static void close_monitor()
   if (active_monitor) active_monitor->stop();
 }
 
-static void close_handler(int signal)
+namespace
 {
-  FSW_ELOG(_("Executing termination handler.\n"));
-  close_monitor();
+  extern "C" void close_handler(int signal)
+  {
+    FSW_ELOG(_("Executing termination handler.\n"));
+    close_monitor();
+  }
+}
+
+static bool parse_event_bitmask(const char *optarg)
+{
+  try
+  {
+    auto bitmask = std::stoul(optarg, nullptr, 10);
+
+    for (auto& item : FSW_ALL_EVENT_FLAGS)
+    {
+      if ((bitmask & item) == item)
+      {
+        event_filters.push_back({item});
+      }
+    }
+
+    return true;
+  }
+  catch (std::invalid_argument& ex)
+  {
+    return false;
+  }
 }
 
 static bool parse_event_filter(const char *optarg)
 {
+  if (parse_event_bitmask(optarg)) return true;
+
   try
   {
     event_filters.push_back({event::get_event_flag_by_name(optarg)});
@@ -249,7 +273,7 @@ static bool parse_event_filter(const char *optarg)
   }
   catch (libfsw_exception& ex)
   {
-    cerr << ex.what() << endl;
+    std::cerr << ex.what() << std::endl;
     return false;
   }
 }
@@ -258,13 +282,13 @@ static bool validate_latency(double latency)
 {
   if (latency == 0.0)
   {
-    cerr << _("Invalid value: ") << optarg << endl;
+    std::cerr << _("Invalid value: ") << optarg << std::endl;
     return false;
   }
 
   if (errno == ERANGE || latency == HUGE_VAL)
   {
-    cerr << _("Value out of range: ") << optarg << endl;
+    std::cerr << _("Value out of range: ") << optarg << std::endl;
     return false;
   }
 
@@ -284,7 +308,7 @@ static void register_signal_handlers()
   }
   else
   {
-    cerr << _("SIGTERM handler registration failed.") << endl;
+    std::cerr << _("SIGTERM handler registration failed.") << std::endl;
   }
 
   if (sigaction(SIGABRT, &action, nullptr) == 0)
@@ -293,7 +317,7 @@ static void register_signal_handlers()
   }
   else
   {
-    cerr << _("SIGABRT handler registration failed.") << endl;
+    std::cerr << _("SIGABRT handler registration failed.") << std::endl;
   }
 
   if (sigaction(SIGINT, &action, nullptr) == 0)
@@ -302,13 +326,13 @@ static void register_signal_handlers()
   }
   else
   {
-    cerr << _("SIGINT handler registration failed") << endl;
+    std::cerr << _("SIGINT handler registration failed") << std::endl;
   }
 }
 
 static void print_event_path(const event& evt)
 {
-  cout << evt.get_path();
+  std::cout << evt.get_path();
 }
 
 static void print_event_timestamp(const event& evt)
@@ -318,19 +342,19 @@ static void print_event_timestamp(const event& evt)
   char time_format_buffer[TIME_FORMAT_BUFF_SIZE];
   struct tm *tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
 
-  string date =
+  std::string date =
     strftime(time_format_buffer,
              TIME_FORMAT_BUFF_SIZE,
              tformat.c_str(),
-             tm_time) ? string(time_format_buffer) : string(
+             tm_time) ? std::string(time_format_buffer) : std::string(
       _("<date format error>"));
 
-  cout << date;
+  std::cout << date;
 }
 
 static void print_event_flags(const event& evt)
 {
-  const vector<fsw_event_flag>& flags = evt.get_flags();
+  const std::vector<fsw_event_flag>& flags = evt.get_flags();
 
   if (nflag)
   {
@@ -340,16 +364,16 @@ static void print_event_flags(const event& evt)
       mask += static_cast<int> (flag);
     }
 
-    cout << mask;
+    std::cout << mask;
   }
   else
   {
     for (size_t i = 0; i < flags.size(); ++i)
     {
-      cout << flags[i];
+      std::cout << flags[i];
 
       // Event flag separator is currently hard-coded.
-      if (i != flags.size() - 1) cout << event_flag_separator;
+      if (i != flags.size() - 1) std::cout << event_flag_separator;
     }
   }
 }
@@ -358,12 +382,12 @@ static void print_end_of_event_record()
 {
   if (_0flag)
   {
-    cout << '\0';
-    cout.flush();
+    std::cout << '\0';
+    std::cout.flush();
   }
   else
   {
-    cout << endl;
+    std::cout << std::endl;
   }
 }
 
@@ -371,20 +395,20 @@ static void write_batch_marker()
 {
   if (batch_marker_flag)
   {
-    cout << batch_marker;
+    std::cout << batch_marker;
     print_end_of_event_record();
   }
 }
 
-static void write_one_batch_event(const vector<event>& events)
+static void write_one_batch_event(const std::vector<event>& events)
 {
-  cout << events.size();
+  std::cout << events.size();
   print_end_of_event_record();
 
   write_batch_marker();
 }
 
-static void write_events(const vector<event>& events)
+static void write_events(const std::vector<event>& events)
 {
   for (const event& evt : events)
   {
@@ -400,7 +424,7 @@ static void write_events(const vector<event>& events)
   }
 }
 
-void process_events(const vector<event>& events, void *context)
+void process_events(const std::vector<event>& events, void *context)
 {
   if (oflag)
     write_one_batch_event(events);
@@ -411,12 +435,12 @@ void process_events(const vector<event>& events, void *context)
 static void start_monitor(int argc, char **argv, int optind)
 {
   // parsing paths
-  vector<string> paths;
+  std::vector<std::string> paths;
 
   for (auto i = optind; i < argc; ++i)
   {
     char *real_path = fsw_realpath(argv[i], nullptr);
-    string path(real_path ? real_path : argv[i]);
+    std::string path(real_path ? real_path : argv[i]);
 
     if (real_path) free(real_path);
 
@@ -451,9 +475,10 @@ static void start_monitor(int argc, char **argv, int optind)
   {
     auto filters_from_file =
       monitor_filter::read_from_file(filter_file,
-                                     [](string f)
+                                     [](std::string f)
                                      {
-                                       cerr << _("Invalid filter: ") << f << "\n";
+                                       std::cerr << _("Invalid filter: ") << f
+                                            << "\n";
                                      });
 
     std::move(filters_from_file.begin(),
@@ -478,7 +503,7 @@ static void start_monitor(int argc, char **argv, int optind)
 static void parse_opts(int argc, char **argv)
 {
   int ch;
-  string short_options = "01ade:Ef:hi:Il:LMm:nortuvx";
+  std::string short_options = "01ade:Ef:hi:Il:LMm:nortuvx";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
@@ -554,11 +579,11 @@ static void parse_opts(int argc, char **argv)
       break;
 
     case 'f':
-      tformat = string(optarg);
+      tformat = std::string(optarg);
       break;
 
     case 'h':
-      usage(cout);
+      usage(std::cout);
       exit(FSW_EXIT_OK);
 
     case 'i':
@@ -584,12 +609,12 @@ static void parse_opts(int argc, char **argv)
       break;
 
     case 'M':
-      list_monitor_types(cout);
+      list_monitor_types(std::cout);
       exit(FSW_EXIT_OK);
 
     case 'm':
       mflag = true;
-      monitor_name = string(optarg);
+      monitor_name = std::string(optarg);
       break;
 
     case 'n':
@@ -648,11 +673,11 @@ static void parse_opts(int argc, char **argv)
 
     case OPT_MONITOR_PROPERTY:
     {
-      string param(optarg);
-      size_t eq_pos = param.find_first_of("=");
-      if (eq_pos == string::npos)
+      std::string param(optarg);
+      size_t eq_pos = param.find_first_of('=');
+      if (eq_pos == std::string::npos)
       {
-        cerr << _("Invalid property format.") << endl;
+        std::cerr << _("Invalid property format.") << std::endl;
         exit(FSW_ERR_INVALID_PROPERTY);
       }
 
@@ -665,11 +690,11 @@ static void parse_opts(int argc, char **argv)
       break;
 
     case OPT_FILTER_FROM:
-      filter_files.push_back(optarg);
+      filter_files.emplace_back(optarg);
       break;
 
     case '?':
-      usage(cerr);
+      usage(std::cerr);
       exit(FSW_EXIT_UNK_OPT);
     }
   }
@@ -679,22 +704,23 @@ static void parse_opts(int argc, char **argv)
 
   if (version_flag)
   {
-    print_version(cout);
+    print_version(std::cout);
     exit(FSW_EXIT_OK);
   }
 
   // --format is incompatible with any other format option.
   if (format_flag && (tflag || xflag))
   {
-    cerr <<
-    _("--format is incompatible with any other format option such as -t and -x.") <<
-    endl;
+    std::cerr <<
+         _("--format is incompatible with any other format option such as -t and -x.")
+         <<
+         std::endl;
     exit(FSW_EXIT_FORMAT);
   }
 
   if (format_flag && oflag)
   {
-    cerr << _("--format is incompatible with -o.") << endl;
+    std::cerr << _("--format is incompatible with -o.") << std::endl;
     exit(FSW_EXIT_FORMAT);
   }
 
@@ -709,7 +735,7 @@ static void parse_opts(int argc, char **argv)
     // Test the user format
     if (printf_event_validate_format(format) < 0)
     {
-      cerr << _("Invalid format.") << endl;
+      std::cerr << _("Invalid format.") << std::endl;
       exit(FSW_EXIT_FORMAT);
     }
   }
@@ -734,7 +760,7 @@ static void format_noop(const event& evt)
 {
 }
 
-static int printf_event_validate_format(const string& fmt)
+static int printf_event_validate_format(const std::string& fmt)
 {
 
   struct printf_event_callbacks noop_callbacks
@@ -744,17 +770,17 @@ static int printf_event_validate_format(const string& fmt)
       format_noop
     };
 
-  const vector<fsw_event_flag> flags;
+  const std::vector<fsw_event_flag> flags;
   const event empty("", 0, flags);
-  ostream noop_stream(nullptr);
+  std::ostream noop_stream(nullptr);
 
   return printf_event(fmt, empty, noop_callbacks, noop_stream);
 }
 
-static int printf_event(const string& fmt,
+static int printf_event(const std::string& fmt,
                         const event& evt,
                         const struct printf_event_callbacks& callback,
-                        ostream& os)
+                        std::ostream& os)
 {
   /*
    * %t - time (further formatted using -f and strftime.
@@ -821,13 +847,13 @@ int main(int argc, char **argv)
   // validate options
   if (optind == argc)
   {
-    cerr << _("Invalid number of arguments.") << endl;
+    std::cerr << _("Invalid number of arguments.") << std::endl;
     exit(FSW_EXIT_UNK_OPT);
   }
 
   if (mflag && !monitor_factory::exists_type(monitor_name))
   {
-    cerr << _("Invalid monitor name.") << endl;
+    std::cerr << _("Invalid monitor name.") << std::endl;
     exit(FSW_EXIT_MONITOR_NAME);
   }
 
@@ -844,23 +870,29 @@ int main(int argc, char **argv)
     delete active_monitor;
     active_monitor = nullptr;
   }
-  catch (invalid_argument& ex)
+  catch (libfsw_exception& lex)
   {
-    cerr << ex.what() << "\n";
+    std::cerr << lex.what() << "\n";
+    std::cerr << "Status code: " << lex.error_code() << "\n";
 
     return FSW_EXIT_ERROR;
   }
-  catch (exception& conf)
+  catch (std::invalid_argument& ex)
   {
-    cerr << _("An error occurred and the program will be terminated.\n");
-    cerr << conf.what() << "\n";
+    std::cerr << ex.what() << "\n";
+
+    return FSW_EXIT_ERROR;
+  }
+  catch (std::exception& conf)
+  {
+    std::cerr << _("An error occurred and the program will be terminated.\n");
+    std::cerr << conf.what() << "\n";
 
     return FSW_EXIT_ERROR;
   }
   catch (...)
   {
-    cerr <<
-    _("An unknown error occurred and the program will be terminated.\n");
+    std::cerr << _("An unknown error occurred and the program will be terminated.\n");
 
     return FSW_EXIT_ERROR;
   }

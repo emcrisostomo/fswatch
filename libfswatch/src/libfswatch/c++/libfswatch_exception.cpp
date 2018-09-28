@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "libfswatch_exception.hpp"
+
+#include <utility>
 #include "gettext_defs.h"
 
 using namespace std;
@@ -21,13 +23,13 @@ using namespace std;
 namespace fsw
 {
   libfsw_exception::libfsw_exception(string cause, int code) :
-    cause(cause), code(code)
+    cause(std::move(cause)), code(code)
   {
   }
 
   const char *libfsw_exception::what() const noexcept
   {
-    return (string(_("Error: ")) + this->cause).c_str();
+    return this->cause.c_str();
   }
 
   int libfsw_exception::error_code() const noexcept
@@ -40,7 +42,21 @@ namespace fsw
     return code;
   }
 
-  libfsw_exception::~libfsw_exception() noexcept
+  libfsw_exception::~libfsw_exception() noexcept = default;
+
+  libfsw_exception::libfsw_exception(const libfsw_exception& other) noexcept :
+    cause(other.cause), code(other.code)
   {
+  }
+
+  libfsw_exception& libfsw_exception::operator=(const libfsw_exception& that) noexcept
+  {
+    if(&that == this)
+      return *this;
+
+    this->cause = that.cause;
+    this->code = that.code;
+
+    return *this;
   }
 }

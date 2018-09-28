@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (C) 2014-2016 Enrico M. Crisostomo
+# Copyright (C) 2014-2018 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,21 +16,22 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
-dnl Copyright (C) 2014-2016 Enrico M. Crisostomo
+dnl Copyright (C) 2014-2017 Enrico M. Crisostomo
 AC_PREREQ([2.69])
 m4_include([m4/fswatch_version.m4])
 m4_include([m4/libfswatch_version.m4])
 AC_INIT([fswatch], LIBFSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
-AC_COPYRIGHT([2016 (C) Enrico M. Crisostomo])
+AC_COPYRIGHT([2013-2018 (C) Enrico M. Crisostomo])
 AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([fswatch/src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([libfswatch_config.h])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([libfswatch/Makefile])
-AC_CONFIG_FILES([libfswatch/doc/Makefile libfswatch/doc/doxygen/Makefile])
-AC_CONFIG_FILES([libfswatch/src/Makefile libfswatch/src/libfswatch/Makefile libfswatch/po/Makefile.in])
-AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile fswatch/po/Makefile.in])
+AC_CONFIG_FILES([libfswatch/doc/doxygen/Makefile])
+AC_CONFIG_FILES([libfswatch/src/libfswatch/Makefile])
+AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile])
+AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
@@ -56,22 +57,40 @@ LT_PREREQ([2.4.2])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
+# Configure package
+AC_ARG_ENABLE([docker],
+  [AS_HELP_STRING([--enable-docker], [enable docker (default=no)])],
+  [use_docker=${enableval}],
+  [use_docker=no])
+
+# Check compiler
+AX_COMPILER_VENDOR
+AX_COMPILER_VERSION
+
+# GCC 4.9 is the first compiler that implements <regex>: 4.8 shipped a broken
+# implementation, so we have to explicitly check for a version >= 4.9
+AS_VAR_IF([ax_cv_cxx_compiler_vendor], [gnu], [dnl
+  AX_COMPARE_VERSION([${ax_cv_cxx_compiler_version}], [lt], [4.9], [AC_MSG_ERROR([GCC v. 4.9 is required])])
+])
+
 # OS-specific treatment
-AM_CONDITIONAL([OS_CYGWIN], [test "${target_os}" = "cygwin"])
+AM_CONDITIONAL([OS_CYGWIN], [test "x${target_os}" = "xcygwin"])
 
 # Set library interface version
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
 
 # Checks for programs.
-AC_CHECK_PROGS([DOXYGEN], [doxygen])
-test -z "${DOXYGEN}" && AC_MSG_WARN([Doxygen support disabled])
-
+EMC_PATH_PROG([DOXYGEN],  [doxygen],  [], [AC_MSG_WARN([Doxygen support disabled])],  [doxygen path])
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "${DOXYGEN}"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([libfswatch/doc/doxygen/Doxyfile])])
+
+EMC_PATH_PROG([MAKEINFO_PROG], [makeinfo], [], [AC_MSG_WARN([Makeinfo support disabled])], [makeinfo path])
+AM_CONDITIONAL([HAVE_MAKEINFO], [test -n "${MAKEINFO_PROG}"])
 
 # Initialize gettext.
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.19.4])
+AM_CONDITIONAL([USE_NLS], [test "x${USE_NLS}" = "xyes"])
 
 # Configure C++ compiler
 AX_CXX_COMPILE_STDCXX_11
@@ -249,7 +268,7 @@ AC_CHECK_TYPE([std::unique_ptr<std::string>],
 # Checks for library functions.
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_CHECK_FUNCS([modf],     [], [AC_MSG_ERROR([The modf function cannot be found.])])
-AC_CHECK_FUNCS([regcomp],  [], [AC_MSG_ERROR([The regcomp function cannot be found.])])
+AC_CHECK_FUNCS([realpath], [], [AC_MSG_ERROR([The realpath function cannot be found.])])
 AC_CHECK_FUNCS([select],   [], [AC_MSG_ERROR([The select function cannot be found.])])
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([atexit],    [], [AC_MSG_ERROR([The atexit function cannot be found.])])
@@ -278,8 +297,27 @@ AS_VAR_IF(
 # Check for optional library functions.
 AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])
 
+# Create Dockerfile for test build containers
+AS_VAR_IF([use_docker], [yes],
+  [
+    AX_GIT_CURRENT_BRANCH
+    AC_CONFIG_FILES([docker/alpine/Dockerfile])
+    AC_CONFIG_FILES([docker/alpine-no-gettext/Dockerfile])
+    AC_CONFIG_FILES([docker/debian9/Dockerfile])
+  ],
+  [])
+
 # Variables used in man files.
-MAN_DATE=$(date +'%B %d, %Y')
+AX_PROG_DATE
+
+if test -n "${SOURCE_DATE_EPOCH}"
+then
+  AS_VAR_IF([ax_cv_prog_date_gnu], [yes], [MAN_DATE=$(LC_ALL=C        date --utc --date=@${SOURCE_DATE_EPOCH} +'%B %d, %Y')])
+  AS_VAR_IF([ax_cv_prog_date_bsd], [yes], [MAN_DATE=$(LC_ALL=C TZ=UTC date            -r ${SOURCE_DATE_EPOCH} +'%B %d, %Y')])
+else
+  MAN_DATE=$(date +'%B %d, %Y')
+fi
+
 FSWATCH=${PACKAGE_NAME}
 MAN_BUG_REPORT=${PACKAGE_BUGREPORT}
 

@@ -48,8 +48,6 @@ namespace fsw
    */
   class inotify_monitor : public monitor
   {
-    REGISTER_MONITOR(inotify_monitor, inotify_monitor_type);
-
   public:
     /**
      * @brief Constructs an instance of this class.

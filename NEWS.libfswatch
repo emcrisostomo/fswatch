@@ -1,10 +1,58 @@
 NEWS
 ****
 
+New in 1.12.0:
+
+  * Issue 178: Migrate usages of POSIX regular expressions (<regex.h>) to the
+    C++11 regex library (<regex>).
+
+  * Issue 191: Wrong error message is printed when inotify event queue overflows.
+
+New in 1.11.3:
+
+  * Issue 185: Fix C99 compatibility in cevent.h.
+
+  * Issue 186: Session memory is not freed.
+
+  * Issue 188: Fix segmentation fault when starting monitor.
+
+  * Issue 189: Add function to the C API to check that a monitor is running.
+
+  * Issue 190: Fix stop sequence for FSEvents monitor.
+
+New in 1.11.2:
+
+  * Issue 182: Generate a single message catalog for both fswatch and
+    libfswatch.
+
+New in 1.11.1:
+
+  * Issue 182: Remove mandatory dependency to git.
+
+New in 1.11.0:
+
+  * Issue 181: Make gettext an optional dependency.
+
+New in 1.10.0:
+
+  * Add Doxygen documentation.
+
+  * Issue 60: Add function to load filters from a file.
+
+  * Issue 137: Deadlock on C function fsw_destroy_session if fsw_start_monitor
+    is called.
+
+  * Modify fsw_destroy_session function not to destroy a session that has a
+    running monitor.
+
+  * Issue 143: Add fsw_stop_monitor to the C API.
+
 New in 1.9.3:
 
   * Use C header names in C headers instead of C++.
+
   * Explicitly use the enum keyword when referring to enum types in C headers.
+
   * Remove default argument values from C headers.
 
 New in 1.9.2:

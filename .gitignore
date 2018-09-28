@@ -1,9 +1,12 @@
 # Binaries
 fswatch/src/fswatch
 fswatch.exe
+fswatch_test
 .libs
 *.lo
 *.o
+cmake-build-debug/
+dist/
 
 # Documentation
 libfswatch.pdf
@@ -23,6 +26,7 @@ autom4te.cache/
 .idea/tasks.xml
 .idea/dataSources.*
 .idea/dictionaries
+.idea/shelf
 out/*
 
 # Eclipse CDT
@@ -124,6 +128,9 @@ libfswatch_config.h
 libfswatch_config.h.in
 scripts/fswatch-run-bash
 scripts/fswatch-run-zsh
+docker/alpine/Dockerfile
+docker/alpine-no-gettext/Dockerfile
+docker/debian9/Dockerfile
 
 # Output files
 man/fswatch.7

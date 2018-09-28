@@ -23,15 +23,14 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <iostream>
+#include <utility>
 #include "c/libfswatch_log.h"
 #include "path_utils.hpp"
 #include "libfswatch_map.hpp"
 
-using namespace std;
-
 #if defined HAVE_STRUCT_STAT_ST_MTIME
-#  define FSW_MTIME(stat) (stat.st_mtime)
-#  define FSW_CTIME(stat) (stat.st_ctime)
+#  define FSW_MTIME(stat) ((stat).st_mtime)
+#  define FSW_CTIME(stat) ((stat).st_ctime)
 #elif defined HAVE_STRUCT_STAT_ST_MTIMESPEC
 #  define FSW_MTIME(stat) (stat.st_mtimespec.tv_sec)
 #  define FSW_CTIME(stat) (stat.st_ctimespec.tv_sec)
@@ -39,18 +38,19 @@ using namespace std;
 
 namespace fsw
 {
+  using std::vector;
+  using std::string;
+
   typedef struct poll_monitor::poll_monitor_data
   {
     fsw_hash_map<string, poll_monitor::watched_file_info> tracked_files;
   }
   poll_monitor_data;
 
-  REGISTER_MONITOR_IMPL(poll_monitor, poll_monitor_type);
-
   poll_monitor::poll_monitor(vector<string> paths,
                              FSW_EVENT_CALLBACK *callback,
                              void *context) :
-    monitor(paths, callback, context)
+    monitor(std::move(paths), callback, context)
   {
     previous_data = new poll_monitor_data();
     new_data = new poll_monitor_data();
@@ -98,9 +98,9 @@ namespace fsw
         flags.push_back(fsw_event_flag::AttributeModified);
       }
 
-      if (flags.size() > 0)
+      if (!flags.empty())
       {
-        events.push_back({path, curr_time, flags});
+        events.emplace_back(path, curr_time, flags);
       }
 
       previous_data->tracked_files.erase(path);
@@ -109,7 +109,7 @@ namespace fsw
     {
       vector<fsw_event_flag> flags;
       flags.push_back(fsw_event_flag::Created);
-      events.push_back({path, curr_time, flags});
+      events.emplace_back(path, curr_time, flags);
     }
 
     return true;
@@ -136,16 +136,16 @@ namespace fsw
       return;
     }
 
-    if (!S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return;
+    if (!accept_path(path)) return;
     if (!add_path(path, fd_stat, fn)) return;
     if (!recursive) return;
     if (!S_ISDIR(fd_stat.st_mode)) return;
 
     vector<string> children = get_directory_children(path);
 
-    for (string& child : children)
+    for (const string& child : children)
     {
-      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
+      if (child == "." || child == "..") continue;
 
       scan(path + "/" + child, fn);
     }
@@ -158,7 +158,7 @@ namespace fsw
 
     for (auto& removed : previous_data->tracked_files)
     {
-      events.push_back({removed.first, curr_time, flags});
+      events.emplace_back(removed.first, curr_time, flags);
     }
   }
 
@@ -199,7 +199,7 @@ namespace fsw
     for (;;)
     {
 #ifdef HAVE_CXX_MUTEX
-      unique_lock<mutex> run_guard(run_mutex);
+      std::unique_lock<std::mutex> run_guard(run_mutex);
       if (should_stop) break;
       run_guard.unlock();
 #endif
@@ -212,7 +212,7 @@ namespace fsw
 
       collect_data();
 
-      if (events.size())
+      if (!events.empty())
       {
         notify_events(events);
         events.clear();

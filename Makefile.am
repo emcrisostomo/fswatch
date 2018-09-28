@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2016 Enrico M. Crisostomo
+# Copyright (c) 2014-2017 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -20,7 +20,11 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) $(top_builddir)/config.status libtool
 
-SUBDIRS = libfswatch fswatch
+if USE_NLS
+  FSW_PO_SUBDIR = po
+endif
+
+SUBDIRS = libfswatch fswatch $(FSW_PO_SUBDIR)
 
 dist_man_MANS  = man/fswatch.7
 dist_doc_DATA  = README.bsd
@@ -35,8 +39,15 @@ dist_doc_DATA += README.osx
 dist_doc_DATA += README.smartos
 dist_doc_DATA += README.solaris
 dist_doc_DATA += README.windows
-dist_doc_DATA += ABOUT-NLS AUTHORS CONTRIBUTING.md COPYING LICENSE NEWS
-dist_doc_DATA += AUTHORS.libfswatch NEWS.libfswatch
+if USE_NLS
+  dist_doc_DATA += ABOUT-NLS
+endif
+dist_doc_DATA += AUTHORS
+dist_doc_DATA += CONTRIBUTING.md
+dist_doc_DATA += COPYING
+dist_doc_DATA += NEWS
+dist_doc_DATA += AUTHORS.libfswatch
+dist_doc_DATA += NEWS.libfswatch
 
 dist-hook:
 # The recipe cannot assume a file in $(distdir) is writable.
@@ -50,3 +61,6 @@ dist-hook:
 
 docker-images:
 	./docker/build-images.sh
+
+doxygen:
+	$(MAKE) -C libfswatch/doc/doxygen doxygen

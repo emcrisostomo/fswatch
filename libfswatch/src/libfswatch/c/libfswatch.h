@@ -111,7 +111,7 @@ extern "C"
    * Adds the specified monitor property.
    */
   FSW_STATUS fsw_add_property(const FSW_HANDLE handle, const char * name, const char * value);
-  
+
   /**
    * Sets the allow overflow flag of the monitor.  When this flag is set, a
    * monitor is allowed to overflow and report it as a change event.
@@ -176,6 +176,16 @@ extern "C"
    * monitor this call might return when a monitor is stopped or not.
    */
   FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle);
+
+  /**
+   * Stops a running monitor.
+   */
+  FSW_STATUS fsw_stop_monitor(const FSW_HANDLE handle);
+
+  /**
+   * Checks if a monitor exists and is running.
+   */
+  bool fsw_is_running(const FSW_HANDLE handle);
 
   /**
    * Destroys an existing session and invalidates its handle.

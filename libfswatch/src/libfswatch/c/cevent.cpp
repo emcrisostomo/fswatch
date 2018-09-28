@@ -26,6 +26,25 @@
 using namespace std;
 using namespace fsw;
 
+fsw_event_flag FSW_ALL_EVENT_FLAGS[] =
+  {
+    NoOp,
+    PlatformSpecific,
+    Created,
+    Updated,
+    Removed,
+    Renamed,
+    OwnerModified,
+    AttributeModified,
+    MovedFrom,
+    MovedTo,
+    IsFile,
+    IsDir,
+    IsSymLink,
+    Link,
+    Overflow
+  };
+
 FSW_STATUS fsw_get_event_flag_by_name(const char *name, fsw_event_flag *flag)
 {
   try

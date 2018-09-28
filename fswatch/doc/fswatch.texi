@@ -34,15 +34,15 @@ Solaris/Illumos @emph{File Events Notification}, Linux @emph{inotify},
 Microsoft Windows @code{ReadDirectoryChangesW} and a
 @code{stat()}-based backend.
 
-Copyright @copyright{} 2013-2015 Enrico M. Crisostomo
+Copyright @copyright{} 2013-2018 Enrico M. Crisostomo
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.3 or
-any later version published by the Free Software Foundation; with no
-Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
-Texts.  A copy of the license is included in the section entitled `GNU
-Free Documentation License'.
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts. A copy of the license is included in the section entitled ``GNU
+Free Documentation License''.
 @end quotation
 @end copying
 
@@ -91,6 +91,77 @@ Free Documentation License'.
 
 @node Version History
 @chapter Version History
+
+@section 1.12.0
+@itemize
+@item
+Fix issue 178: Migrate usages of POSIX regular expressions
+(@code{<regex.h>}) to the C++11 regex library (@code{<regex>}).
+
+@item
+Fix issue 191: Wrong error message is printed when @emph{inotify} event
+queue overflows.
+@end itemize
+
+@section 1.11.3
+@itemize
+@item
+Fix issue 192: Make the build reproducible.
+@end itemize
+
+@section 1.11.2
+@itemize
+@item
+Fix issue 182: Generate a single message catalog for both
+@command{fswatch} and @file{libfswatch}.
+@end itemize
+
+@section 1.11.1
+@itemize
+@item
+Fix issue 182: Remove mandatory dependency to git.
+@end itemize
+
+@section 1.11.0
+@itemize
+@item
+@opindex event@r{, mask}
+Fix issue 174: Update the @option{--event} option to accept a numeric
+event mask.
+
+@item
+Fix issue 181: Make gettext an optional dependency.
+
+@end itemize
+
+@section 1.10.0
+@itemize
+@item
+Fix issue 60: Allow excluding file patterns by passing a file.
+
+@item
+Fix issue 119: Merge @command{fswatch} and @file{libfswatch} Autotools
+projects into one.
+
+@item
+Fix issue 141: Add Docker files for Linux distributions used for
+testing.
+
+@item
+Add target to build @command{fswatch} on Alpine Linux and Debian.
+
+@end itemize
+
+@section 1.9.3
+@itemize
+@item
+Fix issue 120: C binding is pulling in C++ headers and using C++
+constructs.
+
+@item
+Fix issue 128: C binding is pulling in C++ headers.
+
+@end itemize
 
 @section 1.9.2
 @itemize
@@ -1106,8 +1177,8 @@ on directory children.
 
 @opsummary{event}
 @item --event
-Filter events by @emph{type} using the specified event name
-(@pxref{Filtering by Event Type}).  Specified event names are
+Filter events by @emph{type} using the specified event name or numeric
+mask (@pxref{Filtering by Event Type}).  Specified event names are
 @emph{included} in the output.  Multiple event types can be specified
 using this option multiple times.
 
@@ -1133,6 +1204,11 @@ Exclude paths matching @command{@var{regex}}.
 @itemx -E
 
 Use extended regular expressions.
+
+@opsummary{filter-from}
+@item --filter-from
+
+Load filters from the specified @command{@var{file}}.
 
 @opsummary{fire-idle-events}
 @item --fire-idle-events
@@ -1476,7 +1552,6 @@ It is of type @command{NoOp}.
 @end itemize
 
 @section Filtering by Path
-@cpindex filter, by path
 @cpindex path filter
 @cpindex path filter, inclusion
 @cpindex path filter, exclusion
@@ -1512,9 +1587,63 @@ performed by @command{fswatch}.
 @end itemize
 
 @fnindex @command{regcomp}
-Since filters are implemented using the @samp{regcomp} library, this
-feature is built into @command{fswatch} only on systems where this
-library is available.
+Filters are implemented using the C++11 @code{<regex>} library.  This
+feature is now required to successfully build @command{libfswatch} and
+@command{fswatch}.
+
+@subsection Specifying Filters
+@cpindex path filter
+@cpindex path filter, file
+@opindex include@r{, detail}
+@opindex exclude@r{, detail}
+@opindex from-file@r{, detail}
+
+Path filters can be specified in two ways:
+
+@itemize
+@item
+By using the @option{--include} and @option{--exclude} options and the
+modifier options @option{--extended} and @option{--insensitive}.
+
+@item
+By loading them from a file using the @option{--from-file} option.
+@end itemize
+
+@subsubsection Filter File Format
+@cpindex path filter, file
+The filter file is made up of @emph{records} separated by a new line
+charactere, or formally a @acronym{ASCII} @samp{LF} (line feed)
+character.  The structure of the record is the following:
+
+@example
+type pattern
+@end example
+
+@noindent
+where @samp{type} indicated the filter type and @samp{pattern} is the
+filter regular expression.  @samp{type} may contain the following
+characters:
+
+@itemize
+@item
+@samp{+} or @samp{-}, to indicate respectively whether the filter is
+an inclusion or an exclusion filter.
+
+@item
+@samp{e} to use an extended regular expression.
+
+@item
+@samp{i} to use a case insensitive regular expression.
+@end itemize
+
+The following filter file instructs @command{fswatch} to ignore all
+files except those ending in @samp{.cpp}, ignoring case.
+
+@example
+- .*
++i \.cpp$
+@end example
+
 
 @subsection Types of Filters and Order of Execution
 @cpindex path filter, type
@@ -1601,17 +1730,22 @@ kinds of regular expressions is out of scope in this manual.
 @anchor{Filtering by Event Type}
 @cpindex filter, by event type
 @cpindex event type filter
-Events can be filtered by event type passing @command{fswatch} a list
-of event type @emph{names} to accept using the @option{--event}
+Events can be filtered by event type passing @command{fswatch} a list of
+event type @emph{names} or masks to accept using the @option{--event}
 option:
 
 @example
 $ fswatch -x --event Created --event Removed ~
+$ fswatch -x --event 10 ~
 @end example
 
-If no event type filters are specified @command{fswatch} will accept
-events of any type; on the other hand, as soon as a filter is
-specified, only events with a matching type will be accepted.
+In this example, the mask of the @command{Created} event is @command{2}
+and the mask of the @command{Removed} event is @command{8}, so the mask
+of both events is @command{10}.
+
+If no event type filters are specified, @command{fswatch} will accept
+events of any type; on the other hand, as soon as a filter is specified,
+only events with a matching type will be accepted.
 
 @section Latency
 @anchor{Latency}
@@ -2028,6 +2162,30 @@ directory's children by default.  There is no overhead nor
 resource-consumption issue with this behaviour, but users processing
 the output must be aware that for each directory @emph{multiple}
 events may be generated by its children.
+
+@subsection Custom Properties
+@cpindex monitor, FSEvents, custom properties
+
+@table @code
+@item darwin.eventStream.noDefer
+Enable the @code{kFSEventStreamCreateFlagNoDefer} flag in the event
+stream.
+
+If you specify this flag and more than latency seconds have elapsed
+since the last event, your app will receive the event immediately.  The
+delivery of the event resets the latency timer and any further events
+will be delivered after latency seconds have elapsed.  This flag is
+useful for apps that are interactive and want to react immediately to
+changes but avoid getting swamped by notifications when changes are
+occurring in rapid succession.  If you do not specify this flag, then
+when an event occurs after a period of no events, the latency timer is
+started.  Any events that occur during the next latency seconds will be
+delivered as one group (including that first event).  The delivery of
+the group of events resets the latency timer and any further events will
+be delivered after latency seconds.  This is the default behavior and is
+more appropriate for background, daemon or batch processing apps.
+
+@end table
 
 @section The kqueue Monitor
 @anchor{The kqueue Monitor}

@@ -20,11 +20,13 @@ To install the GNU Build System, the following operations must be performed:
     - [Autoconf] (>= v. 2.69).
     - [Automake]: (>= v. 1.14.1).
     - [Libtool]: (>= v. 2.4.2).
+    - [Gettext]: (>= v. 0.19.4).
 
   * Install the packages in the following order:
     - Autoconf
     - Automake
     - Libtool
+    - Gettext
 
   * From now on, `<bundle>` will indicate any of the above-mentioned
      components.
@@ -83,13 +85,13 @@ To install the GNU Build System, the following operations must be performed:
 
         $ export PATH=/destdir/bin:$PATH
 
-[Autoconf]: http://www.gnu.org/software/autoconf/
-[Automake]: http://www.gnu.org/software/automake/
-[Libtool]: http://www.gnu.org/software/libtool/
-
+[Autoconf]: https://www.gnu.org/software/autoconf/
+[Automake]: https://www.gnu.org/software/automake/
+[Libtool]: https://www.gnu.org/software/libtool/
+[Gettext]: https://www.gnu.org/software/gettext/
 -----
 
-Copyright (c) 2014-2015 Enrico M. Crisostomo
+Copyright (c) 2014-2017 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

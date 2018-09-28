@@ -25,10 +25,11 @@
 #    include <mutex>
 #  endif
 
-using namespace std;
-
 namespace fsw
 {
+  using std::vector;
+  using std::string;
+  
   typedef struct FSEventFlagType
   {
     FSEventStreamEventFlags flag;
@@ -64,23 +65,18 @@ namespace fsw
 
   static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
 
-  REGISTER_MONITOR_IMPL(fsevents_monitor, fsevents_monitor_type);
-
   fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
                                      FSW_EVENT_CALLBACK *callback,
                                      void *context) :
-    monitor(paths_to_monitor, callback, context)
+    monitor(std::move(paths_to_monitor), callback, context)
   {
   }
 
-  fsevents_monitor::~fsevents_monitor()
-  {
-  }
 
   void fsevents_monitor::run()
   {
 #ifdef HAVE_CXX_MUTEX
-    unique_lock<mutex> run_loop_lock(run_mutex);
+    std::unique_lock<std::mutex> run_loop_lock(run_mutex);
 #endif
 
     if (stream) return;
@@ -88,36 +84,41 @@ namespace fsw
     // parsing paths
     vector<CFStringRef> dirs;
 
-    for (string path : paths)
+    for (const string& path : paths)
     {
-      dirs.push_back(CFStringCreateWithCString(NULL,
+      dirs.push_back(CFStringCreateWithCString(nullptr,
                                                path.c_str(),
                                                kCFStringEncodingUTF8));
     }
 
-    if (dirs.size() == 0) return;
+    if (dirs.empty()) return;
 
     CFArrayRef pathsToWatch =
-      CFArrayCreate(NULL,
+      CFArrayCreate(nullptr,
                     reinterpret_cast<const void **> (&dirs[0]),
                     dirs.size(),
                     &kCFTypeArrayCallBacks);
 
-    FSEventStreamContext *context = new FSEventStreamContext();
+    auto *context = new FSEventStreamContext();
     context->version = 0;
     context->info = this;
     context->retain = nullptr;
     context->release = nullptr;
     context->copyDescription = nullptr;
 
+    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
+    if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
+
     FSW_ELOG(_("Creating FSEvent stream...\n"));
-    stream = FSEventStreamCreate(NULL,
+    stream = FSEventStreamCreate(nullptr,
                                  &fsevents_monitor::fsevents_callback,
                                  context,
                                  pathsToWatch,
                                  kFSEventStreamEventIdSinceNow,
                                  latency,
-                                 kFSEventStreamCreateFlagFileEvents);
+                                 streamFlags);
+
+    delete context;
 
     if (!stream)
       throw libfsw_exception(_("Event stream could not be created."));
@@ -125,9 +126,7 @@ namespace fsw
     // Fire the event loop
     run_loop = CFRunLoopGetCurrent();
 
-#ifdef HAVE_CXX_MUTEX
-    run_loop_lock.unlock();
-#endif
+    // Loop Initialization
 
     FSW_ELOG(_("Scheduling stream with run loop...\n"));
     FSEventStreamScheduleWithRunLoop(stream,
@@ -137,8 +136,27 @@ namespace fsw
     FSW_ELOG(_("Starting event stream...\n"));
     FSEventStreamStart(stream);
 
+#ifdef HAVE_CXX_MUTEX
+    run_loop_lock.unlock();
+#endif
+
+    // Loop
+
     FSW_ELOG(_("Starting run loop...\n"));
     CFRunLoopRun();
+
+    // Deinitialization part
+
+    FSW_ELOG(_("Stopping event stream...\n"));
+    FSEventStreamStop(stream);
+
+    FSW_ELOG(_("Invalidating event stream...\n"));
+    FSEventStreamInvalidate(stream);
+
+    FSW_ELOG(_("Releasing event stream...\n"));
+    FSEventStreamRelease(stream);
+
+    stream = nullptr;
   }
 
   /*
@@ -152,17 +170,6 @@ namespace fsw
     CFRunLoopStop(run_loop);
 
     run_loop = nullptr;
-
-    FSW_ELOG(_("Stopping event stream...\n"));
-    FSEventStreamStop(stream);
-
-    FSW_ELOG(_("Invalidating event stream...\n"));
-    FSEventStreamInvalidate(stream);
-
-    FSW_ELOG(_("Releasing event stream...\n"));
-    FSEventStreamRelease(stream);
-
-    stream = nullptr;
   }
 
   static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
@@ -187,8 +194,7 @@ namespace fsw
                                            const FSEventStreamEventFlags eventFlags[],
                                            const FSEventStreamEventId eventIds[])
   {
-    fsevents_monitor *fse_monitor =
-      static_cast<fsevents_monitor *> (clientCallBackInfo);
+    auto *fse_monitor = static_cast<fsevents_monitor *> (clientCallBackInfo);
 
     if (!fse_monitor)
     {
@@ -203,12 +209,21 @@ namespace fsw
 
     for (size_t i = 0; i < numEvents; ++i)
     {
-      events.push_back({((char **) eventPaths)[i], curr_time, decode_flags(eventFlags[i])});
+      events.emplace_back(((char **) eventPaths)[i],
+                          curr_time,
+                          decode_flags(eventFlags[i]));
     }
 
-    if (events.size() > 0)
+    if (!events.empty())
     {
       fse_monitor->notify_events(events);
     }
+  }
+
+  bool fsevents_monitor::no_defer()
+  {
+    string no_defer = get_property(DARWIN_EVENTSTREAM_NO_DEFER);
+
+    return (no_defer == "true");
   }
 }

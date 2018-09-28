@@ -13,11 +13,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.8)
 project(fswatch)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-add_definitions(-DHAVE_CONFIG_H)
+set(CMAKE_CXX_STANDARD 11)
 
 add_subdirectory(libfswatch)
 add_subdirectory(fswatch/src)
+add_subdirectory(test/src)
