@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <errno.h>
 #include <iostream>
+#include <system_error>
 
 using namespace std;
 
@@ -68,7 +69,11 @@ namespace fsw
 
   char *fsw_realpath(const char *path, char *resolved_path)
   {
-    return realpath(path, resolved_path);
+    char *ret = realpath(path, resolved_path);
+
+    if (ret == nullptr) throw std::system_error(errno, std::generic_category());
+
+    return ret;
   }
 
   bool stat_path(const string& path, struct stat& fd_stat)
