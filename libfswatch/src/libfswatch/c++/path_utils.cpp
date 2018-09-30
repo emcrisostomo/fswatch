@@ -57,7 +57,7 @@ namespace fsw
 
   bool read_link_path(const string& path, string& link_path)
   {
-    char *real_path = realpath(path.c_str(), nullptr);
+    char *real_path = fsw_realpath(path.c_str(), nullptr);
     link_path = (real_path ? real_path : path);
 
     bool ret = (real_path != nullptr);
