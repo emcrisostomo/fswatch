@@ -276,16 +276,16 @@ AC_CHECK_FUNCS([setlocale], [], [AC_MSG_ERROR([The setlocale function cannot be 
 # Check if realpath is available: if it is not and the host OS is Windows, then
 # build its implementation, otherwise fail
 AC_CHECK_FUNCS([realpath], [AS_VAR_SET([HAVE_REALPATH], ["yes"])], [AS_VAR_SET([HAVE_REALPATH], ["no"])])
-AS_VAR_IF(dnl
-  [HAVE_REALPATH],
+AS_VAR_IF([HAVE_REALPATH],
   ["no"],
-  [AS_VAR_IF(dnl
-    [WINDOWS_AVAILABLE],
+  [AS_VAR_IF([WINDOWS_AVAILABLE],
     ["yes"],
-    [AS_VAR_SET([BUILD_WIN_REALPATH], ["yes"])
-  ],
-  [AC_MSG_ERROR([The realpath function cannot be found.])])
-])
+    [dnl
+      AS_VAR_SET([BUILD_WIN_REALPATH], ["yes"])
+    ],
+    [AC_MSG_ERROR([The realpath function cannot be found.])])
+  ]
+)
 
 AM_CONDITIONAL([BUILD_WIN_REALPATH], [test "x${BUILD_WIN_REALPATH}" = "xyes"])
 AS_VAR_IF([HAVE_REALPATH], ["yes"], [AC_DEFINE([HAVE_REALPATH], [1], [Realpath present.])])
