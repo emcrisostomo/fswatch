@@ -84,25 +84,20 @@ namespace fsw
 
   bool stat_path(const string& path, struct stat& fd_stat)
   {
-    if (stat(path.c_str(), &fd_stat) != 0)
-    {
-      fsw_logf_perror(_("Cannot stat %s"), path.c_str());
+    if (stat(path.c_str(), &fd_stat) == 0)
+      return true;
 
-      return false;
-    }
+    fsw_logf_perror(_("Cannot stat %s"), path.c_str());
+    return false;
 
-    return true;
   }
 
   bool lstat_path(const string& path, struct stat& fd_stat)
   {
-    if (lstat(path.c_str(), &fd_stat) != 0)
-    {
-      fsw_logf_perror(_("Cannot lstat %s"), path.c_str());
+    if (lstat(path.c_str(), &fd_stat) == 0)
+      return true;
 
-      return false;
-    }
-
-    return true;
+    fsw_logf_perror(_("Cannot lstat %s"), path.c_str());
+    return false;
   }
 }
