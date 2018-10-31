@@ -28,6 +28,7 @@
 #include <cerrno>
 #include <vector>
 #include <map>
+#include "libfswatch/c++/path_utils.hpp"
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c++/monitor_factory.hpp"
@@ -438,10 +439,7 @@ static void start_monitor(int argc, char **argv, int optind)
 
   for (auto i = optind; i < argc; ++i)
   {
-    char *real_path = realpath(argv[i], nullptr);
-    std::string path(real_path ? real_path : argv[i]);
-
-    if (real_path) free(real_path);
+    std::string path(fsw_realpath(argv[i], nullptr));
 
     FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 
