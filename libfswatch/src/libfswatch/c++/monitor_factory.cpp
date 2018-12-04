@@ -76,20 +76,30 @@ namespace fsw
     case system_default_monitor_type:
       return create_default_monitor(paths, callback, context);
 
-    default:
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)
-      return new fsevents_monitor(paths, callback, context);
-#elif defined(HAVE_SYS_EVENT_H)
-      return new kqueue_monitor(paths, callback, context);
-#elif defined(HAVE_PORT_H)
-      return new fen_monitor(paths, callback, context);
-#elif defined(HAVE_SYS_INOTIFY_H)
-      return new inotify_monitor(paths, callback, context);
-#elif defined(HAVE_WINDOWS)
-      return new windows_monitor(paths, callback, context);
-#else
-      return new poll_monitor(paths, callback, context);
+      case fsevents_monitor_type:
+        return new fsevents_monitor(paths, callback, context);
 #endif
+#if defined(HAVE_SYS_EVENT_H)
+      case kqueue_monitor_type:return new kqueue_monitor(paths, callback, context);
+#endif
+#if defined(HAVE_SYS_INOTIFY_H)
+      case inotify_monitor_type:
+        return new inotify_monitor(paths, callback, context);
+#endif
+#if defined(HAVE_WINDOWS)
+      case windows_monitor_type:
+        return new windows_monitor(paths, callback, context);
+#endif
+    case poll_monitor_type:
+      return new poll_monitor(paths, callback, context);
+#if defined(HAVE_PORT_H)
+      case fen_monitor_type:
+        return new fen_monitor(paths, callback, context);
+#endif
+    default:
+      throw libfsw_exception("Unsupported monitor.",
+                             FSW_ERR_UNKNOWN_MONITOR_TYPE);
     }
   }
 
@@ -113,7 +123,8 @@ namespace fsw
 #if defined(HAVE_WINDOWS)
     creator_by_string_set[fsw_quote(windows_monitor)] = fsw_monitor_type::windows_monitor_type;
 #endif
-    creator_by_string_set[fsw_quote(poll_monitor)] = fsw_monitor_type::poll_monitor_type;
+    creator_by_string_set[fsw_quote(
+      poll_monitor)] = fsw_monitor_type::poll_monitor_type;
 
     return creator_by_string_set;
 #undef fsw_quote
