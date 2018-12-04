@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 1.14.0:
+
+  * Issue 218: fswatch v1.13 ignores the --monitor parameter and always uses the
+    default monitor.
+
 New in 1.12.0:
 
   * Issue 178: Migrate usages of POSIX regular expressions (<regex.h>) to the
