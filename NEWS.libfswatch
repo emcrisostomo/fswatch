@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 1.14.0:
+
+  * Issue 218: fswatch v1.13 ignores the --monitor parameter and always uses the
+    default monitor.
+
 New in 1.13.0:
 
   * Issue 142: Static library will not have any monitor type available.
