@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.13.0:
+
+  * Issue 142: Static library will not have any monitor type available.
+
 New in 1.12.0:
 
   * Issue 178: Migrate usages of POSIX regular expressions (<regex.h>) to the
