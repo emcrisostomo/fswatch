@@ -275,6 +275,18 @@
 /**
  * @page history History
  *
+ * @section v1110 11:1:0
+ *
+ *   - Fix monitor_factory::create_monitor ignoring the monitor type and always
+ *     returning the default system monitor. (Issue 218: fswatch v1.13 ignores
+ *     the --monitor parameter and always uses the default monitor).
+ *
+ * @section v1100 11:0:0
+ *
+ *   - Refactor the monitor_factory class so that available monitor types are
+ *     determined at compile time.  (Issue 142: Static library will not have any
+ *     monitor type available).
+ *
  * @section v1011 10:1:1
  *
  *   - Migrate usages of POSIX regular expressions (<regex.h>) to the C++11
