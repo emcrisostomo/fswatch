@@ -138,11 +138,18 @@ $ port install fswatch
 $ brew install fswatch
 ```
 
+On FreeBSD, `fswatch` can be installed using [pkg]:
+
+```console
+# pkg install fswatch-mon
+```
+
 Check your favourite package manager and let us know if `fswatch` is missing
 there.
 
 [MacPorts]: https://www.macports.org
 [Homebrew]: http://brew.sh
+[pkg]: https://man.freebsd.org/pkg/8
 
 Building from Source
 --------------------
