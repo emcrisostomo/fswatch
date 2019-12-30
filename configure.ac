@@ -37,8 +37,6 @@ AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
-PKG_INSTALLDIR()
-
 # Compute the canonical target-system type variables
 AC_CANONICAL_TARGET
 TARGET_VENDOR=$target_vendor
