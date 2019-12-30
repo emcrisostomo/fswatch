@@ -61,6 +61,9 @@ if USE_CYGWIN
   libfswatch_la_SOURCES += c++/windows/win_directory_change_event.cpp
   libfswatch_la_SOURCES += c++/windows/win_directory_change_event.hpp
 endif
+if BUILD_WIN_REALPATH
+  libfswatch_la_SOURCES += c/windows/realpath.c
+endif
 endif
 
 libfswatch_la_LDFLAGS  = -version-info $(LIBFSWATCH_API_VERSION)
