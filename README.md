@@ -8,9 +8,9 @@ README
 of the specified files or directories are modified.  `fswatch` implements
 several monitors:
 
-  * A monitor based on the _File System Events API_ of Apple OS X.
+  * A monitor based on the _File System Events API_ of Apple macOS.
   * A monitor based on _kqueue_, a notification interface introduced in FreeBSD
-    4.1 (and supported on most *BSD systems, including OS X).
+    4.1 (and supported on most *BSD systems, including macOS).
   * A monitor based on the _File Events Notification_ API of the Solaris kernel
     and its derivatives.
   * A monitor based on _inotify_, a Linux kernel subsystem that reports file
@@ -63,7 +63,7 @@ Limitations
 
 The limitations of `fswatch` depend largely on the monitor being used:
 
-  * The **FSEvents** monitor, available only on OS X, has no known limitations,
+  * The **FSEvents** monitor, available only on macOS, has no known limitations,
     and scales very well with the number of files being observed.
 
   * The **File Events Notification** monitor, available on Solaris kernels and
@@ -95,7 +95,7 @@ The limitations of `fswatch` depend largely on the monitor being used:
 
 Usage recommendations are as follows:
 
-  * On OS X, use only the `FSEvents` monitor (which is the default behaviour).
+  * On macOS, use only the `FSEvents` monitor (which is the default behaviour).
 
   * On Solaris and its derivatives use the _File Events Notification_ monitor.
 
@@ -127,7 +127,7 @@ Getting fswatch
 ---------------
 
 A regular user may be able to fetch `fswatch` from the package manager of your
-OS or a third-party one.  If you are looking for `fswatch` for OS X, you can
+OS or a third-party one.  If you are looking for `fswatch` for macOS, you can
 install it using either [MacPorts] or [Homebrew]:
 
 ```
