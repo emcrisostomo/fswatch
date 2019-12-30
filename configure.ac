@@ -30,11 +30,14 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([libfswatch/Makefile])
 AC_CONFIG_FILES([libfswatch/doc/doxygen/Makefile])
 AC_CONFIG_FILES([libfswatch/src/libfswatch/Makefile])
+AC_CONFIG_FILES([libfswatch/src/libfswatch/libfswatch.pc])
 AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_MACRO_DIR([m4])
+
+PKG_INSTALLDIR()
 
 # Compute the canonical target-system type variables
 AC_CANONICAL_TARGET
