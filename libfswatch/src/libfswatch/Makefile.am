@@ -13,6 +13,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libfswatch.pc
+
 LIBFSWATCH_API_VERSION = @AM_LIBFSWATCH_API_VERSION@
 
 # Prepare gettext-related symbols used by programs
