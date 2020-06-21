@@ -18,6 +18,7 @@
 #endif
 #include "gettext.h"
 #include "fswatch.hpp"
+#include <unistd.h> // optarg
 #include <iostream>
 #include <string>
 #include <exception>
