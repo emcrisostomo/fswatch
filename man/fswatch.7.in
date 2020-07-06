@@ -339,6 +339,44 @@ if option
 .Fl I
 is specified.
 .El
+.Sh EVENT TYPES
+Event flags identify the kind of change a file system object has undergone. Many of them directly map to common file system operations (such as creation, deletion, update, etc.), others are less common (such as attribute modification), and others are monitor and platform specific.
+.sp
+Currently,
+.Nm
+maps monitor-specific event flags to 'global' event flags acting as a sort of 'greatest common denominator' of all the available monitor flags. The following global event flags are available::
+.Bl -tag -width 20n
+.It Sy NoOp
+Idle event, optionally issued when no changes were detected.
+.It Sy PlatformSpecific
+This event maps a platform-specific event that has no corresponding flag.
+.It Sy Created
+The object has been created.
+.It Sy Updated
+The object has been updated. The kind of update is monitor-dependent.
+.It Sy Removed
+The object has been removed.
+.It Sy Renamed
+The object has been renamed.
+.It Sy OwnerModified
+The object’s owner has changed.
+.It Sy AttributeModified
+An object’s attribute has changed.
+.It Sy MovedFrom
+The object has moved from this location to a new location of the same file system.
+.It Sy MovedTo
+The object has moved from another location in the same file system into this location.
+.It Sy IsFile
+The object is a regular file.
+.It Sy IsDir
+The object is a directory.
+.It Sy IsSymLink
+The object is a symbolic link.
+.It Sy Link
+The object link count has changed.
+.It Sy Overflow
+The monitor has overflowed.
+.El
 .Sh EXAMPLES
 .Ss Basic Usage
 .Nm
