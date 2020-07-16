@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.15.0:
+
+  * Issue 224: Add pkg-config support.
+
 New in 1.14.0:
 
   * Issue 218: fswatch v1.13 ignores the --monitor parameter and always uses the
