@@ -34,22 +34,16 @@
 
         <h3>FreeBSD</h3>
 
-        <p>I'm maintaining a port for <code>fswatch</code> on
-        a <a href="https://github.com/emcrisostomo/FreeBSD-Ports">repository of
-        mine</a>
-        and <a href="https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=200552">I'm
-        waiting for it to be integrated into the official FreeBSD ports
-        collection</a>.  Meanwhile, you can get the port from my repository and
-        build it on your system:</p>
+        <p>Pre-built binaries can be obtained via
+          <a href="https://www.freebsd.org/cgi/man.cgi?query=pkg&sektion=8&n=1">pkg(8)</a>.
+          <code>fswatch</code> can be built from source if desired using the
+          <a href="https://www.freebsd.org/doc/handbook/ports-using.html">Ports Collection</a>.</p>
 
-        <pre><code># FreeBSD port
-$ sudo make stage
-$ sudo make check-orphans
-$ sudo make package
-$ sudo make package
-$ sudo pkg add [package-name]</code></pre>
+        <pre><code># pkg(8)
+$ sudo pkg install fswatch-mon
 
-        <p>The FreeBSD port is tested on FreeBSD production releases.</p>
+# Ports Collection
+$ make -C /usr/ports/sysutils/fswatch-mon install</code></pre>
 
         <h3>Apple OS X</h3>
 
