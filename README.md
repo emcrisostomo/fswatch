@@ -294,9 +294,15 @@ Contact the Authors
 
 The author can be contacted on IRC, using the Freenode `#fswatch` channel.
 
+License
+-------
+
+This software is dual-licensed under the GPL v. 3.0 and the Apache License
+v. 2.0.
+
 -----
 
-Copyright (c) 2013-2018 Enrico M. Crisostomo
+Copyright (c) 2013-2020 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
