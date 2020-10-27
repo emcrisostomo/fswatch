@@ -3,6 +3,8 @@ NEWS
 
 New in master:
 
+  * Issue 260: Fix memory leak.
+
   * Issue 269: do not use global variable in function, pass parameter
     instead.
 

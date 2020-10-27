@@ -798,7 +798,7 @@ FSW_STATUS fsw_destroy_session(const FSW_HANDLE handle)
 
       void *context = session->monitor->get_context();
 
-      if (!context)
+      if (context)
       {
         session->monitor->set_context(nullptr);
         delete static_cast<fsw_callback_context *> (context);
