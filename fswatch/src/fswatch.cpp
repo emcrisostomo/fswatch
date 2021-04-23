@@ -278,7 +278,7 @@ static bool parse_event_filter(const char *optarg)
   }
 }
 
-static bool validate_latency(double latency)
+static bool validate_latency(double latency, const char *optarg)
 {
   if (latency == 0.0)
   {
@@ -594,7 +594,7 @@ static void parse_opts(int argc, char **argv)
     case 'l':
       lvalue = strtod(optarg, nullptr);
 
-      if (!validate_latency(lvalue))
+      if (!validate_latency(lvalue, optarg))
       {
         exit(FSW_EXIT_LATENCY);
       }

@@ -3,6 +3,9 @@ NEWS
 
 New in master:
 
+  * Issue 269: do not use global variable in function, pass parameter
+    instead.
+
   * Issue 270: using both AC_CONFIG_MACRO_DIR and AC_CONFIG_MACRO_DIRS is
     deprecated in autoconf-2.71
 
