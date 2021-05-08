@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in master:
+
+  * Issue 270: using both AC_CONFIG_MACRO_DIR and AC_CONFIG_MACRO_DIRS is
+    deprecated in autoconf-2.71
+
 New in 1.14.0:
 
   * Issue 218: fswatch v1.13 ignores the --monitor parameter and always uses the
