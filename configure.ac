@@ -35,7 +35,6 @@ AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
-AC_CONFIG_MACRO_DIR([m4])
 
 # Compute the canonical target-system type variables
 AC_CANONICAL_TARGET
