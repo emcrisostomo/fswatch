@@ -74,7 +74,6 @@ namespace fsw
   {
   }
 
-
   void fsevents_monitor::run()
   {
 #ifdef HAVE_CXX_MUTEX
