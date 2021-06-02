@@ -41,11 +41,11 @@ namespace fsw
   };
 
 #ifdef HAVE_CXX_MUTEX
-  #define FSW_MONITOR_RUN_GUARD std::unique_lock<std::mutex> run_guard(run_mutex);
-  #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock();
-  #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock();
+  #define FSW_MONITOR_RUN_GUARD std::unique_lock<std::mutex> run_guard(run_mutex)
+  #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock()
+  #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock()
 
-  #define FSW_MONITOR_NOTIFY_GUARD std::unique_lock<std::mutex> notify_guard(notify_mutex);
+  #define FSW_MONITOR_NOTIFY_GUARD std::unique_lock<std::mutex> notify_guard(notify_mutex)
 #else
   #define FSW_MONITOR_RUN_GUARD
   #define FSW_MONITOR_RUN_GUARD_LOCK
@@ -133,7 +133,7 @@ namespace fsw
       this->filters.push_back({std::regex(filter.text, regex_flags),
                                filter.type});
     }
-    catch (std::regex_error& error)
+    catch (const std::regex_error& error)
     {
       throw libfsw_exception(
         string_utils::string_from_format(
@@ -238,9 +238,10 @@ namespace fsw
 
     for (;;)
     {
-      std::unique_lock<std::mutex> run_guard(mon->run_mutex);
-      if (mon->should_stop) break;
-      run_guard.unlock();
+      {
+        std::unique_lock<std::mutex> run_guard(mon->run_mutex);
+        if (mon->should_stop) break;
+      }
 
       milliseconds elapsed =
         duration_cast<milliseconds>(system_clock::now().time_since_epoch())
