@@ -329,6 +329,9 @@ AS_VAR_IF([use_docker], [yes],
     AC_CONFIG_FILES([docker/alpine/Dockerfile])
     AC_CONFIG_FILES([docker/alpine-no-gettext/Dockerfile])
     AC_CONFIG_FILES([docker/debian9/Dockerfile])
+    AC_CONFIG_FILES([docker/debian10/Dockerfile])
+    AC_CONFIG_FILES([docker/debian-stable/Dockerfile])
+    AC_CONFIG_FILES([docker/debian-testing/Dockerfile])
   ],
   [])
 
