@@ -21,7 +21,7 @@
 #
 # LICENSE
 #
-#   Copyright (c) 2014 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+#   Copyright (c) 2014-2021 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
