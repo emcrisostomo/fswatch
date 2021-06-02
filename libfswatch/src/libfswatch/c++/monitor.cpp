@@ -234,6 +234,8 @@ namespace fsw
 
     FSW_ELOG(_("Inactivity notification thread: starting\n"));
 
+    seconds max_sleep_time(2);
+
     for (;;)
     {
       std::unique_lock<std::mutex> run_guard(mon->run_mutex);
@@ -248,7 +250,6 @@ namespace fsw
       if (elapsed < mon->get_latency_ms())
       {
         milliseconds to_sleep = mon->get_latency_ms() - elapsed;
-        seconds max_sleep_time(2);
 
         std::this_thread::sleep_for(
           to_sleep > max_sleep_time ? max_sleep_time : to_sleep);
