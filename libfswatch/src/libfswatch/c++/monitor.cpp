@@ -23,6 +23,7 @@
 #include "../c/libfswatch_log.h"
 #include "string/string_utils.hpp"
 #include <cstdlib>
+#include <algorithm>
 #include <memory>
 #include <thread>
 #include <regex>
@@ -41,11 +42,11 @@ namespace fsw
   };
 
 #ifdef HAVE_CXX_MUTEX
-  #define FSW_MONITOR_RUN_GUARD std::unique_lock<std::mutex> run_guard(run_mutex);
-  #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock();
-  #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock();
+  #define FSW_MONITOR_RUN_GUARD std::unique_lock<std::mutex> run_guard(run_mutex)
+  #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock()
+  #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock()
 
-  #define FSW_MONITOR_NOTIFY_GUARD std::unique_lock<std::mutex> notify_guard(notify_mutex);
+  #define FSW_MONITOR_NOTIFY_GUARD std::unique_lock<std::mutex> notify_guard(notify_mutex)
 #else
   #define FSW_MONITOR_RUN_GUARD
   #define FSW_MONITOR_RUN_GUARD_LOCK
@@ -133,7 +134,7 @@ namespace fsw
       this->filters.push_back({std::regex(filter.text, regex_flags),
                                filter.type});
     }
-    catch (std::regex_error& error)
+    catch (const std::regex_error& error)
     {
       throw libfsw_exception(
         string_utils::string_from_format(
@@ -182,16 +183,9 @@ namespace fsw
     if (event_type_filters.empty()) return true;
 
     // If filters are set, accept the event only if present amongst the filters.
-    for (const auto& filter : event_type_filters)
-    {
-      if (filter.flag == event_type)
-      {
-        return true;
-      }
-    }
-
-    // If no filters match, then reject the event.
-    return false;
+    return std::any_of(event_type_filters.begin(),
+                    event_type_filters.end(),
+                    [event_type](const fsw_event_type_filter& filter){return filter.flag == event_type;});
   }
 
   bool monitor::accept_path(const std::string& path) const
@@ -234,11 +228,14 @@ namespace fsw
 
     FSW_ELOG(_("Inactivity notification thread: starting\n"));
 
+    seconds max_sleep_time(2);
+
     for (;;)
     {
-      std::unique_lock<std::mutex> run_guard(mon->run_mutex);
-      if (mon->should_stop) break;
-      run_guard.unlock();
+      {
+        std::unique_lock<std::mutex> run_guard(mon->run_mutex);
+        if (mon->should_stop) break;
+      }
 
       milliseconds elapsed =
         duration_cast<milliseconds>(system_clock::now().time_since_epoch())
@@ -248,7 +245,6 @@ namespace fsw
       if (elapsed < mon->get_latency_ms())
       {
         milliseconds to_sleep = mon->get_latency_ms() - elapsed;
-        seconds max_sleep_time(2);
 
         std::this_thread::sleep_for(
           to_sleep > max_sleep_time ? max_sleep_time : to_sleep);

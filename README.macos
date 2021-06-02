@@ -1,13 +1,13 @@
-README.osx
-**********
+README.macos
+************
 
 Introduction
 ============
 
 This file describes the steps required to build this bundle on a supported Apple
-OS X system.  A complete C/C++ toolchain for OS X is provided with Apple XCode,
-which can be freely installed from the Apple App Store.  See README for more
-information about the tested configurations.
+macOS system.  A complete C/C++ toolchain for macOS is provided with Apple
+XCode, which can be freely installed from the Apple App Store.  See README for
+more information about the tested configurations.
 
 XCode
 =====
@@ -71,18 +71,18 @@ GNU Build System
 ================
 
 The GNU Build System is required only by developers willing to modify the code
-on a OS X machine.  Regular users only willing to install fswatch do not need
+on a macOS machine.  Regular users only willing to install fswatch do not need
 the GNU Build System.
 
 Recent XCode Command Line Tools releases are not shipping all the components of
-the GNU Build System any longer.  OS X users are thus required to build an
+the GNU Build System any longer.  macOS users are thus required to build an
 alternate GNU Build System on their system.
 
 The required source bundles can be downloaded from their official web pages:
 
   1. Autoconf:
 
-     (http://www.gnu.org/software/autoconf/) (>= v. 2.69) 
+     (http://www.gnu.org/software/autoconf/) (>= v. 2.69)
 
   2. Automake
 
@@ -109,8 +109,8 @@ Localization and gettext
 ========================
 
 fswatch is localizable and locale support requires GNU gettext to be available
-at build time.  OS X does not ship gettext you will need to build it yourself or
-use a package manager such as MacPorts or Homebrew to install it.
+at build time.  macOS does not ship gettext you will need to build it yourself
+or use a package manager such as MacPorts or Homebrew to install it.
 
 Depending on gettext installation path, configure may not be able to find
 <libintl.h> or libintl.  In this case, you will need to instruct configure about
@@ -129,7 +129,7 @@ or, which is equivalent, config.h will contain the following definition:
 
 -----
 
-Copyright (c) 2014-2015 Enrico M. Crisostomo
+Copyright (c) 2014-2021 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

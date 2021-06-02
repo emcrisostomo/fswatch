@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,6 +17,7 @@
 #  include "cmake_config.h"
 #endif
 
+#include <memory>
 #include "fsevents_monitor.hpp"
 #include "gettext_defs.h"
 #include "libfswatch_exception.hpp"
@@ -29,16 +30,18 @@ namespace fsw
 {
   using std::vector;
   using std::string;
-  
-  typedef struct FSEventFlagType
-  {
-    FSEventStreamEventFlags flag;
-    fsw_event_flag type;
-  } FSEventFlagType;
+
+  using FSEventFlagType =
+    struct FSEventFlagType
+    {
+      FSEventStreamEventFlags flag;
+      fsw_event_flag type;
+    };
 
   static vector<FSEventFlagType> create_flag_type_vector()
   {
     vector<FSEventFlagType> flags;
+#ifdef MACOS_GE_10_5
     flags.push_back({kFSEventStreamEventFlagNone, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagMustScanSubDirs, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagUserDropped, fsw_event_flag::PlatformSpecific});
@@ -48,17 +51,32 @@ namespace fsw
     flags.push_back({kFSEventStreamEventFlagRootChanged, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagMount, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagUnmount, fsw_event_flag::PlatformSpecific});
-    flags.push_back({kFSEventStreamEventFlagItemCreated, fsw_event_flag::Created});
-    flags.push_back({kFSEventStreamEventFlagItemRemoved, fsw_event_flag::Removed});
-    flags.push_back({kFSEventStreamEventFlagItemInodeMetaMod, fsw_event_flag::PlatformSpecific});
-    flags.push_back({kFSEventStreamEventFlagItemRenamed, fsw_event_flag::Renamed});
-    flags.push_back({kFSEventStreamEventFlagItemModified, fsw_event_flag::Updated});
-    flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, fsw_event_flag::PlatformSpecific});
+#endif
+
+#ifdef MACOS_GE_10_7
     flags.push_back({kFSEventStreamEventFlagItemChangeOwner, fsw_event_flag::OwnerModified});
-    flags.push_back({kFSEventStreamEventFlagItemXattrMod, fsw_event_flag::AttributeModified});
-    flags.push_back({kFSEventStreamEventFlagItemIsFile, fsw_event_flag::IsFile});
+    flags.push_back({kFSEventStreamEventFlagItemCreated, fsw_event_flag::Created});
+    flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, fsw_event_flag::PlatformSpecific});
+    flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, fsw_event_flag::AttributeModified});
+    flags.push_back({kFSEventStreamEventFlagItemInodeMetaMod, fsw_event_flag::AttributeModified});
     flags.push_back({kFSEventStreamEventFlagItemIsDir, fsw_event_flag::IsDir});
+    flags.push_back({kFSEventStreamEventFlagItemIsFile, fsw_event_flag::IsFile});
     flags.push_back({kFSEventStreamEventFlagItemIsSymlink, fsw_event_flag::IsSymLink});
+    flags.push_back({kFSEventStreamEventFlagItemModified, fsw_event_flag::Updated});
+    flags.push_back({kFSEventStreamEventFlagItemRemoved, fsw_event_flag::Removed});
+    flags.push_back({kFSEventStreamEventFlagItemRenamed, fsw_event_flag::Renamed});
+    flags.push_back({kFSEventStreamEventFlagItemXattrMod, fsw_event_flag::AttributeModified});
+#endif
+
+#ifdef MACOS_GE_10_9
+    flags.push_back({kFSEventStreamEventFlagOwnEvent, fsw_event_flag::AttributeModified});
+#endif
+
+#ifdef MACOS_GE_10_10
+    flags.push_back({kFSEventStreamEventFlagItemIsHardlink, fsw_event_flag::Link});
+    flags.push_back({kFSEventStreamEventFlagItemIsLastHardlink, fsw_event_flag::Link});
+    flags.push_back({kFSEventStreamEventFlagItemIsLastHardlink, fsw_event_flag::PlatformSpecific});
+#endif
 
     return flags;
   }
@@ -71,7 +89,6 @@ namespace fsw
     monitor(std::move(paths_to_monitor), callback, context)
   {
   }
-
 
   void fsevents_monitor::run()
   {
@@ -99,26 +116,7 @@ namespace fsw
                     dirs.size(),
                     &kCFTypeArrayCallBacks);
 
-    auto *context = new FSEventStreamContext();
-    context->version = 0;
-    context->info = this;
-    context->retain = nullptr;
-    context->release = nullptr;
-    context->copyDescription = nullptr;
-
-    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
-    if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
-
-    FSW_ELOG(_("Creating FSEvent stream...\n"));
-    stream = FSEventStreamCreate(nullptr,
-                                 &fsevents_monitor::fsevents_callback,
-                                 context,
-                                 pathsToWatch,
-                                 kFSEventStreamEventIdSinceNow,
-                                 latency,
-                                 streamFlags);
-
-    delete context;
+    create_stream(pathsToWatch);
 
     if (!stream)
       throw libfsw_exception(_("Event stream could not be created."));
@@ -127,7 +125,6 @@ namespace fsw
     run_loop = CFRunLoopGetCurrent();
 
     // Loop Initialization
-
     FSW_ELOG(_("Scheduling stream with run loop...\n"));
     FSEventStreamScheduleWithRunLoop(stream,
                                      run_loop,
@@ -141,12 +138,10 @@ namespace fsw
 #endif
 
     // Loop
-
     FSW_ELOG(_("Starting run loop...\n"));
     CFRunLoopRun();
 
     // Deinitialization part
-
     FSW_ELOG(_("Stopping event stream...\n"));
     FSEventStreamStop(stream);
 
@@ -187,14 +182,14 @@ namespace fsw
     return evt_flags;
   }
 
-  void fsevents_monitor::fsevents_callback(ConstFSEventStreamRef streamRef,
+  void fsevents_monitor::fsevents_callback(ConstFSEventStreamRef,
                                            void *clientCallBackInfo,
                                            size_t numEvents,
                                            void *eventPaths,
                                            const FSEventStreamEventFlags eventFlags[],
-                                           const FSEventStreamEventId eventIds[])
+                                           const FSEventStreamEventId *)
   {
-    auto *fse_monitor = static_cast<fsevents_monitor *> (clientCallBackInfo);
+    const auto *fse_monitor = static_cast<fsevents_monitor *> (clientCallBackInfo);
 
     if (!fse_monitor)
     {
@@ -225,5 +220,27 @@ namespace fsw
     string no_defer = get_property(DARWIN_EVENTSTREAM_NO_DEFER);
 
     return (no_defer == "true");
+  }
+
+  void fsevents_monitor::create_stream(CFArrayRef pathsToWatch)
+  {
+    std::unique_ptr<FSEventStreamContext> context(new FSEventStreamContext());
+    context->version = 0;
+    context->info = this;
+    context->retain = nullptr;
+    context->release = nullptr;
+    context->copyDescription = nullptr;
+
+    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
+    if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
+
+    FSW_ELOG(_("Creating FSEvent stream...\n"));
+    stream = FSEventStreamCreate(nullptr,
+                                 &fsevents_monitor::fsevents_callback,
+                                 context.get(),
+                                 pathsToWatch,
+                                 kFSEventStreamEventIdSinceNow,
+                                 latency,
+                                 streamFlags);
   }
 }

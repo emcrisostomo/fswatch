@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.16.0:
+
+  * Issue 260: Fix memory leak.
+
 New in 1.15.0:
 
   * Issue 224: Add pkg-config support.

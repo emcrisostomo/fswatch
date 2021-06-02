@@ -1,5 +1,4 @@
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat)](https://github.com/emcrisostomo/fswatch/blob/master/COPYING)
-[![Build Status](https://travis-ci.org/emcrisostomo/fswatch.svg?branch=master)](https://travis-ci.org/emcrisostomo/fswatch)
 
 README
 ======
@@ -231,7 +230,7 @@ To build `fswatch` with localization support, you need to have `gettext`
 installed on your system.  If `configure` cannot find `<libintl.h>` or the
 linker cannot find `libintl`, then you may need to manually provide their
 location to `configure`, usually using the `CPPFLAGS` and the `LDFLAGS`
-variables.  See `README.osx` for an example.
+variables.  See `README.macos` for an example.
 
 If `gettext` is not available on your system, `fswatch` shall build correctly,
 but it will lack localization support and the only available locale will be
@@ -302,7 +301,7 @@ v. 2.0.
 
 -----
 
-Copyright (c) 2013-2020 Enrico M. Crisostomo
+Copyright (c) 2013-2021 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

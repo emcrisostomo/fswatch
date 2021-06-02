@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2018 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -15,7 +15,7 @@
  */
 /**
  * @file
- * @brief OS X FSEvents monitor.
+ * @brief macOS FSEvents monitor.
  *
  * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
@@ -32,9 +32,9 @@
 namespace fsw
 {
   /**
-   * @brief OS X FSEvents monitor.
+   * @brief macOS FSEvents monitor.
    *
-   * This monitor is built upon the _FSEvents_ API of the Apple OS X kernel.
+   * This monitor is built upon the _FSEvents_ API of the Apple macOS kernel.
    */
   class fsevents_monitor : public monitor
   {
@@ -96,6 +96,7 @@ namespace fsw
     FSEventStreamRef stream = nullptr;
     CFRunLoopRef run_loop = nullptr;
     bool no_defer();
+    void create_stream(CFArrayRef pathsToWatch);
   };
 }
 

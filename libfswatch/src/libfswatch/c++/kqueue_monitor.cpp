@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -31,6 +31,7 @@
 #  include <ctime>
 #  include <cstdio>
 #  include <cmath>
+#include <utility>
 #  include <unistd.h>
 #  include <fcntl.h>
 
@@ -73,11 +74,11 @@ namespace fsw
     }
   };
 
-  typedef struct KqueueFlagType
+  using KqueueFlagType = struct KqueueFlagType
   {
     uint32_t flag;
     fsw_event_flag type;
-  } KqueueFlagType;
+  };
 
   static std::vector<KqueueFlagType> create_flag_type_vector()
   {
@@ -98,7 +99,7 @@ namespace fsw
   kqueue_monitor::kqueue_monitor(std::vector<std::string> paths_to_monitor,
                                  FSW_EVENT_CALLBACK *callback,
                                  void *context) :
-    monitor(paths_to_monitor, callback, context), load(new kqueue_monitor_load())
+    monitor(std::move(paths_to_monitor), callback, context), load(new kqueue_monitor_load())
   {
   }
 
@@ -129,7 +130,7 @@ namespace fsw
     double nanoseconds = modf(latency, &seconds);
     nanoseconds *= 1000000000;
 
-    struct timespec ts;
+    struct timespec ts{};
     ts.tv_sec = seconds;
     ts.tv_nsec = nanoseconds;
 
@@ -178,7 +179,7 @@ namespace fsw
 
   bool kqueue_monitor::scan(const std::string& path, bool is_root_path)
   {
-    struct stat fd_stat;
+    struct stat fd_stat{};
     if (!lstat_path(path, fd_stat)) return false;
 
     if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
@@ -249,7 +250,7 @@ namespace fsw
 
   void kqueue_monitor::scan_root_paths()
   {
-    for (std::string& path : paths)
+    for (const std::string& path : paths)
     {
       if (is_path_watched(path)) continue;
 
@@ -280,7 +281,7 @@ namespace fsw
   }
 
   int kqueue_monitor::wait_for_events(const std::vector<struct kevent>& changes,
-                                      std::vector<struct kevent>& event_list)
+                                      std::vector<struct kevent>& event_list) const
   {
     struct timespec ts = create_timespec_from_latency(latency);
 
@@ -301,8 +302,7 @@ namespace fsw
     return event_num;
   }
 
-  void kqueue_monitor::process_events(const std::vector<struct kevent>& changes,
-                                      const std::vector<struct kevent>& event_list,
+  void kqueue_monitor::process_events(const std::vector<struct kevent>& event_list,
                                       int event_num)
   {
     time_t curr_time;
@@ -331,7 +331,7 @@ namespace fsw
       // If a NOTE_WRITE flag is found and the descriptor is a directory, then
       // the directory needs to be rescanned because at least one file has
       // either been created or deleted.
-      if ((e.fflags & NOTE_DELETE))
+      if (e.fflags & NOTE_DELETE)
       {
         load->descriptors_to_remove.insert(e.ident);
       }
@@ -345,13 +345,13 @@ namespace fsw
       // received with a non empty filter flag.
       if (e.fflags)
       {
-        events.push_back({load->file_names_by_descriptor[e.ident],
-                          curr_time,
-                          decode_flags(e.fflags)});
+        events.emplace_back(load->file_names_by_descriptor[e.ident],
+                            curr_time,
+                            decode_flags(e.fflags));
       }
     }
 
-    if (events.size())
+    if (!events.empty())
     {
       notify_events(events);
     }
@@ -381,9 +381,9 @@ namespace fsw
       std::vector<struct kevent> changes;
       std::vector<struct kevent> event_list;
 
-      for (const std::pair<int, std::string>& fd_path : load->file_names_by_descriptor)
+      for (const auto& fd_path : load->file_names_by_descriptor)
       {
-        struct kevent change;
+        struct kevent change{};
 
         EV_SET(&change,
                fd_path.first,
@@ -394,21 +394,21 @@ namespace fsw
                0);
 
         changes.push_back(change);
-        struct kevent event;
+        struct kevent event{};
         event_list.push_back(event);
       }
 
       /*
        * If no files can be observed yet, then wait and repeat the loop.
        */
-      if (!changes.size())
+      if (changes.empty())
       {
         sleep(latency);
         continue;
       }
 
       const int event_num = wait_for_events(changes, event_list);
-      process_events(changes, event_list, event_num);
+      process_events(event_list, event_num);
     }
 
     terminate_kqueue();

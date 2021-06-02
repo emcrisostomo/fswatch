@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -43,7 +43,7 @@ extern "C"
   enum fsw_monitor_type
   {
     system_default_monitor_type = 0, /**< System default monitor. */
-    fsevents_monitor_type,           /**< OS X FSEvents monitor. */
+    fsevents_monitor_type,           /**< macOS FSEvents monitor. */
     kqueue_monitor_type,             /**< BSD `kqueue` monitor. */
     inotify_monitor_type,            /**< Linux `inotify` monitor. */
     windows_monitor_type,            /**< Windows monitor. */

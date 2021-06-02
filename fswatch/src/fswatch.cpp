@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -51,7 +51,7 @@ using namespace fsw;
 static void print_event_flags(const event& evt);
 static void print_event_path(const event& evt);
 static void print_event_timestamp(const event& evt);
-static int printf_event_validate_format(const std::string& fmt);
+static int printf_event_validate_format();
 
 static FSW_EVENT_CALLBACK process_events;
 
@@ -69,11 +69,11 @@ struct printf_event_callbacks event_format_callbacks
     print_event_timestamp
   };
 
-static int printf_event(const std::string& fmt,
-                        const event& evt,
+static int printf_event(const event& evt,
                         const struct printf_event_callbacks& callback,
                         std::ostream& os = std::cout);
 
+static void set_monitor_property(const char *property_expr);
 static const unsigned int TIME_FORMAT_BUFF_SIZE = 128;
 
 static monitor *active_monitor = nullptr;
@@ -231,13 +231,10 @@ static void close_monitor()
   if (active_monitor) active_monitor->stop();
 }
 
-namespace
+extern "C" void close_handler(int signal)
 {
-  extern "C" void close_handler(int signal)
-  {
-    FSW_ELOG(_("Executing termination handler.\n"));
-    close_monitor();
-  }
+  FSW_ELOG(_("Executing termination handler.\n"));
+  close_monitor();
 }
 
 static bool parse_event_bitmask(const char *optarg)
@@ -246,7 +243,7 @@ static bool parse_event_bitmask(const char *optarg)
   {
     auto bitmask = std::stoul(optarg, nullptr, 10);
 
-    for (auto& item : FSW_ALL_EVENT_FLAGS)
+    for (const auto& item : FSW_ALL_EVENT_FLAGS)
     {
       if ((bitmask & item) == item)
       {
@@ -256,7 +253,7 @@ static bool parse_event_bitmask(const char *optarg)
 
     return true;
   }
-  catch (std::invalid_argument& ex)
+  catch (const std::invalid_argument& ex)
   {
     return false;
   }
@@ -271,7 +268,7 @@ static bool parse_event_filter(const char *optarg)
     event_filters.push_back({event::get_event_flag_by_name(optarg)});
     return true;
   }
-  catch (libfsw_exception& ex)
+  catch (const libfsw_exception& ex)
   {
     std::cerr << ex.what() << std::endl;
     return false;
@@ -297,7 +294,7 @@ static bool validate_latency(double latency, const char *optarg)
 
 static void register_signal_handlers()
 {
-  struct sigaction action;
+  struct sigaction action{};
   action.sa_handler = close_handler;
   sigemptyset(&action.sa_mask);
   action.sa_flags = 0;
@@ -340,7 +337,7 @@ static void print_event_timestamp(const event& evt)
   const time_t& evt_time = evt.get_time();
 
   char time_format_buffer[TIME_FORMAT_BUFF_SIZE];
-  struct tm *tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
+  const struct tm *tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
 
   std::string date =
     strftime(time_format_buffer,
@@ -412,7 +409,7 @@ static void write_events(const std::vector<event>& events)
 {
   for (const event& evt : events)
   {
-    printf_event(format, evt, event_format_callbacks);
+    printf_event(evt, event_format_callbacks);
     print_end_of_event_record();
   }
 
@@ -424,7 +421,7 @@ static void write_events(const std::vector<event>& events)
   }
 }
 
-void process_events(const std::vector<event>& events, void *context)
+static void process_events(const std::vector<event>& events, void *context)
 {
   if (oflag)
     write_one_batch_event(events);
@@ -669,17 +666,7 @@ static void parse_opts(int argc, char **argv)
       break;
 
     case OPT_MONITOR_PROPERTY:
-    {
-      std::string param(optarg);
-      size_t eq_pos = param.find_first_of('=');
-      if (eq_pos == std::string::npos)
-      {
-        std::cerr << _("Invalid property format.") << std::endl;
-        exit(FSW_ERR_INVALID_PROPERTY);
-      }
-
-      monitor_properties[param.substr(0, eq_pos)] = param.substr(eq_pos + 1);
-    }
+      set_monitor_property(optarg);
       break;
 
     case OPT_FIRE_IDLE_EVENTS:
@@ -730,7 +717,7 @@ static void parse_opts(int argc, char **argv)
   if (format_flag)
   {
     // Test the user format
-    if (printf_event_validate_format(format) < 0)
+    if (printf_event_validate_format() < 0)
     {
       std::cerr << _("Invalid format.") << std::endl;
       exit(FSW_EXIT_FORMAT);
@@ -753,13 +740,26 @@ static void parse_opts(int argc, char **argv)
   }
 }
 
-static void format_noop(const event& evt)
+static void set_monitor_property(const char *property_expr)
 {
+  std::string param(property_expr);
+  size_t eq_pos = param.find_first_of('=');
+  if (eq_pos == std::string::npos)
+  {
+    std::cerr << _("Invalid property format.") << std::endl;
+    exit(FSW_ERR_INVALID_PROPERTY);
+  }
+
+  monitor_properties[param.substr(0, eq_pos)] = param.substr(eq_pos + 1);
 }
 
-static int printf_event_validate_format(const std::string& fmt)
+static void format_noop(const event&)
 {
+    // Noop format function
+}
 
+static int printf_event_validate_format()
+{
   struct printf_event_callbacks noop_callbacks
     {
       format_noop,
@@ -771,11 +771,10 @@ static int printf_event_validate_format(const std::string& fmt)
   const event empty("", 0, flags);
   std::ostream noop_stream(nullptr);
 
-  return printf_event(fmt, empty, noop_callbacks, noop_stream);
+  return printf_event(empty, noop_callbacks, noop_stream);
 }
 
-static int printf_event(const std::string& fmt,
-                        const event& evt,
+static int printf_event(const event& evt,
                         const struct printf_event_callbacks& callback,
                         std::ostream& os)
 {
@@ -867,20 +866,20 @@ int main(int argc, char **argv)
     delete active_monitor;
     active_monitor = nullptr;
   }
-  catch (libfsw_exception& lex)
+  catch (const libfsw_exception& lex)
   {
     std::cerr << lex.what() << "\n";
     std::cerr << "Status code: " << lex.error_code() << "\n";
 
     return FSW_EXIT_ERROR;
   }
-  catch (std::invalid_argument& ex)
+  catch (const std::invalid_argument& ex)
   {
     std::cerr << ex.what() << "\n";
 
     return FSW_EXIT_ERROR;
   }
-  catch (std::exception& conf)
+  catch (const std::exception& conf)
   {
     std::cerr << _("An error occurred and the program will be terminated.\n");
     std::cerr << conf.what() << "\n";

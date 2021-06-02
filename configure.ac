@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (C) 2014-2018 Enrico M. Crisostomo
+# Copyright (C) 2014-2021 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,12 +16,12 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
-dnl Copyright (C) 2014-2017 Enrico M. Crisostomo
+dnl Copyright (C) 2014-2021 Enrico M. Crisostomo
 AC_PREREQ([2.69])
 m4_include([m4/fswatch_version.m4])
 m4_include([m4/libfswatch_version.m4])
 AC_INIT([fswatch], LIBFSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
-AC_COPYRIGHT([2013-2018 (C) Enrico M. Crisostomo])
+AC_COPYRIGHT([2013-2021 (C) Enrico M. Crisostomo])
 AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([fswatch/src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
@@ -37,6 +37,12 @@ AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
 
 # Compute the canonical target-system type variables
+AC_CANONICAL_HOST
+HOST_VENDOR=$host_vendor
+HOST_OS=$host_os
+AC_SUBST([HOST_VENDOR])
+AC_SUBST([HOST_OS])
+
 AC_CANONICAL_TARGET
 TARGET_VENDOR=$target_vendor
 TARGET_OS=$target_os
@@ -110,7 +116,22 @@ AC_CHECK_HEADERS([getopt.h])
 
 # Check for optional header files required to support OS-specific monitors
 
-# Check for OS X FSEvents.  FSEvents added file events in a later release, so
+# Check for macOS
+AS_CASE([${HOST_OS}], ["darwin"*], [
+    IS_DARWIN=true
+    DARWIN_VER="${HOST_OS#darwin}"
+    AC_SUBST([IS_DARWIN])
+    AC_SUBST([DARWIN_VER])
+])
+
+AS_VAR_SET_IF([IS_DARWIN], [
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [9.0],  [AC_DEFINE([MACOS_GE_10_5],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [11.0], [AC_DEFINE([MACOS_GE_10_7],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [13.0], [AC_DEFINE([MACOS_GE_10_9],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [14.0], [AC_DEFINE([MACOS_GE_10_10], [1], ["macOS is at least the specified version"])])
+])
+
+# Check for macOS FSEvents.  FSEvents added file events in a later release, so
 # this check must be performed separately.
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
 AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS])
@@ -213,7 +234,7 @@ AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin AP
 
 # Some compilers declare to conform to C++11 but the library does not.
 
-# These OS X versions are known to miss at least the listed headers:
+# These macOS versions are known to miss at least the listed headers:
 #   - 10.6 Snow Leopard: mutex, atomic
 #   - 10.7 Lion: mutex, atomic
 #   - 10.8 Mountain Lion: mutex, atomic
@@ -308,6 +329,9 @@ AS_VAR_IF([use_docker], [yes],
     AC_CONFIG_FILES([docker/alpine/Dockerfile])
     AC_CONFIG_FILES([docker/alpine-no-gettext/Dockerfile])
     AC_CONFIG_FILES([docker/debian9/Dockerfile])
+    AC_CONFIG_FILES([docker/debian10/Dockerfile])
+    AC_CONFIG_FILES([docker/debian-stable/Dockerfile])
+    AC_CONFIG_FILES([docker/debian-testing/Dockerfile])
   ],
   [])
 

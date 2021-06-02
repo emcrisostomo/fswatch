@@ -1,5 +1,5 @@
 .\"   $Id$
-.\" Copyright (c) 2013-2017 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+.\" Copyright (c) 2013-2021 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -40,10 +40,10 @@ command receives notifications when the contents of the specified files or
 directories are modified.  @FSWATCH@ implements six kind of monitors:
 .Bl -tag -width indent
 .It -
-A monitor based on the File System Events API of Apple OS X.
+A monitor based on the File System Events API of Apple macOS.
 .It -
 A monitor based on kqueue, an event notification interface introduces in FreeBSD
-4.1 and supported on most *BSD systems (including OS X).
+4.1 and supported on most *BSD systems (including macOS).
 .It -
 A monitor based on the File Events Notification API of the Solaris kernel and
 its derivatives.
@@ -145,7 +145,7 @@ option.
 .It Fl n, -numeric
 Print the numeric value of the event flag, instead of the array of symbolic
 names.  The numeric value of the event flags are system-specific and may vary
-across different versions of OS X.  As a consequence, the use of numeric values
+across different versions of macOS.  As a consequence, the use of numeric values
 is discouraged.
 .It Fl o, -one-per-batch
 Print a single message with the number of change events.
@@ -180,12 +180,12 @@ monitors are:
 .It -
 The
 .Em FSEvents monitor ,
-a monitor based on the File System Events API of Apple OS X.
+a monitor based on the File System Events API of Apple macOS.
 .It -
 The
 .Em kqueue monitor ,
 a monitor based on kqueue, an event notification interface introduced in FreeBSD
-4.1 and supported on most *BSD systems (including OS X).
+4.1 and supported on most *BSD systems (including macOS).
 .It -
 The
 .Em inotify monitor ,
@@ -208,11 +208,11 @@ of existing bugs, limitations, corner cases or pathological behaviour.
 .Ss The FSEvents Monitor
 The
 .Em FSEvents monitor ,
-available only on Apple OS X, has no known limitations and scales very well with
+available only on Apple macOS, has no known limitations and scales very well with
 the number of files being observed.  In fact, I observed no performance
 degradation when testing
 .Nm
-observing changes on a filesystem of 500 GB over long periods of time.  On OS X,
+observing changes on a filesystem of 500 GB over long periods of time.  On macOS,
 this is the default monitor.
 .Ss The kqueue Monitor
 The
@@ -294,7 +294,7 @@ limitations.
 Usage recommendations are as follows:
 .Bl -tag -width indent
 .It -
-On OS X, use only the FSEvents monitor (which is the default behaviour).
+On macOS, use only the FSEvents monitor (which is the default behaviour).
 .It -
 On Linux, use the inotify monitor (which is the default behaviour).
 .It -
@@ -338,6 +338,44 @@ Regular expressions can be
 if option
 .Fl I
 is specified.
+.El
+.Sh EVENT TYPES
+Event flags identify the kind of change a file system object has undergone. Many of them directly map to common file system operations (such as creation, deletion, update, etc.), others are less common (such as attribute modification), and others are monitor and platform specific.
+.sp
+Currently,
+.Nm
+maps monitor-specific event flags to 'global' event flags acting as a sort of 'greatest common denominator' of all the available monitor flags. The following global event flags are available::
+.Bl -tag -width 20n
+.It Sy NoOp
+Idle event, optionally issued when no changes were detected.
+.It Sy PlatformSpecific
+This event maps a platform-specific event that has no corresponding flag.
+.It Sy Created
+The object has been created.
+.It Sy Updated
+The object has been updated. The kind of update is monitor-dependent.
+.It Sy Removed
+The object has been removed.
+.It Sy Renamed
+The object has been renamed.
+.It Sy OwnerModified
+The object’s owner has changed.
+.It Sy AttributeModified
+An object’s attribute has changed.
+.It Sy MovedFrom
+The object has moved from this location to a new location of the same file system.
+.It Sy MovedTo
+The object has moved from another location in the same file system into this location.
+.It Sy IsFile
+The object is a regular file.
+.It Sy IsDir
+The object is a directory.
+.It Sy IsSymLink
+The object is a symbolic link.
+.It Sy Link
+The object link count has changed.
+.It Sy Overflow
+The monitor has overflowed.
 .El
 .Sh EXAMPLES
 .Ss Basic Usage

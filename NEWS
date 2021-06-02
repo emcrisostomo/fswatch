@@ -1,7 +1,18 @@
 NEWS
 ****
 
-New in master:
+New in 1.16.0:
+
+  * Update FSEvents flags and add support to macOS 10.10+ features.
+
+  * Issue 226: Add FreeBSD installation instructions.
+
+  * Issue 243: PlatformSpecific instead of Updated on Darwin 19.4.
+
+  * Issue 248: Update fswatch.7.in to add the Event Types section to the man
+    page.
+
+  * Issue 257: Update FreeBSD installation instructions.
 
   * Issue 260: Fix memory leak.
 
@@ -10,6 +21,8 @@ New in master:
 
   * Issue 270: using both AC_CONFIG_MACRO_DIR and AC_CONFIG_MACRO_DIRS is
     deprecated in autoconf-2.71
+
+  * Issue 272: Send AttributeModified on touch when using the FSevents monitor.
 
 New in 1.14.0:
 
@@ -21,7 +34,8 @@ New in 1.12.0:
   * Issue 178: Migrate usages of POSIX regular expressions (<regex.h>) to the
     C++11 regex library (<regex>).
 
-  * Issue 191: Wrong error message is printed when inotify event queue overflows.
+  * Issue 191: Wrong error message is printed when inotify event queue
+    overflows.
 
 New in 1.11.3:
 

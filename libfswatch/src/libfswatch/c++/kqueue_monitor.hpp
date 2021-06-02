@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -83,9 +83,8 @@ namespace fsw
     void rescan_pending();
     void scan_root_paths();
     int wait_for_events(const std::vector<struct kevent>& changes,
-                        std::vector<struct kevent>& event_list);
-    void process_events(const std::vector<struct kevent>& changes,
-                        const std::vector<struct kevent>& event_list,
+                        std::vector<struct kevent>& event_list) const;
+    void process_events(const std::vector<struct kevent>& event_list,
                         int event_num);
 
     int kq = -1;
