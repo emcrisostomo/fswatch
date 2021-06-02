@@ -231,7 +231,7 @@ To build `fswatch` with localization support, you need to have `gettext`
 installed on your system.  If `configure` cannot find `<libintl.h>` or the
 linker cannot find `libintl`, then you may need to manually provide their
 location to `configure`, usually using the `CPPFLAGS` and the `LDFLAGS`
-variables.  See `README.osx` for an example.
+variables.  See `README.macos` for an example.
 
 If `gettext` is not available on your system, `fswatch` shall build correctly,
 but it will lack localization support and the only available locale will be
