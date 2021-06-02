@@ -125,7 +125,6 @@ namespace fsw
     run_loop = CFRunLoopGetCurrent();
 
     // Loop Initialization
-
     FSW_ELOG(_("Scheduling stream with run loop...\n"));
     FSEventStreamScheduleWithRunLoop(stream,
                                      run_loop,
@@ -139,12 +138,10 @@ namespace fsw
 #endif
 
     // Loop
-
     FSW_ELOG(_("Starting run loop...\n"));
     CFRunLoopRun();
 
     // Deinitialization part
-
     FSW_ELOG(_("Stopping event stream...\n"));
     FSEventStreamStop(stream);
 
