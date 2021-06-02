@@ -1,5 +1,4 @@
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat)](https://github.com/emcrisostomo/fswatch/blob/master/COPYING)
-[![Build Status](https://travis-ci.org/emcrisostomo/fswatch.svg?branch=master)](https://travis-ci.org/emcrisostomo/fswatch)
 
 README
 ======
@@ -302,7 +301,7 @@ v. 2.0.
 
 -----
 
-Copyright (c) 2013-2020 Enrico M. Crisostomo
+Copyright (c) 2013-2021 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
