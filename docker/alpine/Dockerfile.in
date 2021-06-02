@@ -1,5 +1,5 @@
 FROM alpine
-MAINTAINER Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+LABEL org.opencontainers.image.authors="enrico.m.crisostomo@gmail.com>"
 
 RUN apk add --no-cache file git autoconf automake libtool gettext gettext-dev make g++ texinfo curl
 
