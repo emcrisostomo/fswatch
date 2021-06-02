@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for fswatch (version 1.15.0,
+2 June 2021), a cross-platform file change monitor with multiple
+backends: Apple OS X File System Events, *BSD kqueue,
+Solaris/Illumos File Events Notification, Linux inotify,
+Microsoft Windows ReadDirectoryChangesW and a
+stat()-based backend.
+
+Copyright (C) 2013-2018 Enrico M. Crisostomo
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts. A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Top (fswatch 1.15.0)</title>
+
+<meta name="description" content="Top (fswatch 1.15.0)">
+<meta name="keywords" content="Top (fswatch 1.15.0)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="#Top" rel="start" title="Top">
+<link href="Index-of-Functions.html" rel="index" title="Index of Functions">
+<link href="#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Version-History.html" rel="next" title="Version History">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<h1 class="settitle" align="center">fswatch 1.15.0</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span id="SEC_Overview"></span>
+<h2 class="shortcontents-heading">Short Table of Contents</h2>
+
+<div class="shortcontents">
+<ul class="no-bullet">
+<li><a id="stoc-Version-History-1" href="#toc-Version-History-1">1 Version History</a></li>
+<li><a id="stoc-Introduction-1" href="#toc-Introduction-1">2 Introduction</a></li>
+<li><a id="stoc-Tutorial-Introduction-to-fswatch-1" href="#toc-Tutorial-Introduction-to-fswatch-1">3 Tutorial Introduction to <code>fswatch</code></a></li>
+<li><a id="stoc-Invoking-fswatch-1" href="#toc-Invoking-fswatch-1">4 Invoking <code>fswatch</code></a></li>
+<li><a id="stoc-Monitors-1" href="#toc-Monitors-1">5 Monitors</a></li>
+<li><a id="stoc-GNU-Free-Documentation-License-1" href="#toc-GNU-Free-Documentation-License-1">Appendix A GNU Free Documentation License</a></li>
+<li><a id="stoc-Index-of-Functions-1" href="#toc-Index-of-Functions-1" rel="index">Appendix B Index of Functions</a></li>
+<li><a id="stoc-Index-of-Programs-1" href="#toc-Index-of-Programs-1" rel="index">Appendix C Index of Programs</a></li>
+<li><a id="stoc-Index-of-Files-1" href="#toc-Index-of-Files-1" rel="index">Appendix D Index of Files</a></li>
+<li><a id="stoc-Index-of-Command-Line-Options-1" href="#toc-Index-of-Command-Line-Options-1" rel="index">Appendix E Index of Command Line Options</a></li>
+<li><a id="stoc-Index" href="#toc-Index" rel="index">Index</a></li>
+</ul>
+</div>
+
+<span id="SEC_Contents"></span>
+<h2 class="contents-heading">Table of Contents</h2>
+
+<div class="contents">
+
+<ul class="no-bullet">
+  <li><a id="toc-Version-History-1" href="Version-History.html#Version-History">1 Version History</a>
+  <ul class="no-bullet">
+    <li><a id="toc-1_002e12_002e0" href="Version-History.html#g_t1_002e12_002e0">1.1 1.12.0</a></li>
+    <li><a id="toc-1_002e11_002e3" href="Version-History.html#g_t1_002e11_002e3">1.2 1.11.3</a></li>
+    <li><a id="toc-1_002e11_002e2" href="Version-History.html#g_t1_002e11_002e2">1.3 1.11.2</a></li>
+    <li><a id="toc-1_002e11_002e1" href="Version-History.html#g_t1_002e11_002e1">1.4 1.11.1</a></li>
+    <li><a id="toc-1_002e11_002e0" href="Version-History.html#g_t1_002e11_002e0">1.5 1.11.0</a></li>
+    <li><a id="toc-1_002e10_002e0" href="Version-History.html#g_t1_002e10_002e0">1.6 1.10.0</a></li>
+    <li><a id="toc-1_002e9_002e3" href="Version-History.html#g_t1_002e9_002e3">1.7 1.9.3</a></li>
+    <li><a id="toc-1_002e9_002e2" href="Version-History.html#g_t1_002e9_002e2">1.8 1.9.2</a></li>
+    <li><a id="toc-1_002e9_002e1" href="Version-History.html#g_t1_002e9_002e1">1.9 1.9.1</a></li>
+    <li><a id="toc-1_002e9_002e0" href="Version-History.html#g_t1_002e9_002e0">1.10 1.9.0</a></li>
+    <li><a id="toc-1_002e8_002e0" href="Version-History.html#g_t1_002e8_002e0">1.11 1.8.0</a></li>
+    <li><a id="toc-1_002e7_002e0" href="Version-History.html#g_t1_002e7_002e0">1.12 1.7.0</a></li>
+    <li><a id="toc-1_002e6_002e0" href="Version-History.html#g_t1_002e6_002e0">1.13 1.6.0</a></li>
+    <li><a id="toc-1_002e5_002e1" href="Version-History.html#g_t1_002e5_002e1">1.14 1.5.1</a></li>
+    <li><a id="toc-1_002e5_002e0" href="Version-History.html#g_t1_002e5_002e0">1.15 1.5.0</a></li>
+    <li><a id="toc-1_002e4_002e7" href="Version-History.html#g_t1_002e4_002e7">1.16 1.4.7</a></li>
+    <li><a id="toc-1_002e4_002e6" href="Version-History.html#g_t1_002e4_002e6">1.17 1.4.6</a></li>
+    <li><a id="toc-1_002e4_002e5_002e3" href="Version-History.html#g_t1_002e4_002e5_002e3">1.18 1.4.5.3</a></li>
+    <li><a id="toc-1_002e4_002e5_002e2" href="Version-History.html#g_t1_002e4_002e5_002e2">1.19 1.4.5.2</a></li>
+    <li><a id="toc-1_002e4_002e5_002e1" href="Version-History.html#g_t1_002e4_002e5_002e1">1.20 1.4.5.1</a></li>
+    <li><a id="toc-1_002e4_002e5" href="Version-History.html#g_t1_002e4_002e5">1.21 1.4.5</a></li>
+    <li><a id="toc-1_002e4_002e4" href="Version-History.html#g_t1_002e4_002e4">1.22 1.4.4</a></li>
+    <li><a id="toc-1_002e4_002e3_002e2" href="Version-History.html#g_t1_002e4_002e3_002e2">1.23 1.4.3.2</a></li>
+    <li><a id="toc-1_002e4_002e3_002e1" href="Version-History.html#g_t1_002e4_002e3_002e1">1.24 1.4.3.1</a></li>
+    <li><a id="toc-1_002e4_002e3" href="Version-History.html#g_t1_002e4_002e3">1.25 1.4.3</a></li>
+    <li><a id="toc-1_002e4_002e2" href="Version-History.html#g_t1_002e4_002e2">1.26 1.4.2</a></li>
+    <li><a id="toc-1_002e4_002e1_002e1" href="Version-History.html#g_t1_002e4_002e1_002e1">1.27 1.4.1.1</a></li>
+    <li><a id="toc-1_002e4_002e1" href="Version-History.html#g_t1_002e4_002e1">1.28 1.4.1</a></li>
+    <li><a id="toc-1_002e4_002e0" href="Version-History.html#g_t1_002e4_002e0">1.29 1.4.0</a></li>
+    <li><a id="toc-1_002e3_002e9" href="Version-History.html#g_t1_002e3_002e9">1.30 1.3.9</a></li>
+    <li><a id="toc-1_002e3_002e8" href="Version-History.html#g_t1_002e3_002e8">1.31 1.3.8</a></li>
+    <li><a id="toc-1_002e3_002e7" href="Version-History.html#g_t1_002e3_002e7">1.32 1.3.7</a></li>
+    <li><a id="toc-1_002e3_002e6" href="Version-History.html#g_t1_002e3_002e6">1.33 1.3.6</a></li>
+    <li><a id="toc-1_002e3_002e5" href="Version-History.html#g_t1_002e3_002e5">1.34 1.3.5</a></li>
+    <li><a id="toc-1_002e3_002e4" href="Version-History.html#g_t1_002e3_002e4">1.35 1.3.4</a></li>
+    <li><a id="toc-1_002e3_002e3" href="Version-History.html#g_t1_002e3_002e3">1.36 1.3.3</a></li>
+    <li><a id="toc-1_002e3_002e2" href="Version-History.html#g_t1_002e3_002e2">1.37 1.3.2</a></li>
+  </ul></li>
+  <li><a id="toc-Introduction-1" href="Introduction.html#Introduction">2 Introduction</a>
+  <ul class="no-bullet">
+    <li><a id="toc-History-and-fswatch-Authors" href="Introduction.html#History-and-fswatch-Authors">2.1 History and <code>fswatch</code> Authors</a></li>
+    <li><a id="toc-Reporting-Bugs-and-Suggestions-1" href="Introduction.html#Reporting-Bugs-and-Suggestions-1">2.2 Reporting Bugs and Suggestions</a></li>
+  </ul></li>
+  <li><a id="toc-Tutorial-Introduction-to-fswatch-1" href="Tutorial-Introduction-to-fswatch.html#Tutorial-Introduction-to-fswatch">3 Tutorial Introduction to <code>fswatch</code></a>
+  <ul class="no-bullet">
+    <li><a id="toc-Detecting-File-System-Changes" href="Tutorial-Introduction-to-fswatch.html#Detecting-File-System-Changes">3.1 Detecting File System Changes</a></li>
+    <li><a id="toc-Observing-File-System-Changes-1" href="Tutorial-Introduction-to-fswatch.html#Observing-File-System-Changes-1">3.2 Observing File System Changes</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Event-details" href="Tutorial-Introduction-to-fswatch.html#Event-details">3.2.1 Event details</a></li>
+      <li><a id="toc-Parseability-Issues" href="Tutorial-Introduction-to-fswatch.html#Parseability-Issues">3.2.2 Parseability Issues</a></li>
+      <li><a id="toc-Numeric-Event-Flags-1" href="Tutorial-Introduction-to-fswatch.html#Numeric-Event-Flags-1">3.2.3 Numeric Event Flags</a></li>
+    </ul></li>
+    <li><a id="toc-Processing-fswatch-Output" href="Tutorial-Introduction-to-fswatch.html#Processing-fswatch-Output">3.3 Processing <code>fswatch</code> Output</a></li>
+    <li><a id="toc-Detecting-the-Boundaries-of-a-Batch-of-Changes" href="Tutorial-Introduction-to-fswatch.html#Detecting-the-Boundaries-of-a-Batch-of-Changes">3.4 Detecting the Boundaries of a Batch of Changes</a></li>
+    <li><a id="toc-Receiving-a-Single-Event" href="Tutorial-Introduction-to-fswatch.html#Receiving-a-Single-Event">3.5 Receiving a Single Event</a></li>
+  </ul></li>
+  <li><a id="toc-Invoking-fswatch-1" href="Invoking-fswatch.html#Invoking-fswatch">4 Invoking <code>fswatch</code></a>
+  <ul class="no-bullet">
+    <li><a id="toc-Synopsis-of-fswatch" href="Invoking-fswatch.html#Synopsis-of-fswatch">4.1 Synopsis of <code>fswatch</code></a></li>
+    <li><a id="toc-The-Two-Option-Styles" href="Invoking-fswatch.html#The-Two-Option-Styles">4.2 The Two Option Styles</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Long-Options" href="Invoking-fswatch.html#Long-Options">4.2.1 Long Options</a></li>
+      <li><a id="toc-Short-Options" href="Invoking-fswatch.html#Short-Options">4.2.2 Short Options</a></li>
+    </ul></li>
+    <li><a id="toc-fswatch-Options" href="Invoking-fswatch.html#fswatch-Options">4.3 <code>fswatch</code> Options</a></li>
+    <li><a id="toc-Whitespace-and-Record-Format-1" href="Invoking-fswatch.html#Whitespace-and-Record-Format-1">4.4 Whitespace and Record Format</a></li>
+    <li><a id="toc-Custom-Record-Formats-1" href="Invoking-fswatch.html#Custom-Record-Formats-1">4.5 Custom Record Formats</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Format-Directives" href="Invoking-fswatch.html#Format-Directives">4.5.1 Format Directives</a></li>
+      <li><a id="toc-Record-Termination" href="Invoking-fswatch.html#Record-Termination">4.5.2 Record Termination</a></li>
+      <li><a id="toc-Event-Flag-Separator-1" href="Invoking-fswatch.html#Event-Flag-Separator-1">4.5.3 Event Flag Separator</a></li>
+      <li><a id="toc-Builtin-Formats" href="Invoking-fswatch.html#Builtin-Formats">4.5.4 Builtin Formats</a></li>
+    </ul></li>
+    <li><a id="toc-Batch-Marker-1" href="Invoking-fswatch.html#Batch-Marker-1">4.6 Batch Marker</a></li>
+    <li><a id="toc-Idle-events" href="Invoking-fswatch.html#Idle-events">4.7 Idle events</a></li>
+    <li><a id="toc-Filtering-by-Path" href="Invoking-fswatch.html#Filtering-by-Path">4.8 Filtering by Path</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Specifying-Filters" href="Invoking-fswatch.html#Specifying-Filters">4.8.1 Specifying Filters</a>
+      <ul class="no-bullet">
+        <li><a id="toc-Filter-File-Format" href="Invoking-fswatch.html#Filter-File-Format">4.8.1.1 Filter File Format</a></li>
+      </ul></li>
+      <li><a id="toc-Types-of-Filters-and-Order-of-Execution" href="Invoking-fswatch.html#Types-of-Filters-and-Order-of-Execution">4.8.2 Types of Filters and Order of Execution</a></li>
+      <li><a id="toc-Filter-Modifiers" href="Invoking-fswatch.html#Filter-Modifiers">4.8.3 Filter Modifiers</a></li>
+    </ul></li>
+    <li><a id="toc-Filtering-by-Event-Type-1" href="Invoking-fswatch.html#Filtering-by-Event-Type-1">4.9 Filtering by Event Type</a></li>
+    <li><a id="toc-Latency-1" href="Invoking-fswatch.html#Latency-1">4.10 Latency</a></li>
+    <li><a id="toc-Symbolic-Links" href="Invoking-fswatch.html#Symbolic-Links">4.11 Symbolic Links</a></li>
+    <li><a id="toc-Event-Flags-1" href="Invoking-fswatch.html#Event-Flags-1">4.12 Event Flags</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Peculiarities-and-Pitfalls" href="Invoking-fswatch.html#Peculiarities-and-Pitfalls">4.12.1 Peculiarities and Pitfalls</a></li>
+      <li><a id="toc-Numeric-Event-Flags-2" href="Invoking-fswatch.html#Numeric-Event-Flags-2">4.12.2 Numeric Event Flags</a></li>
+    </ul></li>
+    <li><a id="toc-Choosing-a-Monitor-1" href="Invoking-fswatch.html#Choosing-a-Monitor-1">4.13 Choosing a Monitor</a></li>
+    <li><a id="toc-Recursive-Scanning" href="Invoking-fswatch.html#Recursive-Scanning">4.14 Recursive Scanning</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Recursively-Watching-Directories" href="Invoking-fswatch.html#Recursively-Watching-Directories">4.14.1 Recursively Watching Directories</a></li>
+    </ul></li>
+    <li><a id="toc-Monitor-Tunables-1" href="Invoking-fswatch.html#Monitor-Tunables-1">4.15 Monitor Tunables</a></li>
+  </ul></li>
+  <li><a id="toc-Monitors-1" href="Monitors.html#Monitors">5 Monitors</a>
+  <ul class="no-bullet">
+    <li><a id="toc-Available-Monitors" href="Monitors.html#Available-Monitors">5.1 Available Monitors</a></li>
+    <li><a id="toc-The-FSEvents-Monitor-1" href="Monitors.html#The-FSEvents-Monitor-1">5.2 The FSEvents Monitor</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Peculiarities" href="Monitors.html#Peculiarities">5.2.1 Peculiarities</a></li>
+      <li><a id="toc-Custom-Properties" href="Monitors.html#Custom-Properties">5.2.2 Custom Properties</a></li>
+    </ul></li>
+    <li><a id="toc-The-kqueue-Monitor-1" href="Monitors.html#The-kqueue-Monitor-1">5.3 The kqueue Monitor</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Peculiarities-1" href="Monitors.html#Peculiarities-1">5.3.1 Peculiarities</a></li>
+    </ul></li>
+    <li><a id="toc-The-File-Events-Notification-Monitor-1" href="Monitors.html#The-File-Events-Notification-Monitor-1">5.4 The File Events Notification Monitor</a></li>
+    <li><a id="toc-The-inotify-Monitor-1" href="Monitors.html#The-inotify-Monitor-1">5.5 The inotify Monitor</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Peculiarities-2" href="Monitors.html#Peculiarities-2">5.5.1 Peculiarities</a>
+      <ul class="no-bullet">
+        <li><a id="toc-Queue-Overflow" href="Monitors.html#Queue-Overflow">5.5.1.1 Queue Overflow</a></li>
+        <li><a id="toc-Duplicate-Events" href="Monitors.html#Duplicate-Events">5.5.1.2 Duplicate Events</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a id="toc-The-Windows-monitor-1" href="Monitors.html#The-Windows-monitor-1">5.6 The Windows monitor</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Peculiarities-3" href="Monitors.html#Peculiarities-3">5.6.1 Peculiarities</a>
+      <ul class="no-bullet">
+        <li><a id="toc-Buffer-Overflow" href="Monitors.html#Buffer-Overflow">5.6.1.1 Buffer Overflow</a></li>
+        <li><a id="toc-Directory-Watching" href="Monitors.html#Directory-Watching">5.6.1.2 Directory Watching</a></li>
+        <li><a id="toc-Recursivity" href="Monitors.html#Recursivity">5.6.1.3 Recursivity</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a id="toc-The-Poll-Monitor-1" href="Monitors.html#The-Poll-Monitor-1">5.7 The Poll Monitor</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Peculiarities-4" href="Monitors.html#Peculiarities-4">5.7.1 Peculiarities</a>
+      <ul class="no-bullet">
+        <li><a id="toc-Performance-Problems" href="Monitors.html#Performance-Problems">5.7.1.1 Performance Problems</a></li>
+        <li><a id="toc-Missing-Events-and-Missing-Event-Flags" href="Monitors.html#Missing-Events-and-Missing-Event-Flags">5.7.1.2 Missing Events and Missing Event Flags</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a id="toc-How-to-Choose-a-Monitor" href="Monitors.html#How-to-Choose-a-Monitor">5.8 How to Choose a Monitor</a></li>
+  </ul></li>
+  <li><a id="toc-GNU-Free-Documentation-License-1" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">Appendix A GNU Free Documentation License</a></li>
+  <li><a id="toc-Index-of-Functions-1" href="Index-of-Functions.html#Index-of-Functions" rel="index">Appendix B Index of Functions</a></li>
+  <li><a id="toc-Index-of-Programs-1" href="Index-of-Programs.html#Index-of-Programs" rel="index">Appendix C Index of Programs</a></li>
+  <li><a id="toc-Index-of-Files-1" href="Index-of-Files.html#Index-of-Files" rel="index">Appendix D Index of Files</a></li>
+  <li><a id="toc-Index-of-Command-Line-Options-1" href="Index-of-Command-Line-Options.html#Index-of-Command-Line-Options" rel="index">Appendix E Index of Command Line Options</a></li>
+  <li><a id="toc-Index" href="General-Index.html#General-Index" rel="index">Index</a></li>
+</ul>
+</div>
+
+
+<span id="Top"></span><div class="header">
+<p>
+Next: <a href="Version-History.html" accesskey="n" rel="next">Version History</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="fswatch"></span><h1 class="top">fswatch</h1>
+<p>This manual is for <code>fswatch</code> (version 1.15.0,
+2 June 2021), a cross-platform file change monitor with multiple
+backends: Apple OS X <em>File System Events</em>, *BSD <em>kqueue</em>,
+Solaris/Illumos <em>File Events Notification</em>, Linux <em>inotify</em>,
+Microsoft Windows <code>ReadDirectoryChangesW</code> and a
+<code>stat()</code>-based backend.
+</p>
+<p>Copyright &copy; 2013-2018 Enrico M. Crisostomo
+</p>
+<blockquote>
+<p>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts. A copy of the license is included in the section entitled &ldquo;GNU
+Free Documentation License&rdquo;.
+</p></blockquote>
+
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="Version-History.html" accesskey="1">Version History</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Version History
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Introduction.html" accesskey="2">Introduction</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Introduction
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Tutorial-Introduction-to-fswatch.html" accesskey="3">Tutorial Introduction to <code>fswatch</code></a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Tutorial Introduction to <code>fswatch</code>
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Invoking-fswatch.html" accesskey="4">Invoking <code>fswatch</code></a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Invoking <code>fswatch</code>
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Monitors.html" accesskey="5">Monitors</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Monitors
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="GNU-Free-Documentation-License.html" accesskey="6">GNU Free Documentation License</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">GNU Free Documentation License
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Index-of-Functions.html" rel="index" accesskey="7">Index of Functions</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Index of Functions
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Index-of-Programs.html" rel="index" accesskey="8">Index of Programs</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Index of Programs
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Index-of-Files.html" rel="index" accesskey="9">Index of Files</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Index of Files
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Index-of-Command-Line-Options.html" rel="index">Index of Command Line Options</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Index of Command Line Options
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="General-Index.html" rel="index">General Index</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">General Index
+</td></tr>
+</table>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="Version-History.html" accesskey="n" rel="next">Version History</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Functions.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
