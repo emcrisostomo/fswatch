@@ -381,7 +381,7 @@ namespace fsw
       std::vector<struct kevent> changes;
       std::vector<struct kevent> event_list;
 
-      for (const std::pair<int, std::string>& fd_path : load->file_names_by_descriptor)
+      for (const auto& fd_path : load->file_names_by_descriptor)
       {
         struct kevent change;
 
