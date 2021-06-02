@@ -37,6 +37,12 @@ AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
 
 # Compute the canonical target-system type variables
+AC_CANONICAL_HOST
+HOST_VENDOR=$host_vendor
+HOST_OS=$host_os
+AC_SUBST([HOST_VENDOR])
+AC_SUBST([HOST_OS])
+
 AC_CANONICAL_TARGET
 TARGET_VENDOR=$target_vendor
 TARGET_OS=$target_os
@@ -109,6 +115,29 @@ AC_CHECK_HEADERS([unordered_map unordered_set])
 AC_CHECK_HEADERS([getopt.h])
 
 # Check for optional header files required to support OS-specific monitors
+
+# Check for macOS
+AS_CASE([${HOST_OS}], ["darwin"*], [
+    IS_DARWIN=true
+    DARWIN_VER="${HOST_OS#darwin}"
+    AC_SUBST([IS_DARWIN])
+    AC_SUBST([DARWIN_VER])
+])
+
+AS_VAR_SET_IF([IS_DARWIN], [
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [9.0],  [AC_DEFINE([MACOS_GE_10_5],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [10.0], [AC_DEFINE([MACOS_GE_10_6],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [11.0], [AC_DEFINE([MACOS_GE_10_7],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [12.0], [AC_DEFINE([MACOS_GE_10_8],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [13.0], [AC_DEFINE([MACOS_GE_10_9],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [14.0], [AC_DEFINE([MACOS_GE_10_10], [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [15.0], [AC_DEFINE([MACOS_GE_10_11], [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [16.0], [AC_DEFINE([MACOS_GE_10_12], [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [17.0], [AC_DEFINE([MACOS_GE_10_13], [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [18.0], [AC_DEFINE([MACOS_GE_10_14], [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [19.0], [AC_DEFINE([MACOS_GE_10_15], [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [20.0], [AC_DEFINE([MACOS_GE_11_0],  [1], ["macOS is at least the specified version"])])
+])
 
 # Check for macOS FSEvents.  FSEvents added file events in a later release, so
 # this check must be performed separately.
