@@ -50,7 +50,7 @@ namespace fsw
     flags.push_back({kFSEventStreamEventFlagUnmount, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagItemCreated, fsw_event_flag::Created});
     flags.push_back({kFSEventStreamEventFlagItemRemoved, fsw_event_flag::Removed});
-    flags.push_back({kFSEventStreamEventFlagItemInodeMetaMod, fsw_event_flag::PlatformSpecific});
+    flags.push_back({kFSEventStreamEventFlagItemInodeMetaMod, fsw_event_flag::AttributeModified});
     flags.push_back({kFSEventStreamEventFlagItemRenamed, fsw_event_flag::Renamed});
     flags.push_back({kFSEventStreamEventFlagItemModified, fsw_event_flag::Updated});
     flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, fsw_event_flag::PlatformSpecific});
