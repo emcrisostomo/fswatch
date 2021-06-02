@@ -96,6 +96,7 @@ namespace fsw
     FSEventStreamRef stream = nullptr;
     CFRunLoopRef run_loop = nullptr;
     bool no_defer();
+    void create_stream(CFArrayRef pathsToWatch);
   };
 }
 

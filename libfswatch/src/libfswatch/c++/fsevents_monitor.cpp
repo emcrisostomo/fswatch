@@ -17,6 +17,7 @@
 #  include "libfswatch_config.h"
 #endif
 
+#include <memory>
 #include "fsevents_monitor.hpp"
 #include "gettext_defs.h"
 #include "libfswatch_exception.hpp"
@@ -29,12 +30,13 @@ namespace fsw
 {
   using std::vector;
   using std::string;
-  
-  typedef struct FSEventFlagType
-  {
-    FSEventStreamEventFlags flag;
-    fsw_event_flag type;
-  } FSEventFlagType;
+
+  using FSEventFlagType =
+    struct FSEventFlagType
+    {
+      FSEventStreamEventFlags flag;
+      fsw_event_flag type;
+    };
 
   static vector<FSEventFlagType> create_flag_type_vector()
   {
@@ -99,26 +101,7 @@ namespace fsw
                     dirs.size(),
                     &kCFTypeArrayCallBacks);
 
-    auto *context = new FSEventStreamContext();
-    context->version = 0;
-    context->info = this;
-    context->retain = nullptr;
-    context->release = nullptr;
-    context->copyDescription = nullptr;
-
-    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
-    if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
-
-    FSW_ELOG(_("Creating FSEvent stream...\n"));
-    stream = FSEventStreamCreate(nullptr,
-                                 &fsevents_monitor::fsevents_callback,
-                                 context,
-                                 pathsToWatch,
-                                 kFSEventStreamEventIdSinceNow,
-                                 latency,
-                                 streamFlags);
-
-    delete context;
+    create_stream(pathsToWatch);
 
     if (!stream)
       throw libfsw_exception(_("Event stream could not be created."));
@@ -187,14 +170,14 @@ namespace fsw
     return evt_flags;
   }
 
-  void fsevents_monitor::fsevents_callback(ConstFSEventStreamRef streamRef,
+  void fsevents_monitor::fsevents_callback(ConstFSEventStreamRef,
                                            void *clientCallBackInfo,
                                            size_t numEvents,
                                            void *eventPaths,
                                            const FSEventStreamEventFlags eventFlags[],
-                                           const FSEventStreamEventId eventIds[])
+                                           const FSEventStreamEventId *)
   {
-    auto *fse_monitor = static_cast<fsevents_monitor *> (clientCallBackInfo);
+    const auto *fse_monitor = static_cast<fsevents_monitor *> (clientCallBackInfo);
 
     if (!fse_monitor)
     {
@@ -225,5 +208,27 @@ namespace fsw
     string no_defer = get_property(DARWIN_EVENTSTREAM_NO_DEFER);
 
     return (no_defer == "true");
+  }
+
+  void fsevents_monitor::create_stream(CFArrayRef pathsToWatch)
+  {
+    std::unique_ptr<FSEventStreamContext> context(new FSEventStreamContext());
+    context->version = 0;
+    context->info = this;
+    context->retain = nullptr;
+    context->release = nullptr;
+    context->copyDescription = nullptr;
+
+    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
+    if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
+
+    FSW_ELOG(_("Creating FSEvent stream...\n"));
+    stream = FSEventStreamCreate(nullptr,
+                                 &fsevents_monitor::fsevents_callback,
+                                 context.get(),
+                                 pathsToWatch,
+                                 kFSEventStreamEventIdSinceNow,
+                                 latency,
+                                 streamFlags);
   }
 }
