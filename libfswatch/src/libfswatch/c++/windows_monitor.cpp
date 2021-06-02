@@ -47,8 +47,6 @@ using namespace std;
 
 namespace fsw
 {
-  REGISTER_MONITOR_IMPL(windows_monitor, windows_monitor_type);
-
   struct windows_monitor_load
   {
     fsw_hash_set<wstring> win_paths;

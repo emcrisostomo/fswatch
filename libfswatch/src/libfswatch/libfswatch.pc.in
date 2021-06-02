@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libfswatch
+Description: libfswatch
+URL: https://github.com/emcrisostomo/fswatch/tree/master/libfswatch
+Version: @VERSION@
+Requires:
+Libs: -L${libdir} -lfswatch
+Cflags: -I${includedir}

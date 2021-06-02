@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.12.0\n"
+"Project-Id-Version: fswatch 1.15.0\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2018-06-30 00:49+0200\n"
+"POT-Creation-Date: 2020-07-17 00:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,261 +17,261 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: fswatch/src/fswatch.cpp:134
+#: fswatch/src/fswatch.cpp:136
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
 "html>.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:135
+#: fswatch/src/fswatch.cpp:137
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:136
+#: fswatch/src/fswatch.cpp:138
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:138
+#: fswatch/src/fswatch.cpp:140
 msgid "Written by Enrico M. Crisostomo."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:146 fswatch/src/fswatch.cpp:188
+#: fswatch/src/fswatch.cpp:148 fswatch/src/fswatch.cpp:190
 msgid "Usage:\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:147
+#: fswatch/src/fswatch.cpp:149
 msgid " [OPTION] ... path ...\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:149 fswatch/src/fswatch.cpp:191
+#: fswatch/src/fswatch.cpp:151 fswatch/src/fswatch.cpp:193
 msgid "Options:\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:150
+#: fswatch/src/fswatch.cpp:152
 msgid "Use the ASCII NUL character (0) as line separator.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:151
+#: fswatch/src/fswatch.cpp:153
 msgid "Exit fswatch after the first set of events is received.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:152
+#: fswatch/src/fswatch.cpp:154
 msgid "Allow a monitor to overflow and report it as a change event.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:153
+#: fswatch/src/fswatch.cpp:155
 msgid "Print a marker at the end of every batch.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:154
+#: fswatch/src/fswatch.cpp:156
 msgid "Watch file accesses.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:155
+#: fswatch/src/fswatch.cpp:157
 msgid "Watch directories only.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:156
+#: fswatch/src/fswatch.cpp:158
 msgid "Exclude paths matching REGEX.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:157
+#: fswatch/src/fswatch.cpp:159
 msgid "Use extended regular expressions.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:159
+#: fswatch/src/fswatch.cpp:161
 msgid "Load filters from file."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:160
+#: fswatch/src/fswatch.cpp:162
 msgid "Use the specified record format."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:161
+#: fswatch/src/fswatch.cpp:163
 msgid "Print the event time using the specified format.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:162
+#: fswatch/src/fswatch.cpp:164
 msgid "Fire idle events.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:163
+#: fswatch/src/fswatch.cpp:165
 msgid "Show this message.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:164
+#: fswatch/src/fswatch.cpp:166
 msgid "Include paths matching REGEX.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:165
+#: fswatch/src/fswatch.cpp:167
 msgid "Use case insensitive regular expressions.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:166
+#: fswatch/src/fswatch.cpp:168
 msgid "Set the latency.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:167
+#: fswatch/src/fswatch.cpp:169
 msgid "Follow symbolic links.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:168
+#: fswatch/src/fswatch.cpp:170
 msgid "List the available monitors.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:169
+#: fswatch/src/fswatch.cpp:171
 msgid "Use the specified monitor.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:171
+#: fswatch/src/fswatch.cpp:173
 msgid "Define the specified property.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:172
+#: fswatch/src/fswatch.cpp:174
 msgid "Print a numeric event mask.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:173
+#: fswatch/src/fswatch.cpp:175
 msgid "Print a single message with the number of change events.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:174
+#: fswatch/src/fswatch.cpp:176
 msgid "Recurse subdirectories.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:175
+#: fswatch/src/fswatch.cpp:177
 msgid "Print the event timestamp.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:176
+#: fswatch/src/fswatch.cpp:178
 msgid "Print the event time as UTC time.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:177
+#: fswatch/src/fswatch.cpp:179
 msgid "Print the event flags.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:178
+#: fswatch/src/fswatch.cpp:180
 msgid "Filter the event by the specified type.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:180
+#: fswatch/src/fswatch.cpp:182
 msgid "Print event flags using the specified separator."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:181
+#: fswatch/src/fswatch.cpp:183
 msgid "Print verbose output.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:182
+#: fswatch/src/fswatch.cpp:184
 msgid "Print the version of "
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:182
+#: fswatch/src/fswatch.cpp:184
 msgid " and exit.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:217
+#: fswatch/src/fswatch.cpp:219
 msgid ""
 "Available monitors in this platform:\n"
 "\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:220
+#: fswatch/src/fswatch.cpp:222
 msgid ""
 "\n"
 "See the man page for more information.\n"
 "\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:222
+#: fswatch/src/fswatch.cpp:224
 msgid "Report bugs to <"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:223
+#: fswatch/src/fswatch.cpp:225
 msgid " home page: <"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:236
+#: fswatch/src/fswatch.cpp:238
 msgid "Executing termination handler.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:283
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:210
+#: fswatch/src/fswatch.cpp:285
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:208
 msgid "Invalid value: "
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:289
+#: fswatch/src/fswatch.cpp:291
 msgid "Value out of range: "
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:305
+#: fswatch/src/fswatch.cpp:307
 msgid "SIGTERM handler registered.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:309
+#: fswatch/src/fswatch.cpp:311
 msgid "SIGTERM handler registration failed."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:314
+#: fswatch/src/fswatch.cpp:316
 msgid "SIGABRT handler registered.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:318
+#: fswatch/src/fswatch.cpp:320
 msgid "SIGABRT handler registration failed."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:323
+#: fswatch/src/fswatch.cpp:325
 msgid "SIGINT handler registered.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:327
+#: fswatch/src/fswatch.cpp:329
 msgid "SIGINT handler registration failed"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:348
+#: fswatch/src/fswatch.cpp:350
 msgid "<date format error>"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:445
+#: fswatch/src/fswatch.cpp:444
 #, c-format
 msgid "Adding path: %s\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:478
+#: fswatch/src/fswatch.cpp:477
 msgid "Invalid filter: "
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:678
+#: fswatch/src/fswatch.cpp:677
 msgid "Invalid property format."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:713
+#: fswatch/src/fswatch.cpp:712
 msgid ""
 "--format is incompatible with any other format option such as -t and -x."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:721
+#: fswatch/src/fswatch.cpp:720
 msgid "--format is incompatible with -o."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:736
+#: fswatch/src/fswatch.cpp:735
 msgid "Invalid format."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:848
+#: fswatch/src/fswatch.cpp:847
 msgid "Invalid number of arguments."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:854
+#: fswatch/src/fswatch.cpp:853
 msgid "Invalid monitor name."
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:886
+#: fswatch/src/fswatch.cpp:885
 msgid "An error occurred and the program will be terminated.\n"
 msgstr ""
 
-#: fswatch/src/fswatch.cpp:893
+#: fswatch/src/fswatch.cpp:892
 msgid "An unknown error occurred and the program will be terminated.\n"
 msgstr ""
 
@@ -287,249 +287,249 @@ msgstr ""
 msgid "An error occurred while creating a port."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:198
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:196
 #, c-format
 msgid "Associating %s.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:229
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:227
 #, c-format
 msgid "Adding %s to list of watched paths.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:235
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:233
 msgid "Allocating fen_info.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:242
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:249
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:240
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:247
 msgid "Cannot allocate memory"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:306
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:260
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:304
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:258
 #, c-format
 msgid "%s cannot be found. Will retry later.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:329
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:327
 msgid "Processing deleted descriptors.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:351
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:349
 msgid "Rescanning pending descriptors.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:357
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:355
 #, c-format
 msgid "Rescanning %s.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:399
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:397
 msgid "Event from unexpected source"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:114
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:112
 msgid "Creating FSEvent stream...\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:126
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:124
 msgid "Event stream could not be created."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:133
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:131
 msgid "Scheduling stream with run loop...\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:138
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:136
 msgid "Starting event stream...\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:147
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:145
 msgid "Starting run loop...\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:152
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:150
 msgid "Stopping event stream...\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:155
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:153
 msgid "Invalidating event stream...\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:158
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:156
 msgid "Releasing event stream...\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:169
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:167
 msgid "run loop is null"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:171
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:169
 msgid "Stopping run loop...\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:203
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:201
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:87
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:85
 msgid "Cannot initialize inotify."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:97
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:95
 msgid "Removing: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:134
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:132
 msgid "Added: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:258
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:256
 msgid "Generic event: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:350
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:348
 msgid "Removed: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:439
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:437
 msgid "Number of records: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:445
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:443
 msgid "read() on inotify descriptor read 0 records."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:451
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:449
 msgid "read() on inotify descriptor returned -1."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:170
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:168
 #, c-format
 msgid "Cannot open %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:267
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:265
 msgid "kqueue already running."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:274
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:272
 msgid "kqueue failed."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:300
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:298
 msgid "kevent returned -1, invalid event number."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:320
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:318
 msgid "Event with EV_ERROR"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:63
+#: libfswatch/src/libfswatch/c++/monitor.cpp:64
 msgid "Callback cannot be null."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:83
+#: libfswatch/src/libfswatch/c++/monitor.cpp:84
 msgid "Latency cannot be negative."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:139
+#: libfswatch/src/libfswatch/c++/monitor.cpp:140
 #, c-format
 msgid "An error occurred during the compilation of %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:278
+#: libfswatch/src/libfswatch/c++/monitor.cpp:233
 msgid "Callback argument cannot be null."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:280
+#: libfswatch/src/libfswatch/c++/monitor.cpp:235
 msgid "Inactivity notification thread: starting\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:313
+#: libfswatch/src/libfswatch/c++/monitor.cpp:268
 msgid "Inactivity notification thread: exiting\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:338
+#: libfswatch/src/libfswatch/c++/monitor.cpp:293
 msgid "Inactivity notification thread: joining\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:355
+#: libfswatch/src/libfswatch/c++/monitor.cpp:310
 msgid "Stopping the monitor.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:383
+#: libfswatch/src/libfswatch/c++/monitor.cpp:338
 msgid "Event queue overflow."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:420
+#: libfswatch/src/libfswatch/c++/monitor.cpp:375
 #, c-format
 msgid "Notifying events #: %d.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:73
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:90
 #, c-format
 msgid "Cannot stat %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:85
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:100
 #, c-format
 msgid "Cannot lstat %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:209
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:207
 msgid "Done scanning.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:85
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:83
 #, c-format
 msgid "Creating event for %s.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:92
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:90
 msgid "CreateEvent failed."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:94
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:92
 #, c-format
 msgid "Event %d created for %s.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:102
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:100
 #, c-format
 msgid "Initializing search structures for %s.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:113
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:111
 #, c-format
 msgid "Invalid handle when opening %s.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:117
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:115
 #, c-format
 msgid "Open file handle: %d.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:147
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:145
 #, c-format
 msgid "Processing %s.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:158
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:156
 msgid "Initialization failed."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:166
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:164
 msgid "I/O incomplete.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:180
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:178
 #, c-format
 msgid "GetOverlappedResult returned %d bytes\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:195
+#: libfswatch/src/libfswatch/c++/windows_monitor.cpp:193
 #, c-format
 msgid "ReadDirectoryChangesW: %s\n"
 msgstr ""

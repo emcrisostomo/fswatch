@@ -13,3 +13,7 @@
 .kdev4/      export-ignore
 .idea/       export-ignore
 .travis.yml  export-ignore
+
+*.ac -crlf
+*.am -crlf
+*.sh -crlf

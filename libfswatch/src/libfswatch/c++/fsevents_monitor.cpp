@@ -65,8 +65,6 @@ namespace fsw
 
   static const vector<FSEventFlagType> event_flag_type = create_flag_type_vector();
 
-  REGISTER_MONITOR_IMPL(fsevents_monitor, fsevents_monitor_type);
-
   fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
                                      FSW_EVENT_CALLBACK *callback,
                                      void *context) :

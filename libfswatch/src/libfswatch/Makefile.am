@@ -13,6 +13,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libfswatch.pc
+
 LIBFSWATCH_API_VERSION = @AM_LIBFSWATCH_API_VERSION@
 
 # Prepare gettext-related symbols used by programs
@@ -27,6 +31,7 @@ libfswatch_la_SOURCES += c++/libfswatch_exception.cpp
 libfswatch_la_SOURCES += c++/event.cpp
 libfswatch_la_SOURCES += c++/filter.cpp
 libfswatch_la_SOURCES += c++/monitor.cpp
+libfswatch_la_SOURCES += c++/monitor_factory.cpp
 libfswatch_la_SOURCES += c++/poll_monitor.cpp
 libfswatch_la_SOURCES += c++/path_utils.cpp
 libfswatch_la_SOURCES += c++/string/string_utils.cpp
@@ -60,6 +65,9 @@ if USE_CYGWIN
   libfswatch_la_SOURCES += c++/windows/win_directory_change_event.cpp
   libfswatch_la_SOURCES += c++/windows/win_directory_change_event.hpp
 endif
+if BUILD_WIN_REALPATH
+  libfswatch_la_SOURCES += c/windows/realpath.c
+endif
 endif
 
 libfswatch_la_LDFLAGS  = -version-info $(LIBFSWATCH_API_VERSION)
@@ -88,6 +96,7 @@ libfswatch_c_HEADERS += c/libfswatch_log.h
 
 # Distribute C++ headers conditionally adding available backends.
 libfswatch_cpp_HEADERS  = c++/monitor.hpp
+libfswatch_cpp_HEADERS += c++/monitor_factory.hpp
 libfswatch_cpp_HEADERS += c++/libfswatch_map.hpp
 libfswatch_cpp_HEADERS += c++/libfswatch_set.hpp
 libfswatch_cpp_HEADERS += c++/path_utils.hpp

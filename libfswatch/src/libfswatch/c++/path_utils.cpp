@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <errno.h>
 #include <iostream>
+#include <system_error>
 
 using namespace std;
 
@@ -57,36 +58,46 @@ namespace fsw
 
   bool read_link_path(const string& path, string& link_path)
   {
-    char *real_path = realpath(path.c_str(), nullptr);
-    link_path = (real_path ? real_path : path);
+    link_path = fsw_realpath(path.c_str(), nullptr);
 
-    bool ret = (real_path != nullptr);
-    free(real_path);
+    return true;
+  }
 
-    return ret;
+  std::string fsw_realpath(const char *path, char *resolved_path)
+  {
+    char *ret = realpath(path, resolved_path);
+
+    if (ret == nullptr)
+    {
+      if (errno != ENOENT)
+        throw std::system_error(errno, std::generic_category());
+
+      return std::string(path);
+    }
+
+    std::string resolved(ret);
+
+    if (resolved_path == nullptr) free(ret);
+
+    return resolved;
   }
 
   bool stat_path(const string& path, struct stat& fd_stat)
   {
-    if (stat(path.c_str(), &fd_stat) != 0)
-    {
-      fsw_logf_perror(_("Cannot stat %s"), path.c_str());
+    if (stat(path.c_str(), &fd_stat) == 0)
+      return true;
 
-      return false;
-    }
+    fsw_logf_perror(_("Cannot stat %s"), path.c_str());
+    return false;
 
-    return true;
   }
 
   bool lstat_path(const string& path, struct stat& fd_stat)
   {
-    if (lstat(path.c_str(), &fd_stat) != 0)
-    {
-      fsw_logf_perror(_("Cannot lstat %s"), path.c_str());
+    if (lstat(path.c_str(), &fd_stat) == 0)
+      return true;
 
-      return false;
-    }
-
-    return true;
+    fsw_logf_perror(_("Cannot lstat %s"), path.c_str());
+    return false;
   }
 }

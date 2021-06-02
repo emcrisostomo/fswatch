@@ -49,8 +49,6 @@ namespace fsw
   }
   poll_monitor_data;
 
-  REGISTER_MONITOR_IMPL(poll_monitor, poll_monitor_type);
-
   poll_monitor::poll_monitor(vector<string> paths,
                              FSW_EVENT_CALLBACK *callback,
                              void *context) :

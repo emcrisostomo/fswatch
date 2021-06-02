@@ -30,11 +30,11 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([libfswatch/Makefile])
 AC_CONFIG_FILES([libfswatch/doc/doxygen/Makefile])
 AC_CONFIG_FILES([libfswatch/src/libfswatch/Makefile])
+AC_CONFIG_FILES([libfswatch/src/libfswatch/libfswatch.pc])
 AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
-AC_CONFIG_MACRO_DIR([m4])
 
 # Compute the canonical target-system type variables
 AC_CANONICAL_TARGET
@@ -62,6 +62,16 @@ AC_ARG_ENABLE([docker],
   [AS_HELP_STRING([--enable-docker], [enable docker (default=no)])],
   [use_docker=${enableval}],
   [use_docker=no])
+
+# Check compiler
+AX_COMPILER_VENDOR
+AX_COMPILER_VERSION
+
+# GCC 4.9 is the first compiler that implements <regex>: 4.8 shipped a broken
+# implementation, so we have to explicitly check for a version >= 4.9
+AS_VAR_IF([ax_cv_cxx_compiler_vendor], [gnu], [dnl
+  AX_COMPARE_VERSION([${ax_cv_cxx_compiler_version}], [lt], [4.9], [AC_MSG_ERROR([GCC v. 4.9 is required])])
+])
 
 # OS-specific treatment
 AM_CONDITIONAL([OS_CYGWIN], [test "x${target_os}" = "xcygwin"])
@@ -258,11 +268,27 @@ AC_CHECK_TYPE([std::unique_ptr<std::string>],
 # Checks for library functions.
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_CHECK_FUNCS([modf],     [], [AC_MSG_ERROR([The modf function cannot be found.])])
-AC_CHECK_FUNCS([realpath], [], [AC_MSG_ERROR([The realpath function cannot be found.])])
 AC_CHECK_FUNCS([select],   [], [AC_MSG_ERROR([The select function cannot be found.])])
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([atexit],    [], [AC_MSG_ERROR([The atexit function cannot be found.])])
 AC_CHECK_FUNCS([setlocale], [], [AC_MSG_ERROR([The setlocale function cannot be found.])])
+
+# Check if realpath is available: if it is not and the host OS is Windows, then
+# build its implementation, otherwise fail
+AC_CHECK_FUNCS([realpath], [AS_VAR_SET([HAVE_REALPATH], ["yes"])], [AS_VAR_SET([HAVE_REALPATH], ["no"])])
+AS_VAR_IF([HAVE_REALPATH],
+  ["no"],
+  [AS_VAR_IF([WINDOWS_AVAILABLE],
+    ["yes"],
+    [dnl
+      AS_VAR_SET([BUILD_WIN_REALPATH], ["yes"])
+    ],
+    [AC_MSG_ERROR([The realpath function cannot be found.])])
+  ]
+)
+
+AM_CONDITIONAL([BUILD_WIN_REALPATH], [test "x${BUILD_WIN_REALPATH}" = "xyes"])
+AS_VAR_IF([HAVE_REALPATH], ["yes"], [AC_DEFINE([HAVE_REALPATH], [1], [Realpath present.])])
 
 AX_CXX_HAVE_THREAD_LOCAL
 

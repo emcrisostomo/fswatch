@@ -28,8 +28,10 @@
 #include <cerrno>
 #include <vector>
 #include <map>
+#include "libfswatch/c++/path_utils.hpp"
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
+#include "libfswatch/c++/monitor_factory.hpp"
 #include "libfswatch/c/error.h"
 #include "libfswatch/c/libfswatch.h"
 #include "libfswatch/c/libfswatch_log.h"
@@ -276,7 +278,7 @@ static bool parse_event_filter(const char *optarg)
   }
 }
 
-static bool validate_latency(double latency)
+static bool validate_latency(double latency, const char *optarg)
 {
   if (latency == 0.0)
   {
@@ -437,10 +439,7 @@ static void start_monitor(int argc, char **argv, int optind)
 
   for (auto i = optind; i < argc; ++i)
   {
-    char *real_path = realpath(argv[i], nullptr);
-    std::string path(real_path ? real_path : argv[i]);
-
-    if (real_path) free(real_path);
+    std::string path(fsw_realpath(argv[i], nullptr));
 
     FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 
@@ -595,7 +594,7 @@ static void parse_opts(int argc, char **argv)
     case 'l':
       lvalue = strtod(optarg, nullptr);
 
-      if (!validate_latency(lvalue))
+      if (!validate_latency(lvalue, optarg))
       {
         exit(FSW_EXIT_LATENCY);
       }

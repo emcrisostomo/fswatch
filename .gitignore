@@ -6,6 +6,7 @@ fswatch_test
 *.lo
 *.o
 cmake-build-debug/
+dist/
 
 # Documentation
 libfswatch.pdf
@@ -125,6 +126,7 @@ Doxyfile
 build-aux/create-pot-template.sh
 libfswatch_config.h
 libfswatch_config.h.in
+libfswatch/src/libfswatch/libfswatch.pc
 scripts/fswatch-run-bash
 scripts/fswatch-run-zsh
 docker/alpine/Dockerfile

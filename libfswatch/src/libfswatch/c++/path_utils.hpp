@@ -33,6 +33,17 @@
 namespace fsw
 {
   /**
+   * @brief A thin wrapper about realpath.
+   *
+   * @param path The path to resolve.
+   * @param resolved_path A pointer to a buffer where the resolved path is
+   * stored.
+   * @return If there is no error, realpath() returns a string, otherwise it
+   * throws a std::system_error.
+   */
+  std::string fsw_realpath(const char *path, char *resolved_path);
+
+  /**
    * @brief Gets a vector of direct directory children.
    *
    * @param path The directory whose children must be returned.

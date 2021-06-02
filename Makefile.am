@@ -61,3 +61,6 @@ dist-hook:
 
 docker-images:
 	./docker/build-images.sh
+
+doxygen:
+	$(MAKE) -C libfswatch/doc/doxygen doxygen
