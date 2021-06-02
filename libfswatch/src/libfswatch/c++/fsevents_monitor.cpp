@@ -41,6 +41,7 @@ namespace fsw
   static vector<FSEventFlagType> create_flag_type_vector()
   {
     vector<FSEventFlagType> flags;
+#ifdef MACOS_GE_10_5
     flags.push_back({kFSEventStreamEventFlagNone, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagMustScanSubDirs, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagUserDropped, fsw_event_flag::PlatformSpecific});
@@ -50,17 +51,32 @@ namespace fsw
     flags.push_back({kFSEventStreamEventFlagRootChanged, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagMount, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagUnmount, fsw_event_flag::PlatformSpecific});
-    flags.push_back({kFSEventStreamEventFlagItemCreated, fsw_event_flag::Created});
-    flags.push_back({kFSEventStreamEventFlagItemRemoved, fsw_event_flag::Removed});
-    flags.push_back({kFSEventStreamEventFlagItemInodeMetaMod, fsw_event_flag::AttributeModified});
-    flags.push_back({kFSEventStreamEventFlagItemRenamed, fsw_event_flag::Renamed});
-    flags.push_back({kFSEventStreamEventFlagItemModified, fsw_event_flag::Updated});
-    flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, fsw_event_flag::PlatformSpecific});
+#endif
+
+#ifdef MACOS_GE_10_7
     flags.push_back({kFSEventStreamEventFlagItemChangeOwner, fsw_event_flag::OwnerModified});
-    flags.push_back({kFSEventStreamEventFlagItemXattrMod, fsw_event_flag::AttributeModified});
-    flags.push_back({kFSEventStreamEventFlagItemIsFile, fsw_event_flag::IsFile});
+    flags.push_back({kFSEventStreamEventFlagItemCreated, fsw_event_flag::Created});
+    flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, fsw_event_flag::PlatformSpecific});
+    flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, fsw_event_flag::AttributeModified});
+    flags.push_back({kFSEventStreamEventFlagItemInodeMetaMod, fsw_event_flag::AttributeModified});
     flags.push_back({kFSEventStreamEventFlagItemIsDir, fsw_event_flag::IsDir});
+    flags.push_back({kFSEventStreamEventFlagItemIsFile, fsw_event_flag::IsFile});
     flags.push_back({kFSEventStreamEventFlagItemIsSymlink, fsw_event_flag::IsSymLink});
+    flags.push_back({kFSEventStreamEventFlagItemModified, fsw_event_flag::Updated});
+    flags.push_back({kFSEventStreamEventFlagItemRemoved, fsw_event_flag::Removed});
+    flags.push_back({kFSEventStreamEventFlagItemRenamed, fsw_event_flag::Renamed});
+    flags.push_back({kFSEventStreamEventFlagItemXattrMod, fsw_event_flag::AttributeModified});
+#endif
+
+#ifdef MACOS_GE_10_9
+    flags.push_back({kFSEventStreamEventFlagOwnEvent, fsw_event_flag::AttributeModified});
+#endif
+
+#ifdef MACOS_GE_10_10
+    flags.push_back({kFSEventStreamEventFlagItemIsHardlink, fsw_event_flag::Link});
+    flags.push_back({kFSEventStreamEventFlagItemIsLastHardlink, fsw_event_flag::Link});
+    flags.push_back({kFSEventStreamEventFlagItemIsLastHardlink, fsw_event_flag::PlatformSpecific});
+#endif
 
     return flags;
   }
