@@ -43,7 +43,7 @@ extern "C"
   enum fsw_monitor_type
   {
     system_default_monitor_type = 0, /**< System default monitor. */
-    fsevents_monitor_type,           /**< OS X FSEvents monitor. */
+    fsevents_monitor_type,           /**< macOS FSEvents monitor. */
     kqueue_monitor_type,             /**< BSD `kqueue` monitor. */
     inotify_monitor_type,            /**< Linux `inotify` monitor. */
     windows_monitor_type,            /**< Windows monitor. */

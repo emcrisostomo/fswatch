@@ -8,7 +8,7 @@
 #
 # DESCRIPTION
 #
-#   This macro checks if the OS X FSEvents API supports file events.
+#   This macro checks if the macOS FSEvents API supports file events.
 #
 #   If it does, define the ax_cv_fsevents_have_file_events environment variable to
 #   "yes" and define HAVE_FSEVENTS_FILE_EVENTS.
@@ -32,7 +32,7 @@
 
 AC_DEFUN([AX_FSEVENTS_HAVE_FILE_EVENTS],
   [AC_CACHE_CHECK(
-    [for file events in OS X FSEvents API],
+    [for file events in macOS FSEvents API],
     ax_cv_fsevents_have_file_events,
     [dnl
       AC_LANG_PUSH([C])
@@ -48,6 +48,6 @@ AC_DEFUN([AX_FSEVENTS_HAVE_FILE_EVENTS],
     then
       AC_DEFINE(HAVE_FSEVENTS_FILE_EVENTS,
         1,
-        [Define if the file events are supported by OS X FSEvents API.])
+        [Define if the file events are supported by macOS FSEvents API.])
     fi
   ])

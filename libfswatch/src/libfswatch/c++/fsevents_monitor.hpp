@@ -15,7 +15,7 @@
  */
 /**
  * @file
- * @brief OS X FSEvents monitor.
+ * @brief macOS FSEvents monitor.
  *
  * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
@@ -32,9 +32,9 @@
 namespace fsw
 {
   /**
-   * @brief OS X FSEvents monitor.
+   * @brief macOS FSEvents monitor.
    *
-   * This monitor is built upon the _FSEvents_ API of the Apple OS X kernel.
+   * This monitor is built upon the _FSEvents_ API of the Apple macOS kernel.
    */
   class fsevents_monitor : public monitor
   {

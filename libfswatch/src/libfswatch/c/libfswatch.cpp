@@ -29,9 +29,9 @@
  * `fswatch` is a cross-platform file change monitor currently supporting the
  * following backends:
  *
- *   - A monitor based on the _FSEvents_ API of Apple OS X.
+ *   - A monitor based on the _FSEvents_ API of Apple macOS.
  *   - A monitor based on _kqueue_, an event notification interface introduced
- *     in FreeBSD 4.1 and supported on most *BSD systems (including OS X).
+ *     in FreeBSD 4.1 and supported on most *BSD systems (including macOS).
  *   - A monitor based on _File Events Notification_, an event notification API
  *     of the Solaris/Illumos kernel.
  *   - A monitor based on _inotify_, a Linux kernel subsystem that reports

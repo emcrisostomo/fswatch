@@ -110,7 +110,7 @@ AC_CHECK_HEADERS([getopt.h])
 
 # Check for optional header files required to support OS-specific monitors
 
-# Check for OS X FSEvents.  FSEvents added file events in a later release, so
+# Check for macOS FSEvents.  FSEvents added file events in a later release, so
 # this check must be performed separately.
 AC_CHECK_HEADERS([CoreServices/CoreServices.h])
 AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS])
@@ -213,7 +213,7 @@ AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin AP
 
 # Some compilers declare to conform to C++11 but the library does not.
 
-# These OS X versions are known to miss at least the listed headers:
+# These macOS versions are known to miss at least the listed headers:
 #   - 10.6 Snow Leopard: mutex, atomic
 #   - 10.7 Lion: mutex, atomic
 #   - 10.8 Mountain Lion: mutex, atomic

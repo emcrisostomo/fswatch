@@ -29,7 +29,7 @@
 @copying
 This manual is for @command{fswatch} (version @value{VERSION},
 @value{UPDATED}), a cross-platform file change monitor with multiple
-backends: Apple OS X @emph{File System Events}, *BSD @emph{kqueue},
+backends: Apple macOS @emph{File System Events}, *BSD @emph{kqueue},
 Solaris/Illumos @emph{File Events Notification}, Linux @emph{inotify},
 Microsoft Windows @code{ReadDirectoryChangesW} and a
 @code{stat()}-based backend.
@@ -395,9 +395,9 @@ ancillary scripts invoked by the @acronym{GNU} Build System.
 
 @itemize
 @item
-@cpindex Apple OS X
+@cpindex Apple macOS
 @cpindex C++11
-@command{fswatch} does not compile on OS X < 10.9 because some
+@command{fswatch} does not compile on macOS < 10.9 because some
 required C++11 classes are not supported by its C++ runtime.
 @end itemize
 
@@ -405,9 +405,9 @@ required C++11 classes are not supported by its C++ runtime.
 
 @itemize
 @item
-@cpindex Apple OS X
+@cpindex Apple macOS
 @cpindex C++11
-@command{fswatch} does not compile on OS X < 10.9 because some
+@command{fswatch} does not compile on macOS < 10.9 because some
 required C++11 classes are not supported by its C++ runtime.
 @end itemize
 
@@ -563,19 +563,19 @@ available:
 @cpindex File System Events, see FSEvents
 @cpindex FSEvents, API
 @cpindex monitor, FSEvents
-@cpindex Apple OS X
+@cpindex Apple macOS
 A monitor based on the @emph{File System Events} @acronym{API}
-(FSEvents) of Apple OS X.
+(FSEvents) of Apple macOS.
 
 @item
 @cpindex FreeBSD
 @cpindex BSD
 @cpindex kqueue
 @cpindex monitor, kqueue
-@cpindex Apple OS X
+@cpindex Apple macOS
 A monitor based on @emph{kqueue}, an event notification interface
 introduced in FreeBSD 4.1 and supported on most *BSD systems
-(including Apple OS X).
+(including Apple macOS).
 
 @item
 @cpindex Solaris
@@ -617,10 +617,10 @@ shipping either of the aforementioned APIs.
 @pgindex @command{fswatch}
 @cpindex @command{fswatch}, initial version
 @cpindex FSEvents
-@cpindex Apple OS X
+@cpindex Apple macOS
 @flindex @file{AUTHORS}
 Alan @sc{Dipert} wrote the first implementation of @command{fswatch}
-in 2009.  This version ran exclusively on Apple OS X and relied on the
+in 2009.  This version ran exclusively on Apple macOS and relied on the
 @emph{FSEvents} API to get change events from the OS.
 
 @pgindex @command{fsw}
@@ -1756,7 +1756,7 @@ time that passes between the moment @command{fswatch} outputs a set of
 detected changes and the next.  What happens during the time
 in-between is a monitor-specific implementation detail.
 
-Some @acronym{API}s, such as OS X's FSEvents, implement the concept of
+Some @acronym{API}s, such as macOS's FSEvents, implement the concept of
 latency themselves and @command{fswatch} appears idle in between.
 Only when the specified amount of time passes, change events are
 received, processed and written to standard output.  Others, such as
@@ -1992,7 +1992,7 @@ monitor-specific.
 
 @itemize
 @item
-The OS X @emph{FSEvents} @acronym{API} will always recurse
+The macOS @emph{FSEvents} @acronym{API} will always recurse
 subdirectories when monitoring a directory.  In this case, even though
 @option{-r} is not specified, the monitor will monitor a directory's
 children nonetheless and there is no way to avoid it@footnote{But
@@ -2079,7 +2079,7 @@ portability across multiple platforms by decoupling the front-end (the
 @command{fswatch} itself) from back-end logic.  Back-end logic is
 encapsulated in multiple, system-specific @emph{monitors}, interacting
 with different monitoring @acronym{API}s.  Since each operating system
-may ship a different set of @acronym{API}s@footnote{In fact, only OS X
+may ship a different set of @acronym{API}s@footnote{In fact, only macOS
 supports more than one such @acronym{API}: BSD's @emph{kqueue} and
 @emph{FSEvents}.}, each operating system will support the
 corresponding set of monitors.
@@ -2108,12 +2108,12 @@ Currently, the available monitors are:
 @itemize
 @item
 The @emph{FSEvents} monitor, a monitor based on the File System Events
-@acronym{API} of Apple OS X (@pxref{The FSEvents Monitor}).
+@acronym{API} of Apple macOS (@pxref{The FSEvents Monitor}).
 
 @item
 The @emph{kqueue} monitor, a monitor based on @emph{kqueue}, an event
 notification interface introduced in FreeBSD 4.1 and supported on most
-*BSD systems (including OS X) (@pxref{The kqueue Monitor}).
+*BSD systems (including macOS) (@pxref{The kqueue Monitor}).
 
 @item
 The @emph{File Events Notification} monitor, a monitor based on the
@@ -2146,12 +2146,12 @@ limitations, corner cases or pathological behaviour.
 @anchor{The FSEvents Monitor}
 @cpindex FSEvents monitor
 @cpindex monitor, FSEvents
-The FSEvents monitor, available only on Apple OS X, has no known
+The FSEvents monitor, available only on Apple macOS, has no known
 limitations and scales very well with the number of files being
 observed.  In fact, I observed no performance degradation when testing
 @command{fswatch} observing changes on a filesystem of 500
 @acronym{GB} over long periods of time.  This is the default monitor
-on Apple OS X.
+on Apple macOS.
 
 @subsection Peculiarities
 @cpindex monitor, FSEvents, peculiarities
@@ -2444,7 +2444,7 @@ Usage recommendations are as follows:
 @itemize
 
 @item
-On Apple OS X, use only the FSEvents monitor (which is the default
+On Apple macOS, use only the FSEvents monitor (which is the default
 behaviour).
 
 @item
