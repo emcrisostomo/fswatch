@@ -3,6 +3,8 @@ NEWS
 
 New in master:
 
+  * Update FSEvents flags and add support to macOS 10.10+ features.
+
   * Issue 226: Add FreeBSD installation instructions.
 
   * Issue 243: PlatformSpecific instead of Updated on Darwin 19.4.
