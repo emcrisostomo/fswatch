@@ -332,6 +332,7 @@ AS_VAR_IF([use_docker], [yes],
     AC_CONFIG_FILES([docker/debian10/Dockerfile])
     AC_CONFIG_FILES([docker/debian-stable/Dockerfile])
     AC_CONFIG_FILES([docker/debian-testing/Dockerfile])
+    AC_CONFIG_FILES([docker/ubuntu/Dockerfile])
   ],
   [])
 

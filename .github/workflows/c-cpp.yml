@@ -14,9 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: update-pkgs
-      run: apt-get -y update
+      run: sudo apt-get -y update
     - name: install-autotools
-      run: apt-get install -y git autoconf automake gettext autopoint libtool make g++ texinfo curl
+      run: sudo apt-get install -y git autoconf automake gettext autopoint libtool make g++ texinfo curl
     - name: autogen
       run: ./autogen.sh
     - name: configure
