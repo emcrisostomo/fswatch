@@ -5,6 +5,8 @@ New in master:
 
   * Issue 226: Add FreeBSD installation instructions.
 
+  * Issue 243: PlatformSpecific instead of Updated on Darwin 19.4.
+
   * Issue 248: Update fswatch.7.in to add the Event Types section to the man
     page.
 
