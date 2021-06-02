@@ -23,6 +23,7 @@
 #include "../c/libfswatch_log.h"
 #include "string/string_utils.hpp"
 #include <cstdlib>
+#include <algorithm>
 #include <memory>
 #include <thread>
 #include <regex>
@@ -182,16 +183,9 @@ namespace fsw
     if (event_type_filters.empty()) return true;
 
     // If filters are set, accept the event only if present amongst the filters.
-    for (const auto& filter : event_type_filters)
-    {
-      if (filter.flag == event_type)
-      {
-        return true;
-      }
-    }
-
-    // If no filters match, then reject the event.
-    return false;
+    return std::any_of(event_type_filters.begin(),
+                    event_type_filters.end(),
+                    [event_type](const fsw_event_type_filter& filter){return filter.flag == event_type;});
   }
 
   bool monitor::accept_path(const std::string& path) const
