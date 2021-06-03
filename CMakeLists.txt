@@ -67,6 +67,9 @@ if (USE_NLS)
 endif ()
 
 # checks
+check_cxx_symbol_exists(atexit cstdlib HAVE_ATEXIT)
+check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
+check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
 check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MTIME)
 check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_ST_MTIMESPEC)
 

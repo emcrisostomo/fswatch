@@ -83,12 +83,9 @@ if (NOT HAVE_CXX_ATOMIC)
     message(WARNING "<atomic> unavailable: some functionalities will not be built.")
 endif (NOT HAVE_CXX_ATOMIC)
 
-check_cxx_symbol_exists(atexit cstdlib HAVE_ATEXIT)
 check_cxx_symbol_exists(modf math.h HAVE_MODF)
 check_cxx_symbol_exists(realpath cstdlib HAVE_REALPATH)
 check_cxx_symbol_exists(select sys/select.h HAVE_SELECT)
-check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
-check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
 check_include_file_cxx(unordered_map HAVE_UNORDERED_MAP)
 check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
