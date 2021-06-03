@@ -15,6 +15,25 @@
 #
 add_definitions(-DHAVE_CONFIG_H)
 
+# Define symbols to conditionally define FSEvents flags
+if(APPLE)
+    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "9.0")
+        set(HAVE_MACOS_GE_10_5 1)
+    endif()
+
+    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "11.0")
+        set(HAVE_MACOS_GE_10_7 1)
+    endif()
+
+    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "13.0")
+        set(HAVE_MACOS_GE_10_9 1)
+    endif()
+
+    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "14.0")
+        set(HAVE_MACOS_GE_10_10 1)
+    endif()
+endif()
+
 set(LIBFSWATCH_HEADER_FILES
         src/libfswatch/c/cevent.h
         src/libfswatch/c/cfilter.h

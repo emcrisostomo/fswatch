@@ -13,10 +13,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CMAKE_CONFIG_H
-#  include "cmake_config.h"
-#endif
-
+#include "libfswatch/libfswatch_config.h"
 #include <memory>
 #include "fsevents_monitor.hpp"
 #include "gettext_defs.h"
@@ -41,7 +38,7 @@ namespace fsw
   static vector<FSEventFlagType> create_flag_type_vector()
   {
     vector<FSEventFlagType> flags;
-#ifdef MACOS_GE_10_5
+#ifdef HAVE_MACOS_GE_10_5
     flags.push_back({kFSEventStreamEventFlagNone, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagMustScanSubDirs, fsw_event_flag::PlatformSpecific});
     flags.push_back({kFSEventStreamEventFlagUserDropped, fsw_event_flag::PlatformSpecific});
@@ -53,7 +50,7 @@ namespace fsw
     flags.push_back({kFSEventStreamEventFlagUnmount, fsw_event_flag::PlatformSpecific});
 #endif
 
-#ifdef MACOS_GE_10_7
+#ifdef HAVE_MACOS_GE_10_7
     flags.push_back({kFSEventStreamEventFlagItemChangeOwner, fsw_event_flag::OwnerModified});
     flags.push_back({kFSEventStreamEventFlagItemCreated, fsw_event_flag::Created});
     flags.push_back({kFSEventStreamEventFlagItemFinderInfoMod, fsw_event_flag::PlatformSpecific});
@@ -68,11 +65,11 @@ namespace fsw
     flags.push_back({kFSEventStreamEventFlagItemXattrMod, fsw_event_flag::AttributeModified});
 #endif
 
-#ifdef MACOS_GE_10_9
+#ifdef HAVE_MACOS_GE_10_9
     flags.push_back({kFSEventStreamEventFlagOwnEvent, fsw_event_flag::AttributeModified});
 #endif
 
-#ifdef MACOS_GE_10_10
+#ifdef HAVE_MACOS_GE_10_10
     flags.push_back({kFSEventStreamEventFlagItemIsHardlink, fsw_event_flag::Link});
     flags.push_back({kFSEventStreamEventFlagItemIsLastHardlink, fsw_event_flag::Link});
     flags.push_back({kFSEventStreamEventFlagItemIsLastHardlink, fsw_event_flag::PlatformSpecific});

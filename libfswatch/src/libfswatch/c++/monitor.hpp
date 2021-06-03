@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2018 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -30,6 +30,7 @@
 #ifndef FSW__MONITOR_H
 #  define FSW__MONITOR_H
 
+#  include "libfswatch/libfswatch_config.h"
 #  include "filter.hpp"
 #  include <vector>
 #  include <string>
@@ -40,7 +41,7 @@
 #  include <chrono>
 #  include <map>
 #  include "event.hpp"
-#  include "../c/cmonitor.h"
+#  include "libfswatch/c/cmonitor.h"
 
 /**
  * @brief Main namespace of `libfswatch`.

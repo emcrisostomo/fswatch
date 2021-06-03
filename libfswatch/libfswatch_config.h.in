@@ -1,2 +1,8 @@
+#cmakedefine HAVE_CXX_MUTEX
 #cmakedefine HAVE_UNORDERED_MAP
 #cmakedefine HAVE_UNORDERED_SET
+
+#cmakedefine HAVE_MACOS_GE_10_5
+#cmakedefine HAVE_MACOS_GE_10_7
+#cmakedefine HAVE_MACOS_GE_10_9
+#cmakedefine HAVE_MACOS_GE_10_10
