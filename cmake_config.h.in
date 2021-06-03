@@ -7,11 +7,4 @@
 #cmakedefine PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
 #cmakedefine PACKAGE_TARNAME   "@PACKAGE_TARNAME@"
 #cmakedefine PACKAGE_URL       "@PACKAGE_URL@"
-#cmakedefine HAVE_CONFIG_H
-#cmakedefine HAVE_CXX_THREAD_LOCAL
-#cmakedefine HAVE_FSEVENTS_FILE_EVENTS
 #cmakedefine HAVE_GETOPT_LONG
-#cmakedefine HAVE_PORT_H
-#cmakedefine HAVE_SYS_EVENT_H
-#cmakedefine HAVE_SYS_INOTIFY_H
-#cmakedefine HAVE_WINDOWS
