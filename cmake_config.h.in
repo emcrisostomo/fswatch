@@ -12,10 +12,10 @@
 #cmakedefine HAVE_CXX_ATOMIC
 #cmakedefine HAVE_CXX_MUTEX
 #cmakedefine HAVE_CXX_UNIQUE_PTR
-#cmakedefine HAVE_MODF
 #cmakedefine HAVE_FSEVENTS_FILE_EVENTS
 #cmakedefine HAVE_GETOPT_H
 #cmakedefine HAVE_GETOPT_LONG
+#cmakedefine HAVE_MODF
 #cmakedefine HAVE_PORT_H
 #cmakedefine HAVE_REALPATH
 #cmakedefine HAVE_SELECT
