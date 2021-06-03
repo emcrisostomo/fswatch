@@ -73,7 +73,6 @@ check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
 
 # Add a configuration file processed by cmake
 configure_file(${PROJECT_SOURCE_DIR}/cmake_config.h.in ${PROJECT_BINARY_DIR}/cmake_config.h)
-add_definitions(-DHAVE_CMAKE_CONFIG_H)
 
 add_subdirectory(libfswatch)
 add_subdirectory(fswatch/src)

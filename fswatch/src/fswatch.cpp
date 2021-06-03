@@ -13,9 +13,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CMAKE_CONFIG_H
-#  include "cmake_config.h"
-#endif
+#include "cmake_config.h"
 #include "gettext.h"
 #include "fswatch.hpp"
 #include <iostream>
@@ -27,6 +25,7 @@
 #include <ctime>
 #include <cerrno>
 #include <vector>
+#include <array>
 #include <map>
 #include "libfswatch/c++/path_utils.hpp"
 #include "libfswatch/c++/event.hpp"
@@ -336,15 +335,16 @@ static void print_event_timestamp(const event& evt)
 {
   const time_t& evt_time = evt.get_time();
 
-  char time_format_buffer[TIME_FORMAT_BUFF_SIZE];
+  std::array<char, TIME_FORMAT_BUFF_SIZE> time_format_buffer{};
   const struct tm *tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
 
   std::string date =
-    strftime(time_format_buffer,
-             TIME_FORMAT_BUFF_SIZE,
+    strftime(time_format_buffer.data(),
+             time_format_buffer.size(),
              tformat.c_str(),
-             tm_time) ? std::string(time_format_buffer) : std::string(
-      _("<date format error>"));
+             tm_time)
+             ? std::string(time_format_buffer.data())
+             : std::string(_("<date format error>"));
 
   std::cout << date;
 }
@@ -421,7 +421,7 @@ static void write_events(const std::vector<event>& events)
   }
 }
 
-static void process_events(const std::vector<event>& events, void *context)
+static void process_events(const std::vector<event>& events, void *)
 {
   if (oflag)
     write_one_batch_event(events);
