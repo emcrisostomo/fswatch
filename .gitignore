@@ -22,11 +22,7 @@ fswatch/doc/fswatch.pdf
 autom4te.cache/
 
 # IntelliJ IDEA
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/dataSources.*
-.idea/dictionaries
-.idea/shelf
+.idea/
 out/*
 
 # Eclipse CDT
