@@ -1,10 +1,3 @@
-/* #undef ENABLE_NLS */ // OK, used, defined in CM
-#define HAVE_ATEXIT 1 // OK, defined in//  CM
-#define HAVE_CFLOCALECOPYCURRENT 1 // OK, unused
-#define HAVE_CFPREFERENCESCOPYAPPVALUE 1 // OK, unused
-#define HAVE_CORESERVICES_CORESERVICES_H 1 // OK, unused
-#define HAVE_CSTDLIB 1 // OK, unused
-#define HAVE_CXX11 1 // OK, unused
 #define HAVE_CXX_UNIQUE_PTR 1 // OK, unused, defined in CM
 #define HAVE_DECL_KEVENT 1 // OK, unused
 #define HAVE_DECL_KQUEUE 1 // OK, unused
