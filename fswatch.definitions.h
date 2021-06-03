@@ -28,14 +28,4 @@
 #define MACOS_GE_10_7 1 // OK, used
 #define MACOS_GE_10_9 1 // OK, used
 
-// metadata
-#define PACKAGE "fswatch"
-#define PACKAGE_BUGREPORT "enrico.m.crisostomo@gmail.com"
-#define PACKAGE_NAME "fswatch"
-#define PACKAGE_STRING "fswatch 1.16.0"
-#define PACKAGE_TARNAME "fswatch"
-#define PACKAGE_URL "https://github.com/emcrisostomo/fswatch"
-#define PACKAGE_VERSION "1.16.0"
-#define STDC_HEADERS 1 // OK, unused
-#define VERSION "1.16.0" // OK, repeated
 
