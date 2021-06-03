@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -25,6 +25,8 @@
 
 #ifndef LIBFSW_MAP_H
 #  define LIBFSW_MAP_H
+
+#include "libfswatch_config.h"
 
 #  ifdef HAVE_CMAKE_CONFIG_H
 #    include "cmake_config.h"

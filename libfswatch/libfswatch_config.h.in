@@ -1,0 +1,2 @@
+#cmakedefine HAVE_UNORDERED_MAP
+#cmakedefine HAVE_UNORDERED_SET

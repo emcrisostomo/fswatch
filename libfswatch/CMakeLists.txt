@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2018 Enrico M. Crisostomo
+# Copyright (c) 2014-2021 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,6 +16,7 @@
 add_definitions(-DHAVE_CONFIG_H)
 
 set(LIBFSWATCH_HEADER_FILES
+        libfswatch_config.h
         src/libfswatch/c/cevent.h
         src/libfswatch/c/cfilter.h
         src/libfswatch/c/cmonitor.h
@@ -69,6 +70,8 @@ check_cxx_symbol_exists(realpath cstdlib HAVE_REALPATH)
 check_cxx_symbol_exists(select sys/select.h HAVE_SELECT)
 check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
 check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
+check_include_file_cxx(unordered_map HAVE_UNORDERED_MAP)
+check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
 find_library(PTHREAD_LIBRARY pthread)
 set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
@@ -156,6 +159,11 @@ if (APPLE)
     endif (HAVE_FSEVENTS_FILE_EVENTS)
 endif (APPLE)
 
+# Add a configuration file processed by cmake
+configure_file(libfswatch_config.h.in libfswatch_config.h)
+# TODO: consider removing it
+add_definitions(-DHAVE_LIBFSWATCH_CONFIG_H)
+
 add_library(libfswatch ${LIB_SOURCE_FILES} ${LIBFSWATCH_HEADER_FILES})
 set_target_properties(libfswatch PROPERTIES PREFIX "")
 
@@ -166,10 +174,11 @@ if (USE_NLS)
     endif ()
 endif ()
 
-target_include_directories(libfswatch PUBLIC .. src/libfswatch)
+target_include_directories(libfswatch PUBLIC src/libfswatch)
 target_include_directories(libfswatch PUBLIC src)
 target_include_directories(libfswatch PUBLIC ${Intl_INCLUDE_DIRS})
 target_include_directories(libfswatch PRIVATE ${PROJECT_BINARY_DIR})
+target_include_directories(libfswatch PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(libfswatch PRIVATE ${EXTRA_LIBS})
 
 install(TARGETS libfswatch DESTINATION lib)
