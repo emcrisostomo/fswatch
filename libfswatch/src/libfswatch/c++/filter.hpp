@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -29,7 +29,7 @@
 #  define FSW__FILTER_H
 
 #  include <string>
-#  include "../c/cfilter.h"
+#  include "libfswatch/c/cfilter.h"
 #  include <vector>
 
 namespace fsw
@@ -55,7 +55,7 @@ namespace fsw
    * Further information about how filtering works in `libfswatch` can be found
    * in @ref path-filtering.
    */
-  typedef struct monitor_filter
+  using monitor_filter = struct monitor_filter
   {
     /**
      * @brief Regular expression used to match the paths.
@@ -120,7 +120,7 @@ namespace fsw
     static std::vector<monitor_filter> read_from_file(const std::string& path,
                                                       void (*err_handler)(
                                                         std::string) = nullptr);
-  } monitor_filter;
+  };
 }
 
 #endif  /* FSW__FILTER_H */

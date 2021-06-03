@@ -418,11 +418,6 @@
  *
  *   - The order in the filter definition has no effect.
  */
-
-#ifdef HAVE_CMAKE_CONFIG_H
-#  include "cmake_config.h"
-#endif
-
 #include "gettext_defs.h"
 #include <iostream>
 #include <ctime>
@@ -431,17 +426,18 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include "libfswatch/libfswatch_config.h"
 #include "libfswatch.h"
-#include "../c++/libfswatch_map.hpp"
-#include "../c++/filter.hpp"
-#include "../c++/monitor.hpp"
-#include "../c++/monitor_factory.hpp"
-#include "../c++/libfswatch_exception.hpp"
+#include "libfswatch/c++/libfswatch_map.hpp"
+#include "libfswatch/c++/filter.hpp"
+#include "libfswatch/c++/monitor.hpp"
+#include "libfswatch/c++/monitor_factory.hpp"
+#include "libfswatch/c++/libfswatch_exception.hpp"
 
 using namespace std;
 using namespace fsw;
 
-typedef struct FSW_SESSION
+using FSW_SESSION = struct FSW_SESSION
 {
   vector<string> paths;
   fsw_monitor_type type;
@@ -456,7 +452,7 @@ typedef struct FSW_SESSION
   vector<fsw_event_type_filter> event_type_filters;
   map<string, string> properties;
   void *data;
-} FSW_SESSION;
+};
 
 static bool fsw_libfswatch_verbose = false;
 static FSW_THREAD_LOCAL FSW_STATUS last_error;

@@ -26,13 +26,9 @@
 #ifndef LIBFSW_MAP_H
 #  define LIBFSW_MAP_H
 
-#include "libfswatch_config.h"
+#include "libfswatch/libfswatch_config.h"
 
-#  ifdef HAVE_CMAKE_CONFIG_H
-#    include "cmake_config.h"
-#  endif
-
-#  if defined(HAVE_UNORDERED_MAP)
+#  ifdef HAVE_UNORDERED_MAP
 #    include <unordered_map>
 
 namespace fsw

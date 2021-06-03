@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -26,9 +26,7 @@
 #ifndef LIBFSW_SET_H
 #  define LIBFSW_SET_H
 
-#  ifdef HAVE_CMAKE_CONFIG_H
-#    include "cmake_config.h"
-#  endif
+#  include "libfswatch/libfswatch_config.h"
 
 #  if defined(HAVE_UNORDERED_SET)
 #    include <unordered_set>

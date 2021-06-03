@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Enrico M. Crisostomo
+ * Copyright (c) 2016-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,10 +13,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CMAKE_CONFIG_H
-#  include "cmake_config.h"
-#endif
-
 #include "gettext_defs.h"
 #include "filter.hpp"
 #include <fstream>
@@ -72,7 +68,7 @@ namespace fsw
                     monitor_filter& filter_object,
                     void (*err_handler)(string))
   {
-#define handle_error(t) if (err_handler) err_handler(t);
+#define handle_error(t) if (err_handler) err_handler(t)
     // Skip empty strings.
     if (filter.length() == 0) return false;
 

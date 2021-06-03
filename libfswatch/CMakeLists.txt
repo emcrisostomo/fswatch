@@ -56,7 +56,6 @@ set(LIBFSWATCH_HEADER_FILES
         src/libfswatch/c++/string/string_utils.hpp
         src/libfswatch/gettext.h
         src/libfswatch/gettext_defs.h
-        ${PROJECT_BINARY_DIR}/cmake_config.h
         ${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h)
 
 set(LIB_SOURCE_FILES
@@ -86,6 +85,8 @@ endif (NOT HAVE_CXX_ATOMIC)
 check_cxx_symbol_exists(modf math.h HAVE_MODF)
 check_cxx_symbol_exists(realpath cstdlib HAVE_REALPATH)
 check_cxx_symbol_exists(select sys/select.h HAVE_SELECT)
+check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MTIME)
+check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_ST_MTIMESPEC)
 check_include_file_cxx(unordered_map HAVE_UNORDERED_MAP)
 check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 

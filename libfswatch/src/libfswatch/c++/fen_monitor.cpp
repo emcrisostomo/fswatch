@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Enrico M. Crisostomo
+ * Copyright (c) 2015-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,9 +13,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CMAKE_CONFIG_H
-#  include "cmake_config.h"
-#endif
+#include "libfswatch/libfswatch_config.h"
 
 #ifdef HAVE_PORT_H
 
@@ -33,7 +31,7 @@
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
-#  include "../c/libfswatch_log.h"
+#  include "libfswatch/c/libfswatch_log.h"
 #  include "path_utils.hpp"
 
 using namespace std;
