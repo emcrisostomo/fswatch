@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -29,6 +29,7 @@
 #  include "monitor.hpp"
 #  include <sys/stat.h>
 #  include <ctime>
+#  include <memory>
 
 namespace fsw
 {
@@ -86,8 +87,8 @@ namespace fsw
     void find_removed_files();
     void swap_data_containers();
 
-    poll_monitor_data *previous_data;
-    poll_monitor_data *new_data;
+    std::unique_ptr<poll_monitor_data> previous_data;
+    std::unique_ptr<poll_monitor_data> new_data;
 
     std::vector<event> events;
     time_t curr_time;

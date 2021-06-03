@@ -50,16 +50,12 @@ namespace fsw
                              void *context) :
     monitor(std::move(paths), callback, context)
   {
-    previous_data = new poll_monitor_data();
-    new_data = new poll_monitor_data();
+    previous_data.reset(new poll_monitor_data());
+    new_data.reset(new poll_monitor_data());
     time(&curr_time);
   }
 
-  poll_monitor::~poll_monitor()
-  {
-    delete previous_data;
-    delete new_data;
-  }
+  poll_monitor::~poll_monitor() = default;
 
   bool poll_monitor::initial_scan_callback(const string& path,
                                            const struct stat& stat)
@@ -162,9 +158,8 @@ namespace fsw
 
   void poll_monitor::swap_data_containers()
   {
-    delete previous_data;
-    previous_data = new_data;
-    new_data = new poll_monitor_data();
+    previous_data = std::move(new_data);
+    new_data.reset(new poll_monitor_data());
   }
 
   void poll_monitor::collect_data()
