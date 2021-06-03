@@ -1,20 +1,4 @@
 /* #undef ENABLE_NLS */ // OK, used, defined in CM
-/* #undef HAVE_CYGWIN */ // OK, unused
-/* #undef HAVE_DCGETTEXT */ // OK, unused
-/* #undef HAVE_DECL_CYGWIN_CREATE_PATH */ // OK, unused
-/* #undef HAVE_DECL_FINDCLOSECHANGENOTIFICATION */ // OK, unused
-/* #undef HAVE_DECL_FINDFIRSTCHANGENOTIFICATION */ // OK, unused
-/* #undef HAVE_DECL_FINDNEXTCHANGENOTIFICATION */ // OK, unused
-/* #undef HAVE_DECL_INOTIFY_ADD_WATCH */ // OK, unused
-/* #undef HAVE_DECL_INOTIFY_INIT */ // OK, unused
-/* #undef HAVE_DECL_INOTIFY_RM_WATCH */ // OK, unused
-/* #undef HAVE_DECL_PORT_CREATE */ // OK, unused
-/* #undef HAVE_DECL_READDIRECTORYCHANGESW */ // OK, unused
-/* #undef HAVE_DECL_WAITFORSINGLEOBJECT */ // OK, unused
-/* #undef HAVE_GETTEXT */ // OK, unused
-/* #undef HAVE_SYS_CYGWIN_H */ // OK, unused
-/* #undef HAVE_WINDOWS_H */ // OK, unused
-/* #undef LSTAT_FOLLOWS_SLASHED_SYMLINK */ // OK, unused
 #define HAVE_ATEXIT 1 // OK, defined in//  CM
 #define HAVE_CFLOCALECOPYCURRENT 1 // OK, unused
 #define HAVE_CFPREFERENCESCOPYAPPVALUE 1 // OK, unused
