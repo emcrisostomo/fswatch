@@ -16,7 +16,6 @@
 add_definitions(-DHAVE_CONFIG_H)
 
 set(LIBFSWATCH_HEADER_FILES
-        libfswatch_config.h
         src/libfswatch/c/cevent.h
         src/libfswatch/c/cfilter.h
         src/libfswatch/c/cmonitor.h
@@ -38,7 +37,8 @@ set(LIBFSWATCH_HEADER_FILES
         src/libfswatch/c++/string/string_utils.hpp
         src/libfswatch/gettext.h
         src/libfswatch/gettext_defs.h
-        ${PROJECT_BINARY_DIR}/cmake_config.h)
+        ${PROJECT_BINARY_DIR}/cmake_config.h
+        ${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h)
 
 set(LIB_SOURCE_FILES
         src/libfswatch/c/cevent.cpp
