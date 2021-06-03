@@ -1,3 +1,4 @@
+#cmakedefine HAVE_CXX_ATOMIC
 #cmakedefine HAVE_CXX_MUTEX
 #cmakedefine HAVE_UNORDERED_MAP
 #cmakedefine HAVE_UNORDERED_SET

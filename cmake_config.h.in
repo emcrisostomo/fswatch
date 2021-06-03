@@ -9,7 +9,6 @@
 #cmakedefine PACKAGE_URL       "@PACKAGE_URL@"
 #cmakedefine HAVE_ATEXIT
 #cmakedefine HAVE_CONFIG_H
-#cmakedefine HAVE_CXX_ATOMIC
 #cmakedefine HAVE_CXX_THREAD_LOCAL
 #cmakedefine HAVE_CXX_UNIQUE_PTR
 #cmakedefine HAVE_FSEVENTS_FILE_EVENTS
