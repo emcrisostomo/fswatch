@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2018 Enrico M. Crisostomo
+ * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +19,7 @@
 #include <dirent.h>
 #include <cstdlib>
 #include <cstdio>
-#include <errno.h>
+#include <cerrno>
 #include <iostream>
 #include <system_error>
 

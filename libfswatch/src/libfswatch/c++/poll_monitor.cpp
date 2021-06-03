@@ -40,11 +40,10 @@ namespace fsw
   using std::vector;
   using std::string;
 
-  typedef struct poll_monitor::poll_monitor_data
+  using poll_monitor_data = struct poll_monitor::poll_monitor_data
   {
     fsw_hash_map<string, poll_monitor::watched_file_info> tracked_files;
-  }
-  poll_monitor_data;
+  };
 
   poll_monitor::poll_monitor(vector<string> paths,
                              FSW_EVENT_CALLBACK *callback,
@@ -155,7 +154,7 @@ namespace fsw
     vector<fsw_event_flag> flags;
     flags.push_back(fsw_event_flag::Removed);
 
-    for (auto& removed : previous_data->tracked_files)
+    for (const auto& removed : previous_data->tracked_files)
     {
       events.emplace_back(removed.first, curr_time, flags);
     }
@@ -172,7 +171,7 @@ namespace fsw
   {
     poll_monitor_scan_callback fn = &poll_monitor::intermediate_scan_callback;
 
-    for (string& path : paths)
+    for (const string& path : paths)
     {
       scan(path, fn);
     }
@@ -185,7 +184,7 @@ namespace fsw
   {
     poll_monitor_scan_callback fn = &poll_monitor::initial_scan_callback;
 
-    for (string& path : paths)
+    for (const string& path : paths)
     {
       scan(path, fn);
     }
