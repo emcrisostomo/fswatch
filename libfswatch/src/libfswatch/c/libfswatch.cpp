@@ -570,10 +570,10 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     if (session->monitor)
       return fsw_set_last_error(int(FSW_ERR_MONITOR_ALREADY_EXISTS));
 
-    if (!session->paths.size())
+    if (session->paths.empty())
       return fsw_set_last_error(int(FSW_ERR_PATHS_NOT_SET));
 
-    auto *context_ptr = new fsw_callback_context;
+    auto *context_ptr = new fsw_callback_context{};
     context_ptr->handle = session;
     context_ptr->callback = session->callback;
     context_ptr->data = session->data;
@@ -739,7 +739,7 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
 
     session->monitor->start();
   }
-  catch (libfsw_exception& ex)
+  catch (const libfsw_exception& ex)
   {
     return fsw_set_last_error(int(ex));
   }
@@ -765,7 +765,7 @@ FSW_STATUS fsw_stop_monitor(const FSW_HANDLE handle)
 
     session->monitor->stop();
   }
-  catch (libfsw_exception& ex)
+  catch (const libfsw_exception& ex)
   {
     return fsw_set_last_error(int(ex));
   }
