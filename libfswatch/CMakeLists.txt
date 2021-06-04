@@ -197,5 +197,9 @@ target_include_directories(libfswatch PRIVATE ${PROJECT_BINARY_DIR})
 target_include_directories(libfswatch PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(libfswatch PRIVATE ${EXTRA_LIBS})
 
-install(TARGETS libfswatch DESTINATION lib)
-install(FILES ${LIBFSWATCH_HEADER_FILES} DESTINATION include/libfswatch)
+install(TARGETS libfswatch LIBRARY DESTINATION lib)
+install(DIRECTORY src/libfswatch
+    DESTINATION include
+    FILES_MATCHING
+    PATTERN "*.hpp"
+    PATTERN "*.h")
