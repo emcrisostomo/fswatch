@@ -53,7 +53,7 @@ namespace fsw
     return filters;
   }
 
-  bool is_unescaped_space(string& filter, long i)
+  static bool is_unescaped_space(string& filter, long i)
   {
     if (filter[i] != ' ') return false;
 
@@ -64,7 +64,7 @@ namespace fsw
     return (backslashes % 2 == 0);
   }
 
-  bool parse_filter(string filter,
+  static bool parse_filter(string filter,
                     monitor_filter& filter_object,
                     void (*err_handler)(string))
   {

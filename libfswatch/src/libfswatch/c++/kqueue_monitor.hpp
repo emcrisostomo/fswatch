@@ -58,7 +58,7 @@ namespace fsw
     /**
      * @brief Destroys an instance of this class.
      */
-    virtual ~kqueue_monitor();
+    ~kqueue_monitor() override;
 
   protected:
     /**
@@ -68,7 +68,7 @@ namespace fsw
      *
      * @see stop()
      */
-    void run();
+    void run() final;
 
   private:
     kqueue_monitor(const kqueue_monitor& orig) = delete;

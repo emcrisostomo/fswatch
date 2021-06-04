@@ -27,9 +27,7 @@ namespace fsw
   {
   }
 
-  event::~event()
-  {
-  }
+  event::~event() = default;
 
   string event::get_path() const
   {

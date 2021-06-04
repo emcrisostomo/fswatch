@@ -477,12 +477,12 @@ FSW_STATUS fsw_init_library()
   return FSW_OK;
 }
 
-typedef struct fsw_callback_context
+using fsw_callback_context = struct fsw_callback_context
 {
   FSW_HANDLE handle;
   FSW_CEVENT_CALLBACK callback;
   void *data;
-} fsw_callback_context;
+};
 
 void libfsw_cpp_callback_proxy(const std::vector<event>& events,
                                void *context_ptr)
@@ -493,7 +493,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
 
   const fsw_callback_context *context = static_cast<fsw_callback_context *> (context_ptr);
 
-  fsw_cevent *const cevents = static_cast<fsw_cevent *> (malloc(
+  auto *const cevents = static_cast<fsw_cevent *> (malloc(
     sizeof(fsw_cevent) * events.size()));
 
   if (cevents == nullptr)
@@ -551,7 +551,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
 
 FSW_HANDLE fsw_init_session(const fsw_monitor_type type)
 {
-  FSW_SESSION *session = new FSW_SESSION{};
+  auto *session = new FSW_SESSION{};
   session->type = type;
 
   return session;
@@ -573,7 +573,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     if (!session->paths.size())
       return fsw_set_last_error(int(FSW_ERR_PATHS_NOT_SET));
 
-    fsw_callback_context *context_ptr = new fsw_callback_context;
+    auto *context_ptr = new fsw_callback_context;
     context_ptr->handle = session;
     context_ptr->callback = session->callback;
     context_ptr->data = session->data;
@@ -584,7 +584,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
                                                                context_ptr);
     session->monitor = current_monitor;
   }
-  catch (libfsw_exception& ex)
+  catch (const libfsw_exception& ex)
   {
     return fsw_set_last_error(int(ex));
   }
@@ -602,7 +602,7 @@ FSW_STATUS fsw_add_path(const FSW_HANDLE handle, const char *path)
     return fsw_set_last_error(int(FSW_ERR_INVALID_PATH));
 
   FSW_SESSION *session = get_session(handle);
-  session->paths.push_back(path);
+  session->paths.emplace_back(path);
 
   return fsw_set_last_error(FSW_OK);
 }

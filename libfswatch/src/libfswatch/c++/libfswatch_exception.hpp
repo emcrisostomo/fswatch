@@ -59,7 +59,7 @@ namespace fsw
      *
      * @return The error message.
      */
-    virtual const char *what() const noexcept;
+    const char *what() const noexcept override;
 
     /**
      * @brief Gets the error code.
@@ -71,7 +71,7 @@ namespace fsw
     /**
      * @brief Destructs an instance of this class.
      */
-    virtual ~libfsw_exception() noexcept;
+    ~libfsw_exception() noexcept override;
 
     /**
      * @brief Gets the error code.

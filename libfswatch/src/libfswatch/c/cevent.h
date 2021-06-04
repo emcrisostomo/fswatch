@@ -79,7 +79,7 @@ extern "C"
     Overflow = (1 << 13)          /**< The event queue has overflowed. */
   };
 
-  extern enum fsw_event_flag FSW_ALL_EVENT_FLAGS[15];
+  extern const enum fsw_event_flag FSW_ALL_EVENT_FLAGS[15];
 
   /**
    * @brief Get event flag by name.
