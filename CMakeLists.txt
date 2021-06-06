@@ -72,7 +72,7 @@ check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
 check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
 
 # Add a configuration file processed by cmake
-configure_file(${PROJECT_SOURCE_DIR}/cmake_config.h.in ${PROJECT_BINARY_DIR}/cmake_config.h)
+configure_file(${PROJECT_SOURCE_DIR}/fswatch_config.h.in ${PROJECT_BINARY_DIR}/fswatch_config.h)
 
 add_subdirectory(libfswatch)
 add_subdirectory(fswatch/src)

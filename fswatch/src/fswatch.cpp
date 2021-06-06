@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "cmake_config.h"
+#include "fswatch_config.h"
 #include "gettext.h"
 #include "fswatch.hpp"
 #include <iostream>
