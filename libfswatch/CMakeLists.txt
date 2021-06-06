@@ -47,9 +47,7 @@ set(LIBFSWATCH_HEADER_FILES
         src/libfswatch/c++/libfswatch_map.hpp
         src/libfswatch/c++/libfswatch_set.hpp
         src/libfswatch/c++/monitor.hpp
-        src/libfswatch/c++/monitor_factory.cpp
         src/libfswatch/c++/monitor_factory.hpp
-        src/libfswatch/c++/path_utils.cpp
         src/libfswatch/c++/path_utils.hpp
         src/libfswatch/c++/poll_monitor.hpp
         src/libfswatch/c++/string/string_utils.hpp
@@ -65,6 +63,7 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/filter.cpp
         src/libfswatch/c++/libfswatch_exception.cpp
         src/libfswatch/c++/monitor.cpp
+        src/libfswatch/c++/monitor_factory.cpp
         src/libfswatch/c++/path_utils.cpp
         src/libfswatch/c++/poll_monitor.cpp
         src/libfswatch/c++/string/string_utils.cpp)
