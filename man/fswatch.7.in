@@ -545,29 +545,6 @@ argument.  If no argument should be passed to program, then the following
 command could be used:
 .Pp
 .Dl $ fswatch -o path | xargs -n1 -I{} program
-.Pp
-Although we encourage you to embrace the new
-.Nm
-behaviour and update your scripts, we provide a little wrapper called
-.Em fswatch-run
-which is installed alongside
-.Nm
-which lets you use the legacy syntax:
-.Pp
-.Dl $ fswatch-run path [paths] program
-.Pp
-Under the hood,
-.Em fswatch-run
-simply calls
-.Em @FSWATCH@ -o
-piping its output to
-.Em xargs .
-.Pp
-.Em fswatch-run
-is a symbolic link to a shell-specific wrapper.  Currently, ZSH and Bash scripts
-are provided.  If no suitable shells are found in the target system, the
-.Em fswatch-run
-symbolic link is not created.
 .Sh EXIT STATUS
 .Nm
 may exit with one of the following exit statuses:
