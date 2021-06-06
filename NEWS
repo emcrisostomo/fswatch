@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in master:
+
+  * Issue 249: Man page still mentions fswatch-run.
+
 New in 1.16.0:
 
   * Update FSEvents flags and add support to macOS 10.10+ features.
