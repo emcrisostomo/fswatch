@@ -17,8 +17,7 @@ include_directories(../.. .)
 
 set(SOURCE_FILES
         fswatch_test.c
-        ${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h
-        ${PROJECT_BINARY_DIR}/fswatch_config.h)
+        ${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h)
 
 add_executable(fswatch_test ${SOURCE_FILES})
 target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})

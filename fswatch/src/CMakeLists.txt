@@ -16,8 +16,7 @@
 set(FSWATCH_SRC_FILES
         fswatch.cpp
         fswatch.hpp
-        gettext.h
-        ${PROJECT_BINARY_DIR}/fswatch_config.h)
+        gettext.h)
 
 add_executable(fswatch ${FSWATCH_SRC_FILES})
 
