@@ -17,7 +17,7 @@
 
 #ifdef HAVE_SYS_EVENT_H
 
-#  include "gettext_defs.h"
+#  include "libfswatch/gettext_defs.h"
 #  include "kqueue_monitor.hpp"
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"

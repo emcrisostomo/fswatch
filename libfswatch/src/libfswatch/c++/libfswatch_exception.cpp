@@ -16,7 +16,7 @@
 #include "libfswatch_exception.hpp"
 
 #include <utility>
-#include "gettext_defs.h"
+#include "libfswatch/gettext_defs.h"
 
 using namespace std;
 

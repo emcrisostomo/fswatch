@@ -1,5 +1,3 @@
-#include <utility>
-
 /*
  * Copyright (c) 2014-2021 Enrico M. Crisostomo
  *
@@ -15,9 +13,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <utility>
 #include "libfswatch/libfswatch_config.h"
-
-#include "gettext_defs.h"
+#include "libfswatch/gettext_defs.h"
 #include "monitor_factory.hpp"
 #include "libfswatch_exception.hpp"
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)

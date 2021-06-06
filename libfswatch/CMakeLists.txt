@@ -175,7 +175,7 @@ if (APPLE)
 endif (APPLE)
 
 # Add a configuration file processed by cmake
-configure_file(libfswatch_config.h.in libfswatch_config.h)
+configure_file(libfswatch_config.in libfswatch_config.h)
 # TODO: consider removing it
 add_definitions(-DHAVE_LIBFSWATCH_CONFIG_H)
 

@@ -121,7 +121,8 @@ version.texi
 Doxyfile
 build-aux/create-pot-template.sh
 libfswatch_config.h
-libfswatch/src/libfswatch/libfswatch.pc
+libfswatch/libfswatch_config.h.in
+libfswatch/src/libfswatch.pc
 scripts/fswatch-run-bash
 scripts/fswatch-run-zsh
 docker/alpine/Dockerfile

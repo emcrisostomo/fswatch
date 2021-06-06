@@ -418,7 +418,7 @@
  *
  *   - The order in the filter definition has no effect.
  */
-#include "gettext_defs.h"
+#include "libfswatch/gettext_defs.h"
 #include <iostream>
 #include <ctime>
 #include <cstdlib>

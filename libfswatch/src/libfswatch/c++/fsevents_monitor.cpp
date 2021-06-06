@@ -16,9 +16,9 @@
 #include "libfswatch/libfswatch_config.h"
 #include <memory>
 #include "fsevents_monitor.hpp"
-#include "gettext_defs.h"
+#include "libfswatch/gettext_defs.h"
 #include "libfswatch_exception.hpp"
-#include "c/libfswatch_log.h"
+#include "libfswatch/c/libfswatch_log.h"
 #  ifdef HAVE_CXX_MUTEX
 #    include <mutex>
 #  endif

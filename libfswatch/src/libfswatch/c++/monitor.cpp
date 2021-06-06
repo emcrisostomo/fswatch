@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "libfswatch/libfswatch_config.h"
-#include "gettext_defs.h"
+#include "libfswatch/gettext_defs.h"
 #include "monitor.hpp"
 #include "monitor_factory.hpp"
 #include "libfswatch_exception.hpp"

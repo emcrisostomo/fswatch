@@ -13,9 +13,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "gettext_defs.h"
+#include "libfswatch/gettext_defs.h"
 #include "path_utils.hpp"
-#include "c/libfswatch_log.h"
+#include "libfswatch/c/libfswatch_log.h"
 #include <dirent.h>
 #include <cstdlib>
 #include <cstdio>
