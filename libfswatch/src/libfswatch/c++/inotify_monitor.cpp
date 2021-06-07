@@ -15,7 +15,7 @@
  */
 #include "libfswatch/libfswatch_config.h"
 
-#include "gettext_defs.h"
+#include "libfswatch/gettext_defs.h"
 #include "inotify_monitor.hpp"
 #include <algorithm>
 #include <limits.h>
