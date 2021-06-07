@@ -26,7 +26,7 @@
 #  include <port.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
-#  include "gettext_defs.h"
+#  include "libfswatch/gettext_defs.h"
 #  include "fen_monitor.hpp"
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"

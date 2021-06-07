@@ -17,12 +17,12 @@
 
 #ifdef HAVE_WINDOWS
 
-#  include "gettext_defs.h"
+#  include "libfswatch/gettext_defs.h"
 #  include "windows_monitor.hpp"
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
-#  include "../c/libfswatch_log.h"
+#  include "libfswatch/c/libfswatch_log.h"
 #  include <algorithm>
 #  include <set>
 #  include <iostream>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Enrico M. Crisostomo
+ * Copyright (c) 2015-2021 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
 
 #ifdef HAVE_WINDOWS
 
-#  include "gettext_defs.h"
+#  include "libfswatch/gettext_defs.h"
 #  include "win_handle.hpp"
 #  include "libfswatch/c/libfswatch_log.h"
 

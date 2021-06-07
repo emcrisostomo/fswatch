@@ -17,7 +17,7 @@
 
 #ifdef HAVE_WINDOWS
 
-#  include "gettext_defs.h"
+#  include "libfswatch/gettext_defs.h"
 #  include "win_error_message.hpp"
 #  include "libfswatch/c/libfswatch_log.h"
 
