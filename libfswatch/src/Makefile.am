@@ -20,8 +20,7 @@ pkgconfig_DATA = libfswatch.pc
 LIBFSWATCH_API_VERSION = @AM_LIBFSWATCH_API_VERSION@
 
 # Prepare gettext-related symbols used by programs
-AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\"
-libfswatch_la_CPPFLAGS = -I$(top_builddir)
+AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" -I$(top_builddir)
 
 lib_LTLIBRARIES = libfswatch.la
 
