@@ -84,6 +84,7 @@ static bool _1flag = false;
 static bool aflag = false;
 static bool allow_overflow = false;
 static int batch_marker_flag = false;
+static bool bflag = false;
 static bool dflag = false;
 static bool Eflag = false;
 static bool fieFlag = false;
@@ -131,7 +132,7 @@ static void list_monitor_types(std::ostream& stream)
 static void print_version(std::ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2013-2018 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << "Copyright (C) 2013-2021 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
   stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
   stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
@@ -153,6 +154,7 @@ static void usage(std::ostream& stream)
   stream << "     --allow-overflow  " << _("Allow a monitor to overflow and report it as a change event.\n");
   stream << "     --batch-marker    " << _("Print a marker at the end of every batch.\n");
   stream << " -a, --access          " << _("Watch file accesses.\n");
+  stream << " -b, --bubble-events   " << _("Bubble events with the same timestamp and path.\n");
   stream << " -d, --directories     " << _("Watch directories only.\n");
   stream << " -e, --exclude=REGEX   " << _("Exclude paths matching REGEX.\n");
   stream << " -E, --extended        " << _("Use extended regular expressions.\n");
@@ -183,7 +185,7 @@ static void usage(std::ostream& stream)
   stream << "     --version         " << _("Print the version of ") << PACKAGE_NAME << _(" and exit.\n");
   stream << "\n";
 #else
-  std::string option_string = "[01adeEfhilLMmnortuvx]";
+  std::string option_string = "[01abdeEfhilLMmnortuvx]";
 
   stream << PACKAGE_STRING << "\n\n";
   stream << _("Usage:\n");
@@ -193,6 +195,7 @@ static void usage(std::ostream& stream)
   stream << " -0  Use the ASCII NUL character (0) as line separator.\n";
   stream << " -1  Exit fswatch after the first set of events is received.\n";
   stream << " -a  Watch file accesses.\n";
+  stream << " -b  Bubble events with the same timestamp and path.\n";
   stream << " -d  Watch directories only.\n";
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
@@ -490,6 +493,7 @@ static void start_monitor(int argc, char **argv, int optind)
   active_monitor->set_filters(filters);
   active_monitor->set_follow_symlinks(Lflag);
   active_monitor->set_watch_access(aflag);
+  active_monitor->set_bubble_events(bflag);
 
   active_monitor->start();
 }
@@ -497,7 +501,7 @@ static void start_monitor(int argc, char **argv, int optind)
 static void parse_opts(int argc, char **argv)
 {
   int ch;
-  std::string short_options = "01ade:Ef:hi:Il:LMm:nortuvx";
+  std::string short_options = "01abde:Ef:hi:Il:LMm:nortuvx";
 
 #ifdef HAVE_GETOPT_LONG
   int option_index = 0;
@@ -505,6 +509,7 @@ static void parse_opts(int argc, char **argv)
     {"access",               no_argument,       nullptr,       'a'},
     {"allow-overflow",       no_argument,       nullptr,       OPT_ALLOW_OVERFLOW},
     {"batch-marker",         optional_argument, nullptr,       OPT_BATCH_MARKER},
+    {"bubble-events",        no_argument,       nullptr,       'b'},
     {"directories",          no_argument,       nullptr,       'd'},
     {"event",                required_argument, nullptr,       OPT_EVENT_TYPE},
     {"event-flags",          no_argument,       nullptr,       'x'},
@@ -558,6 +563,10 @@ static void parse_opts(int argc, char **argv)
 
     case 'a':
       aflag = true;
+      break;
+
+    case 'b':
+      bflag = true;
       break;
 
     case 'd':
