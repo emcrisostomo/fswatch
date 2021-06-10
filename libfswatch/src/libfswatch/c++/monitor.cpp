@@ -28,6 +28,8 @@
 #include <sstream>
 #include <utility>
 #include <ctime>
+#include <map>
+#include <set>
 
 using namespace std::chrono;
 
@@ -183,7 +185,8 @@ namespace fsw
     // If filters are set, accept the event only if present amongst the filters.
     return std::any_of(event_type_filters.begin(),
                     event_type_filters.end(),
-                    [event_type](const fsw_event_type_filter& filter){return filter.flag == event_type;});
+                    [event_type](const fsw_event_type_filter& filter)
+                     { return filter.flag == event_type; });
   }
 
   bool monitor::accept_path(const std::string& path) const
@@ -213,7 +216,12 @@ namespace fsw
     this->context = context;
   }
 
-  monitor::~monitor()
+  void monitor::set_bubble_events(bool bubble_events)
+  {
+    this->bubble_events = bubble_events;
+  }
+
+monitor::~monitor()
   {
     stop();
   }
@@ -362,6 +370,30 @@ namespace fsw
       filtered_events.emplace_back(event.get_path(),
                                    event.get_time(),
                                    filtered_flags);
+    }
+
+    if (bubble_events)
+    {
+      // Bubble events by ({time, path})
+      std::map<std::pair<time_t, std::string>, std::set<fsw_event_flag>> bubbled_events;
+
+      for (auto const& event : filtered_events)
+      {
+        const auto& flags = event.get_flags();
+        bubbled_events[{event.get_time(), event.get_path()}].insert(flags.begin(), flags.end());
+      }
+
+      filtered_events.clear();
+      for (auto const& evt : bubbled_events)
+      {
+        auto const& bubble_key = evt.first;
+        auto const& flags = evt.second;
+
+        std::vector<fsw_event_flag> bubbled_flags(flags.size());
+        std::move(flags.begin(), flags.end(), bubbled_flags.begin());
+
+        filtered_events.emplace_back(bubble_key.second, bubble_key.first, bubbled_flags);
+      }
     }
 
     if (!filtered_events.empty())

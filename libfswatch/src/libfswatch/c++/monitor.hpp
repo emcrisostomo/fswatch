@@ -356,6 +356,17 @@ namespace fsw
     void set_context(void *context);
 
     /**
+     * @brief Set the bubble events flag.
+     *
+     * This function sets the bubble events flags, instructing the monitor to
+     * consolidate the event flags for all events with the same time and path
+     * received in the same batch.
+     *
+     * @param bubble_events The bubble events flag.
+     */
+    void set_bubble_events(bool bubble_events);
+
+    /**
      * @brief Start the monitor.
      *
      * The monitor status is marked as _running_ and it starts watching for
@@ -589,6 +600,12 @@ namespace fsw
      * @brief Flag indicating whether the monitor should preemptively stop.
      */
     bool should_stop = false;
+
+    /**
+     * @brief Bubble events by joining flags received for the same (time, path)
+     * pair.
+     */
+    bool bubble_events = false;
 
 #  ifdef HAVE_CXX_MUTEX
     /**
