@@ -15,6 +15,8 @@
  */
 #include "libfswatch/libfswatch_config.h"
 #include <memory>
+#include <unistd.h> // isatty()
+#include <cstdio> // fileno()
 #include "fsevents_monitor.hpp"
 #include "libfswatch/gettext_defs.h"
 #include "libfswatch_exception.hpp"
@@ -215,6 +217,9 @@ namespace fsw
   bool fsevents_monitor::no_defer()
   {
     string no_defer = get_property(DARWIN_EVENTSTREAM_NO_DEFER);
+
+    if (no_defer.empty())
+      return (!isatty(fileno(stdin)));
 
     return (no_defer == "true");
   }
