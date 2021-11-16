@@ -31,7 +31,6 @@ dist_doc_DATA  = README.bsd
 dist_doc_DATA += README.codestyle
 dist_doc_DATA += README.freebsd
 dist_doc_DATA += README.gnu-build-system
-dist_doc_DATA += README.illumos
 dist_doc_DATA += README.md
 dist_doc_DATA += README.libfswatch.md
 dist_doc_DATA += README.linux
