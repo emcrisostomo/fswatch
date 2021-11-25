@@ -154,19 +154,18 @@ if (HAVE_WINDOWS_HEADER)
             src/libfswatch/c++/windows/win_directory_change_event.cpp
             src/libfswatch/c++/windows/win_error_message.cpp
             src/libfswatch/c++/windows/win_handle.cpp
-            src/libfswatch/c++/windows/cygwin_paths.cpp
             src/libfswatch/c++/windows/win_strings.cpp
             src/libfswatch/c++/windows_monitor.cpp)
 
-    if (HAVE_CYGWIN)
-        set(LIB_SOURCE_FILES
-                ${LIB_SOURCE_FILES}
-                src/libfswatch/c++/windows/cygwin_paths.cpp)
-    else ()
+    if (MSVC)
         set(LIB_SOURCE_FILES
                 ${LIB_SOURCE_FILES}
                 src/libfswatch/c++/windows/win_paths.cpp)
-    endif (HAVE_CYGWIN)
+    else ()
+        set(LIB_SOURCE_FILES
+                ${LIB_SOURCE_FILES}
+                src/libfswatch/c++/windows/cygwin_paths.cpp)
+    endif (MSVC)
 
     source_group("libfswatch Header Files" FILES "${LIBFSWATCH_HEADER_FILES}")
     source_group("libfswatch Source Files" FILES "${LIB_SOURCE_FILES}")
