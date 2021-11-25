@@ -88,7 +88,12 @@ check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_S
 check_include_file_cxx(unordered_map HAVE_UNORDERED_MAP)
 check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
-find_library(PTHREAD_LIBRARY pthread)
+if (MSVC)
+    find_package(pthreads REQUIRED)
+    set(PTHREAD_LIBRARY "PThreads4W::PThreads4W")
+else ()
+    find_library(PTHREAD_LIBRARY pthread)
+endif ()
 set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
 
 if (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
