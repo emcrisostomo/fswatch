@@ -174,7 +174,10 @@ namespace fsw
       /*
        * Scan children but only watch directories.
        */
-      scan(path + "/" + child, false);
+      std::string new_path = path;
+      new_path += PATH_SEP;
+      new_path += child;
+      scan(new_path, false);
     }
   }
 
@@ -240,8 +243,7 @@ namespace fsw
 
     if (event->len > 1)
     {
-      filename_stream << "/";
-      filename_stream << event->name;
+      filename_stream << PATH_SEP << event->name;
     }
 
     if (flags.size())

@@ -15,7 +15,6 @@
  */
 #include "libfswatch/gettext_defs.h"
 #include <unistd.h>
-#include <cstdlib>
 #include <fcntl.h>
 #include <iostream>
 #include <utility>
@@ -141,7 +140,10 @@ namespace fsw
     {
       if (child == "." || child == "..") continue;
 
-      scan(path + "/" + child, fn);
+      std::string new_path = path;
+      new_path += PATH_SEP;
+      new_path += child;
+      scan(new_path, fn);
     }
   }
 

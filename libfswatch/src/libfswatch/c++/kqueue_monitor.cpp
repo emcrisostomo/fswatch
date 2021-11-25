@@ -203,7 +203,10 @@ namespace fsw
     {
       if (child == "." || child == "..") continue;
 
-      scan(path + "/" + child, false);
+      std::string new_path = path;
+      new_path += PATH_SEP;
+      new_path += child;
+      scan(new_path, false);
     }
 
     return true;
