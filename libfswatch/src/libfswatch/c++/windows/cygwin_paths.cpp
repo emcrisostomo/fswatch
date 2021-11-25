@@ -24,7 +24,7 @@ namespace fsw
 {
   namespace win_paths
   {
-    wstring posix_to_win_w(string path)
+    wstring posix_to_win_w(const string &path)
     {
       void * raw_path = cygwin_create_path(CCP_POSIX_TO_WIN_W, path.c_str());
       if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));
@@ -36,7 +36,7 @@ namespace fsw
       return win_path;
     }
 
-    string win_w_to_posix(wstring path)
+    string win_w_to_posix(const wstring &path)
     {
       void * raw_path = cygwin_create_path(CCP_WIN_W_TO_POSIX, path.c_str());
       if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));

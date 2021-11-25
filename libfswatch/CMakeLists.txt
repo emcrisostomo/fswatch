@@ -168,6 +168,9 @@ if (HAVE_WINDOWS_HEADER)
                 src/libfswatch/c++/windows/win_paths.cpp)
     endif (HAVE_CYGWIN)
 
+    source_group("libfswatch Header Files" FILES "${LIBFSWATCH_HEADER_FILES}")
+    source_group("libfswatch Source Files" FILES "${LIB_SOURCE_FILES}")
+
     set(HAVE_WINDOWS ON CACHE BOOL "Enable Windows support")
 endif (HAVE_WINDOWS_HEADER)
 
