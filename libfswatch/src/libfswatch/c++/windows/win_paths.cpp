@@ -13,25 +13,30 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <stdlib.h>
 #include <locale>
 #include "win_paths.hpp"
 #include "../libfswatch_exception.hpp"
 #include "../../gettext_defs.h"
 
-using namespace std;
-
 namespace fsw
 {
   namespace win_paths
   {
-    wstring posix_to_win_w(string path)
+    std::wstring posix_to_win_w(std::string path)
     {
-      return std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(path.c_str());
+      std::wstring ws = std::make_unique<wchar_t[]>(path.size() + 1);
+      mbstowcs_s(nullptr, ws.get(), path.size() + 1, path.c_str(), path.size());
+      return ws;
     }
 
-    string win_w_to_posix(wstring path)
+    std::string win_w_to_posix(std::wstring path)
     {
-      return std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(path);
+      std::string str(path.length(), 0);
+      std::transform(path.begin(), path.end(), str.begin(), [] (wchar_t c) {
+          return (char)c;
+      });
+      return str;
     }
   }
 }

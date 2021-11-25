@@ -43,14 +43,11 @@ jobs:
       - name: Cache vcpkg
         uses: actions/cache@v2
         env:
-          cache-name: cache-vcpkg
+          cache-name: cache-vcpkg-d8b9ae5
         with:
           path: ${{ github.workspace }}/vcpkg
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/vcpkg.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          key: ${{ runner.os }}-vcpkg-${{ env.cache-name }}
+          restore-keys: ${{ runner.os }}-vcpkg-${{ env.cache-name }}
 
       - name: clone and bootstrap vcpkg
         run: |
@@ -65,7 +62,7 @@ jobs:
       - name: Install dependencies with vcpkg
         run: |
           cd "%GITHUB_WORKSPACE%\vcpkg"
-          IF NOT EXIST "buildtrees\gettext" (
+          IF NOT EXIST "buildtrees\pthreads" (
               .\vcpkg --version
               .\vcpkg install --triplet "%RUNNER_ARCH%-%RUNNER_OS%" pthreads gettext
           )
