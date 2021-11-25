@@ -13,8 +13,8 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <locale>
 #include "win_paths.hpp"
+#include <sys/cygwin.h>
 #include "../libfswatch_exception.hpp"
 #include "../../gettext_defs.h"
 
@@ -26,12 +26,26 @@ namespace fsw
   {
     wstring posix_to_win_w(string path)
     {
-      return std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(path.c_str());
+      void * raw_path = cygwin_create_path(CCP_POSIX_TO_WIN_W, path.c_str());
+      if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));
+
+      wstring win_path(static_cast<wchar_t *> (raw_path));
+
+      free(raw_path);
+
+      return win_path;
     }
 
     string win_w_to_posix(wstring path)
     {
-      return std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(path);
+      void * raw_path = cygwin_create_path(CCP_WIN_W_TO_POSIX, path.c_str());
+      if (raw_path == nullptr) throw libfsw_exception(_("cygwin_create_path could not allocate memory to convert the path."));
+
+      string posix_path(static_cast<char *> (raw_path));
+
+      free(raw_path);
+
+      return posix_path;
     }
   }
 }

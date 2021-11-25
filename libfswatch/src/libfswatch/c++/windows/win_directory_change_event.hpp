@@ -62,5 +62,5 @@ namespace fsw
   };
 }
 
-#endif	/* WIN_DIRECTORY_CHANGE_EVENT_H */
+#endif	/* FSW_WIN_DIRECTORY_CHANGE_EVENT_H */
 
