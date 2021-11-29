@@ -29,9 +29,13 @@
 #  include <ctime>
 #  include <cstdio>
 #  include <cmath>
-#include <utility>
-#  include <unistd.h>
+#  include <utility>
 #  include <fcntl.h>
+
+#ifdef _MSC_VER
+#else
+#  include <unistd.h>
+#endif /* _MSC_VER */
 
 namespace fsw
 {

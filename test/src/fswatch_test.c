@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <libfswatch/c/libfswatch.h>
 #include <pthread.h>
-#include <unistd.h>
+
+#ifdef _MSC_VER
+#else
+#  include <unistd.h>
+#endif /* _MSC_VER */
 
 /**
  * $ ${CC} -I /usr/local/include -o "fswatch_test" fswatch_test.c /usr/local/lib/libfswatch.dylib

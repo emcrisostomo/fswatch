@@ -17,12 +17,6 @@
 
 #ifdef HAVE_WINDOWS
 
-#  include "libfswatch/gettext_defs.h"
-#  include "windows_monitor.hpp"
-#  include "libfswatch_map.hpp"
-#  include "libfswatch_set.hpp"
-#  include "libfswatch_exception.hpp"
-#  include "libfswatch/c/libfswatch_log.h"
 #  include <algorithm>
 #  include <set>
 #  include <iostream>
@@ -32,9 +26,24 @@
 #  include <cstring>
 #  include <ctime>
 #  include <cstdio>
-#  include <unistd.h>
 #  include <fcntl.h>
+
+#ifdef _MSC_VER
+#  include <intrin.h>
+#define NOWINBASEINTERLOCK
+#else
+#  include <unistd.h>
+#endif /* _MSC_VER */
+
 #  include <windows.h>
+
+#  include "libfswatch/gettext_defs.h"
+#  include "windows_monitor.hpp"
+#  include "libfswatch_map.hpp"
+#  include "libfswatch_set.hpp"
+#  include "libfswatch_exception.hpp"
+#  include "libfswatch/c/libfswatch_log.h"
+
 #  include "./windows/win_handle.hpp"
 #  include "./windows/win_error_message.hpp"
 #  include "./windows/win_strings.hpp"
@@ -231,7 +240,12 @@ namespace fsw
       run_guard.unlock();
 #endif
 
-      sleep(latency);
+#ifdef _MSC_VER
+        Sleep( 1000 * (
+#else
+                sleep( (
+#endif
+      (latency)));
 
       for (const auto & path : load->win_paths)
       {

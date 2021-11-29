@@ -19,15 +19,20 @@
 #include "inotify_monitor.hpp"
 #include <algorithm>
 #include <limits.h>
-#ifdef __sun
+#ifndef NAME_MAX
 #  define NAME_MAX         255    /* # chars in a file name */
-#endif
-#include <unistd.h>
+#endif /* ! NAME_MAX */
 #include <stdio.h>
 #include <sstream>
 #include <ctime>
 #include <cmath>
 #include <sys/select.h>
+
+#ifdef _MSC_VER
+#else
+#  include <unistd.h>
+#endif /* _MSC_VER */
+
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
 #include "libfswatch_map.hpp"

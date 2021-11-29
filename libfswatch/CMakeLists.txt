@@ -89,11 +89,18 @@ check_include_file_cxx(unordered_map HAVE_UNORDERED_MAP)
 check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
 if (MSVC)
-    find_package(pthreads REQUIRED)
-    set(PTHREAD_LIBRARY "PThreads4W::PThreads4W")
+    find_package(pthreads QUIET)
+    if (PTHREADS_FOUND)
+        set(PTHREAD_LIBRARY "PThreads4W::PThreads4W")
+    else ()
+        include("${CMAKE_SOURCE_DIR}/CMake/FindPthreads.cmake")
+        set(PTHREAD_LIBRARY "${PTHREADS_LIBRARIES}")
+    endif (PTHREADS_FOUND)
+
+    # set(EXTRA_LIBS ${EXTRA_LIBS} "advapi32")
 else ()
     find_library(PTHREAD_LIBRARY pthread)
-endif ()
+endif (MSVC)
 set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
 
 if (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
@@ -189,6 +196,10 @@ if (APPLE)
 
     endif (HAVE_FSEVENTS_FILE_EVENTS)
 endif (APPLE)
+
+if (NOT DEFINED TARGET_ARCH)
+    set(TARGET_ARCH ${CMAKE_HOST_SYSTEM_PROCESSOR})
+endif ()
 
 # Add a configuration file processed by cmake
 configure_file(libfswatch_config.in libfswatch_config.h)

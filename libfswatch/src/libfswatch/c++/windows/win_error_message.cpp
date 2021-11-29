@@ -16,8 +16,11 @@
 #include "libfswatch/libfswatch_config.h"
 
 #ifdef HAVE_WINDOWS
-
-#  include "libfswatch/gettext_defs.h"
+#ifdef _MSC_VER
+#  include <intrin.h>
+#define NOWINBASEINTERLOCK
+#include <windows.h>
+#endif /* _MSC_VER */
 #  include "win_error_message.hpp"
 #  include "libfswatch/c/libfswatch_log.h"
 

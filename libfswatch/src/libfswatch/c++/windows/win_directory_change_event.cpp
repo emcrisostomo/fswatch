@@ -13,16 +13,27 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <string>
+#include <cstdlib>
+#include <set>
+
 #include "libfswatch/libfswatch_config.h"
+#ifdef _MSC_VER
+#  include <intrin.h>
+#define NOWINBASEINTERLOCK
+#include <windows.h>
+/*
+#  include <windef.h>
+#  include <winnt.h>
+*/
+#endif /* _MSC_VER */
 #include "win_directory_change_event.hpp"
 #include "win_paths.hpp"
 #include "win_strings.hpp"
 #include "libfswatch/c++/libfswatch_exception.hpp"
 #include "libfswatch/c/libfswatch_log.h"
 #include "libfswatch/gettext_defs.h"
-#include <string>
-#include <cstdlib>
-#include <set>
+
 
 namespace fsw
 {

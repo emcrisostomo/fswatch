@@ -22,10 +22,14 @@
 #  include <cmath>
 #  include <cstring>
 #  include <cstdlib>
-#  include <unistd.h>
 #  include <port.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#ifdef _MSC_VER
+#else
+#  include <unistd.h>
+#endif /* _MSC_VER */
+
 #  include "libfswatch/gettext_defs.h"
 #  include "fen_monitor.hpp"
 #  include "libfswatch_map.hpp"
