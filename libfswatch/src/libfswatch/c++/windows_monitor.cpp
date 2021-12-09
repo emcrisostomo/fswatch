@@ -241,7 +241,7 @@ namespace fsw
 #endif
 
 #ifdef _MSC_VER
-        Sleep( 1000 * (
+        Sleep( 1000L * static_cast<DWORD>(
 #else
                 sleep( (
 #endif

@@ -228,7 +228,7 @@ namespace fsw
       FSW_ELOG(_("Done scanning.\n"));
 
 #ifdef _MSC_VER
-      Sleep( 1000 * (
+      Sleep( 1000L * static_cast<DWORD>(
 #else
      sleep( (
 #endif

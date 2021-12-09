@@ -72,7 +72,7 @@ jobs:
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
         run: |
-          cmake -B "%GITHUB_WORKSPACE%\build" -DCMAKE_BUILD_TYPE="%BUILD_TYPE%" -DCMAKE_TOOLCHAIN_FILE="vcpkg\scripts\buildsystems\vcpkg.cmake"
+          cmake -B "%GITHUB_WORKSPACE%\build" -DCMAKE_BUILD_TYPE="%BUILD_TYPE%" -DVCPKG_TARGET_TRIPLET="%RUNNER_ARCH%-%RUNNER_OS%" -DCMAKE_TOOLCHAIN_FILE="vcpkg\scripts\buildsystems\vcpkg.cmake"
         shell: cmd
 
       - name: Build

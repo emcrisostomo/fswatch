@@ -512,7 +512,11 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
       sizeof(char *) * (path.length() + 1)));
     if (!cevt->path) throw int(FSW_ERR_MEMORY);
 
+#if defined(__STDC_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__ || defined(_MSC_VER)
+    strncpy_s(cevt->path, strlen(cevt->path) + 1, path.c_str(), path.length());
+#else
     strncpy(cevt->path, path.c_str(), path.length());
+#endif
     cevt->path[path.length()] = '\0';
     cevt->evt_time = evt.get_time();
 
@@ -543,7 +547,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
     fsw_cevent *cevt = &cevents[i];
 
     if (cevt->flags) free(static_cast<void *> (cevt->flags));
-    free(static_cast<void *> (cevt->path));
+    if (cevt->path != NULL) free(static_cast<void *> (cevt->path));
   }
 
   free(static_cast<void *> (cevents));

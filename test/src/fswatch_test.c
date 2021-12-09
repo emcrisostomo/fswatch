@@ -4,6 +4,7 @@
 #include <pthread.h>
 
 #ifdef _MSC_VER
+#  include <synchapi.h>
 #else
 #  include <unistd.h>
 #endif /* _MSC_VER */
@@ -91,7 +92,12 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  sleep(5);
+#ifdef _MSC_VER
+  Sleep(1000*
+#else
+  sleep(
+#endif
+      5);
 
   if (FSW_OK != fsw_stop_monitor(handle))
   {
@@ -99,7 +105,12 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  sleep(3);
+#ifdef _MSC_VER
+  Sleep(1000*
+#else
+  sleep(
+#endif
+      3);
 
   if (FSW_OK != fsw_destroy_session(handle))
   {

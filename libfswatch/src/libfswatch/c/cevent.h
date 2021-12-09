@@ -118,7 +118,8 @@ extern "C"
     char * path;
     time_t evt_time;
     enum fsw_event_flag * flags;
-    unsigned int flags_num;
+    /* std::vector<fsw_event_flag>::size_type flags_num */
+    size_t flags_num;
   } fsw_cevent;
 
   /**

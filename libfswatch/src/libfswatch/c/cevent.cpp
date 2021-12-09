@@ -62,7 +62,11 @@ char *fsw_get_event_flag_name(const fsw_event_flag flag)
 
   if (cstr == nullptr) return nullptr;
 
+#if defined(__STDC_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__ || defined(_MSC_VER)
+  strcpy_s(cstr, name.size() + 1, name.c_str());
+#else
   strcpy(cstr, name.c_str());
+#endif
 
   return cstr;
 }

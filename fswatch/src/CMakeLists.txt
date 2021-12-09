@@ -27,6 +27,11 @@ if (USE_NLS)
     endif ()
 endif ()
 
+if (MSVC)
+    include_directories(windows)
+    target_link_libraries(fswatch PRIVATE "getopt")
+endif ()
+
 target_include_directories(fswatch PUBLIC ../.. .)
 target_include_directories(fswatch PRIVATE ${PROJECT_BINARY_DIR})
 target_link_libraries(fswatch PUBLIC libfswatch)

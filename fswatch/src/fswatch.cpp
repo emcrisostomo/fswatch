@@ -40,6 +40,10 @@
 #  include <getopt.h>
 #endif
 
+#ifdef _MSC_VER
+#include "windows/getopt.h"
+#endif /* _MSC_VER */
+
 #define _(String) gettext(String)
 
 using namespace fsw;
@@ -339,9 +343,21 @@ static void print_event_timestamp(const event& evt)
   const time_t& evt_time = evt.get_time();
 
   std::array<char, TIME_FORMAT_BUFF_SIZE> time_format_buffer{};
-  const struct tm *tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
 
-  std::string date =
+#if defined(__STDC_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__ || defined(_MSC_VER)
+  struct tm* tm_time;
+  struct tm tm_buf;
+#endif
+#if defined(__STDC_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__ || defined(_MSC_VER)
+  if (uflag)
+    gmtime_s(&tm_buf, &evt_time);
+  else localtime_s(&tm_buf, &evt_time);
+  tm_time = &tm_buf;
+#else
+  const struct *tm_time = (uflag? gmtime : localtime)(&evt_time)
+#endif
+
+  const std::string date =
     strftime(time_format_buffer.data(),
              time_format_buffer.size(),
              tformat.c_str(),
