@@ -45,6 +45,9 @@ check_include_file_cxx(getopt.h HAVE_GETOPT_H)
 
 if (HAVE_GETOPT_H)
     check_cxx_symbol_exists(getopt_long getopt.h HAVE_GETOPT_LONG)
+else ()
+    set(HAVE_GETOPT_H 1)
+    set(HAVE_GETOPT_LONG 1)
 endif (HAVE_GETOPT_H)
 
 # If both gettext and libintl are found, define the USE_NLS variable to

@@ -40,10 +40,6 @@
 #  include <getopt.h>
 #endif
 
-#ifdef _MSC_VER
-#include "windows/getopt.h"
-#endif /* _MSC_VER */
-
 #define _(String) gettext(String)
 
 using namespace fsw;
@@ -300,12 +296,21 @@ static bool validate_latency(double latency, const char *optarg)
 
 static void register_signal_handlers()
 {
+#ifndef _MSC_VER
   struct sigaction action{};
   action.sa_handler = close_handler;
   sigemptyset(&action.sa_mask);
   action.sa_flags = 0;
+#endif
 
-  if (sigaction(SIGTERM, &action, nullptr) == 0)
+  if (
+          // signal(SIGTERM, &action) == SIG_IGN
+#ifdef _MSC_VER
+      signal (SIGTERM, SIG_IGN)
+#else
+          sigaction(SIGTERM, &action, nullptr) == 0
+#endif
+          )
   {
     FSW_ELOG(_("SIGTERM handler registered.\n"));
   }
@@ -314,7 +319,13 @@ static void register_signal_handlers()
     std::cerr << _("SIGTERM handler registration failed.") << std::endl;
   }
 
-  if (sigaction(SIGABRT, &action, nullptr) == 0)
+  if (
+#ifdef _MSC_VER
+          signal (SIGABRT, SIG_IGN)
+#else
+        sigaction(SIGABRT, &action, nullptr) == 0
+#endif
+          )
   {
     FSW_ELOG(_("SIGABRT handler registered.\n"));
   }
@@ -323,7 +334,13 @@ static void register_signal_handlers()
     std::cerr << _("SIGABRT handler registration failed.") << std::endl;
   }
 
-  if (sigaction(SIGINT, &action, nullptr) == 0)
+  if (
+#ifdef _MSC_VER
+          signal (SIGINT, SIG_IGN)
+#else
+        sigaction(SIGINT, &action, nullptr) == 0
+#endif
+   )
   {
     FSW_ELOG(_("SIGINT handler registered.\n"));
   }

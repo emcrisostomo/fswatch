@@ -15,11 +15,13 @@
 #
 include_directories(../.. .)
 
-set(SOURCE_FILES
-        fswatch_test.c
-        ${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h)
+set(Header_Files "${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h")
+source_group("Test Header Files" FILES "${Header_Files}")
 
-add_executable(fswatch_test ${SOURCE_FILES})
+set(Source_Files "fswatch_test.c")
+source_group("Test Source Files" FILES "${Source_Files}")
+
+add_executable(fswatch_test "${Header_Files}" "${Source_Files}")
 target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})
 
 target_link_libraries(fswatch_test LINK_PUBLIC libfswatch)
