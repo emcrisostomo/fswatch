@@ -370,7 +370,7 @@ static void print_event_timestamp(const event& evt)
   else localtime_s(&tm_buf, &evt_time);
   tm_time = &tm_buf;
 #else
-  const struct *tm_time = (uflag? gmtime : localtime)(&evt_time)
+  const struct tm* tm_time = (uflag? gmtime : localtime)(&evt_time);
 #endif
 
   const std::string date =
