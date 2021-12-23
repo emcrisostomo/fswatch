@@ -138,8 +138,8 @@ namespace fsw
     {
       throw libfsw_exception(
         string_utils::string_from_format(
-          _("An error occurred during the compilation of %s"),
-          filter.text.c_str()),
+          _("An error occurred during the compilation of %s\n\t%s"),
+          filter.text.c_str(), error.what()),
         FSW_ERR_INVALID_REGEX);
     }
   }

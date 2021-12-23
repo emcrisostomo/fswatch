@@ -23,10 +23,10 @@
  * @param data
  */
 void my_callback(fsw_cevent const *const events,
-                 const unsigned int event_num,
+                 const size_t event_num,
                  void *data)
 {
-  printf("my_callback: %d\n", event_num);
+  printf("my_callback: %zu\n", event_num);
 }
 
 void *start_monitor(void *param)

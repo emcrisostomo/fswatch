@@ -100,12 +100,15 @@ namespace fsw
 
     FSW_ELOGF(_("%p.\n"), this);
 
-    return ReadDirectoryChangesW((HANDLE) handle,
+    return ReadDirectoryChangesW(static_cast<HANDLE>(handle),
                                  buffer.get(),
-                                 buffer_size,
+                                 static_cast<DWORD>(buffer_size),
                                  TRUE,
-                                 FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
-                                 FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
+                                 FILE_NOTIFY_CHANGE_FILE_NAME |
+                                             FILE_NOTIFY_CHANGE_DIR_NAME |
+                                             FILE_NOTIFY_CHANGE_LAST_WRITE |
+                                             FILE_NOTIFY_CHANGE_LAST_ACCESS |
+                                             FILE_NOTIFY_CHANGE_CREATION,
                                  &bytes_returned,
                                  overlapped.get(),
                                  nullptr);

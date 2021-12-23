@@ -257,6 +257,7 @@ static bool parse_event_bitmask(const char *optarg)
   }
   catch (const std::invalid_argument& ex)
   {
+    fputs(ex.what(), stderr);
     return false;
   }
 }
