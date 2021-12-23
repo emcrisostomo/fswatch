@@ -305,9 +305,8 @@ static void register_signal_handlers()
 #endif
 
   if (
-          // signal(SIGTERM, &action) == SIG_IGN
 #ifdef _MSC_VER
-      signal (SIGTERM, SIG_IGN)
+          signal(SIGTERM, &close_handler) != SIG_ERR
 #else
           sigaction(SIGTERM, &action, nullptr) == 0
 #endif
@@ -322,7 +321,7 @@ static void register_signal_handlers()
 
   if (
 #ifdef _MSC_VER
-          signal (SIGABRT, SIG_IGN)
+        signal(SIGABRT, &close_handler) != SIG_ERR
 #else
         sigaction(SIGABRT, &action, nullptr) == 0
 #endif
@@ -337,7 +336,7 @@ static void register_signal_handlers()
 
   if (
 #ifdef _MSC_VER
-          signal (SIGINT, SIG_IGN)
+        signal(SIGINT, &close_handler) != SIG_ERR
 #else
         sigaction(SIGINT, &action, nullptr) == 0
 #endif
@@ -372,7 +371,7 @@ static void print_event_timestamp(const event& evt)
   else localtime_s(&tm_buf, &evt_time);
   tm_time = &tm_buf;
 #else
-  const struct *tm_time = (uflag? gmtime : localtime)(&evt_time)
+  const struct tm* tm_time = (uflag? gmtime : localtime)(&evt_time);
 #endif
 
   const std::string date =
