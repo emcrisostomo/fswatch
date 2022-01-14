@@ -13,15 +13,16 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+set(EXEC_NAME "${PROJECT_NAME}_test")
 include_directories(../.. .)
 
 set(Header_Files "${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h")
-source_group("Test Header Files" FILES "${Header_Files}")
+source_group("${EXEC_NAME} Header Files" FILES "${Header_Files}")
 
-set(Source_Files "fswatch_test.c")
-source_group("Test Source Files" FILES "${Source_Files}")
+set(Source_Files "${EXEC_NAME}.c")
+source_group("${EXEC_NAME} Source Files" FILES "${Source_Files}")
 
-add_executable(fswatch_test "${Header_Files}" "${Source_Files}")
-target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})
+add_executable("${EXEC_NAME}" "${Header_Files}" "${Source_Files}")
+target_include_directories("${EXEC_NAME}" PRIVATE "${PROJECT_BINARY_DIR}")
 
-target_link_libraries(fswatch_test LINK_PUBLIC libfswatch)
+target_link_libraries("${EXEC_NAME}" LINK_PUBLIC "libfswatch")

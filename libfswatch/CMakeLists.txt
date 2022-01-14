@@ -14,59 +14,61 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+set(LIBRARY_NAME "libfswatch")
+
 # Define symbols to conditionally define FSEvents flags
 if(APPLE)
-    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "9.0")
+    if ("${CMAKE_SYSTEM_VERSION}" VERSION_GREATER_EQUAL "9.0")
         set(HAVE_MACOS_GE_10_5 1)
     endif()
 
-    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "11.0")
+    if ("${CMAKE_SYSTEM_VERSION}" VERSION_GREATER_EQUAL "11.0")
         set(HAVE_MACOS_GE_10_7 1)
     endif()
 
-    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "13.0")
+    if ("${CMAKE_SYSTEM_VERSION}" VERSION_GREATER_EQUAL "13.0")
         set(HAVE_MACOS_GE_10_9 1)
     endif()
 
-    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "14.0")
+    if ("${CMAKE_SYSTEM_VERSION}" VERSION_GREATER_EQUAL "14.0")
         set(HAVE_MACOS_GE_10_10 1)
     endif()
-endif()
+endif(APPLE)
 
 set(LIBFSWATCH_HEADER_FILES
-        src/libfswatch/c/cevent.h
-        src/libfswatch/c/cfilter.h
-        src/libfswatch/c/cmonitor.h
-        src/libfswatch/c/error.h
-        src/libfswatch/c/libfswatch.h
-        src/libfswatch/c/libfswatch_log.h
-        src/libfswatch/c/libfswatch_types.h
-        src/libfswatch/c++/event.hpp
-        src/libfswatch/c++/filter.hpp
-        src/libfswatch/c++/libfswatch_exception.hpp
-        src/libfswatch/c++/libfswatch_map.hpp
-        src/libfswatch/c++/libfswatch_set.hpp
-        src/libfswatch/c++/monitor.hpp
-        src/libfswatch/c++/monitor_factory.hpp
-        src/libfswatch/c++/path_utils.hpp
-        src/libfswatch/c++/poll_monitor.hpp
-        src/libfswatch/c++/string/string_utils.hpp
-        src/libfswatch/gettext.h
-        src/libfswatch/gettext_defs.h
-        ${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h)
+        "src/libfswatch/c/cevent.h"
+        "src/libfswatch/c/cfilter.h"
+        "src/libfswatch/c/cmonitor.h"
+        "src/libfswatch/c/error.h"
+        "src/libfswatch/c/libfswatch.h"
+        "src/libfswatch/c/libfswatch_log.h"
+        "src/libfswatch/c/libfswatch_types.h"
+        "src/libfswatch/c++/event.hpp"
+        "src/libfswatch/c++/filter.hpp"
+        "src/libfswatch/c++/libfswatch_exception.hpp"
+        "src/libfswatch/c++/libfswatch_map.hpp"
+        "src/libfswatch/c++/libfswatch_set.hpp"
+        "src/libfswatch/c++/monitor.hpp"
+        "src/libfswatch/c++/monitor_factory.hpp"
+        "src/libfswatch/c++/path_utils.hpp"
+        "src/libfswatch/c++/poll_monitor.hpp"
+        "src/libfswatch/c++/string/string_utils.hpp"
+        "src/libfswatch/gettext.h"
+        "src/libfswatch/gettext_defs.h"
+        "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h")
 
 set(LIB_SOURCE_FILES
-        src/libfswatch/c/cevent.cpp
-        src/libfswatch/c/libfswatch.cpp
-        src/libfswatch/c/libfswatch_log.cpp
-        src/libfswatch/c++/event.cpp
-        src/libfswatch/c++/filter.cpp
-        src/libfswatch/c++/libfswatch_exception.cpp
-        src/libfswatch/c++/monitor.cpp
-        src/libfswatch/c++/monitor_factory.cpp
-        src/libfswatch/c++/path_utils.cpp
-        src/libfswatch/c++/poll_monitor.cpp
-        src/libfswatch/c++/string/string_utils.cpp)
+        "src/libfswatch/c/cevent.cpp"
+        "src/libfswatch/c/libfswatch.cpp"
+        "src/libfswatch/c/libfswatch_log.cpp"
+        "src/libfswatch/c++/event.cpp"
+        "src/libfswatch/c++/filter.cpp"
+        "src/libfswatch/c++/libfswatch_exception.cpp"
+        "src/libfswatch/c++/monitor.cpp"
+        "src/libfswatch/c++/monitor_factory.cpp"
+        "src/libfswatch/c++/path_utils.cpp"
+        "src/libfswatch/c++/poll_monitor.cpp"
+        "src/libfswatch/c++/string/string_utils.cpp")
 
 check_include_file_cxx(mutex HAVE_CXX_MUTEX)
 
@@ -80,11 +82,11 @@ if (NOT HAVE_CXX_ATOMIC)
     message(WARNING "<atomic> unavailable: some functionalities will not be built.")
 endif (NOT HAVE_CXX_ATOMIC)
 
-check_cxx_symbol_exists(modf math.h HAVE_MODF)
+check_cxx_symbol_exists(modf "math.h" HAVE_MODF)
 check_cxx_symbol_exists(realpath cstdlib HAVE_REALPATH)
-check_cxx_symbol_exists(select sys/select.h HAVE_SELECT)
-check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MTIME)
-check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_ST_MTIMESPEC)
+check_cxx_symbol_exists(select "sys/select.h" HAVE_SELECT)
+check_struct_has_member("struct stat" st_mtime "sys/stat.h" HAVE_STRUCT_STAT_ST_MTIME)
+check_struct_has_member("struct stat" st_mtimespec "sys/stat.h" HAVE_STRUCT_STAT_ST_MTIMESPEC)
 check_include_file_cxx(unordered_map HAVE_UNORDERED_MAP)
 check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
@@ -101,7 +103,7 @@ if (MSVC)
 else ()
     find_library(PTHREAD_LIBRARY pthread)
 endif (MSVC)
-set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
+set(EXTRA_LIBS "${EXTRA_LIBS}" "${PTHREAD_LIBRARY}")
 
 if (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
     set(HAVE_CXX_THREAD_LOCAL ON CACHE BOOL "Enable C++ thread_local support")
@@ -109,123 +111,123 @@ endif (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 
 check_cxx_symbol_exists(thread_local cstdlib HAVE_CXX_THREAD_LOCAL)
 
-check_include_file_cxx(sys/inotify.h HAVE_SYS_INOTIFY_H)
+check_include_file_cxx("sys/inotify.h" HAVE_SYS_INOTIFY_H)
 
 if (HAVE_SYS_INOTIFY_H)
     set(LIBFSWATCH_HEADER_FILES
-            ${LIBFSWATCH_HEADER_FILES}
-            src/libfswatch/c++/inotify_monitor.hpp)
+            "${LIBFSWATCH_HEADER_FILES}"
+            "src/libfswatch/c++/inotify_monitor.hpp")
     set(LIB_SOURCE_FILES
-            ${LIB_SOURCE_FILES}
-            src/libfswatch/c++/inotify_monitor.cpp)
+            "${LIB_SOURCE_FILES}"
+            "src/libfswatch/c++/inotify_monitor.cpp")
 endif (HAVE_SYS_INOTIFY_H)
 
-check_include_file_cxx(sys/event.h HAVE_SYS_EVENT_H)
+check_include_file_cxx("sys/event.h" HAVE_SYS_EVENT_H)
 
 if (HAVE_SYS_EVENT_H)
     set(LIBFSWATCH_HEADER_FILES
-            ${LIBFSWATCH_HEADER_FILES}
-            src/libfswatch/c++/kqueue_monitor.hpp)
+            "${LIBFSWATCH_HEADER_FILES}"
+            "src/libfswatch/c++/kqueue_monitor.hpp")
     set(LIB_SOURCE_FILES
-            ${LIB_SOURCE_FILES}
-            src/libfswatch/c++/kqueue_monitor.cpp)
+            "${LIB_SOURCE_FILES}"
+            "src/libfswatch/c++/kqueue_monitor.cpp")
 endif (HAVE_SYS_EVENT_H)
 
-check_include_file_cxx(port.h HAVE_PORT_H)
+check_include_file_cxx("port.h" HAVE_PORT_H)
 
 if (HAVE_PORT_H)
     set(LIBFSWATCH_HEADER_FILES
-            ${LIBFSWATCH_HEADER_FILES}
-            src/libfswatch/c++/fen_monitor.hpp)
+            "${LIBFSWATCH_HEADER_FILES}"
+            "src/libfswatch/c++/fen_monitor.hpp")
     set(LIB_SOURCE_FILES
-            ${LIB_SOURCE_FILES}
-            src/libfswatch/c++/fen_monitor.cpp)
+            "${LIB_SOURCE_FILES}"
+            "src/libfswatch/c++/fen_monitor.cpp")
 endif (HAVE_PORT_H)
 
-check_cxx_symbol_exists(FindFirstChangeNotification windows.h HAVE_WINDOWS_HEADER)
+check_cxx_symbol_exists(FindFirstChangeNotification "windows.h" HAVE_WINDOWS_HEADER)
 
 if (HAVE_WINDOWS_HEADER)
-    check_include_file_cxx(sys/cygwin.h HAVE_CYGWIN)
+    check_include_file_cxx("sys/cygwin.h" HAVE_CYGWIN)
 
     set(LIBFSWATCH_HEADER_FILES
-            ${LIBFSWATCH_HEADER_FILES}
-            src/libfswatch/c++/windows/win_directory_change_event.hpp
-            src/libfswatch/c++/windows/win_error_message.hpp
-            src/libfswatch/c++/windows/win_handle.hpp
-            src/libfswatch/c++/windows/win_paths.hpp
-            src/libfswatch/c++/windows/win_strings.hpp
-            src/libfswatch/c++/windows_monitor.hpp)
+            "${LIBFSWATCH_HEADER_FILES}"
+            "src/libfswatch/c++/windows/win_directory_change_event.hpp"
+            "src/libfswatch/c++/windows/win_error_message.hpp"
+            "src/libfswatch/c++/windows/win_handle.hpp"
+            "src/libfswatch/c++/windows/win_paths.hpp"
+            "src/libfswatch/c++/windows/win_strings.hpp"
+            "src/libfswatch/c++/windows_monitor.hpp")
 
     set(LIB_SOURCE_FILES
-            ${LIB_SOURCE_FILES}
-            src/libfswatch/c++/windows/win_directory_change_event.cpp
-            src/libfswatch/c++/windows/win_error_message.cpp
-            src/libfswatch/c++/windows/win_handle.cpp
-            src/libfswatch/c++/windows/win_strings.cpp
-            src/libfswatch/c++/windows_monitor.cpp)
+            "${LIB_SOURCE_FILES}"
+            "src/libfswatch/c++/windows/win_directory_change_event.cpp"
+            "src/libfswatch/c++/windows/win_error_message.cpp"
+            "src/libfswatch/c++/windows/win_handle.cpp"
+            "src/libfswatch/c++/windows/win_strings.cpp"
+            "src/libfswatch/c++/windows_monitor.cpp")
 
     if (MSVC)
         set(LIB_SOURCE_FILES
-                ${LIB_SOURCE_FILES}
-                src/libfswatch/c++/windows/win_paths.cpp)
+                "${LIB_SOURCE_FILES}"
+                "src/libfswatch/c++/windows/win_paths.cpp")
     else ()
         set(LIB_SOURCE_FILES
-                ${LIB_SOURCE_FILES}
-                src/libfswatch/c++/windows/cygwin_paths.cpp)
+                "${LIB_SOURCE_FILES}"
+                "src/libfswatch/c++/windows/cygwin_paths.cpp")
     endif (MSVC)
 
-    source_group("libfswatch Header Files" FILES "${LIBFSWATCH_HEADER_FILES}")
-    source_group("libfswatch Source Files" FILES "${LIB_SOURCE_FILES}")
+    source_group("${LIBRARY_NAME} Header Files" FILES "${LIBFSWATCH_HEADER_FILES}")
+    source_group("${LIBRARY_NAME} Source Files" FILES "${LIB_SOURCE_FILES}")
 
     set(HAVE_WINDOWS ON CACHE BOOL "Enable Windows support")
 endif (HAVE_WINDOWS_HEADER)
 
 if (APPLE)
-    check_include_file_cxx(CoreServices/CoreServices.h HAVE_FSEVENTS_FILE_EVENTS)
+    check_include_file_cxx("CoreServices/CoreServices.h" HAVE_FSEVENTS_FILE_EVENTS)
 
     if (HAVE_FSEVENTS_FILE_EVENTS)
         find_library(CORESERVICES_LIBRARY CoreServices)
-        set(EXTRA_LIBS ${EXTRA_LIBS} ${CORESERVICES_LIBRARY})
+        set(EXTRA_LIBS "${EXTRA_LIBS}" "${CORESERVICES_LIBRARY}")
 
         set(LIBFSWATCH_HEADER_FILES
-                ${LIBFSWATCH_HEADER_FILES}
-                src/libfswatch/c++/fsevents_monitor.hpp)
+                "${LIBFSWATCH_HEADER_FILES}"
+                "src/libfswatch/c++/fsevents_monitor.hpp")
         set(LIB_SOURCE_FILES
-                ${LIB_SOURCE_FILES}
-                src/libfswatch/c++/fsevents_monitor.cpp)
+                "${LIB_SOURCE_FILES}"
+                "src/libfswatch/c++/fsevents_monitor.cpp")
 
     endif (HAVE_FSEVENTS_FILE_EVENTS)
 endif (APPLE)
 
 if (NOT DEFINED TARGET_ARCH)
-    set(TARGET_ARCH ${CMAKE_HOST_SYSTEM_PROCESSOR})
+    set(TARGET_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
 endif ()
 
 # Add a configuration file processed by cmake
-configure_file(libfswatch_config.in libfswatch_config.h)
+configure_file("libfswatch_config.in" "libfswatch_config.h")
 # TODO: consider removing it
 add_definitions(-DHAVE_LIBFSWATCH_CONFIG_H)
 
-add_library(libfswatch ${LIB_SOURCE_FILES} ${LIBFSWATCH_HEADER_FILES})
-set_target_properties(libfswatch PROPERTIES PREFIX "")
+add_library("${LIBRARY_NAME}" "${LIB_SOURCE_FILES}" "${LIBFSWATCH_HEADER_FILES}")
+set_target_properties("${LIBRARY_NAME}" PROPERTIES PREFIX "")
 
 # check for gettext and libintl
 if (USE_NLS)
     if (Intl_LIBRARIES)
-        target_link_libraries(libfswatch PRIVATE ${Intl_LIBRARIES})
+        target_link_libraries("${LIBRARY_NAME}" PRIVATE "${Intl_LIBRARIES}")
     endif ()
 endif ()
 
-target_include_directories(libfswatch PUBLIC src/libfswatch)
-target_include_directories(libfswatch PUBLIC src)
-target_include_directories(libfswatch PUBLIC ${Intl_INCLUDE_DIRS})
-target_include_directories(libfswatch PRIVATE ${PROJECT_BINARY_DIR})
-target_include_directories(libfswatch PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(libfswatch PRIVATE ${EXTRA_LIBS})
+target_include_directories("${LIBRARY_NAME}" PUBLIC "src/libfswatch")
+target_include_directories("${LIBRARY_NAME}" PUBLIC "src")
+target_include_directories("${LIBRARY_NAME}" PUBLIC "${Intl_INCLUDE_DIRS}")
+target_include_directories("${LIBRARY_NAME}" PRIVATE "${PROJECT_BINARY_DIR}")
+target_include_directories("${LIBRARY_NAME}" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+target_link_libraries("${LIBRARY_NAME}" PRIVATE "${EXTRA_LIBS}")
 
-install(TARGETS libfswatch LIBRARY DESTINATION lib)
-install(DIRECTORY src/libfswatch
-    DESTINATION include
+install(TARGETS "${LIBRARY_NAME}" LIBRARY DESTINATION "lib")
+install(DIRECTORY "src/${LIBRARY_NAME}"
+    DESTINATION "include"
     FILES_MATCHING
     PATTERN "*.hpp"
     PATTERN "*.h")

@@ -13,29 +13,29 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-set(Header_Files "fswatch.hpp" "gettext.h")
-source_group("Header Files" FILES "${Header_Files}")
+set(Header_Files "${PROJECT_NAME}.hpp" "gettext.h")
+source_group("${PROJECT_NAME} Header Files" FILES "${Header_Files}")
 
-set(Source_Files "fswatch.cpp")
-source_group("Source Files" FILES "${Source_Files}")
+set(Source_Files "${PROJECT_NAME}.cpp")
+source_group("${PROJECT_NAME} Source Files" FILES "${Source_Files}")
 
-add_executable(fswatch "${Header_Files}" "${Source_Files}")
+add_executable("${PROJECT_NAME}" "${Header_Files}" "${Source_Files}")
 
 # check for gettext and libintl
 if (USE_NLS)
     if (Intl_LIBRARIES)
-        target_link_libraries(fswatch PRIVATE ${Intl_LIBRARIES})
+        target_link_libraries("${PROJECT_NAME}" PRIVATE "${Intl_LIBRARIES}")
     endif (Intl_LIBRARIES)
 endif (USE_NLS)
 
 if (MSVC)
     add_subdirectory("./windows")
-    target_link_libraries(fswatch PUBLIC "getopt")
+    target_link_libraries("${PROJECT_NAME}" PUBLIC "getopt")
 endif (MSVC)
 
-target_include_directories(fswatch PUBLIC ../.. .)
-target_include_directories(fswatch PRIVATE ${PROJECT_BINARY_DIR})
-target_link_libraries(fswatch PUBLIC libfswatch)
+target_include_directories("${PROJECT_NAME}" PUBLIC ../.. .)
+target_include_directories("${PROJECT_NAME}" PRIVATE "${PROJECT_BINARY_DIR}")
+target_link_libraries("${PROJECT_NAME}" PUBLIC "libfswatch")
 
-install(TARGETS fswatch DESTINATION bin)
+install(TARGETS "${PROJECT_NAME}" DESTINATION "bin")
 install(FILES "${Header_Files}" DESTINATION "include")
