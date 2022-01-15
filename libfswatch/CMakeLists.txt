@@ -17,23 +17,23 @@
 set(LIBRARY_NAME "libfswatch")
 
 # Define symbols to conditionally define FSEvents flags
-if(APPLE)
+if (APPLE)
     if ("${CMAKE_SYSTEM_VERSION}" VERSION_GREATER_EQUAL "9.0")
         set(HAVE_MACOS_GE_10_5 1)
-    endif()
+    endif ()
 
     if ("${CMAKE_SYSTEM_VERSION}" VERSION_GREATER_EQUAL "11.0")
         set(HAVE_MACOS_GE_10_7 1)
-    endif()
+    endif ()
 
     if ("${CMAKE_SYSTEM_VERSION}" VERSION_GREATER_EQUAL "13.0")
         set(HAVE_MACOS_GE_10_9 1)
-    endif()
+    endif ()
 
     if ("${CMAKE_SYSTEM_VERSION}" VERSION_GREATER_EQUAL "14.0")
         set(HAVE_MACOS_GE_10_10 1)
-    endif()
-endif(APPLE)
+    endif ()
+endif (APPLE)
 
 set(LIBFSWATCH_HEADER_FILES
         "src/libfswatch/c/cevent.h"
@@ -213,8 +213,13 @@ set_target_properties("${LIBRARY_NAME}" PROPERTIES PREFIX "")
 
 # check for gettext and libintl
 if (USE_NLS AND Intl_LIBRARIES)
-    target_link_libraries("${LIBRARY_NAME}" PRIVATE  "${intl_gettext_libs}")
-endif ()
+    set(intl_nls_libs "${Intl_LIBRARIES}")
+    if (VCPKG_TOOLCHAIN)
+        find_package(Iconv REQUIRED)
+        set(intl_nls_libs "${intl_nls_libs}" "Iconv::Iconv")
+    endif (VCPKG_TOOLCHAIN)
+    target_link_libraries("${LIBRARY_NAME}" PRIVATE "${intl_nls_libs}")
+endif (USE_NLS AND Intl_LIBRARIES)
 
 target_include_directories("${LIBRARY_NAME}" PUBLIC "src/libfswatch")
 target_include_directories("${LIBRARY_NAME}" PUBLIC "src")
