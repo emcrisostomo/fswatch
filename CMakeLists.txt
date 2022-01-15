@@ -14,7 +14,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 cmake_minimum_required(VERSION 3.8)
-project(fswatch VERSION 1.16.0 LANGUAGES C CXX)
+project(fswatch VERSION 1.17.0 LANGUAGES C CXX)
 
 #@formatter:off
 set(PACKAGE           "${PROJECT_NAME}")

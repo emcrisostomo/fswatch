@@ -212,10 +212,8 @@ add_library("${LIBRARY_NAME}" "${LIB_SOURCE_FILES}" "${LIBFSWATCH_HEADER_FILES}"
 set_target_properties("${LIBRARY_NAME}" PROPERTIES PREFIX "")
 
 # check for gettext and libintl
-if (USE_NLS)
-    if (Intl_LIBRARIES)
-        target_link_libraries("${LIBRARY_NAME}" PRIVATE "${Intl_LIBRARIES}")
-    endif ()
+if (USE_NLS AND Intl_LIBRARIES)
+    target_link_libraries("${LIBRARY_NAME}" PRIVATE  "${intl_gettext_libs}")
 endif ()
 
 target_include_directories("${LIBRARY_NAME}" PUBLIC "src/libfswatch")
