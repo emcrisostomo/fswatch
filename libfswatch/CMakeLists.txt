@@ -39,7 +39,7 @@ set(LIBFSWATCH_HEADER_FILES
         "src/libfswatch/c/cevent.h"
         "src/libfswatch/c/cfilter.h"
         "src/libfswatch/c/cmonitor.h"
-        "src/libfswatch/c/error.h"
+        "src/libfswatch/c/fsw_error.h"
         "src/libfswatch/c/libfswatch.h"
         "src/libfswatch/c/libfswatch_log.h"
         "src/libfswatch/c/libfswatch_types.h"

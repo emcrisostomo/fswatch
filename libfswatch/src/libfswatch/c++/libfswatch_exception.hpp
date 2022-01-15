@@ -26,7 +26,7 @@
 #ifndef LIBFSW_EXCEPTION_H
 #  define LIBFSW_EXCEPTION_H
 
-#  include "../c/error.h"
+#  include "../c/fsw_error.h"
 #  include <exception>
 #  include <string>
 

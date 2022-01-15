@@ -33,7 +33,7 @@
 #include "cevent.h"
 #include "cmonitor.h"
 #include "cfilter.h"
-#include "error.h"
+#include "fsw_error.h"
 
 #  ifdef __cplusplus
 extern "C"
