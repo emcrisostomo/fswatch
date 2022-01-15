@@ -31,4 +31,4 @@ endif ()
 install(TARGETS ${installable_libs}
         DESTINATION "lib"
         EXPORT "${LIBRARY_NAME}Targets")
-install(FILES "${Header_Files}" DESTINATION "include")
+install(FILES ${Header_Files} DESTINATION "include")

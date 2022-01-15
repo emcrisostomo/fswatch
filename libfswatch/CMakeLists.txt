@@ -103,7 +103,7 @@ if (MSVC)
 else ()
     find_library(PTHREAD_LIBRARY pthread)
 endif (MSVC)
-set(EXTRA_LIBS "${EXTRA_LIBS}" "${PTHREAD_LIBRARY}")
+list(APPEND EXTRA_LIBS "${PTHREAD_LIBRARY}")
 
 if (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
     set(HAVE_CXX_THREAD_LOCAL ON CACHE BOOL "Enable C++ thread_local support")
@@ -114,34 +114,22 @@ check_cxx_symbol_exists(thread_local cstdlib HAVE_CXX_THREAD_LOCAL)
 check_include_file_cxx("sys/inotify.h" HAVE_SYS_INOTIFY_H)
 
 if (HAVE_SYS_INOTIFY_H)
-    set(LIBFSWATCH_HEADER_FILES
-            "${LIBFSWATCH_HEADER_FILES}"
-            "src/libfswatch/c++/inotify_monitor.hpp")
-    set(LIB_SOURCE_FILES
-            "${LIB_SOURCE_FILES}"
-            "src/libfswatch/c++/inotify_monitor.cpp")
+    list(APPEND LIBFSWATCH_HEADER_FILES "src/libfswatch/c++/inotify_monitor.hpp")
+    list(APPEND LIB_SOURCE_FILES "src/libfswatch/c++/inotify_monitor.cpp")
 endif (HAVE_SYS_INOTIFY_H)
 
 check_include_file_cxx("sys/event.h" HAVE_SYS_EVENT_H)
 
 if (HAVE_SYS_EVENT_H)
-    set(LIBFSWATCH_HEADER_FILES
-            "${LIBFSWATCH_HEADER_FILES}"
-            "src/libfswatch/c++/kqueue_monitor.hpp")
-    set(LIB_SOURCE_FILES
-            "${LIB_SOURCE_FILES}"
-            "src/libfswatch/c++/kqueue_monitor.cpp")
+    list(APPEND LIBFSWATCH_HEADER_FILES "src/libfswatch/c++/kqueue_monitor.hpp")
+    list(APPEND LIB_SOURCE_FILES "src/libfswatch/c++/kqueue_monitor.cpp")
 endif (HAVE_SYS_EVENT_H)
 
 check_include_file_cxx("port.h" HAVE_PORT_H)
 
 if (HAVE_PORT_H)
-    set(LIBFSWATCH_HEADER_FILES
-            "${LIBFSWATCH_HEADER_FILES}"
-            "src/libfswatch/c++/fen_monitor.hpp")
-    set(LIB_SOURCE_FILES
-            "${LIB_SOURCE_FILES}"
-            "src/libfswatch/c++/fen_monitor.cpp")
+    list(APPEND LIBFSWATCH_HEADER_FILES "src/libfswatch/c++/fen_monitor.hpp")
+    list(APPEND LIB_SOURCE_FILES "src/libfswatch/c++/fen_monitor.cpp")
 endif (HAVE_PORT_H)
 
 check_cxx_symbol_exists(FindFirstChangeNotification "windows.h" HAVE_WINDOWS_HEADER)
@@ -149,8 +137,7 @@ check_cxx_symbol_exists(FindFirstChangeNotification "windows.h" HAVE_WINDOWS_HEA
 if (HAVE_WINDOWS_HEADER)
     check_include_file_cxx("sys/cygwin.h" HAVE_CYGWIN)
 
-    set(LIBFSWATCH_HEADER_FILES
-            "${LIBFSWATCH_HEADER_FILES}"
+    list(APPEND LIBFSWATCH_HEADER_FILES
             "src/libfswatch/c++/windows/win_directory_change_event.hpp"
             "src/libfswatch/c++/windows/win_error_message.hpp"
             "src/libfswatch/c++/windows/win_handle.hpp"
@@ -158,8 +145,7 @@ if (HAVE_WINDOWS_HEADER)
             "src/libfswatch/c++/windows/win_strings.hpp"
             "src/libfswatch/c++/windows_monitor.hpp")
 
-    set(LIB_SOURCE_FILES
-            "${LIB_SOURCE_FILES}"
+    list(APPEND LIB_SOURCE_FILES
             "src/libfswatch/c++/windows/win_directory_change_event.cpp"
             "src/libfswatch/c++/windows/win_error_message.cpp"
             "src/libfswatch/c++/windows/win_handle.cpp"
@@ -167,12 +153,10 @@ if (HAVE_WINDOWS_HEADER)
             "src/libfswatch/c++/windows_monitor.cpp")
 
     if (MSVC)
-        set(LIB_SOURCE_FILES
-                "${LIB_SOURCE_FILES}"
+        list(APPEND LIB_SOURCE_FILES
                 "src/libfswatch/c++/windows/win_paths.cpp")
     else ()
-        set(LIB_SOURCE_FILES
-                "${LIB_SOURCE_FILES}"
+        list(APPEND LIB_SOURCE_FILES
                 "src/libfswatch/c++/windows/cygwin_paths.cpp")
     endif (MSVC)
 
@@ -187,13 +171,11 @@ if (APPLE)
 
     if (HAVE_FSEVENTS_FILE_EVENTS)
         find_library(CORESERVICES_LIBRARY CoreServices)
-        set(EXTRA_LIBS "${EXTRA_LIBS}" "${CORESERVICES_LIBRARY}")
+        list(APPEND EXTRA_LIBS "${CORESERVICES_LIBRARY}")
 
-        set(LIBFSWATCH_HEADER_FILES
-                "${LIBFSWATCH_HEADER_FILES}"
+        list(APPEND LIBFSWATCH_HEADER_FILES
                 "src/libfswatch/c++/fsevents_monitor.hpp")
-        set(LIB_SOURCE_FILES
-                "${LIB_SOURCE_FILES}"
+        list(APPEND LIB_SOURCE_FILES
                 "src/libfswatch/c++/fsevents_monitor.cpp")
 
     endif (HAVE_FSEVENTS_FILE_EVENTS)
@@ -215,22 +197,16 @@ set_target_properties("${LIBRARY_NAME}" PROPERTIES PREFIX "")
 if (USE_NLS AND Intl_LIBRARIES)
     set(intl_nls_libs "${Intl_LIBRARIES}")
     if (VCPKG_TOOLCHAIN)
+        include(FindIconv)
         find_package(Iconv REQUIRED)
-        set(intl_nls_libs "${intl_nls_libs}" "Iconv::Iconv")
+        list(APPEND intl_nls_libs "Iconv::Iconv")
     endif (VCPKG_TOOLCHAIN)
     target_link_libraries("${LIBRARY_NAME}" PRIVATE "${intl_nls_libs}")
 endif (USE_NLS AND Intl_LIBRARIES)
 
-target_include_directories("${LIBRARY_NAME}" PUBLIC "src/libfswatch")
-target_include_directories("${LIBRARY_NAME}" PUBLIC "src")
-target_include_directories("${LIBRARY_NAME}" PUBLIC "${Intl_INCLUDE_DIRS}")
-target_include_directories("${LIBRARY_NAME}" PRIVATE "${PROJECT_BINARY_DIR}")
-target_include_directories("${LIBRARY_NAME}" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories("${LIBRARY_NAME}" PUBLIC "src/libfswatch" "src" "${Intl_INCLUDE_DIRS}")
+target_include_directories("${LIBRARY_NAME}" PRIVATE "${PROJECT_BINARY_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries("${LIBRARY_NAME}" PRIVATE "${EXTRA_LIBS}")
 
 install(TARGETS "${LIBRARY_NAME}" LIBRARY DESTINATION "lib")
-install(DIRECTORY "src/${LIBRARY_NAME}"
-    DESTINATION "include"
-    FILES_MATCHING
-    PATTERN "*.hpp"
-    PATTERN "*.h")
+install(FILES ${LIBFSWATCH_HEADER_FILES} DESTINATION "include")
