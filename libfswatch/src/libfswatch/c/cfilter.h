@@ -30,7 +30,7 @@
 #  ifdef __cplusplus
 extern "C"
 {
-#  endif
+#  endif /* __cplusplus */
 
   /**
    * @brief Event filter type.
@@ -59,6 +59,6 @@ extern "C"
 
 #  ifdef __cplusplus
 }
-#  endif
+#  endif /* __cplusplus */
 
-#endif  /* FSW__CFILTER_H */
+#endif  /* !FSW__CFILTER_H */

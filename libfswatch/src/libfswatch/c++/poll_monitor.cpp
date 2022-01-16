@@ -18,8 +18,8 @@
 #include <utility>
 
 #ifdef _MSC_VER
-#include "libfswatch_config.h"
-#include <intrin.h>
+#include "libfswatch/libfswatch_config.h"
+/* #include <intrin.h> */
 #include <Synchapi.h>
 
 /* stolen from libcurl: */

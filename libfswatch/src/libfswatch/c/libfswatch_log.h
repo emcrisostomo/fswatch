@@ -27,39 +27,40 @@
 #  define LIBFSW_LOG_H
 
 #include <stdio.h>
+#include "libfswatch/libfswatch_export.h"
 
 /**
  * Prints the specified message to standard output.
  */
-void fsw_log(const char * msg);
+LIBFSWATCH_EXPORT void fsw_log(const char * msg);
 
 /**
  * Prints the specified message to the specified file.
  */
-void fsw_flog(FILE * f, const char * msg);
+LIBFSWATCH_EXPORT void fsw_flog(FILE * f, const char * msg);
 
 /**
  * Formats the specified message and prints it to standard output.  The message
  * string format conforms with printf.
  */
-void fsw_logf(const char * format, ...);
+LIBFSWATCH_EXPORT void fsw_logf(const char * format, ...);
 
 /**
  * Formats the specified message and prints it to the specified file.  The
  * message string format conforms with printf.
  */
-void fsw_flogf(FILE * f, const char * format, ...);
+LIBFSWATCH_EXPORT void fsw_flogf(FILE * f, const char * format, ...);
 
 /**
  * Prints the specified message using perror.
  */
-void fsw_log_perror(const char * msg);
+LIBFSWATCH_EXPORT void fsw_log_perror(const char * msg);
 
 /**
  * Prints the specified message using perror.  The message string format
  * conforms with printf.
  */
-void fsw_logf_perror(const char * format, ...);
+LIBFSWATCH_EXPORT void fsw_logf_perror(const char * format, ...);
 
 /**
  * @brief Log the specified message to the standard output prepended by the
@@ -91,4 +92,4 @@ void fsw_logf_perror(const char * format, ...);
  */
 #  define FSW_FLOGF(f, msg, ...) fsw_flogf(f, "%s: ", __func__);      fsw_flogf(f, msg, __VA_ARGS__)
 
-#endif  /* LIBFSW_LOG_H */
+#endif  /* !LIBFSW_LOG_H */

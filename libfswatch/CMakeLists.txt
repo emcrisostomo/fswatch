@@ -92,12 +92,12 @@ check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
 if (MSVC)
     find_package(pthreads QUIET)
-    if (PTHREADS_FOUND)
+    if (PTHREADS4W_FOUND)
         set(PTHREAD_LIBRARY "PThreads4W::PThreads4W")
     else ()
         include("${CMAKE_SOURCE_DIR}/CMake/FindPthreads.cmake")
-        set(PTHREAD_LIBRARY "${PTHREADS_LIBRARIES}")
-    endif (PTHREADS_FOUND)
+        set(PTHREAD_LIBRARY ${PTHREADS_LIBRARIES})
+    endif (PTHREADS4W_FOUND)
 
     # set(EXTRA_LIBS ${EXTRA_LIBS} "advapi32")
 else ()
@@ -214,8 +214,20 @@ set_target_properties(
         "${LIBRARY_NAME}"
         PROPERTIES
         LINKER_LANGUAGE
-        C
+        CXX
 )
 
+include(GenerateExportHeader)
+set(_export_file "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}_export.h")
+generate_export_header("${LIBRARY_NAME}" EXPORT_FILE_NAME "${_export_file}")
+
+# setup the version numbering
+set_property(TARGET "${LIBRARY_NAME}" PROPERTY VERSION "1.0.0")
+set_property(TARGET "${LIBRARY_NAME}" PROPERTY SOVERSION "1")
+
 install(TARGETS "${LIBRARY_NAME}" LIBRARY DESTINATION "lib")
-install(FILES ${LIBFSWATCH_HEADER_FILES} "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h" DESTINATION "include")
+install(FILES
+        ${LIBFSWATCH_HEADER_FILES}
+        "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h"
+        "${_export_file}"
+        DESTINATION "include")

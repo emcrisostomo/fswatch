@@ -20,8 +20,8 @@
 #include <iostream>
 
 #ifdef _MSC_VER
-#include "libfswatch_config.h"
-#include <intrin.h>
+#include "libfswatch/libfswatch_config.h"
+/*#include <intrin.h>*/
 #include <fileapi.h>
 #define INVALID_HANDLE_VALUE (HANDLE)(-1)
 #ifndef PATH_MAX

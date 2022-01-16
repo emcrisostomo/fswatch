@@ -20,6 +20,10 @@ set_target_properties(
         C
 )
 
+include(GenerateExportHeader)
+set(_export_file "${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}_export.h")
+generate_export_header("${LIBRARY_NAME}" EXPORT_FILE_NAME "${_export_file}")
+
 # setup the version numbering
 set_property(TARGET "${LIBRARY_NAME}" PROPERTY VERSION "1.0.0")
 set_property(TARGET "${LIBRARY_NAME}" PROPERTY SOVERSION "1")
@@ -32,4 +36,4 @@ endif ()
 install(TARGETS ${installable_libs}
         DESTINATION "lib"
         EXPORT "${LIBRARY_NAME}Targets")
-install(FILES ${Header_Files} DESTINATION "include")
+install(FILES ${Header_Files} "${_export_file}" DESTINATION "include")

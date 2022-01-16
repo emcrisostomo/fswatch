@@ -31,7 +31,7 @@ set_target_properties(
 
 if (MSVC)
     add_subdirectory("./windows")
-    target_link_libraries("${EXEC_NAME}" PUBLIC "getopt")
+    target_link_libraries("${EXEC_NAME}" PRIVATE "getopt")
 endif (MSVC)
 
 target_link_libraries("${EXEC_NAME}" PUBLIC "libfswatch")

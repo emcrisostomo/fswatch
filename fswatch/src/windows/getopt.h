@@ -15,28 +15,20 @@
 /* All the headers include this file. */
 #include <crtdefs.h>
 
-#if defined( WINGETOPT_SHARED_LIB )
-# if defined( BUILDING_WINGETOPT_DLL )
-#  define WINGETOPT_API __declspec(dllexport)
-# else
-#  define WINGETOPT_API __declspec(dllimport)
-# endif
-#else
-# define WINGETOPT_API
-#endif
+#include "getopt_export.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-WINGETOPT_API extern int optind;		/* index of first non-option in argv      */
-WINGETOPT_API extern int optopt;		/* single option character, as parsed     */
-WINGETOPT_API extern int opterr;		/* flag to enable built-in diagnostics... */
+GETOPT_EXPORT extern int optind;		/* index of first non-option in argv      */
+GETOPT_EXPORT extern int optopt;		/* single option character, as parsed     */
+GETOPT_EXPORT extern int opterr;		/* flag to enable built-in diagnostics... */
 				/* (user may set to zero, to suppress)    */
 
-WINGETOPT_API extern char *optarg;		/* pointer to argument of current option  */
+GETOPT_EXPORT extern char *optarg;		/* pointer to argument of current option  */
 
-extern int getopt(int nargc, char * const *nargv, const char *options);
+GETOPT_EXPORT extern int getopt(int nargc, char * const *nargv, const char *options);
 
 #ifdef _BSD_SOURCE
 /*
@@ -84,9 +76,9 @@ enum    		/* permitted values for its `has_arg' field...	*/
   optional_argument		/* option may take an argument		*/
 };
 
-extern int getopt_long(int nargc, char * const *nargv, const char *options,
+GETOPT_EXPORT extern int getopt_long(int nargc, char * const *nargv, const char *options,
     const struct option *long_options, int *idx);
-extern int getopt_long_only(int nargc, char * const *nargv, const char *options,
+GETOPT_EXPORT extern int getopt_long_only(int nargc, char * const *nargv, const char *options,
     const struct option *long_options, int *idx);
 /*
  * Previous MinGW implementation had...
