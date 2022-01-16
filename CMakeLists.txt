@@ -14,13 +14,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 cmake_minimum_required(VERSION 3.8)
-project(fswatch VERSION 1.17.0 LANGUAGES C CXX)
+project(fs_watch VERSION 1.17.0 LANGUAGES C CXX)
 
 #@formatter:off
-set(PACKAGE           "${PROJECT_NAME}")
+set(PACKAGE           "fswatch")
 set(PACKAGE_NAME      "${PACKAGE}")
 set(PACKAGE_VERSION   "${PROJECT_VERSION}-develop")
-set(PACKAGE_STRING    "${PACKAGE_NAME} ${PACKAGE_VERSION}")
+set(PACKAGE_STRING    "${PACKAGE} ${PACKAGE_VERSION}")
 set(PACKAGE_AUTHOR    "enrico.m.crisostomo@gmail.com")
 set(PACKAGE_BUGREPORT "${PACKAGE_AUTHOR}")
 set(PACKAGE_TARNAME   "${PACKAGE}")
@@ -30,8 +30,14 @@ set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "loc
 
 set(CMAKE_CXX_STANDARD 11)
 
+# control where the static and shared libraries are built so that on windows
+# we don't need to tinker with the path to run the executable
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+
 # Add option to choose between shared and static libraries
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 # include modules
 include(FindGettext)
@@ -66,7 +72,7 @@ if (USE_NLS)
         configure_file("${PROJECT_SOURCE_DIR}/po/${language}.po" "${PROJECT_BINARY_DIR}/${language}.po" COPYONLY)
     endforeach ()
 
-    gettext_process_pot_file("po/${PACKAGE}.pot" ALL INSTALL_DESTINATION share/locale LANGUAGES ${LINGUAS})
+    gettext_process_pot_file("po/${PACKAGE}.pot" ALL INSTALL_DESTINATION "${LOCALEDIR}" LANGUAGES ${LINGUAS})
 endif ()
 
 # checks

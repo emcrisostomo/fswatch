@@ -160,9 +160,6 @@ if (HAVE_WINDOWS_HEADER)
                 "src/libfswatch/c++/windows/cygwin_paths.cpp")
     endif (MSVC)
 
-    source_group("${LIBRARY_NAME} Header Files" FILES "${LIBFSWATCH_HEADER_FILES}")
-    source_group("${LIBRARY_NAME} Source Files" FILES "${LIB_SOURCE_FILES}")
-
     set(HAVE_WINDOWS ON CACHE BOOL "Enable Windows support")
 endif (HAVE_WINDOWS_HEADER)
 
@@ -186,9 +183,10 @@ if (NOT DEFINED TARGET_ARCH)
 endif ()
 
 # Add a configuration file processed by cmake
-configure_file("libfswatch_config.in" "libfswatch_config.h")
-# TODO: consider removing it
-add_definitions(-DHAVE_LIBFSWATCH_CONFIG_H)
+configure_file("libfswatch_config.in" "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h")
+
+source_group("${LIBRARY_NAME} Header Files" FILES "${LIBFSWATCH_HEADER_FILES}" "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h")
+source_group("${LIBRARY_NAME} Source Files" FILES "${LIB_SOURCE_FILES}")
 
 add_library("${LIBRARY_NAME}" "${LIB_SOURCE_FILES}" "${LIBFSWATCH_HEADER_FILES}")
 set_target_properties("${LIBRARY_NAME}" PROPERTIES PREFIX "")
@@ -197,16 +195,27 @@ set_target_properties("${LIBRARY_NAME}" PROPERTIES PREFIX "")
 if (USE_NLS AND Intl_LIBRARIES)
     set(intl_nls_libs "${Intl_LIBRARIES}")
     if (VCPKG_TOOLCHAIN)
-        include(FindIconv)
         find_package(Iconv REQUIRED)
-        list(APPEND intl_nls_libs "Iconv::Iconv")
+        list(APPEND intl_nls_libs "Iconv::Charset" "Iconv::Iconv")
     endif (VCPKG_TOOLCHAIN)
-    target_link_libraries("${LIBRARY_NAME}" PRIVATE "${intl_nls_libs}")
+    target_link_libraries("${LIBRARY_NAME}" PUBLIC "${intl_nls_libs}")
 endif (USE_NLS AND Intl_LIBRARIES)
 
-target_include_directories("${LIBRARY_NAME}" PUBLIC "src/libfswatch" "src" "${Intl_INCLUDE_DIRS}")
-target_include_directories("${LIBRARY_NAME}" PRIVATE "${PROJECT_BINARY_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
-target_link_libraries("${LIBRARY_NAME}" PRIVATE "${EXTRA_LIBS}")
+target_include_directories("${LIBRARY_NAME}" PUBLIC "${Intl_INCLUDE_DIRS}")
+target_include_directories(
+        "${LIBRARY_NAME}"
+        PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>"
+        "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>"
+        "$<INSTALL_INTERFACE:include>"
+)
+target_link_libraries("${LIBRARY_NAME}" PUBLIC "${EXTRA_LIBS}")
+set_target_properties(
+        "${LIBRARY_NAME}"
+        PROPERTIES
+        LINKER_LANGUAGE
+        C
+)
 
 install(TARGETS "${LIBRARY_NAME}" LIBRARY DESTINATION "lib")
-install(FILES ${LIBFSWATCH_HEADER_FILES} DESTINATION "include")
+install(FILES ${LIBFSWATCH_HEADER_FILES} "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h" DESTINATION "include")

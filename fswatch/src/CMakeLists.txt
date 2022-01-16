@@ -13,38 +13,33 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-set(Header_Files "${PROJECT_NAME}.hpp" "gettext.h")
-source_group("${PROJECT_NAME} Header Files" FILES "${Header_Files}")
+set(EXEC_NAME "fswatch_bin")
+set(Header_Files "${PACKAGE}.hpp" "gettext.h")
+source_group("${PACKAGE} Header Files" FILES "${Header_Files}")
 
-set(Source_Files "${PROJECT_NAME}.cpp")
-source_group("${PROJECT_NAME} Source Files" FILES "${Source_Files}")
+set(Source_Files "${PACKAGE}.cpp")
+source_group("${PACKAGE} Source Files" FILES "${Source_Files}")
 
-add_executable("${PROJECT_NAME}" "${Header_Files}" "${Source_Files}")
+add_executable("${EXEC_NAME}" "${Header_Files}" "${Source_Files}")
 
-# check for gettext and libintl
-if (USE_NLS AND Intl_LIBRARIES)
-    set(intl_nls_libs "${Intl_LIBRARIES}")
-    if (VCPKG_TOOLCHAIN)
-        include(FindIconv)
-        find_package(Iconv REQUIRED)
-        list(APPEND intl_nls_libs "Iconv::Iconv")
-    endif (VCPKG_TOOLCHAIN)
-    target_link_libraries("${PROJECT_NAME}" PRIVATE "${intl_nls_libs}")
-endif (USE_NLS AND Intl_LIBRARIES)
+set_target_properties(
+        "${EXEC_NAME}"
+        PROPERTIES
+        LINKER_LANGUAGE
+        CXX
+)
 
 if (MSVC)
     add_subdirectory("./windows")
-    target_link_libraries("${PROJECT_NAME}" PUBLIC "getopt")
+    target_link_libraries("${EXEC_NAME}" PUBLIC "getopt")
 endif (MSVC)
 
-target_include_directories("${PROJECT_NAME}" PUBLIC ../.. .)
-target_include_directories("${PROJECT_NAME}" PRIVATE "${PROJECT_BINARY_DIR}")
-target_link_libraries("${PROJECT_NAME}" PUBLIC "libfswatch")
+target_link_libraries("${EXEC_NAME}" PUBLIC "libfswatch")
 
 if (DEFINED VCPKG_LIBRARY_LINKAGE)
     if (VCPKG_LIBRARY_LINKAGE STREQUAL "static")
         set(BUILD_IS_STATIC "ON")
-    endif()
+    endif (VCPKG_LIBRARY_LINKAGE STREQUAL "static")
 elseif (BUILD_SHARED_LIBS)
     set(BUILD_IS_STATIC "OFF")
 endif ()
@@ -55,4 +50,4 @@ else ()
     install(FILES ${Header_Files} DESTINATION "include")
     set(bin_install_dir "bin")
 endif ()
-install(TARGETS "${PROJECT_NAME}" DESTINATION "${bin_install_dir}")
+install(TARGETS "${EXEC_NAME}" DESTINATION "${bin_install_dir}")

@@ -11,6 +11,7 @@ target_include_directories(
         "${LIBRARY_NAME}"
         PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
+        "$<INSTALL_INTERFACE:include>"
 )
 set_target_properties(
         "${LIBRARY_NAME}"
