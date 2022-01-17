@@ -31,6 +31,7 @@
 #  include <vector>
 #  include <sys/stat.h>
 #  include <sys/event.h>
+#  include "cxxfswatch_export.h"
 
 namespace fsw
 {
@@ -45,7 +46,7 @@ namespace fsw
    *
    * This monitor is built upon the `kqueue` API of the BSD kernels.
    */
-  class kqueue_monitor : public monitor
+  class CXXFSWATCH_EXPORT kqueue_monitor : public monitor
   {
   public:
     /**

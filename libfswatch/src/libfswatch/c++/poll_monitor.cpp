@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch/gettext_defs.h"
+#include "gettext_defs.h"
 #include <iostream>
 #include <utility>
 
@@ -38,7 +38,7 @@
 #endif /* _MSC_VER */
 
 #include "libfswatch/libfswatch_config.h"
-#include "libfswatch/c/libfswatch_log.h"
+#include "libfswatch_log.h"
 #include "poll_monitor.hpp"
 #include "path_utils.hpp"
 #include "libfswatch_map.hpp"

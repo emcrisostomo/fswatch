@@ -41,7 +41,8 @@
 #  include <chrono>
 #  include <map>
 #  include "event.hpp"
-#  include "libfswatch/c/cmonitor.h"
+#  include "cmonitor.h"
+#  include "cxxfswatch_export.h"
 
 /**
  * @brief Main namespace of `libfswatch`.
@@ -144,7 +145,7 @@ namespace fsw
    *   - The notify_events() method is called to filter the event types and
    *     notify the caller.
    */
-  class monitor
+  class CXXFSWATCH_EXPORT monitor
   {
   public:
     /**

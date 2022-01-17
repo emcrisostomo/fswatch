@@ -1,18 +1,39 @@
-set(LIBRARY_NAME "getopt")
+set(LIBRARY_NAME "c${PACKAGE}")
 
-set(Header_Files "${LIBRARY_NAME}.h")
+set(Header_Files
+        "cevent.h"
+        "cfilter.h"
+        "cmonitor.h"
+        "fsw_error.h"
+        "libfswatch.h"
+        "libfswatch_log.h"
+        "libfswatch_types.h"
+        )
 source_group("${LIBRARY_NAME} Header Files" FILES "${Header_Files}")
 
-set(Source_Files "${LIBRARY_NAME}.c")
+set(Source_Files "cevent.cpp"
+        "libfswatch.cpp"
+        "libfswatch_log.cpp")
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    list(APPEND Source_Files "windows/realpath.c")
+endif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+
 source_group("${LIBRARY_NAME} Source Files" FILES "${Source_Files}")
 
 add_library("${LIBRARY_NAME}" STATIC "${Header_Files}" "${Source_Files}")
 target_include_directories(
         "${LIBRARY_NAME}"
         PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
+        "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>"
         "$<INSTALL_INTERFACE:include>"
 )
+
+#add_subdirectory("../c++")
+target_link_libraries("${LIBRARY_NAME}" PRIVATE "cxx${PACKAGE}" "gettext")
+
 set_target_properties(
         "${LIBRARY_NAME}"
         PROPERTIES

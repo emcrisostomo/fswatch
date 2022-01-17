@@ -30,9 +30,9 @@
 #include "win_directory_change_event.hpp"
 #include "win_paths.hpp"
 #include "win_strings.hpp"
-#include "libfswatch/c++/libfswatch_exception.hpp"
-#include "libfswatch/c/libfswatch_log.h"
-#include "libfswatch/gettext_defs.h"
+#include "libfswatch_exception.hpp"
+#include "libfswatch_log.h"
+#include "gettext_defs.h"
 
 
 namespace fsw

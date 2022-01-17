@@ -16,8 +16,8 @@
 #include "cevent.h"
 #include <cstdlib>
 #include <cstring>
-#include "libfswatch/c++/event.hpp"
-#include "libfswatch/c++/libfswatch_exception.hpp"
+#include "event.hpp"
+#include "libfswatch_exception.hpp"
 
 using namespace std;
 using namespace fsw;

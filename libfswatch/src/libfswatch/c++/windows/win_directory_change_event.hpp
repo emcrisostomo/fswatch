@@ -32,6 +32,7 @@
 #  include <windows.h>
 #  include "win_handle.hpp"
 #  include "win_error_message.hpp"
+#  include "fswatch_cxx_windows_export.h"
 #  include "../event.hpp"
 
 namespace fsw
@@ -41,7 +42,7 @@ namespace fsw
    * wrap Microsoft Windows' `ReadDirectoryChangesW` function and a common
    * workflow to detect file system changes.
    */
-  class directory_change_event
+  class FSWATCH_CXX_WINDOWS_EXPORT directory_change_event
   {
   public:
     std::wstring path;
@@ -52,7 +53,7 @@ namespace fsw
     std::unique_ptr<OVERLAPPED, decltype(free)*> overlapped = {static_cast<OVERLAPPED *> (malloc(sizeof (OVERLAPPED))), free};
     win_error_message read_error;
 
-    directory_change_event(size_t buffer_length = 16);
+    explicit directory_change_event(size_t buffer_length = 16);
     bool is_io_incomplete();
     bool is_buffer_overflowed();
     bool read_changes_async();

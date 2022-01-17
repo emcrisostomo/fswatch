@@ -1,9 +1,9 @@
-set(LIBRARY_NAME "getopt")
+set(LIBRARY_NAME "${PACKAGE}_string_utils")
 
-set(Header_Files "${LIBRARY_NAME}.h")
+set(Header_Files "string_utils.hpp")
 source_group("${LIBRARY_NAME} Header Files" FILES "${Header_Files}")
 
-set(Source_Files "${LIBRARY_NAME}.c")
+set(Source_Files "string_utils.cpp")
 source_group("${LIBRARY_NAME} Source Files" FILES "${Source_Files}")
 
 add_library("${LIBRARY_NAME}" STATIC "${Header_Files}" "${Source_Files}")
@@ -17,7 +17,7 @@ set_target_properties(
         "${LIBRARY_NAME}"
         PROPERTIES
         LINKER_LANGUAGE
-        C
+        CXX
 )
 
 include(GenerateExportHeader)

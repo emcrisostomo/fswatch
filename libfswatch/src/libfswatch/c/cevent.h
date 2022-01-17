@@ -29,7 +29,7 @@
 
 #  include <time.h>
 #  include <limits.h>
-#  include "libfswatch/libfswatch_export.h"
+#  include "cfswatch_export.h"
 #  include "libfswatch_types.h"
 
 #  ifdef __cplusplus
@@ -80,7 +80,7 @@ extern "C"
     Overflow = (1 << 13)          /**< The event queue has overflowed. */
   };
 
-  LIBFSWATCH_EXPORT extern const enum fsw_event_flag FSW_ALL_EVENT_FLAGS[15];
+  CFSWATCH_EXPORT extern const enum fsw_event_flag FSW_ALL_EVENT_FLAGS[15];
 
   /**
    * @brief Get event flag by name.
@@ -94,7 +94,7 @@ extern "C"
    * @return #FSW_OK if the functions succeeds, #FSW_ERR_UNKNOWN_VALUE
    * otherwise.
    */
-    LIBFSWATCH_EXPORT
+    CFSWATCH_EXPORT
     FSW_STATUS fsw_get_event_flag_by_name(const char *name, enum fsw_event_flag *flag);
 
   /**
@@ -106,7 +106,7 @@ extern "C"
    * @param[in] flag The event flag to look for.
    * @return The name of @p flag, or @c nullptr if it does not exist.
    */
-  LIBFSWATCH_EXPORT char *fsw_get_event_flag_name(const enum fsw_event_flag flag);
+  CFSWATCH_EXPORT char *fsw_get_event_flag_name(const enum fsw_event_flag flag);
 
   /**
    * A file change event is represented as an instance of this struct where:

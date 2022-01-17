@@ -29,6 +29,7 @@
 #  include "../c/fsw_error.h"
 #  include <exception>
 #  include <string>
+#  include "cxxfswatch_export.h"
 
 namespace fsw
 {
@@ -38,7 +39,7 @@ namespace fsw
    * An instance of this class stores an error message and an integer error
    * code.
    */
-  class libfsw_exception : public std::exception
+  class CXXFSWATCH_EXPORT libfsw_exception : public std::exception
   {
   public:
     /**

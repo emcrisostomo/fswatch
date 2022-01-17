@@ -23,6 +23,21 @@ source_group("${EXEC_NAME} Source Files" FILES "${Source_Files}")
 
 add_executable("${EXEC_NAME}" "${Header_Files}" "${Source_Files}")
 
+if (MSVC)
+    find_package(pthreads QUIET)
+    if (PTHREADS4W_FOUND)
+        set(PTHREAD_LIBRARY "PThreads4W::PThreads4W")
+    else ()
+        include("${CMAKE_SOURCE_DIR}/CMake/FindPthreads.cmake")
+        set(PTHREAD_LIBRARY ${PTHREADS_LIBRARIES})
+    endif (PTHREADS4W_FOUND)
+
+    # set(EXTRA_LIBS ${EXTRA_LIBS} "advapi32")
+else ()
+    find_library(PTHREAD_LIBRARY pthread)
+endif (MSVC)
+target_link_libraries("${EXEC_NAME}" PRIVATE "${PTHREAD_LIBRARY}")
+
 set_target_properties(
         "${EXEC_NAME}"
         PROPERTIES

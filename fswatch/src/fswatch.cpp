@@ -27,14 +27,14 @@
 #include <vector>
 #include <array>
 #include <map>
-#include "libfswatch/c++/path_utils.hpp"
-#include "libfswatch/c++/event.hpp"
-#include "libfswatch/c++/monitor.hpp"
-#include "libfswatch/c++/monitor_factory.hpp"
-#include "libfswatch/c/fsw_error.h"
-#include "libfswatch/c/libfswatch.h"
-#include "libfswatch/c/libfswatch_log.h"
-#include "libfswatch/c++/libfswatch_exception.hpp"
+#include "path_utils.hpp"
+#include "event.hpp"
+#include "monitor.hpp"
+#include "monitor_factory.hpp"
+#include "fsw_error.h"
+#include "libfswatch.h"
+#include "libfswatch_log.h"
+#include "libfswatch_exception.hpp"
 
 #ifdef HAVE_GETOPT_LONG
 #  include <getopt.h>

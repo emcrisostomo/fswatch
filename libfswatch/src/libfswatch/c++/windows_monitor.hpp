@@ -29,6 +29,7 @@
 #  include "monitor.hpp"
 #  include <string>
 #  include <vector>
+#  include "cxxfswatch_export.h"
 
 namespace fsw
 {
@@ -44,7 +45,7 @@ namespace fsw
    * This monitor is built upon the `ReadDirectoryChanges` API of the Windows
    * operating systems.
    */
-  class windows_monitor : public monitor
+  class CXXFSWATCH_EXPORT windows_monitor : public monitor
   {
   public:
     /**

@@ -23,9 +23,9 @@
 #include <windows.h>
 #endif /* _MSC_VER */
 
-#  include "libfswatch/gettext_defs.h"
+#  include "gettext_defs.h"
 #  include "win_handle.hpp"
-#  include "libfswatch/c/libfswatch_log.h"
+#  include "libfswatch_log.h"
 
 using namespace std;
 

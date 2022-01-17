@@ -30,6 +30,7 @@
 
 #include "monitor.hpp"
 #include "libfswatch_set.hpp"
+#include "cxxfswatch_export.h"
 
 namespace fsw
 {
@@ -53,7 +54,7 @@ namespace fsw
    * registration will succeed; however, the registration process of multiple
    * monitor implementations for the same monitor type is _not_ deterministic.
    */
-  class monitor_factory
+  class CXXFSWATCH_EXPORT monitor_factory
   {
   public:
     /**

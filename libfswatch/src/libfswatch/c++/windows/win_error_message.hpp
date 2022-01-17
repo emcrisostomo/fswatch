@@ -27,6 +27,7 @@
 
 #  include <string>
 #  include <windows.h>
+#  include "fswatch_cxx_windows_export.h"
 
 namespace fsw
 {
@@ -38,7 +39,7 @@ namespace fsw
    * instance containing the system-defined error message for a Microsoft
    * Windows' error code.
    */
-  class win_error_message
+  class FSWATCH_CXX_WINDOWS_EXPORT win_error_message
   {
   public:
     /**

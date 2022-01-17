@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <libfswatch/c/libfswatch.h>
+
+#include <libfswatch.h>
 #include <pthread.h>
 
 #ifdef _MSC_VER
@@ -50,14 +51,14 @@ int main(int argc, char **argv)
   if (argc < 2)
   {
     printf("usage: %s [path]\n", argv[0]);
-    return 1;
+    return EXIT_FAILURE;
   }
 
   if (FSW_OK != fsw_init_library())
   {
     fsw_last_error();
     printf("libfswatch cannot be initialised!\n");
-    return 1;
+    return EXIT_FAILURE;
   }
 
   FSW_HANDLE handle = fsw_init_session(fsevents_monitor_type);
@@ -89,7 +90,7 @@ int main(int argc, char **argv)
   if (pthread_create(&start_thread, NULL, start_monitor, (void *) &handle))
   {
     fprintf(stderr, "Error creating thread\n");
-    return 1;
+    return EXIT_FAILURE;
   }
 
 #ifdef _MSC_VER
@@ -115,7 +116,7 @@ int main(int argc, char **argv)
   if (FSW_OK != fsw_destroy_session(handle))
   {
     fprintf(stderr, "Error destroying session\n");
-    return 1;
+    return EXIT_FAILURE;
   }
 
   // Wait for the monitor thread to finish
@@ -125,5 +126,5 @@ int main(int argc, char **argv)
     return 2;
   }
 
-  return 0;
+  return EXIT_SUCCESS;
 }

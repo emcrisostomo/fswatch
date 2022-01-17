@@ -28,6 +28,7 @@
 
 #include <cstdarg>
 #include <string>
+#include "fswatch_string_utils_export.h"
 
 namespace fsw
 {
@@ -42,7 +43,7 @@ namespace fsw
      * @param format The `printf()` format.
      * @param ... The arguments to format.
      */
-    std::string string_from_format(const char *format, ...);
+    FSWATCH_STRING_UTILS_EXPORT std::string string_from_format(const char *format, ...);
 
     /**
      * @brief Create a `std::string` using a `printf()` format and a `va_list`
@@ -51,7 +52,7 @@ namespace fsw
      * @param format The `printf()` format.
      * @param args The arguments to format.
      */
-    std::string vstring_from_format(const char *format, va_list args);
+    FSWATCH_STRING_UTILS_EXPORT std::string vstring_from_format(const char *format, va_list args);
   }
 }
 

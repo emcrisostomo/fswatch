@@ -28,6 +28,7 @@
 
 #  include "monitor.hpp"
 #  include <CoreServices/CoreServices.h>
+#  include "cxxfswatch_export.h"
 
 namespace fsw
 {
@@ -36,7 +37,7 @@ namespace fsw
    *
    * This monitor is built upon the _FSEvents_ API of the Apple macOS kernel.
    */
-  class fsevents_monitor : public monitor
+  class CXXFSWATCH_EXPORT fsevents_monitor : public monitor
   {
   public:
 

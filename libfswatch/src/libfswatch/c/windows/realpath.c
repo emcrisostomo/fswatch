@@ -21,9 +21,9 @@
 #include <io.h>
 #include <stdlib.h>
 #include <errno.h>
+#include "cfswatch_export.h"
 
-_CRTIMP char __cdecl
-*realpath( const char *__restrict__ name, char *__restrict__ resolved )
+CFSWATCH_EXPORT char *realpath( const char * name, char * resolved )
 {
   char *retname = NULL;  /* we will return this, if we fail */
 

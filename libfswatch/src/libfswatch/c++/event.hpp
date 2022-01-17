@@ -31,6 +31,7 @@
 #  include <vector>
 #  include <iostream>
 #  include "../c/cevent.h"
+#  include "cxxfswatch_export.h"
 
 namespace fsw
 {
@@ -44,7 +45,7 @@ namespace fsw
    *   - The time the event was raised.
    *   - A vector of flags specifying the type of the event.
    */
-  class event
+  class CXXFSWATCH_EXPORT event
   {
   public:
     /**
@@ -115,7 +116,7 @@ namespace fsw
    * @param flag The flag to print.
    * @return A reference to the stream.
    */
-  std::ostream& operator<<(std::ostream& out, const fsw_event_flag flag);
+   CXXFSWATCH_EXPORT std::ostream& operator<<(std::ostream& out, const fsw_event_flag flag);
 }
 
 #endif  /* FSW_EVENT_H */
