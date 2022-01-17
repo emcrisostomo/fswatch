@@ -19,7 +19,6 @@
 
 #include "libfswatch/libfswatch_config.h"
 #ifdef _MSC_VER
-#  include <intrin.h>
 #define NOWINBASEINTERLOCK
 #include <windows.h>
 /*

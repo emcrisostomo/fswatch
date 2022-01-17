@@ -29,6 +29,9 @@ set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "loc
 #@formatter:on
 
 set(CMAKE_CXX_STANDARD 11)
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+endif (MSVC)
 
 # control where the static and shared libraries are built so that on windows
 # we don't need to tinker with the path to run the executable
