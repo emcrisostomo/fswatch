@@ -38,7 +38,7 @@ CFSWATCH_EXPORT char *realpath( const char * name, char * resolved )
    * if we are going to resolve its absolute path name.
    */
 
-  else if( access( name, 4 ) == 0 )
+  else if( _access( name, 4 ) == 0 )
   {
     /* If `name' didn't point to an existing entity,
      * then we don't get to here; we simply fall past this block,
