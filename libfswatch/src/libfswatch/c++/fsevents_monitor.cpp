@@ -17,9 +17,9 @@
 #include <memory>
 #include <cstdio> // fileno()
 #include "fsevents_monitor.hpp"
-#include "libfswatch/gettext_defs.h"
+#include "gettext_defs.h"
 #include "libfswatch_exception.hpp"
-#include "libfswatch/c/libfswatch_log.h"
+#include "libfswatch_log.h"
 #  ifdef HAVE_CXX_MUTEX
 #    include <mutex>
 #  endif

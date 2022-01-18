@@ -22,7 +22,9 @@ endif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
 source_group("${LIBRARY_NAME} Source Files" FILES "${Source_Files}")
 
 add_library("${LIBRARY_NAME}" STATIC "${Header_Files}" "${Source_Files}")
-set_target_properties("${LIBRARY_NAME}" PROPERTIES COMPILE_FLAGS "/EHsc")
+if (MSVC)
+    set_target_properties("${LIBRARY_NAME}" PROPERTIES COMPILE_FLAGS "/EHsc")
+endif (MSVC)
 target_include_directories(
         "${LIBRARY_NAME}"
         PUBLIC

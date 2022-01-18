@@ -29,12 +29,12 @@
 #  include <unistd.h>
 #endif /* !_MSC_VER */
 
-#  include "libfswatch/gettext_defs.h"
+#  include "gettext_defs.h"
 #  include "fen_monitor.hpp"
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
-#  include "libfswatch/c/libfswatch_log.h"
+#  include "libfswatch_log.h"
 #  include "path_utils.hpp"
 
 using namespace std;

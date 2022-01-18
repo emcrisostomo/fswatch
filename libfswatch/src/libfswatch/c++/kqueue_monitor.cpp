@@ -17,15 +17,14 @@
 
 #ifdef HAVE_SYS_EVENT_H
 
-#  include "libfswatch/gettext_defs.h"
+#  include "gettext_defs.h"
 #  include "kqueue_monitor.hpp"
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
-#  include "libfswatch//c/libfswatch_log.h"
+#  include "libfswatch_log.h"
 #  include "path_utils.hpp"
 #  include <iostream>
-#  include <sys/types.h>
 #  include <ctime>
 #  include <cstdio>
 #  include <cmath>
