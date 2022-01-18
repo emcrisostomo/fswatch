@@ -25,10 +25,9 @@
 #  include <port.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
-#ifdef _MSC_VER
-#else
+#ifndef _MSC_VER
 #  include <unistd.h>
-#endif /* _MSC_VER */
+#endif /* !_MSC_VER */
 
 #  include "libfswatch/gettext_defs.h"
 #  include "fen_monitor.hpp"

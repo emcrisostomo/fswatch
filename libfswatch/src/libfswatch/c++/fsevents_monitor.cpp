@@ -23,8 +23,7 @@
 #  ifdef HAVE_CXX_MUTEX
 #    include <mutex>
 #  endif
-#ifdef _MSC_VER
-#else
+#ifndef _MSC_VER
 #include <unistd.h> // isatty()
 #endif /* _MSC_VER */
 

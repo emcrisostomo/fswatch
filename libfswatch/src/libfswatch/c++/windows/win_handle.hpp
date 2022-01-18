@@ -25,7 +25,10 @@
 #ifndef FSW_WINDOWS_HANDLE_H
 #  define FSW_WINDOWS_HANDLE_H
 
-#  include <windows.h>
+#  include "libfswatch/libfswatch_config.h"
+#  include <intrin.h>
+#  include <windef.h>
+#  include <winnt.h>
 #  include "fswatch_cxx_windows_export.h"
 
 namespace fsw

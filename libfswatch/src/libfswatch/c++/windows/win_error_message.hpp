@@ -26,7 +26,8 @@
 #  define FSW_WINDOWS_ERROR_MESSAGE_H
 
 #  include <string>
-#  include <windows.h>
+#  include "libfswatch/libfswatch_config.h"
+#  include <minwindef.h>
 #  include "fswatch_cxx_windows_export.h"
 
 namespace fsw

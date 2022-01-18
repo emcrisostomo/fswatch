@@ -32,10 +32,9 @@
 #  include <utility>
 #  include <fcntl.h>
 
-#ifdef _MSC_VER
-#else
+#ifndef _MSC_VER
 #  include <unistd.h>
-#endif /* _MSC_VER */
+#endif /* !_MSC_VER */
 
 namespace fsw
 {

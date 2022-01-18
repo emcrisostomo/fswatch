@@ -17,11 +17,10 @@
 #include "path_utils.hpp"
 #include "libfswatch_log.h"
 #include <cstdlib>
-#include <iostream>
 
 #ifdef _MSC_VER
 #include "libfswatch/libfswatch_config.h"
-/*#include <intrin.h>*/
+#include <intrin.h>
 #include <fileapi.h>
 #define INVALID_HANDLE_VALUE (HANDLE)(-1)
 #ifndef PATH_MAX

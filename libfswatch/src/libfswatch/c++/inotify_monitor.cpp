@@ -28,10 +28,9 @@
 #include <cmath>
 #include <sys/select.h>
 
-#ifdef _MSC_VER
-#else
+#ifndef _MSC_VER
 #  include <unistd.h>
-#endif /* _MSC_VER */
+#endif /* !_MSC_VER */
 
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"

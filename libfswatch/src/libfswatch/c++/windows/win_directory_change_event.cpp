@@ -20,12 +20,14 @@
 #include "libfswatch/libfswatch_config.h"
 #ifdef _MSC_VER
 #define NOWINBASEINTERLOCK
-#include <windows.h>
-/*
+#  include <intrin.h>
 #  include <windef.h>
-#  include <winnt.h>
-*/
+#  include <handleapi.h>
+#  include <winerror.h>
+#  include <WinBase.h>
+
 #endif /* _MSC_VER */
+
 #include "win_directory_change_event.hpp"
 #include "win_paths.hpp"
 #include "win_strings.hpp"

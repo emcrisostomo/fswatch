@@ -55,7 +55,11 @@
 #include <getopt.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <windows.h>
+
+#if defined(_MSC_VER) || defined(__MSYS__) || defined(__CYGWIN__) || defined(__MINGW32__)
+#include "libfswatch/libfswatch_config.h"
+#include <minwindef.h>
+#endif /* defined(_MSC_VER) || defined(__MSYS__) || defined(__CYGWIN__) || defined(__MINGW32__) */
 
 #define	REPLACE_GETOPT		/* use this getopt as the system getopt(3) */
 

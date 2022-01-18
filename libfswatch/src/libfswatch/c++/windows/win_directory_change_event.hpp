@@ -29,7 +29,8 @@
 #  include <string>
 #  include <memory>
 #  include <vector>
-#  include <windows.h>
+#  include "libfswatch/libfswatch_config.h"
+#  include <minwinbase.h>
 #  include "win_handle.hpp"
 #  include "win_error_message.hpp"
 #  include "fswatch_cxx_windows_export.h"

@@ -18,24 +18,20 @@
 #ifdef HAVE_WINDOWS
 
 #  include <algorithm>
-#  include <set>
-#  include <iostream>
-#  include <memory>
 #  include <sys/types.h>
 #  include <cstdlib>
-#  include <cstring>
-#  include <ctime>
-#  include <cstdio>
-#  include <fcntl.h>
 
-#ifdef _MSC_VER
-#  include <intrin.h>
 #define NOWINBASEINTERLOCK
-#else
+#  include <intrin.h>
+#  include <WinNls.h>
+#  include <consoleapi2.h>
+#  include <synchapi.h>
+#  include <fileapi.h>
+#  include <WinBase.h>
+
+#ifndef _MSC_VER
 #  include <unistd.h>
 #endif /* _MSC_VER */
-
-#  include <windows.h>
 
 #  include "gettext_defs.h"
 #  include "windows_monitor.hpp"
