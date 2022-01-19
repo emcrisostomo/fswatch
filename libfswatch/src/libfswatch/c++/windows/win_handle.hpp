@@ -26,9 +26,9 @@
 #  define FSW_WINDOWS_HANDLE_H
 
 #  include "libfswatch/libfswatch_config.h"
-#if defined(_X86_) || defined(_AMD64_)
+#ifndef _ARM_
 #  include <intrin.h>
-#endif /* defined(_X86_) || defined(_AMD64_) */
+#endif /* !_ARM_ */
 #  include <windef.h>
 #  include <winnt.h>
 #  include "fswatch_cxx_windows_export.h"

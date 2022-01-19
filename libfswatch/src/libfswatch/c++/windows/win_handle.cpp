@@ -18,9 +18,9 @@
 
 #ifdef HAVE_WINDOWS
 
-#if defined(_X86_) || defined(_AMD64_)
+#ifndef _ARM_
 #  include <intrin.h>
-#endif /* defined(_X86_) || defined(_AMD64_) */
+#endif /* !_ARM_ */
 #  include <handleapi.h>
 
 #  include "gettext_defs.h"

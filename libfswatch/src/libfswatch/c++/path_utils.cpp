@@ -20,9 +20,9 @@
 
 #ifdef _MSC_VER
 #include "libfswatch/libfswatch_config.h"
-#if defined(_X86_) || defined(_AMD64_)
+#ifndef _ARM_
 #include <intrin.h>
-#endif /* defined(_X86_) || defined(_AMD64_) */
+#endif /* !_ARM_ */
 #include <fileapi.h>
 #define INVALID_HANDLE_VALUE (HANDLE)(-1)
 #ifndef PATH_MAX

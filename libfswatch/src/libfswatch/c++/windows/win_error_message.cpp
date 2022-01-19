@@ -19,9 +19,9 @@
 #ifdef HAVE_WINDOWS
 
 #define NOWINBASEINTERLOCK
-#if defined(_X86_) || defined(_AMD64_)
+#ifndef _ARM_
 #  include <intrin.h>
-#endif /* defined(_X86_) || defined(_AMD64_) */
+#endif /* !_ARM_ */
 #  include <errhandlingapi.h>
 #  include <windef.h>
 #  include <WinBase.h>
