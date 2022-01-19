@@ -15,7 +15,9 @@
  */
 #include "libfswatch/libfswatch_config.h"
 
+#if defined(_X86_) || defined(_AMD64_)
 #include <intrin.h>
+#endif /* defined(_X86_) || defined(_AMD64_) */
 #include <WinNls.h>
 
 #include "win_strings.hpp"

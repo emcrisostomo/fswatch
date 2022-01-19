@@ -19,7 +19,9 @@
 
 #ifdef _MSC_VER
 #include "libfswatch/libfswatch_config.h"
+#if defined(_X86_) || defined(_AMD64_)
 #include <intrin.h>
+#endif /* defined(_X86_) || defined(_AMD64_) */
 #include <Synchapi.h>
 
 /* stolen from libcurl: */
