@@ -29,7 +29,13 @@ target_link_libraries("${LIBRARY_NAME}" INTERFACE "cxx${PACKAGE}")
 
 if (NOT DEFINED TARGET_ARCH)
     # See https://gitlab.kitware.com/cmake/cmake/-/issues/15170 for why `CMAKE_SYSTEM_PROCESSOR` isn't used
-    set(TARGET_ARCH "${CMAKE_C_COMPILER_ARCHITECTURE_ID}")
+    if (DEFINED CMAKE_C_COMPILER_ARCHITECTURE_ID)
+        set(TARGET_ARCH "${CMAKE_C_COMPILER_ARCHITECTURE_ID}")
+    elseif (DEFINED CMAKE_CXX_COMPILER_ARCHITECTURE_ID)
+        set(TARGET_ARCH "${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
+    else ()
+        set(TARGET_ARG "${CMAKE_SYSTEM_PROCESSOR}")
+    endif ()
 endif (NOT DEFINED TARGET_ARCH)
 
 # Add a configuration file processed by cmake

@@ -22,7 +22,9 @@
 #  include <cstdlib>
 
 #define NOWINBASEINTERLOCK
+#if defined(_X86_) || defined(_AMD64_)
 #  include <intrin.h>
+#endif /* defined(_X86_) || defined(_AMD64_) */
 #  include <WinNls.h>
 #  include <consoleapi2.h>
 #  include <synchapi.h>
