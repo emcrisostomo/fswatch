@@ -90,7 +90,13 @@ set_target_properties(
         C
 )
 
-# setup the version numbering
-install(FILES
-        ${Header_Files}
+set(installable_libs "${LIBRARY_NAME}")
+if (TARGET "${DEPENDANT_LIBRARY}")
+    list(APPEND installable_libs "${DEPENDANT_LIBRARY}")
+endif (TARGET "${DEPENDANT_LIBRARY}")
+install(TARGETS ${installable_libs}
+        DESTINATION "lib"
+        EXPORT "${LIBRARY_NAME}Targets")
+install(FILES ${Header_Files}
         DESTINATION "include")
+install(EXPORT "${LIBRARY_NAME}Targets" DESTINATION "share/libfswatch")

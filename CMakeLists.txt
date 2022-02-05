@@ -76,7 +76,7 @@ if (USE_NLS)
     endforeach ()
 
     gettext_process_pot_file("po/${PACKAGE}.pot" ALL INSTALL_DESTINATION "${LOCALEDIR}" LANGUAGES ${LINGUAS})
-endif ()
+endif (USE_NLS)
 
 # checks
 check_cxx_symbol_exists(atexit cstdlib HAVE_ATEXIT)

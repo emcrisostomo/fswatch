@@ -57,7 +57,14 @@ set_target_properties(
 set_property(TARGET "${LIBRARY_NAME}" PROPERTY VERSION "1.0.0")
 set_property(TARGET "${LIBRARY_NAME}" PROPERTY SOVERSION "1")
 
-install(TARGETS "${LIBRARY_NAME}" LIBRARY DESTINATION "lib")
-install(FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h"
+# install rules
+set(installable_libs "${LIBRARY_NAME}")
+if (TARGET "${DEPENDANT_LIBRARY}")
+    list(APPEND installable_libs "${DEPENDANT_LIBRARY}")
+endif (TARGET "${DEPENDANT_LIBRARY}")
+install(TARGETS ${installable_libs}
+        DESTINATION "lib"
+        EXPORT "${LIBRARY_NAME}Targets")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h"
         DESTINATION "include")
+install(EXPORT "${LIBRARY_NAME}Targets" DESTINATION "share/${LIBRARY_NAME}")

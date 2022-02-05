@@ -39,3 +39,4 @@ install(TARGETS ${installable_libs}
         DESTINATION "lib"
         EXPORT "${LIBRARY_NAME}Targets")
 install(FILES ${Header_Files} "${_export_file}" DESTINATION "include")
+install(EXPORT "${LIBRARY_NAME}Targets" DESTINATION "share/libfswatch")
