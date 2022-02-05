@@ -15,19 +15,23 @@
  */
 #include "libfswatch/libfswatch_config.h"
 
-#include "libfswatch/gettext_defs.h"
+#include "gettext_defs.h"
 #include "inotify_monitor.hpp"
 #include <algorithm>
 #include <limits.h>
-#ifdef __sun
+#ifndef NAME_MAX
 #  define NAME_MAX         255    /* # chars in a file name */
-#endif
-#include <unistd.h>
+#endif /* ! NAME_MAX */
 #include <stdio.h>
 #include <sstream>
 #include <ctime>
 #include <cmath>
 #include <sys/select.h>
+
+#ifndef _MSC_VER
+#  include <unistd.h>
+#endif /* !_MSC_VER */
+
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
 #include "libfswatch_map.hpp"
@@ -174,7 +178,10 @@ namespace fsw
       /*
        * Scan children but only watch directories.
        */
-      scan(path + "/" + child, false);
+      std::string new_path = path;
+      new_path += PATH_SEP;
+      new_path += child;
+      scan(new_path, false);
     }
   }
 
@@ -240,8 +247,7 @@ namespace fsw
 
     if (event->len > 1)
     {
-      filename_stream << "/";
-      filename_stream << event->name;
+      filename_stream << PATH_SEP << event->name;
     }
 
     if (flags.size())

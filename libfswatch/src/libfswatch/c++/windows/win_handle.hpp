@@ -25,7 +25,13 @@
 #ifndef FSW_WINDOWS_HANDLE_H
 #  define FSW_WINDOWS_HANDLE_H
 
-#  include <windows.h>
+#  include "libfswatch/libfswatch_config.h"
+#ifndef _ARM_
+#  include <intrin.h>
+#endif /* !_ARM_ */
+#  include <windef.h>
+#  include <winnt.h>
+#  include "fswatch_cxx_windows_export.h"
 
 namespace fsw
 {
@@ -34,7 +40,7 @@ namespace fsw
    *
    * This class is a movable, non-copyable RAII wrapper on `HANDLE`.
    */
-  class win_handle
+  class FSWATCH_CXX_WINDOWS_EXPORT win_handle
   {
   public:
     /**

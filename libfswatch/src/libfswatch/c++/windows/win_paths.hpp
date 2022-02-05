@@ -27,6 +27,7 @@
 #  define  FSW_WIN_PATHS_HPP
 
 #  include <string>
+#  include "fswatch_cxx_windows_export.h"
 
 namespace fsw
 {
@@ -44,7 +45,7 @@ namespace fsw
      * @param path The POSIX path to convert to a Windows path.
      * @return The converted Windows path.
      */
-    std::wstring posix_to_win_w(std::string path);
+    FSWATCH_CXX_WINDOWS_EXPORT std::wstring posix_to_win_w(const std::string &path);
 
     /**
      * @brief Converts a Windows path to POSIX.
@@ -52,7 +53,7 @@ namespace fsw
      * @param path The Windows path to convert to POSIX.
      * @return The converted POSIX path.
      */
-    std::string win_w_to_posix(std::wstring path);
+    FSWATCH_CXX_WINDOWS_EXPORT std::string win_w_to_posix(const std::wstring &path);
   }
 }
 #endif	/* FSW_WIN_PATHS_HPP */

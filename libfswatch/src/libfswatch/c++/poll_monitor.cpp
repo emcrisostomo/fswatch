@@ -13,22 +13,42 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch/gettext_defs.h"
-#include <unistd.h>
-#include <cstdlib>
-#include <fcntl.h>
+#include "gettext_defs.h"
 #include <iostream>
 #include <utility>
+
+#ifdef _MSC_VER
 #include "libfswatch/libfswatch_config.h"
-#include "libfswatch/c/libfswatch_log.h"
+#ifndef _ARM_
+#include <intrin.h>
+#endif /* !_ARM_ */
+#include <Synchapi.h>
+
+/* stolen from libcurl: */
+#if !defined(S_ISREG) && defined(S_IFMT) && defined(S_IFREG)
+#define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+#endif
+
+/* stolen from libcurl: */
+#if !defined(S_ISDIR) && defined(S_IFMT) && defined(S_IFDIR)
+#define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
+#endif
+
+#else
+#  include <unistd.h>
+#  include <fcntl.h>
+#endif /* _MSC_VER */
+
+#include "libfswatch/libfswatch_config.h"
+#include "libfswatch_log.h"
 #include "poll_monitor.hpp"
 #include "path_utils.hpp"
 #include "libfswatch_map.hpp"
 
-#if defined HAVE_STRUCT_STAT_ST_MTIME
+#ifdef HAVE_STRUCT_STAT_ST_MTIME
 #  define FSW_MTIME(stat) ((stat).st_mtime)
 #  define FSW_CTIME(stat) ((stat).st_ctime)
-#elif defined HAVE_STRUCT_STAT_ST_MTIMESPEC
+#elif defined(HAVE_STRUCT_STAT_ST_MTIMESPEC)
 #  define FSW_MTIME(stat) (stat.st_mtimespec.tv_sec)
 #  define FSW_CTIME(stat) (stat.st_ctimespec.tv_sec)
 #else
@@ -121,7 +141,13 @@ namespace fsw
     struct stat fd_stat;
     if (!lstat_path(path, fd_stat)) return;
 
-    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+#ifdef _MSC_VER
+#define _ISLNK !S_ISREG
+#else
+#define _ISLNK S_ISLNK
+#endif /* _MSC_VER */
+
+    if (follow_symlinks && _ISLNK(fd_stat.st_mode))
     {
       string link_path;
       if (read_link_path(path, link_path))
@@ -129,6 +155,7 @@ namespace fsw
 
       return;
     }
+#undef _ISLNK
 
     if (!accept_path(path)) return;
     if (!add_path(path, fd_stat, fn)) return;
@@ -141,7 +168,10 @@ namespace fsw
     {
       if (child == "." || child == "..") continue;
 
-      scan(path + "/" + child, fn);
+      std::string new_path = path;
+      new_path += PATH_SEP;
+      new_path += child;
+      scan(new_path, fn);
     }
   }
 
@@ -199,7 +229,12 @@ namespace fsw
 
       FSW_ELOG(_("Done scanning.\n"));
 
-      sleep(latency < MIN_POLL_LATENCY ? MIN_POLL_LATENCY : latency);
+#ifdef _MSC_VER
+      Sleep( 1000L * static_cast<DWORD>(
+#else
+     sleep( (
+#endif
+            (latency < MIN_POLL_LATENCY ? MIN_POLL_LATENCY : latency)));
 
       time(&curr_time);
 

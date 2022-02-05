@@ -13,15 +13,27 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch/gettext_defs.h"
+#include "gettext_defs.h"
 #include "path_utils.hpp"
-#include "libfswatch/c/libfswatch_log.h"
-#include <dirent.h>
+#include "libfswatch_log.h"
 #include <cstdlib>
+
+#ifdef _MSC_VER
+#include "libfswatch/libfswatch_config.h"
+#ifndef _ARM_
+#include <intrin.h>
+#endif /* !_ARM_ */
+#include <fileapi.h>
+#define INVALID_HANDLE_VALUE (HANDLE)(-1)
+#ifndef PATH_MAX
+#define PATH_MAX MAX_PATH
+#endif /* ! PATH_MAX */
+#else
+#include <dirent.h>
 #include <cstdio>
 #include <cerrno>
-#include <iostream>
 #include <system_error>
+#endif /* _MSC_VER */
 
 using namespace std;
 
@@ -29,7 +41,18 @@ namespace fsw
 {
   vector<string> get_directory_children(const string& path)
   {
-    vector<string> children;
+   vector<string> children;
+#ifdef _MSC_VER
+    HANDLE hFind;
+    WIN32_FIND_DATA FindFileData;
+
+    if((hFind = FindFirstFile(path.c_str(), &FindFileData)) != INVALID_HANDLE_VALUE){
+      do {
+          children.emplace_back(FindFileData.cFileName);
+      } while(FindNextFile(hFind, &FindFileData));
+      FindClose(hFind);
+    }
+#else
     DIR *dir = opendir(path.c_str());
 
     if (!dir)
@@ -52,6 +75,7 @@ namespace fsw
     }
 
     closedir(dir);
+#endif /* _MSC_VER */
 
     return children;
   }
@@ -65,6 +89,14 @@ namespace fsw
 
   std::string fsw_realpath(const char *path, char *resolved_path)
   {
+#ifdef _MSC_VER
+    char *path_buf = /* _strdup(path) */ (char*)path;
+    char *ret = _fullpath(path_buf, resolved_path, PATH_MAX);
+    if (ret == NULL)
+        throw std::exception("_fullpath", EXIT_FAILURE);
+
+    return std::string(ret);
+#else
     char *ret = realpath(path, resolved_path);
 
     if (ret == nullptr)
@@ -80,6 +112,7 @@ namespace fsw
     if (resolved_path == nullptr) free(ret);
 
     return resolved;
+#endif /* _MSC_VER */
   }
 
   bool stat_path(const string& path, struct stat& fd_stat)
@@ -94,9 +127,12 @@ namespace fsw
 
   bool lstat_path(const string& path, struct stat& fd_stat)
   {
-    if (lstat(path.c_str(), &fd_stat) == 0)
+#ifdef _MSC_VER
+      return stat_path(path, fd_stat);
+#else
+      if (lstat(path.c_str(), &fd_stat) == 0)
       return true;
-
+#endif /* _MSC_VER */
     fsw_logf_perror(_("Cannot lstat %s"), path.c_str());
     return false;
   }

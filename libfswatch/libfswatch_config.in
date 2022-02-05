@@ -26,3 +26,7 @@
 #cmakedefine HAVE_MACOS_GE_10_7
 #cmakedefine HAVE_MACOS_GE_10_9
 #cmakedefine HAVE_MACOS_GE_10_10
+
+/* Architecture (needed by MSVC) */
+
+#define _@TARGET_ARCH@_

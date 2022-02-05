@@ -13,13 +13,36 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-include_directories(../.. .)
+set(EXEC_NAME "${PACKAGE}_test")
 
-set(SOURCE_FILES
-        fswatch_test.c
-        ${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h)
+set(Header_Files "${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h")
+source_group("${EXEC_NAME} Header Files" FILES "${Header_Files}")
 
-add_executable(fswatch_test ${SOURCE_FILES})
-target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})
+set(Source_Files "${EXEC_NAME}.c")
+source_group("${EXEC_NAME} Source Files" FILES "${Source_Files}")
 
-target_link_libraries(fswatch_test LINK_PUBLIC libfswatch)
+add_executable("${EXEC_NAME}" "${Header_Files}" "${Source_Files}")
+
+if (MSVC)
+    find_package(pthreads QUIET)
+    if (PTHREADS4W_FOUND)
+        set(PTHREAD_LIBRARY "PThreads4W::PThreads4W")
+    else ()
+        include("${CMAKE_SOURCE_DIR}/CMake/FindPthreads.cmake")
+        set(PTHREAD_LIBRARY ${PTHREADS_LIBRARIES})
+    endif (PTHREADS4W_FOUND)
+
+    # set(EXTRA_LIBS ${EXTRA_LIBS} "advapi32")
+else ()
+    find_library(PTHREAD_LIBRARY pthread)
+endif (MSVC)
+target_link_libraries("${EXEC_NAME}" PRIVATE "${PTHREAD_LIBRARY}")
+
+set_target_properties(
+        "${EXEC_NAME}"
+        PROPERTIES
+        LINKER_LANGUAGE
+        C
+)
+
+target_link_libraries("${EXEC_NAME}" LINK_PUBLIC "libfswatch")

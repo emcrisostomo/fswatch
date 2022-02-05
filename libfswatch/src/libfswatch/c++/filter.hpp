@@ -29,7 +29,7 @@
 #  define FSW__FILTER_H
 
 #  include <string>
-#  include "libfswatch/c/cfilter.h"
+#  include <cfilter.h>
 #  include <vector>
 
 namespace fsw

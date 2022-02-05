@@ -5,7 +5,7 @@ fswatch_test
 .libs
 *.lo
 *.o
-cmake-build-debug/
+*build*/
 dist/
 
 # Documentation
@@ -134,3 +134,4 @@ docker/debian-testing/Dockerfile
 
 # Output files
 man/fswatch.7
+*_export.h

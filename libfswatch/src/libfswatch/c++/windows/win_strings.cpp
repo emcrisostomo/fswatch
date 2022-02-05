@@ -13,8 +13,14 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "libfswatch/libfswatch_config.h"
+
+#ifndef _ARM_
+#include <intrin.h>
+#endif /* !_ARM_ */
+#include <WinNls.h>
+
 #include "win_strings.hpp"
-#include <windows.h>
 
 namespace fsw
 {
@@ -25,10 +31,12 @@ namespace fsw
     string wstring_to_string(wchar_t * s)
     {
       int buf_size = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
-      char buf[buf_size];
+      char *buf = new char[buf_size];
       WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, buf_size, NULL, NULL);
 
-      return string(buf);
+      std::string ret = string(buf);
+      delete[] buf;
+      return ret;
     }
 
     string wstring_to_string(const wstring & s)

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch/gettext_defs.h"
+#include "gettext_defs.h"
 #include "filter.hpp"
 #include <fstream>
 #include <regex>
@@ -27,7 +27,7 @@ namespace fsw
   static inline bool parse_filter(std::string filter,
                                   monitor_filter& filter_object,
                                   void (*err_handler)(std::string));
-  static inline bool is_unescaped_space(string& filter, long i);
+  static inline bool is_unescaped_space(string& filter, size_t i);
 
   vector<monitor_filter> monitor_filter::read_from_file(const string& path,
                                                         void (*err_handler)(
@@ -53,7 +53,7 @@ namespace fsw
     return filters;
   }
 
-  static bool is_unescaped_space(string& filter, long i)
+  static bool is_unescaped_space(string& filter, size_t i)
   {
     if (filter[i] != ' ') return false;
 
@@ -130,7 +130,7 @@ namespace fsw
 
     // Parse the filter
     // Trim unescaped trailing spaces.
-    for (auto i = frag_filter.length() - 1; i > 0; --i)
+    for (size_t i = frag_filter.size() - 1; i > 0; --i)
     {
       if (is_unescaped_space(frag_filter, i)) frag_filter.erase(i, 1);
       else break;

@@ -6,14 +6,46 @@ Introduction
 
 This file describes the steps required to build fswatch on Windows.  fswatch was
 born as a POSIX application and the Windows monitor has been developed trying to
-reduce the dependencies on the Windows API at a minimum.  To fulfill this goal,
-a dependency to Cygwin has been introduced.
+reduce the dependencies on the Windows API at a minimum.
+
+There are two variants to fulfill this goal: Cygwin and Microsoft Visual Studio.
 
 Windows has historically provided multiple versions of the same API for single
 byte and multibyte character sets.  We have decided to only support the
 multibyte API: the Windows monitor will thus not build on Windows system
 supporting only the single-byte APIs.  In this case, the only available monitor
 on the Windows OS will be the poll monitor.
+
+Microsoft Visual Studio (MSVC)
+==============================
+
+The MSVC variant is configured through CMake and is fully native on Windows.
+
+The three dependencies to get it working are:
+
+   0. CMake: https://cmake.org
+   1. pthreads: https://sourceforge.net/projects/pthreads4w
+   2. gettext: https://mlocati.github.io/articles/gettext-iconv-windows.html
+
+The pthreads and gettext dependencies are most easily acquirable through use
+of a package manager, like Microsoft's open-source cross-platform vcpkg
+
+    git clone --depth=1 "https://github.com/microsoft/vcpkg"
+    cd "vcpkg"
+    :: Replace "[dir]" in later command with this dir
+    .\bootstrap-vcpkg.bat
+    .\vcpkg install --triplet "x64-windows" "pthreads" "gettext"
+
+Then the project can be configured and compiled & built with:
+
+    cd <fswatch_directory>
+    cmake -B "build" \
+          -DCMAKE_BUILD_TYPE="Debug" \
+          -DVCPKG_TARGET_TRIPLET="x64-windows" \
+          -DCMAKE_TOOLCHAIN_FILE="[dir]\vcpkg\scripts\buildsystems\vcpkg.cmake"
+    cmake --build "build" --config "Debug"
+
+[everything that follows is only applicable to Cygwin]
 
 Cygwin
 ======

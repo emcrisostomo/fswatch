@@ -27,14 +27,14 @@
 #include <vector>
 #include <array>
 #include <map>
-#include "libfswatch/c++/path_utils.hpp"
-#include "libfswatch/c++/event.hpp"
-#include "libfswatch/c++/monitor.hpp"
-#include "libfswatch/c++/monitor_factory.hpp"
-#include "libfswatch/c/error.h"
-#include "libfswatch/c/libfswatch.h"
-#include "libfswatch/c/libfswatch_log.h"
-#include "libfswatch/c++/libfswatch_exception.hpp"
+#include "path_utils.hpp"
+#include "event.hpp"
+#include "monitor.hpp"
+#include "monitor_factory.hpp"
+#include "fsw_error.h"
+#include "libfswatch.h"
+#include "libfswatch_log.h"
+#include "libfswatch_exception.hpp"
 
 #ifdef HAVE_GETOPT_LONG
 #  include <getopt.h>
@@ -257,6 +257,7 @@ static bool parse_event_bitmask(const char *optarg)
   }
   catch (const std::invalid_argument& ex)
   {
+    fputs(ex.what(), stderr);
     return false;
   }
 }
@@ -296,12 +297,20 @@ static bool validate_latency(double latency, const char *optarg)
 
 static void register_signal_handlers()
 {
+#ifndef _MSC_VER
   struct sigaction action{};
   action.sa_handler = close_handler;
   sigemptyset(&action.sa_mask);
   action.sa_flags = 0;
+#endif
 
-  if (sigaction(SIGTERM, &action, nullptr) == 0)
+  if (
+#ifdef _MSC_VER
+          signal(SIGTERM, &close_handler) != SIG_ERR
+#else
+          sigaction(SIGTERM, &action, nullptr) == 0
+#endif
+          )
   {
     FSW_ELOG(_("SIGTERM handler registered.\n"));
   }
@@ -310,7 +319,13 @@ static void register_signal_handlers()
     std::cerr << _("SIGTERM handler registration failed.") << std::endl;
   }
 
-  if (sigaction(SIGABRT, &action, nullptr) == 0)
+  if (
+#ifdef _MSC_VER
+        signal(SIGABRT, &close_handler) != SIG_ERR
+#else
+        sigaction(SIGABRT, &action, nullptr) == 0
+#endif
+          )
   {
     FSW_ELOG(_("SIGABRT handler registered.\n"));
   }
@@ -319,7 +334,13 @@ static void register_signal_handlers()
     std::cerr << _("SIGABRT handler registration failed.") << std::endl;
   }
 
-  if (sigaction(SIGINT, &action, nullptr) == 0)
+  if (
+#ifdef _MSC_VER
+        signal(SIGINT, &close_handler) != SIG_ERR
+#else
+        sigaction(SIGINT, &action, nullptr) == 0
+#endif
+   )
   {
     FSW_ELOG(_("SIGINT handler registered.\n"));
   }
@@ -339,9 +360,21 @@ static void print_event_timestamp(const event& evt)
   const time_t& evt_time = evt.get_time();
 
   std::array<char, TIME_FORMAT_BUFF_SIZE> time_format_buffer{};
-  const struct tm *tm_time = uflag ? gmtime(&evt_time) : localtime(&evt_time);
 
-  std::string date =
+#if defined(__STDC_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__ || defined(_MSC_VER)
+  struct tm* tm_time;
+  struct tm tm_buf;
+#endif
+#if defined(__STDC_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__ || defined(_MSC_VER)
+  if (uflag)
+    gmtime_s(&tm_buf, &evt_time);
+  else localtime_s(&tm_buf, &evt_time);
+  tm_time = &tm_buf;
+#else
+  const struct tm* tm_time = (uflag? gmtime : localtime)(&evt_time);
+#endif
+
+  const std::string date =
     strftime(time_format_buffer.data(),
              time_format_buffer.size(),
              tformat.c_str(),

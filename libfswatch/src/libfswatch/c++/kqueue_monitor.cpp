@@ -17,21 +17,23 @@
 
 #ifdef HAVE_SYS_EVENT_H
 
-#  include "libfswatch/gettext_defs.h"
+#  include "gettext_defs.h"
 #  include "kqueue_monitor.hpp"
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
-#  include "libfswatch//c/libfswatch_log.h"
+#  include "libfswatch_log.h"
 #  include "path_utils.hpp"
 #  include <iostream>
-#  include <sys/types.h>
 #  include <ctime>
 #  include <cstdio>
 #  include <cmath>
-#include <utility>
-#  include <unistd.h>
+#  include <utility>
 #  include <fcntl.h>
+
+#ifndef _MSC_VER
+#  include <unistd.h>
+#endif /* !_MSC_VER */
 
 namespace fsw
 {
@@ -203,7 +205,10 @@ namespace fsw
     {
       if (child == "." || child == "..") continue;
 
-      scan(path + "/" + child, false);
+      std::string new_path = path;
+      new_path += PATH_SEP;
+      new_path += child;
+      scan(new_path, false);
     }
 
     return true;

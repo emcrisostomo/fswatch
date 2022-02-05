@@ -418,8 +418,7 @@
  *
  *   - The order in the filter definition has no effect.
  */
-#include "libfswatch/gettext_defs.h"
-#include <iostream>
+#include "gettext_defs.h"
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
@@ -428,11 +427,10 @@
 #include <map>
 #include "libfswatch/libfswatch_config.h"
 #include "libfswatch.h"
-#include "libfswatch/c++/libfswatch_map.hpp"
-#include "libfswatch/c++/filter.hpp"
-#include "libfswatch/c++/monitor.hpp"
-#include "libfswatch/c++/monitor_factory.hpp"
-#include "libfswatch/c++/libfswatch_exception.hpp"
+#include "filter.hpp"
+#include "monitor.hpp"
+#include "monitor_factory.hpp"
+#include "libfswatch_exception.hpp"
 
 using namespace std;
 using namespace fsw;
@@ -512,7 +510,11 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
       sizeof(char *) * (path.length() + 1)));
     if (!cevt->path) throw int(FSW_ERR_MEMORY);
 
+#if defined(__STDC_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__ || defined(_MSC_VER)
+    strncpy_s(cevt->path, strlen(cevt->path) + 1, path.c_str(), path.length());
+#else
     strncpy(cevt->path, path.c_str(), path.length());
+#endif
     cevt->path[path.length()] = '\0';
     cevt->evt_time = evt.get_time();
 
@@ -543,7 +545,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
     fsw_cevent *cevt = &cevents[i];
 
     if (cevt->flags) free(static_cast<void *> (cevt->flags));
-    free(static_cast<void *> (cevt->path));
+    if (cevt->path != NULL) free(static_cast<void *> (cevt->path));
   }
 
   free(static_cast<void *> (cevents));

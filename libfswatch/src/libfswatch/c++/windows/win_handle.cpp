@@ -13,13 +13,19 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "libfswatch/libfswatch_config.h"
 
 #ifdef HAVE_WINDOWS
 
-#  include "libfswatch/gettext_defs.h"
+#ifndef _ARM_
+#  include <intrin.h>
+#endif /* !_ARM_ */
+#  include <handleapi.h>
+
+#  include "gettext_defs.h"
 #  include "win_handle.hpp"
-#  include "libfswatch/c/libfswatch_log.h"
+#  include "libfswatch_log.h"
 
 using namespace std;
 

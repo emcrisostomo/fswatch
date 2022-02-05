@@ -31,6 +31,7 @@
 #  include <string>
 #  include <vector>
 #  include <sys/stat.h>
+#  include "cxxfswatch_export.h"
 
 namespace fsw
 {
@@ -46,7 +47,7 @@ namespace fsw
    * This monitor is built upon the _File Events Notification_ API of the
    * Solaris and Illumos kernels.
    */
-  class inotify_monitor : public monitor
+  class CXXFSWATCH_EXPORT inotify_monitor : public monitor
   {
   public:
     /**

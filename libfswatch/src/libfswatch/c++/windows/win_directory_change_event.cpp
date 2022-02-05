@@ -13,16 +13,30 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch/libfswatch_config.h"
-#include "win_directory_change_event.hpp"
-#include "win_paths.hpp"
-#include "win_strings.hpp"
-#include "libfswatch/c++/libfswatch_exception.hpp"
-#include "libfswatch/c/libfswatch_log.h"
-#include "libfswatch/gettext_defs.h"
 #include <string>
 #include <cstdlib>
 #include <set>
+
+#include "libfswatch/libfswatch_config.h"
+#ifdef _MSC_VER
+#define NOWINBASEINTERLOCK
+#ifndef _ARM_
+#  include <intrin.h>
+#endif /* !_ARM_ */
+#  include <windef.h>
+#  include <handleapi.h>
+#  include <winerror.h>
+#  include <WinBase.h>
+
+#endif /* _MSC_VER */
+
+#include "win_directory_change_event.hpp"
+#include "win_paths.hpp"
+#include "win_strings.hpp"
+#include "libfswatch_exception.hpp"
+#include "libfswatch_log.h"
+#include "gettext_defs.h"
+
 
 namespace fsw
 {
@@ -89,12 +103,15 @@ namespace fsw
 
     FSW_ELOGF(_("%p.\n"), this);
 
-    return ReadDirectoryChangesW((HANDLE) handle,
+    return ReadDirectoryChangesW(static_cast<HANDLE>(handle),
                                  buffer.get(),
-                                 buffer_size,
+                                 static_cast<DWORD>(buffer_size),
                                  TRUE,
-                                 FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
-                                 FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_CREATION,
+                                 FILE_NOTIFY_CHANGE_FILE_NAME |
+                                             FILE_NOTIFY_CHANGE_DIR_NAME |
+                                             FILE_NOTIFY_CHANGE_LAST_WRITE |
+                                             FILE_NOTIFY_CHANGE_LAST_ACCESS |
+                                             FILE_NOTIFY_CHANGE_CREATION,
                                  &bytes_returned,
                                  overlapped.get(),
                                  nullptr);

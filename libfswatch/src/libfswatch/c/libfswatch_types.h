@@ -33,7 +33,7 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif
+#endif /* __cplusplus */
 
 /**
  * @brief Opaque type representing a monitoring session.
@@ -54,10 +54,10 @@ typedef int FSW_STATUS;
 # define FSW_THREAD_LOCAL thread_local
 #else
 # define FSW_THREAD_LOCAL
-#endif
+#endif /* defined(HAVE_CXX_THREAD_LOCAL) */
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
-#endif /* LIBFSWATCH_TYPES_H */
+#endif /* !LIBFSWATCH_TYPES_H */

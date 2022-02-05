@@ -31,7 +31,7 @@
 #  ifdef __cplusplus
 extern "C"
 {
-#  endif
+#  endif /* __cplusplus */
 
   /**
    * @brief Available monitors.
@@ -53,6 +53,6 @@ extern "C"
 
 #  ifdef __cplusplus
 }
-#  endif
+#  endif /* __cplusplus */
 
-#endif  /* FSW__CMONITOR_H */
+#endif  /* !FSW__CMONITOR_H */

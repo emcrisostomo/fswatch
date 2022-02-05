@@ -21,9 +21,9 @@
 #include <io.h>
 #include <stdlib.h>
 #include <errno.h>
+#include "cfswatch_export.h"
 
-_CRTIMP char __cdecl
-*realpath( const char *__restrict__ name, char *__restrict__ resolved )
+CFSWATCH_EXPORT char *realpath( const char * name, char * resolved )
 {
   char *retname = NULL;  /* we will return this, if we fail */
 
@@ -38,7 +38,7 @@ _CRTIMP char __cdecl
    * if we are going to resolve its absolute path name.
    */
 
-  else if( access( name, 4 ) == 0 )
+  else if( _access( name, 4 ) == 0 )
   {
     /* If `name' didn't point to an existing entity,
      * then we don't get to here; we simply fall past this block,

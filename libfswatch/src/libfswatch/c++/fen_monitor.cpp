@@ -22,16 +22,19 @@
 #  include <cmath>
 #  include <cstring>
 #  include <cstdlib>
-#  include <unistd.h>
 #  include <port.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
-#  include "libfswatch/gettext_defs.h"
+#ifndef _MSC_VER
+#  include <unistd.h>
+#endif /* !_MSC_VER */
+
+#  include "gettext_defs.h"
 #  include "fen_monitor.hpp"
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
-#  include "libfswatch/c/libfswatch_log.h"
+#  include "libfswatch_log.h"
 #  include "path_utils.hpp"
 
 using namespace std;
@@ -285,7 +288,10 @@ namespace fsw
     {
       if (child.compare(".") == 0 || child.compare("..") == 0) continue;
 
-      scan(path + "/" + child, false);
+      std::string new_path = path;
+      new_path += PATH_SEP;
+      new_path += child;
+      scan(new_path, false);
     }
 
     return add_watch(path, fd_stat);

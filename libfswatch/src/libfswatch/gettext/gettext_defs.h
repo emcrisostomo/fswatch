@@ -22,12 +22,12 @@
 #  ifdef __cplusplus
 extern "C"
 {
-#  endif
+#  endif /* __cplusplus */
 
 #define _(String) gettext(String)
 
 #  ifdef __cplusplus
 }
-#  endif
+#  endif /* __cplusplus */
 
-#endif  /* FSW_GETTEXT_DEFS_H */
+#endif  /* !FSW_GETTEXT_DEFS_H */

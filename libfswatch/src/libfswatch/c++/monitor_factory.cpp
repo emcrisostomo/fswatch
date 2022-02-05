@@ -15,7 +15,7 @@
  */
 #include <utility>
 #include "libfswatch/libfswatch_config.h"
-#include "libfswatch/gettext_defs.h"
+#include "gettext_defs.h"
 #include "monitor_factory.hpp"
 #include "libfswatch_exception.hpp"
 #if defined(HAVE_FSEVENTS_FILE_EVENTS)

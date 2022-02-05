@@ -29,6 +29,7 @@
 
 #  include <time.h>
 #  include <limits.h>
+#  include "cfswatch_export.h"
 #  include "libfswatch_types.h"
 
 #  ifdef __cplusplus
@@ -79,7 +80,7 @@ extern "C"
     Overflow = (1 << 13)          /**< The event queue has overflowed. */
   };
 
-  extern const enum fsw_event_flag FSW_ALL_EVENT_FLAGS[15];
+  CFSWATCH_EXPORT extern const enum fsw_event_flag FSW_ALL_EVENT_FLAGS[15];
 
   /**
    * @brief Get event flag by name.
@@ -93,7 +94,8 @@ extern "C"
    * @return #FSW_OK if the functions succeeds, #FSW_ERR_UNKNOWN_VALUE
    * otherwise.
    */
-  FSW_STATUS fsw_get_event_flag_by_name(const char *name, enum fsw_event_flag *flag);
+    CFSWATCH_EXPORT
+    FSW_STATUS fsw_get_event_flag_by_name(const char *name, enum fsw_event_flag *flag);
 
   /**
    * @brief Get the name of an event flag.
@@ -104,7 +106,7 @@ extern "C"
    * @param[in] flag The event flag to look for.
    * @return The name of @p flag, or @c nullptr if it does not exist.
    */
-  char *fsw_get_event_flag_name(const enum fsw_event_flag flag);
+  CFSWATCH_EXPORT char *fsw_get_event_flag_name(const enum fsw_event_flag flag);
 
   /**
    * A file change event is represented as an instance of this struct where:
@@ -118,7 +120,8 @@ extern "C"
     char * path;
     time_t evt_time;
     enum fsw_event_flag * flags;
-    unsigned int flags_num;
+    /* std::vector<fsw_event_flag>::size_type flags_num */
+    size_t flags_num;
   } fsw_cevent;
 
   /**
@@ -134,11 +137,11 @@ extern "C"
    * a pointer to it.
    */
   typedef void (*FSW_CEVENT_CALLBACK)(fsw_cevent const *const events,
-                                      const unsigned int event_num,
+                                      const size_t event_num,
                                       void *data);
 
 #  ifdef __cplusplus
 }
-#  endif
+#  endif /* __cplusplus */
 
 #endif  /* FSW__CEVENT_H */

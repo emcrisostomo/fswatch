@@ -29,6 +29,14 @@
 #  include <string>
 #  include <vector>
 #  include <sys/stat.h>
+#  include "cxxfswatch_export.h"
+#  include "libfswatch/libfswatch_config.h"
+
+#ifdef _MSC_VER
+#define PATH_SEP "\\"
+#else
+#define PATH_SEP "/"
+#endif
 
 namespace fsw
 {
@@ -41,7 +49,7 @@ namespace fsw
    * @return If there is no error, realpath() returns a string, otherwise it
    * throws a std::system_error.
    */
-  std::string fsw_realpath(const char *path, char *resolved_path);
+  CXXFSWATCH_EXPORT std::string fsw_realpath(const char *path, char *resolved_path);
 
   /**
    * @brief Gets a vector of direct directory children.
@@ -49,7 +57,7 @@ namespace fsw
    * @param path The directory whose children must be returned.
    * @return A vector containing the list of children of @p path.
    */
-  std::vector<std::string> get_directory_children(const std::string& path);
+  CXXFSWATCH_EXPORT std::vector<std::string> get_directory_children(const std::string& path);
 
   /**
    * @brief Resolves a path name.
@@ -63,7 +71,7 @@ namespace fsw
    * path should be copied to.
    * @return @c true if the function succeeds, @c false otherwise.
    */
-  bool read_link_path(const std::string& path, std::string& link_path);
+  CXXFSWATCH_EXPORT bool read_link_path(const std::string& path, std::string& link_path);
 
   /**
    * @brief Wraps a @c lstat(path, fd_stat) call that invokes @c perror() if it
@@ -73,7 +81,7 @@ namespace fsw
    * @param fd_stat The @c stat structure where @c lstat() writes its results.
    * @return @c true if the function succeeds, @c false otherwise.
    */
-  bool lstat_path(const std::string& path, struct stat& fd_stat);
+  CXXFSWATCH_EXPORT bool lstat_path(const std::string& path, struct stat& fd_stat);
 
   /**
    * @brief Wraps a @c stat(path, fd_stat) call that invokes @c perror() if it
@@ -83,6 +91,6 @@ namespace fsw
    * @param fd_stat The @c stat structure where @c stat() writes its results.
    * @return @c true if the function succeeds, @c false otherwise.
    */
-  bool stat_path(const std::string& path, struct stat& fd_stat);
+  CXXFSWATCH_EXPORT bool stat_path(const std::string& path, struct stat& fd_stat);
 }
 #endif  /* FSW_PATH_UTILS_H */

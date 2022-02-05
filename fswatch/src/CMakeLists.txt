@@ -13,22 +13,41 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-set(FSWATCH_SRC_FILES
-        fswatch.cpp
-        fswatch.hpp
-        gettext.h)
+set(EXEC_NAME "fswatch_bin")
+set(Header_Files "${PACKAGE}.hpp" "gettext.h")
+source_group("${PACKAGE} Header Files" FILES "${Header_Files}")
 
-add_executable(fswatch ${FSWATCH_SRC_FILES})
+set(Source_Files "${PACKAGE}.cpp")
+source_group("${PACKAGE} Source Files" FILES "${Source_Files}")
 
-# check for gettext and libintl
-if (USE_NLS)
-    if (Intl_LIBRARIES)
-        target_link_libraries(fswatch PRIVATE ${Intl_LIBRARIES})
-    endif ()
+add_executable("${EXEC_NAME}" "${Header_Files}" "${Source_Files}")
+
+set_target_properties(
+        "${EXEC_NAME}"
+        PROPERTIES
+        LINKER_LANGUAGE
+        CXX
+)
+
+if (MSVC)
+    add_subdirectory("./windows")
+    target_link_libraries("${EXEC_NAME}" PRIVATE "getopt")
+endif (MSVC)
+
+target_link_libraries("${EXEC_NAME}" PUBLIC "libfswatch")
+
+if (DEFINED VCPKG_LIBRARY_LINKAGE)
+    if (VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+        set(BUILD_IS_STATIC "ON")
+    endif (VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+elseif (BUILD_SHARED_LIBS)
+    set(BUILD_IS_STATIC "OFF")
 endif ()
 
-target_include_directories(fswatch PUBLIC ../.. .)
-target_include_directories(fswatch PRIVATE ${PROJECT_BINARY_DIR})
-target_link_libraries(fswatch PUBLIC libfswatch)
-
-install(TARGETS fswatch DESTINATION bin)
+if (BUILD_IS_STATIC STREQUAL "ON")
+    set(bin_install_dir "${CURRENT_PACKAGES_DIR}")
+else ()
+    install(FILES ${Header_Files} DESTINATION "include")
+    set(bin_install_dir "bin")
+endif ()
+install(TARGETS "${EXEC_NAME}" DESTINATION "${bin_install_dir}")

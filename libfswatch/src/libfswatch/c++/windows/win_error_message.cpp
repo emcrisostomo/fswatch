@@ -13,13 +13,20 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libfswatch/libfswatch_config.h"
+
+#  include "libfswatch/libfswatch_config.h"
 
 #ifdef HAVE_WINDOWS
 
-#  include "libfswatch/gettext_defs.h"
+#define NOWINBASEINTERLOCK
+#ifndef _ARM_
+#  include <intrin.h>
+#endif /* !_ARM_ */
+#  include <errhandlingapi.h>
+#  include <windef.h>
+#  include <WinBase.h>
+
 #  include "win_error_message.hpp"
-#  include "libfswatch/c/libfswatch_log.h"
 
 using namespace std;
 

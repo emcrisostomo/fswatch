@@ -15,15 +15,17 @@
  */
 #include "libfswatch/libfswatch_config.h"
 #include <memory>
-#include <unistd.h> // isatty()
 #include <cstdio> // fileno()
 #include "fsevents_monitor.hpp"
-#include "libfswatch/gettext_defs.h"
+#include "gettext_defs.h"
 #include "libfswatch_exception.hpp"
-#include "libfswatch/c/libfswatch_log.h"
+#include "libfswatch_log.h"
 #  ifdef HAVE_CXX_MUTEX
 #    include <mutex>
 #  endif
+#ifndef _MSC_VER
+#include <unistd.h> // isatty()
+#endif /* _MSC_VER */
 
 namespace fsw
 {

@@ -30,7 +30,7 @@
 #  ifdef __cplusplus
 extern "C"
 {
-#  endif
+#  endif /* __cplusplus */
 
 // Error codes
 #  define FSW_OK                            0         /**< The call was successful. */
@@ -52,6 +52,6 @@ extern "C"
 
 #  ifdef __cplusplus
 }
-#  endif
+#  endif /* __cplusplus */
 
-#endif  /* FSW__ERROR_H */
+#endif  /* !FSW__ERROR_H */

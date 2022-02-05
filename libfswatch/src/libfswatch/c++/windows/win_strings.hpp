@@ -28,6 +28,7 @@
 
 #  include <string>
 #  include <cwchar>
+#  include "fswatch_cxx_windows_export.h"
 
 namespace fsw
 {
@@ -45,7 +46,7 @@ namespace fsw
      * @param s The @c wchar_t array to convert.
      * @return The converted string.
      */
-    std::string wstring_to_string(wchar_t *s);
+    FSWATCH_CXX_WINDOWS_EXPORT std::string wstring_to_string(wchar_t *s);
 
     /**
      * @brief Converts a wide character string into a string.
@@ -53,7 +54,7 @@ namespace fsw
      * @param s The string to convert.
      * @return The converted string.
      */
-    std::string wstring_to_string(const std::wstring& s);
+    FSWATCH_CXX_WINDOWS_EXPORT std::string wstring_to_string(const std::wstring& s);
   }
 }
 

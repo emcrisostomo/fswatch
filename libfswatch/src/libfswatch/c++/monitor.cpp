@@ -14,18 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "libfswatch/libfswatch_config.h"
-#include "libfswatch/gettext_defs.h"
+#include "gettext_defs.h"
 #include "monitor.hpp"
-#include "monitor_factory.hpp"
 #include "libfswatch_exception.hpp"
-#include "libfswatch/c/libfswatch_log.h"
+#include "libfswatch_log.h"
 #include "string/string_utils.hpp"
-#include <cstdlib>
 #include <algorithm>
 #include <memory>
 #include <thread>
 #include <regex>
-#include <sstream>
 #include <utility>
 #include <ctime>
 #include <map>
@@ -138,8 +135,8 @@ namespace fsw
     {
       throw libfsw_exception(
         string_utils::string_from_format(
-          _("An error occurred during the compilation of %s"),
-          filter.text.c_str()),
+          _("An error occurred during the compilation of %s\n\t%s"),
+          filter.text.c_str(), error.what()),
         FSW_ERR_INVALID_REGEX);
     }
   }

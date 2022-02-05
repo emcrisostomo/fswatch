@@ -30,6 +30,7 @@
 #  include <sys/stat.h>
 #  include <ctime>
 #  include <memory>
+#  include "cxxfswatch_export.h"
 
 namespace fsw
 {
@@ -39,7 +40,7 @@ namespace fsw
    * This monitor uses the `stat()` function to periodically check the observed
    * paths and detect changes.
    */
-  class poll_monitor : public monitor
+  class CXXFSWATCH_EXPORT poll_monitor : public monitor
   {
   public:
     /**

@@ -34,7 +34,7 @@
 #  undef ngettext
 #  define ngettext(Msgid1, Msgid2, N) \
      dngettext (DEFAULT_TEXT_DOMAIN, Msgid1, Msgid2, N)
-# endif
+# endif /* DEFAULT_TEXT_DOMAIN */
 
 #else
 
@@ -46,7 +46,7 @@
    is OK.  */
 #if defined(__sun)
 # include <locale.h>
-#endif
+#endif /* defined(__sun) */
 
 /* Many header files from the libstdc++ coming with g++ 3.3 or newer include
    <libintl.h>, which chokes if dcgettext is defined as a macro.  So include
@@ -55,8 +55,8 @@
 # include <cstdlib>
 # if (__GLIBC__ >= 2 && !defined __UCLIBC__) || _GLIBCXX_HAVE_LIBINTL_H
 #  include <libintl.h>
-# endif
-#endif
+# endif /* (__GLIBC__ >= 2 && !defined __UCLIBC__) || _GLIBCXX_HAVE_LIBINTL_H */
+#endif /* defined(__cplusplus) && defined(__GNUG__) && (__GNUC__ >= 3) */
 
 /* Disabled NLS.
    The casts to 'const char *' serve the purpose of producing warnings
@@ -90,13 +90,13 @@
 # define bind_textdomain_codeset(Domainname, Codeset) \
     ((void) (Domainname), (const char *) (Codeset))
 
-#endif
+#endif /* ENABLE_NLS */
 
 /* Prefer gnulib's setlocale override over libintl's setlocale override.  */
 #ifdef GNULIB_defined_setlocale
 # undef setlocale
 # define setlocale rpl_setlocale
-#endif
+#endif /* GNULIB_defined_setlocale */
 
 /* A pseudo function call that serves as a marker for the automated
    extraction of messages, but does not call gettext().  The run-time
@@ -120,7 +120,7 @@
 #else
 # define pgettext(Msgctxt, Msgid) \
    pgettext_aux (NULL, Msgctxt GETTEXT_CONTEXT_GLUE Msgid, Msgid, LC_MESSAGES)
-#endif
+#endif /* DEFAULT_TEXT_DOMAIN */
 #define dpgettext(Domainname, Msgctxt, Msgid) \
   pgettext_aux (Domainname, Msgctxt GETTEXT_CONTEXT_GLUE Msgid, Msgid, LC_MESSAGES)
 #define dcpgettext(Domainname, Msgctxt, Msgid, Category) \
@@ -131,7 +131,7 @@
 #else
 # define npgettext(Msgctxt, Msgid, MsgidPlural, N) \
    npgettext_aux (NULL, Msgctxt GETTEXT_CONTEXT_GLUE Msgid, Msgid, MsgidPlural, N, LC_MESSAGES)
-#endif
+#endif /* DEFAULT_TEXT_DOMAIN */
 #define dnpgettext(Domainname, Msgctxt, Msgid, MsgidPlural, N) \
   npgettext_aux (Domainname, Msgctxt GETTEXT_CONTEXT_GLUE Msgid, Msgid, MsgidPlural, N, LC_MESSAGES)
 #define dcnpgettext(Domainname, Msgctxt, Msgid, MsgidPlural, N, Category) \
@@ -142,8 +142,8 @@ __inline
 #else
 #ifdef __cplusplus
 inline
-#endif
-#endif
+#endif /* __cplusplus */
+#endif /* __GNUC__ */
 static const char *
 pgettext_aux (const char *domain,
               const char *msg_ctxt_id, const char *msgid,
@@ -161,8 +161,8 @@ __inline
 #else
 #ifdef __cplusplus
 inline
-#endif
-#endif
+#endif /* __cplusplus */
+#endif /* __GNUC__ */
 static const char *
 npgettext_aux (const char *domain,
                const char *msg_ctxt_id, const char *msgid,
@@ -188,11 +188,11 @@ npgettext_aux (const char *domain,
 # define _LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS 1
 #else
 # define _LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS 0
-#endif
+#endif /* (((__GNUC__ >= 3 || __GNUG__ >= 2) && !defined __STRICT_ANSI__) */
 
 #if !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS
 #include <stdlib.h>
-#endif
+#endif /* !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS */
 
 #define pgettext_expr(Msgctxt, Msgid) \
   dcpgettext_expr (NULL, Msgctxt, Msgid, LC_MESSAGES)
@@ -204,8 +204,8 @@ __inline
 #else
 #ifdef __cplusplus
 inline
-#endif
-#endif
+#endif /* __cplusplus */
+#endif /* __GNUC__ */
 static const char *
 dcpgettext_expr (const char *domain,
                  const char *msgctxt, const char *msgid,
@@ -223,7 +223,7 @@ dcpgettext_expr (const char *domain,
      ? buf
      : (char *) malloc (msgctxt_len + msgid_len));
   if (msg_ctxt_id != NULL)
-#endif
+#endif /* _LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS */
     {
       int found_translation;
       memcpy (msg_ctxt_id, msgctxt, msgctxt_len - 1);
@@ -234,7 +234,7 @@ dcpgettext_expr (const char *domain,
 #if !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS
       if (msg_ctxt_id != buf)
         free (msg_ctxt_id);
-#endif
+#endif /* !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS */
       if (found_translation)
         return translation;
     }
@@ -251,8 +251,8 @@ __inline
 #else
 #ifdef __cplusplus
 inline
-#endif
-#endif
+#endif /* __cplusplus */
+#endif /* __GNUC__ */
 static const char *
 dcnpgettext_expr (const char *domain,
                   const char *msgctxt, const char *msgid,
@@ -271,7 +271,7 @@ dcnpgettext_expr (const char *domain,
      ? buf
      : (char *) malloc (msgctxt_len + msgid_len));
   if (msg_ctxt_id != NULL)
-#endif
+#endif /* _LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS */
     {
       int found_translation;
       memcpy (msg_ctxt_id, msgctxt, msgctxt_len - 1);
@@ -282,11 +282,11 @@ dcnpgettext_expr (const char *domain,
 #if !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS
       if (msg_ctxt_id != buf)
         free (msg_ctxt_id);
-#endif
+#endif /* !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS */
       if (found_translation)
         return translation;
     }
   return (n == 1 ? msgid : msgid_plural);
 }
 
-#endif /* _LIBGETTEXT_H */
+#endif /* !_LIBGETTEXT_H */
