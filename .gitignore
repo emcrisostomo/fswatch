@@ -6,6 +6,7 @@ fswatch_test
 *.lo
 *.o
 cmake-build-debug/
+build/
 dist/
 
 # Documentation
