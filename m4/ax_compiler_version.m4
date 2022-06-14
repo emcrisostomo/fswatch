@@ -36,7 +36,7 @@
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 12
+#serial 14
 
 # for intel
 AC_DEFUN([_AX_COMPILER_VERSION_INTEL],
@@ -442,6 +442,20 @@ AC_DEFUN([_AX_COMPILER_VERSION_WATCOM],[dnl
   ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="$_ax_[]_AC_LANG_ABBREV[]_compiler_version_major.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor"
   ])
 
+# for NVHPC
+AC_DEFUN([_AX_COMPILER_VERSION_NVHPC],[
+  AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_major,
+    __NVCOMPILER_MAJOR__,,
+    AC_MSG_FAILURE([[[$0]] unknown nvhpc major]))
+  AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor,
+    __NVCOMPILER_MINOR__,,
+    AC_MSG_FAILURE([[[$0]] unknown nvhpc minor]))
+  AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch,
+    [__NVCOMPILER_PATCHLEVEL__],,
+    AC_MSG_FAILURE([[[$0]] unknown nvhpc patch level]))
+  ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="$_ax_[]_AC_LANG_ABBREV[]_compiler_version_major.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch"
+  ])
+
 # for PGI
 AC_DEFUN([_AX_COMPILER_VERSION_PORTLAND],[
   AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_major,
@@ -521,6 +535,7 @@ AC_DEFUN([AX_COMPILER_VERSION],[dnl
 	[microsoft],[_AX_COMPILER_VERSION_MICROSOFT],
 	[metrowerks],[_AX_COMPILER_VERSION_METROWERKS],
 	[watcom],[_AX_COMPILER_VERSION_WATCOM],
+	[nvhpc],[_AX_COMPILER_VERSION_NVHPC],
 	[portland],[_AX_COMPILER_VERSION_PORTLAND],
 	[tcc],[_AX_COMPILER_VERSION_TCC],
 	[sdcc],[_AX_COMPILER_VERSION_SDCC],
