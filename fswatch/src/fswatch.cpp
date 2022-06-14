@@ -35,6 +35,9 @@
 #include "libfswatch/c/libfswatch.h"
 #include "libfswatch/c/libfswatch_log.h"
 #include "libfswatch/c++/libfswatch_exception.hpp"
+#ifdef HAVE_FSEVENTS_FILE_EVENTS
+  #include "libfswatch/c++/fsevents_monitor.hpp"
+#endif
 
 #ifdef HAVE_GETOPT_LONG
 #  include <getopt.h>
@@ -92,6 +95,7 @@ static bool Iflag = false;
 static bool Lflag = false;
 static bool mflag = false;
 static bool nflag = false;
+static bool noDeferFlag = false;
 static bool oflag = false;
 static bool rflag = false;
 static bool tflag = false;
@@ -120,6 +124,7 @@ static const int OPT_ALLOW_OVERFLOW = 132;
 static const int OPT_MONITOR_PROPERTY = 133;
 static const int OPT_FIRE_IDLE_EVENTS = 134;
 static const int OPT_FILTER_FROM = 135;
+static const int OPT_NO_DEFER = 136;
 
 static void list_monitor_types(std::ostream& stream)
 {
@@ -167,6 +172,9 @@ static void usage(std::ostream& stream)
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
   stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
+  #if defined(HAVE_FSEVENTS_FILE_EVENTS)
+  stream << "     --no-defer        " << _("Set the no defer flag in the monitor.\n");
+  #endif
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
   stream << " -M, --list-monitors   " << _("List the available monitors.\n");
   stream << " -m, --monitor=NAME    " << _("Use the specified monitor.\n");
@@ -486,6 +494,10 @@ static void start_monitor(int argc, char **argv, int optind)
   active_monitor->set_properties(monitor_properties);
   active_monitor->set_allow_overflow(allow_overflow);
   active_monitor->set_latency(lvalue);
+  #if defined(HAVE_FSEVENTS_FILE_EVENTS)
+  if (noDeferFlag)
+    active_monitor->set_property(std::string(fsw::fsevents_monitor::DARWIN_EVENTSTREAM_NO_DEFER), "true");
+  #endif
   active_monitor->set_fire_idle_event(fieFlag);
   active_monitor->set_recursive(rflag);
   active_monitor->set_directory_only(dflag);
@@ -525,6 +537,9 @@ static void parse_opts(int argc, char **argv)
     {"include",              required_argument, nullptr,       'i'},
     {"insensitive",          no_argument,       nullptr,       'I'},
     {"latency",              required_argument, nullptr,       'l'},
+  #ifdef HAVE_FSEVENTS_FILE_EVENTS
+    {"no-defer",             no_argument,       nullptr,       OPT_NO_DEFER},
+  #endif
     {"list-monitors",        no_argument,       nullptr,       'M'},
     {"monitor",              required_argument, nullptr,       'm'},
     {"monitor-property",     required_argument, nullptr,       OPT_MONITOR_PROPERTY},
@@ -684,6 +699,10 @@ static void parse_opts(int argc, char **argv)
 
     case OPT_FILTER_FROM:
       filter_files.emplace_back(optarg);
+      break;
+
+    case OPT_NO_DEFER:
+      noDeferFlag = true;
       break;
 
     case '?':

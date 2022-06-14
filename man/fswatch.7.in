@@ -142,6 +142,11 @@ Uses the monitor specified by
 The list of currently available monitors can be obtained using the
 .Fl h
 option.
+.It Fl -no-defer
+Sets the kFSEventStreamCreateFlagNoDefer flag on macOS FSEvents monitor, which
+makes the monitor more responsive.  This flag is more appropriate for
+sessions, while the default behaviour is more appropriate for background,
+daemon or batch processing apps.
 .It Fl n, -numeric
 Print the numeric value of the event flag, instead of the array of symbolic
 names.  The numeric value of the event flags are system-specific and may vary

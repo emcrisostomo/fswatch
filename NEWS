@@ -3,8 +3,12 @@ NEWS
 
 New in master:
 
+  * Issue 230: Improve responsiveness on macos: add support for kFSEventStreamCreateFlagNoDefer.
+
   * Issue 249: Man page still mentions fswatch-run.
+
   * Issue 255: Implement event bubbling.
+
   * Issue 256: -1 flag prints the file changed 3x before exiting.
 
 New in 1.16.0:

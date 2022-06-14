@@ -1274,6 +1274,14 @@ Use the specified @command{@var{monitor}}.
 Pass the specified property to the monitor (@pxref{Monitor
 Tunables}).
 
+@opsummary{no-defer}
+@item --no-defer
+
+Sets the kFSEventStreamCreateFlagNoDefer on the FSEvents monitor, which makes
+the monitor more responsive.  This flag is more appropriate for interactive
+session, while the default behaviour is more appropriate for background,
+daemon or batch processing apps.
+
 @opsummary{numeric}
 @item --numeric
 @itemx -n
