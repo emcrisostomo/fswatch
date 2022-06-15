@@ -77,6 +77,10 @@ namespace fsw
     flags.push_back({kFSEventStreamEventFlagItemIsLastHardlink, fsw_event_flag::PlatformSpecific});
 #endif
 
+#ifdef HAVE_MACOS_GE_10_13
+    flags.push_back({kFSEventStreamEventFlagItemCloned, fsw_event_flag::PlatformSpecific});
+#endif
+
     return flags;
   }
 

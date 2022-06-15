@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 278-correlate-renames
+
+  * Update FSEventStreamEventFlags flags and add support to macOS 10.13+
+    features.
+
 New in master:
 
   * Issue 230: Improve responsiveness on macos: add support for kFSEventStreamCreateFlagNoDefer.
