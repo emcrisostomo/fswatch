@@ -3,7 +3,11 @@ NEWS
 
 New in master:
 
-  * Issue 230: Improve responsiveness on macos: add support for kFSEventStreamCreateFlagNoDefer.
+  * Refactor code to replace usages of deprecated function
+    FSEventStreamScheduleWithRunLoop with FSEventStreamSetDispatchQueue.
+  
+  * Issue 230: Improve responsiveness on macos: add support for
+    kFSEventStreamCreateFlagNoDefer.
 
   * Issue 249: Man page still mentions fswatch-run.
 
