@@ -80,11 +80,6 @@ namespace fsw
      */
     void run() override;
 
-    /**
-     * @brief Execute an implementation-specific stop handler.
-     */
-    void on_stop() override;
-
   private:
     static void fsevents_callback(ConstFSEventStreamRef streamRef,
                                   void *clientCallBackInfo,
@@ -94,7 +89,7 @@ namespace fsw
                                   const FSEventStreamEventId eventIds[]);
 
     FSEventStreamRef stream = nullptr;
-    CFRunLoopRef run_loop = nullptr;
+    dispatch_queue_t fsevents_queue = nullptr;
     bool no_defer();
     void create_stream(CFArrayRef pathsToWatch);
   };

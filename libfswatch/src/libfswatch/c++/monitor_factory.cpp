@@ -18,7 +18,7 @@
 #include "libfswatch/gettext_defs.h"
 #include "monitor_factory.hpp"
 #include "libfswatch_exception.hpp"
-#if defined(HAVE_FSEVENTS_FILE_EVENTS)
+#if defined(HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
   #include "fsevents_monitor.hpp"
 #endif
 #if defined(HAVE_SYS_EVENT_H)
@@ -43,7 +43,7 @@ namespace fsw
   {
     fsw_monitor_type type;
 
-#if defined(HAVE_FSEVENTS_FILE_EVENTS)
+#if defined(HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
     type = fsw_monitor_type::fsevents_monitor_type;
 #elif defined(HAVE_SYS_EVENT_H)
     type = fsw_monitor_type::kqueue_monitor_type;
@@ -73,7 +73,7 @@ namespace fsw
     case system_default_monitor_type:
       return create_default_monitor(paths, callback, context);
 
-#if defined(HAVE_FSEVENTS_FILE_EVENTS)
+#if defined(HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
       case fsevents_monitor_type:
         return new fsevents_monitor(paths, callback, context);
 #endif
@@ -105,7 +105,7 @@ namespace fsw
 #define fsw_quote(x) #x
     static std::map<std::string, fsw_monitor_type> creator_by_string_set;
 
-#if defined(HAVE_FSEVENTS_FILE_EVENTS)
+#if defined(HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
     creator_by_string_set[fsw_quote(fsevents_monitor)] = fsw_monitor_type::fsevents_monitor_type;
 #endif
 #if defined(HAVE_SYS_EVENT_H)
