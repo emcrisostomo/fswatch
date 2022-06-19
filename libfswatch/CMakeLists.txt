@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2021 Enrico M. Crisostomo
+# Copyright (c) 2014-2022 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -162,15 +162,21 @@ if (APPLE)
 
     if (HAVE_FSEVENTS_FILE_EVENTS)
         find_library(CORESERVICES_LIBRARY CoreServices)
-        set(EXTRA_LIBS ${EXTRA_LIBS} ${CORESERVICES_LIBRARY})
 
-        set(LIBFSWATCH_HEADER_FILES
-                ${LIBFSWATCH_HEADER_FILES}
-                src/libfswatch/c++/fsevents_monitor.hpp)
-        set(LIB_SOURCE_FILES
-                ${LIB_SOURCE_FILES}
-                src/libfswatch/c++/fsevents_monitor.cpp)
+        if (CORESERVICES_LIBRARY)
+            set(CMAKE_REQUIRED_LIBRARIES ${CORESERVICES_LIBRARY})
+            check_symbol_exists(FSEventStreamSetDispatchQueue "CoreServices/CoreServices.h" HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
 
+            if (HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
+                set(EXTRA_LIBS ${EXTRA_LIBS} ${CORESERVICES_LIBRARY})
+                set(LIBFSWATCH_HEADER_FILES
+                    ${LIBFSWATCH_HEADER_FILES}
+                    src/libfswatch/c++/fsevents_monitor.hpp)
+                set(LIB_SOURCE_FILES
+                    ${LIB_SOURCE_FILES}
+                    src/libfswatch/c++/fsevents_monitor.cpp)
+            endif (HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
+        endif ()
     endif (HAVE_FSEVENTS_FILE_EVENTS)
 endif (APPLE)
 
