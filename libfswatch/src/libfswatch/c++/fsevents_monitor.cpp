@@ -198,9 +198,26 @@ namespace fsw
 
     for (size_t i = 0; i < numEvents; ++i)
     {
+#if defined(HAVE_MACOS_GE_10_13)
+      auto path_info_dict = static_cast<CFDictionaryRef>(CFArrayGetValueAtIndex((CFArrayRef) eventPaths,
+                                                                                i));
+      auto path = static_cast<CFStringRef>(CFDictionaryGetValue(path_info_dict,
+                                                                kFSEventStreamEventExtendedDataPathKey));
+      auto cf_inode = static_cast<CFNumberRef>(CFDictionaryGetValue(path_info_dict,
+                                                                    kFSEventStreamEventExtendedFileIDKey));
+      unsigned long inode;
+      CFNumberGetValue(cf_inode, kCFNumberLongType, &inode);
+      FSW_ELOGF("INODE %ul\n", inode);
+      events.emplace_back(std::string(CFStringGetCStringPtr(path, kCFStringEncodingUTF8)),
+                          curr_time,
+                          decode_flags(eventFlags[i]),
+                          inode);
+
+#else
       events.emplace_back(((char **) eventPaths)[i],
                           curr_time,
                           decode_flags(eventFlags[i]));
+#endif
     }
 
     if (!events.empty())
@@ -230,6 +247,10 @@ namespace fsw
 
     FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
     if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
+#if defined (HAVE_MACOS_GE_10_13)
+    streamFlags |= kFSEventStreamCreateFlagUseExtendedData;
+    streamFlags |= kFSEventStreamCreateFlagUseCFTypes;
+#endif
 
     FSW_ELOG(_("Creating FSEvent stream...\n"));
     stream = FSEventStreamCreate(nullptr,

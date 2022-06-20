@@ -6,6 +6,10 @@ New in 278-correlate-renames
   * Update FSEventStreamEventFlags flags and add support to macOS 10.13+
     features.
 
+  * Issue 278: FSEvents monitor: Add support to for extended data, to allow file
+    inodes to be collected with events.  This feature enables users to correlate
+    rename events.
+
 New in master:
 
   * Refactor code to replace usages of deprecated function

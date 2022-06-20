@@ -837,6 +837,9 @@ static int printf_event(const event& evt,
     case '0':
       os << '\0';
       break;
+    case 'i':
+      os << evt.get_inode();
+      break;
     case 'n':
       os << '\n';
       break;

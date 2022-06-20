@@ -369,7 +369,8 @@ monitor::~monitor()
 
       filtered_events.emplace_back(event.get_path(),
                                    event.get_time(),
-                                   filtered_flags);
+                                   filtered_flags,
+                                   event.get_inode());
     }
 
     if (bubble_events)

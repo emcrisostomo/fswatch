@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -27,6 +27,11 @@ namespace fsw
   {
   }
 
+  event::event(string path, time_t evt_time, vector<fsw_event_flag> flags, unsigned long inode) :
+    path(std::move(path)), evt_time(evt_time), evt_flags(std::move(flags)), inode(inode)
+  {
+  }
+
   event::~event() = default;
 
   string event::get_path() const
@@ -42,6 +47,11 @@ namespace fsw
   vector<fsw_event_flag> event::get_flags() const
   {
     return evt_flags;
+  }
+
+  unsigned long event::get_inode() const
+  {
+    return inode;
   }
 
   fsw_event_flag event::get_event_flag_by_name(const string& name)
@@ -104,7 +114,7 @@ namespace fsw
     return name->second;
   }
 
-  ostream& operator<<(ostream& out, const fsw_event_flag flag)
+ostream& operator<<(ostream& out, const fsw_event_flag flag)
   {
     return out << event::get_event_flag_name(flag);
   }
