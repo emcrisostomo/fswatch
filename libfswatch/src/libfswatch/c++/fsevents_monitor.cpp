@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,6 +17,7 @@
 #include <memory>
 #include <unistd.h> // isatty()
 #include <cstdio> // fileno()
+#include <thread>
 #include "fsevents_monitor.hpp"
 #include "libfswatch/gettext_defs.h"
 #include "libfswatch_exception.hpp"
@@ -124,14 +125,9 @@ namespace fsw
     if (!stream)
       throw libfsw_exception(_("Event stream could not be created."));
 
-    // Fire the event loop
-    run_loop = CFRunLoopGetCurrent();
-
-    // Loop Initialization
-    FSW_ELOG(_("Scheduling stream with run loop...\n"));
-    FSEventStreamScheduleWithRunLoop(stream,
-                                     run_loop,
-                                     kCFRunLoopDefaultMode);
+    // Creating dispatch queue
+    fsevents_queue = dispatch_queue_create("fswatch_event_queue", NULL);
+    FSEventStreamSetDispatchQueue(stream, fsevents_queue);
 
     FSW_ELOG(_("Starting event stream...\n"));
     FSEventStreamStart(stream);
@@ -140,9 +136,16 @@ namespace fsw
     run_loop_lock.unlock();
 #endif
 
-    // Loop
-    FSW_ELOG(_("Starting run loop...\n"));
-    CFRunLoopRun();
+    for(;;)
+    {
+#ifdef HAVE_CXX_MUTEX
+      run_loop_lock.lock();
+      if (should_stop) break;
+      run_loop_lock.unlock();
+#endif
+
+      std::this_thread::sleep_for(std::chrono::milliseconds((long long) (latency * 1000)));
+    }
 
     // Deinitialization part
     FSW_ELOG(_("Stopping event stream...\n"));
@@ -154,20 +157,8 @@ namespace fsw
     FSW_ELOG(_("Releasing event stream...\n"));
     FSEventStreamRelease(stream);
 
+    dispatch_release(fsevents_queue);
     stream = nullptr;
-  }
-
-  /*
-   * on_stop() is designed to be invoked with a lock on the run_mutex.
-   */
-  void fsevents_monitor::on_stop()
-  {
-    if (!run_loop) throw libfsw_exception(_("run loop is null"));
-
-    FSW_ELOG(_("Stopping run loop...\n"));
-    CFRunLoopStop(run_loop);
-
-    run_loop = nullptr;
   }
 
   static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)

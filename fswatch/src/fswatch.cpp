@@ -35,7 +35,7 @@
 #include "libfswatch/c/libfswatch.h"
 #include "libfswatch/c/libfswatch_log.h"
 #include "libfswatch/c++/libfswatch_exception.hpp"
-#ifdef HAVE_FSEVENTS_FILE_EVENTS
+#ifdef HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE
   #include "libfswatch/c++/fsevents_monitor.hpp"
 #endif
 
@@ -172,7 +172,7 @@ static void usage(std::ostream& stream)
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
   stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
-  #if defined(HAVE_FSEVENTS_FILE_EVENTS)
+  #if defined(HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
   stream << "     --no-defer        " << _("Set the no defer flag in the monitor.\n");
   #endif
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
@@ -494,7 +494,7 @@ static void start_monitor(int argc, char **argv, int optind)
   active_monitor->set_properties(monitor_properties);
   active_monitor->set_allow_overflow(allow_overflow);
   active_monitor->set_latency(lvalue);
-  #if defined(HAVE_FSEVENTS_FILE_EVENTS)
+  #if defined(HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
   if (noDeferFlag)
     active_monitor->set_property(std::string(fsw::fsevents_monitor::DARWIN_EVENTSTREAM_NO_DEFER), "true");
   #endif
@@ -537,7 +537,7 @@ static void parse_opts(int argc, char **argv)
     {"include",              required_argument, nullptr,       'i'},
     {"insensitive",          no_argument,       nullptr,       'I'},
     {"latency",              required_argument, nullptr,       'l'},
-  #ifdef HAVE_FSEVENTS_FILE_EVENTS
+  #ifdef HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE
     {"no-defer",             no_argument,       nullptr,       OPT_NO_DEFER},
   #endif
     {"list-monitors",        no_argument,       nullptr,       'M'},
