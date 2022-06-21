@@ -124,12 +124,14 @@ deprecated in autoconf-2.71
 @item
 Issue 272: Send AttributeModified on touch when using the FSevents
 monitor.
+@end itemize
 
 @section 1.14.0
 @itemize
 @item
 Issue 218: fswatch v1.13 ignores the @option{--monitor} parameter and
 always uses the default monitor.
+@end itemize
 
 @section 1.12.0
 @itemize
