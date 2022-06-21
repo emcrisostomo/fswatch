@@ -92,6 +92,47 @@ Free Documentation License''.
 @node Version History
 @chapter Version History
 
+@section 1.16.0
+@itemize
+@item
+Update FSEvents flags and add support to macOS 10.10+ features.
+
+@item
+Issue 226: Add FreeBSD installation instructions.
+
+@item
+Issue 243: PlatformSpecific instead of Updated on Darwin 19.4.
+
+@item
+Issue 248: Update fswatch.7.in to add the Event Types section to the man
+page.
+
+@item
+Issue 257: Update FreeBSD installation instructions.
+
+@item
+Issue 260: Fix memory leak.
+
+@item
+Issue 269: do not use global variable in function, pass parameter
+instead.
+
+@item
+Issue 270: using both AC_CONFIG_MACRO_DIR and AC_CONFIG_MACRO_DIRS is
+deprecated in autoconf-2.71
+
+@item
+Issue 272: Send AttributeModified on touch when using the FSevents
+monitor.
+@end itemize
+
+@section 1.14.0
+@itemize
+@item
+Issue 218: fswatch v1.13 ignores the @option{--monitor} parameter and
+always uses the default monitor.
+@end itemize
+
 @section 1.12.0
 @itemize
 @item
