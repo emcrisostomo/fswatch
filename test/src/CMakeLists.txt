@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2021 Enrico M. Crisostomo
+# Copyright (c) 2014-2022 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -13,13 +13,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-include_directories(../.. .)
-
 set(SOURCE_FILES
         fswatch_test.c
         ${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h)
 
 add_executable(fswatch_test ${SOURCE_FILES})
+target_include_directories(fswatch_test PRIVATE ../.. .)
 target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})
-
 target_link_libraries(fswatch_test LINK_PUBLIC libfswatch)
