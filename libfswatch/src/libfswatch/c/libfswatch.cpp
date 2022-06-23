@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,10 +16,10 @@
 /**
  * @file
  * @brief Main `libfswatch` source file.
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
- * @version 1.10.0
+ * @version 1.17.0
  */
 /**
  * @mainpage
@@ -274,6 +274,20 @@
  */
 /**
  * @page history History
+ *
+ * @section v1200 12:0:0
+ *
+ *   - Implement event bubbling (see the monitor class) by grouping events using
+ *     the (time, path) tuple, to emit a single event with the union of all the
+ *     flags.
+ *
+ *   - Refactor the fsevents_monitor class to replace usages of the deprecated
+ *     function FSEventStreamScheduleWithRunLoop and substituting it with
+ *     FSEventStreamSetDispatchQueue and an implementation based on dispatch
+ *     queues.
+ *
+ *   - Improve the responsiveness of the fsevents_monitor on macOS by adding
+ *     support for the kFSEventStreamCreateFlagNoDefer flag.
  *
  * @section v1110 11:1:0
  *

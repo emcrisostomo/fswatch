@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2021 Enrico M. Crisostomo
+# Copyright (c) 2014-2022 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 cmake_minimum_required(VERSION 3.8)
-project(fswatch VERSION 1.16.0 LANGUAGES C CXX)
+project(fswatch VERSION 1.17.0 LANGUAGES C CXX)
 
 #@formatter:off
 set(PACKAGE           "${PROJECT_NAME}")

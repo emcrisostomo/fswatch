@@ -1,6 +1,16 @@
 NEWS
 ****
 
+New in 1.17.0:
+
+  * Refactor code to replace usages of deprecated function
+    FSEventStreamScheduleWithRunLoop with FSEventStreamSetDispatchQueue.
+
+  * Issue 230: Improve responsiveness on macos: add support for
+    kFSEventStreamCreateFlagNoDefer.
+
+  * Issue 255: Implement event bubbling.
+
 New in 1.16.0:
 
   * Issue 260: Fix memory leak.
