@@ -10,7 +10,7 @@ New in 278-correlate-renames
     inodes to be collected with events.  This feature enables users to correlate
     rename events.
 
-New in master:
+New in 1.17.0:
 
   * Refactor code to replace usages of deprecated function
     FSEventStreamScheduleWithRunLoop with FSEventStreamSetDispatchQueue.

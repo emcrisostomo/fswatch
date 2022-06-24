@@ -92,6 +92,28 @@ Free Documentation License''.
 @node Version History
 @chapter Version History
 
+@section 1.17.0
+@itemize
+@item
+Refactor code to replace usages of deprecated function
+@code{FSEventStreamScheduleWithRunLoop} with
+@code{FSEventStreamSetDispatchQueue}.
+
+@item
+Issue 230: Improve responsiveness on macos: add support for
+@code{kFSEventStreamCreateFlagNoDefer}.
+
+@item
+Issue 249: Man page still mentions @command{fswatch-run}.
+
+@item
+Issue 255: Implement event bubbling.
+
+@item
+Issue 256: @code{-1} flag prints the file changed multiple times before
+exiting.
+@end itemize
+
 @section 1.16.0
 @itemize
 @item

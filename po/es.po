@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.11.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2022-06-20 14:32+0200\n"
+"POT-Creation-Date: 2022-06-23 12:50+0200\n"
 "PO-Revision-Date: 2017-10-29 14:04+0100\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -348,31 +348,31 @@ msgstr "Rastreando %s.\n"
 msgid "Event from unexpected source"
 msgstr "Evento de fuente inesperada"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:126
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:122
 msgid "Event stream could not be created."
 msgstr "El flujo de eventos no se puede crear."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:132
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:128
 msgid "Starting event stream...\n"
 msgstr "Arrancando el flujo de eventos...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:151
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:147
 msgid "Stopping event stream...\n"
 msgstr "Parando el flujo de eventos...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:154
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:150
 msgid "Invalidating event stream...\n"
 msgstr "Invalidando el flujo de eventos...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:157
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:153
 msgid "Releasing event stream...\n"
 msgstr "Liberando el flujo de eventos...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:190
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:186
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "El context de callback no puede convertirse a fsevents_monitor."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:234
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:230
 msgid "Creating FSEvent stream...\n"
 msgstr "Creando el flujo FSEvent...\n"
 
