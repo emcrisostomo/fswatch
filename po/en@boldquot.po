@@ -30,10 +30,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.17.0\n"
+"Project-Id-Version: fswatch 1.17.1\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2022-06-23 12:50+0200\n"
-"PO-Revision-Date: 2022-06-23 12:50+0200\n"
+"POT-Creation-Date: 2022-07-01 11:40+0200\n"
+"PO-Revision-Date: 2022-07-01 11:40+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@boldquot\n"
