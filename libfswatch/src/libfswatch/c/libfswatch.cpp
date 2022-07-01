@@ -440,7 +440,7 @@
 #include <memory>
 #include <vector>
 #include <map>
-#include "libfswatch/libfswatch_config.h"
+#include <libfswatch/libfswatch_config.h>
 #include "libfswatch.h"
 #include "libfswatch/c++/libfswatch_map.hpp"
 #include "libfswatch/c++/filter.hpp"

@@ -26,7 +26,7 @@
 #ifndef LIBFSW_MAP_H
 #  define LIBFSW_MAP_H
 
-#include "libfswatch/libfswatch_config.h"
+#include <libfswatch/libfswatch_config.h>
 
 #  ifdef HAVE_UNORDERED_MAP
 #    include <unordered_map>
