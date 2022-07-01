@@ -468,6 +468,12 @@ using FSW_SESSION = struct FSW_SESSION
   void *data;
 };
 
+#if defined(HAVE_CXX_THREAD_LOCAL)
+# define FSW_THREAD_LOCAL thread_local
+#else
+# define FSW_THREAD_LOCAL
+#endif
+
 static bool fsw_libfswatch_verbose = false;
 static FSW_THREAD_LOCAL FSW_STATUS last_error;
 
