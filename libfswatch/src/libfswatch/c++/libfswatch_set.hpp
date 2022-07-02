@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief Header defining the default set type used by the library.
  *
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -26,7 +26,7 @@
 #ifndef LIBFSW_SET_H
 #  define LIBFSW_SET_H
 
-#  include "libfswatch/libfswatch_config.h"
+#  include <libfswatch/libfswatch_config.h>
 
 #  if defined(HAVE_UNORDERED_SET)
 #    include <unordered_set>

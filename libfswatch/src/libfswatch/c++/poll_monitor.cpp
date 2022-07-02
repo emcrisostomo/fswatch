@@ -19,7 +19,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <utility>
-#include "libfswatch/libfswatch_config.h"
+#include <libfswatch/libfswatch_config.h>
 #include "libfswatch/c/libfswatch_log.h"
 #include "poll_monitor.hpp"
 #include "path_utils.hpp"

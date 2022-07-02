@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@
  *
  * If `HAVE_CXX_MUTEX` is defined, this header includes `<mutex>`.
  *
- * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -30,7 +30,7 @@
 #ifndef FSW__MONITOR_H
 #  define FSW__MONITOR_H
 
-#  include "libfswatch/libfswatch_config.h"
+#  include <libfswatch/libfswatch_config.h>
 #  include "filter.hpp"
 #  include <vector>
 #  include <string>
