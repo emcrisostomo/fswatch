@@ -29,7 +29,6 @@
 #  define FSW__MONITOR_FACTORY_H
 
 #include "monitor.hpp"
-#include "libfswatch_set.hpp"
 
 namespace fsw
 {
