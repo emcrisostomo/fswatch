@@ -102,6 +102,9 @@ AM_CONDITIONAL([USE_NLS], [test "x${USE_NLS}" = "xyes"])
 AX_CXX_COMPILE_STDCXX_11
 AX_CXXFLAGS_WARN_ALL
 
+# Checks for libraries.
+AC_SEARCH_LIBS([pthread_create], [pthread])
+
 # Check for optional header files.
 AC_CHECK_HEADERS([unordered_map unordered_set])
 AC_CHECK_HEADERS([getopt.h])
