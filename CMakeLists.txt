@@ -66,11 +66,6 @@ if (USE_NLS)
     gettext_process_pot_file(po/${PACKAGE}.pot ALL INSTALL_DESTINATION share/locale LANGUAGES ${LINGUAS})
 endif ()
 
-# checks
-check_cxx_symbol_exists(atexit cstdlib HAVE_ATEXIT)
-check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
-check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
-
 add_subdirectory(libfswatch)
 add_subdirectory(fswatch/src)
 add_subdirectory(test/src)

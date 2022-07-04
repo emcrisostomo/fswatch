@@ -102,14 +102,6 @@ AM_CONDITIONAL([USE_NLS], [test "x${USE_NLS}" = "xyes"])
 AX_CXX_COMPILE_STDCXX_11
 AX_CXXFLAGS_WARN_ALL
 
-# Checks for libraries.
-AC_CHECK_LIB([pthread], [pthread_create])
-
-# Checks for header files.
-AC_CHECK_HEADERS([cstdlib],  [], [AC_MSG_ERROR([A required header file is missing.])])
-AC_CHECK_HEADERS([unistd.h], [], [AC_MSG_ERROR([A required header file is missing.])])
-AC_CHECK_HEADERS([fcntl.h],  [], [AC_MSG_ERROR([A required header file is missing.])])
-
 # Check for optional header files.
 AC_CHECK_HEADERS([unordered_map unordered_set])
 AC_CHECK_HEADERS([getopt.h])
@@ -233,12 +225,6 @@ AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
 AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
-AC_TYPE_SIZE_T
-AC_TYPE_SSIZE_T
-AC_TYPE_UINT32_T
-AC_TYPE_MODE_T
-
 AC_CHECK_MEMBERS([struct stat.st_mtime],
   [],
   [],
@@ -255,20 +241,8 @@ AC_CHECK_MEMBERS([struct stat.st_mtimespec],
     #include <sys/stat.h>
   ])
 
-AC_CHECK_TYPE([std::unique_ptr<std::string>],
-  [AC_DEFINE([HAVE_CXX_UNIQUE_PTR],
-    [1],
-    [Define if std::unique_ptr in <memory> is available.])],
-  [],
-  [[#include <memory>]])
-
 # Checks for library functions.
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
-AC_CHECK_FUNCS([modf],     [], [AC_MSG_ERROR([The modf function cannot be found.])])
-AC_CHECK_FUNCS([select],   [], [AC_MSG_ERROR([The select function cannot be found.])])
-AC_FUNC_STRTOD
-AC_CHECK_FUNCS([atexit],    [], [AC_MSG_ERROR([The atexit function cannot be found.])])
-AC_CHECK_FUNCS([setlocale], [], [AC_MSG_ERROR([The setlocale function cannot be found.])])
 
 # Check if realpath is available: if it is not and the host OS is Windows, then
 # build its implementation, otherwise fail
