@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -191,11 +191,9 @@ namespace fsw
 
     for (;;)
     {
-#ifdef HAVE_CXX_MUTEX
       std::unique_lock<std::mutex> run_guard(run_mutex);
       if (should_stop) break;
       run_guard.unlock();
-#endif
 
       FSW_ELOG(_("Done scanning.\n"));
 

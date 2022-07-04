@@ -232,30 +232,6 @@ AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
 AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
 AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
 
-# Some compilers declare to conform to C++11 but the library does not.
-
-# These macOS versions are known to miss at least the listed headers:
-#   - 10.6 Snow Leopard: mutex, atomic
-#   - 10.7 Lion: mutex, atomic
-#   - 10.8 Mountain Lion: mutex, atomic
-# Let's check for <mutex> and skip multi-threading code if not found.
-AC_CHECK_HEADER([mutex])
-
-if test "x${ac_cv_header_mutex}" = "xyes" ; then
-  AC_DEFINE([HAVE_CXX_MUTEX],
-    [1],
-    [Define if <mutex> is available.])
-else
-  AC_MSG_WARN([AC_PACKAGE_NAME is not thread-safe because required C++11 library classes are not available.].)
-fi
-
-AC_CHECK_HEADER([atomic])
-
-AS_VAR_IF([ac_cv_header_atomic],
-  ["yes"],
-  [AC_DEFINE([HAVE_CXX_ATOMIC], [1], [Define if <atomic> is available.])],
-  [AC_MSG_WARN([<atomic> unavailable: some functionalities will not be built.])])
-
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
 AC_TYPE_SIZE_T
@@ -310,14 +286,6 @@ AS_VAR_IF([HAVE_REALPATH],
 
 AM_CONDITIONAL([BUILD_WIN_REALPATH], [test "x${BUILD_WIN_REALPATH}" = "xyes"])
 AS_VAR_IF([HAVE_REALPATH], ["yes"], [AC_DEFINE([HAVE_REALPATH], [1], [Realpath present.])])
-
-AX_CXX_HAVE_THREAD_LOCAL
-
-AS_VAR_IF(
-  [ax_cv_cxx_have_thread_local],
-  ["yes"],
-  [],
-  [AC_MSG_WARN([The C API of AC_PACKAGE_NAME is not thread-safe because the current combination of compiler and libraries do not support the thread_local storage specifier.])])
 
 # Check for optional library functions.
 AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])

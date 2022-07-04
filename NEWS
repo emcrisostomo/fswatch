@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in remove-mutex-conditional-support:
+
+  * Require <mutex>, <atomic> and thread_local and remove checks and conditional
+    code.
+
 New in 1.17.1:
 
   * Issue 291: Configuration header leaked into public interface in v. 1.17.0.

@@ -68,18 +68,6 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/poll_monitor.cpp
         src/libfswatch/c++/string/string_utils.cpp)
 
-check_include_file_cxx(mutex HAVE_CXX_MUTEX)
-
-if (NOT HAVE_CXX_MUTEX)
-    message(WARNING "${PROJECT_NAME} is not thread-safe because required C++11 library classes are not available.")
-endif (NOT HAVE_CXX_MUTEX)
-
-check_include_file_cxx(atomic HAVE_CXX_ATOMIC)
-
-if (NOT HAVE_CXX_ATOMIC)
-    message(WARNING "<atomic> unavailable: some functionalities will not be built.")
-endif (NOT HAVE_CXX_ATOMIC)
-
 check_cxx_symbol_exists(modf math.h HAVE_MODF)
 check_cxx_symbol_exists(realpath cstdlib HAVE_REALPATH)
 check_cxx_symbol_exists(select sys/select.h HAVE_SELECT)
@@ -90,12 +78,6 @@ check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
 find_library(PTHREAD_LIBRARY pthread)
 set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
-
-if (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
-    set(HAVE_CXX_THREAD_LOCAL ON CACHE BOOL "Enable C++ thread_local support")
-endif (cxx_thread_local IN_LIST CMAKE_CXX_COMPILE_FEATURES)
-
-check_cxx_symbol_exists(thread_local cstdlib HAVE_CXX_THREAD_LOCAL)
 
 check_include_file_cxx(sys/inotify.h HAVE_SYS_INOTIFY_H)
 
