@@ -20,4 +20,4 @@ set(SOURCE_FILES
 add_executable(fswatch_test ${SOURCE_FILES})
 target_include_directories(fswatch_test PRIVATE ../.. .)
 target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})
-target_link_libraries(fswatch_test LINK_PUBLIC libfswatch)
+target_link_libraries(fswatch_test PUBLIC libfswatch)

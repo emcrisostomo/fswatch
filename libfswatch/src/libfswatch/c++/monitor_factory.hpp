@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2018 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -20,7 +20,7 @@
  * This header file defines the fsw::monitor_factory class, the base type of a
  * `libfswatch` monitor factory.
  *
- * @copyright Copyright (c) 2014-2018 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -29,7 +29,6 @@
 #  define FSW__MONITOR_FACTORY_H
 
 #include "monitor.hpp"
-#include "libfswatch_set.hpp"
 
 namespace fsw
 {

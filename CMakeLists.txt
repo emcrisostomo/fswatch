@@ -14,7 +14,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 cmake_minimum_required(VERSION 3.8)
-project(fswatch VERSION 1.17.0 LANGUAGES C CXX)
+project(fswatch VERSION 1.17.1 LANGUAGES C CXX)
 
 #@formatter:off
 set(PACKAGE           "${PROJECT_NAME}")
@@ -65,11 +65,6 @@ if (USE_NLS)
 
     gettext_process_pot_file(po/${PACKAGE}.pot ALL INSTALL_DESTINATION share/locale LANGUAGES ${LINGUAS})
 endif ()
-
-# checks
-check_cxx_symbol_exists(atexit cstdlib HAVE_ATEXIT)
-check_cxx_symbol_exists(setlocale clocale HAVE_SETLOCALE)
-check_cxx_symbol_exists(strtod cstdlib HAVE_STRTOD)
 
 add_subdirectory(libfswatch)
 add_subdirectory(fswatch/src)

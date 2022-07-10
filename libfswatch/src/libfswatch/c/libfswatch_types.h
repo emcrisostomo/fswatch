@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2021 Enrico M. Crisostomo
+ * Copyright (c) 2015-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -28,8 +28,6 @@
 #ifndef LIBFSWATCH_TYPES_H
 #define LIBFSWATCH_TYPES_H
 
-#include "libfswatch/libfswatch_config.h"
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -49,12 +47,6 @@ typedef struct FSW_SESSION *FSW_HANDLE;
  * @brief Status of a library call.
  */
 typedef int FSW_STATUS;
-
-#if defined(HAVE_CXX_THREAD_LOCAL)
-# define FSW_THREAD_LOCAL thread_local
-#else
-# define FSW_THREAD_LOCAL
-#endif
 
 #ifdef __cplusplus
 }
