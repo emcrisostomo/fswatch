@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,10 +17,10 @@
  * @file
  * @brief Header of the fsw::event class.
  *
- * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
- * @version 1.8.0
+ * @version 1.18.0
  */
 
 #ifndef FSW_EVENT_H
@@ -43,6 +43,7 @@ namespace fsw
    *   - The path.
    *   - The time the event was raised.
    *   - A vector of flags specifying the type of the event.
+   *   - The correlation id of the event, if supported by the monitor, otherwise 0.
    */
   class event
   {
@@ -55,6 +56,16 @@ namespace fsw
      * @param flags The vector of flags specifying the type of the event.
      */
     event(std::string path, time_t evt_time, std::vector<fsw_event_flag> flags);
+
+    /**
+     * @brief Constructs an event.
+     *
+     * @param path The path the event refers to.
+     * @param evt_time The time the event was raised.
+     * @param flags The vector of flags specifying the type of the event.
+     * @param correlation_id The correlation_id of the file the event refers to.
+     */
+    event(std::string path, time_t evt_time, std::vector<fsw_event_flag> flags, unsigned long correlation_id);
 
     /**
      * @brief Destructs an event.
@@ -85,6 +96,12 @@ namespace fsw
     std::vector<fsw_event_flag> get_flags() const;
 
     /**
+     * @brief Returns the correlation_id of the file of the event.
+     * @return The correlation_id of the file of the event.
+     */
+    unsigned long get_correlation_id() const;
+
+    /**
      * @brief Get event flag by name.
      *
      * @param name The name of the event flag to look for.
@@ -106,6 +123,7 @@ namespace fsw
     std::string path;
     time_t evt_time;
     std::vector<fsw_event_flag> evt_flags;
+    unsigned long correlation_id = 0;
   };
 
   /**

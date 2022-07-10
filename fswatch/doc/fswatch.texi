@@ -34,7 +34,7 @@ Solaris/Illumos @emph{File Events Notification}, Linux @emph{inotify},
 Microsoft Windows @code{ReadDirectoryChangesW} and a
 @code{stat()}-based backend.
 
-Copyright @copyright{} 2013-2021 Enrico M. Crisostomo
+Copyright @copyright{} 2013-2022 Enrico M. Crisostomo
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -1481,15 +1481,20 @@ Inserts the @samp{%} character.
 @cpindex @command{%0}, format directive
 Inserts an @acronym{ASCII} @samp{NUL} (@samp{0}) character.
 
-@item %n
-@cpindex @command{%n}, format directive
-Inserts a @emph{newline} character.
+@item %c
+@cpindex @command{%c}, format directive
+Inserts the correlation id of the event, if supported by the monitor, otherwise,
+@samp{0}.
 
 @item %f
 @cpindex @command{%f}, format directive
 Inserts the list of event flags, separated by default by the space
 character (@samp{ }) or by the separator specified with the
 @option{--event-flag-separator} option (@pxref{Event Flag Separator}).
+
+@item %n
+@cpindex @command{%n}, format directive
+Inserts a @emph{newline} character.
 
 @item %p
 @cpindex @command{%p}, format directive

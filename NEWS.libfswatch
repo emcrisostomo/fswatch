@@ -1,6 +1,20 @@
 NEWS
 ****
 
+New in 278-correlate-renames
+
+  * Update FSEventStreamEventFlags flags and add support to macOS 10.13+
+    features.
+
+  * Issue 278: FSEvents monitor: Add support to for extended data, to allow file
+    inodes to be collected with events.  This feature enables users to correlate
+    rename events.
+
+  * Issue 278: inotify monitor: Add support for correlation cookie.  This
+    feature enables users to correlate rename events.
+
+  * Update the event class to have a correlation id field.
+  
 New in 1.17.1:
 
   * Issue 291: Configuration header leaked into public interface in v. 1.17.0.

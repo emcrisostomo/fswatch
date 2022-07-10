@@ -124,6 +124,7 @@ AS_VAR_SET_IF([IS_DARWIN], [
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [11.0], [AC_DEFINE([HAVE_MACOS_GE_10_7],  [1], ["macOS is at least the specified version"])])
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [13.0], [AC_DEFINE([HAVE_MACOS_GE_10_9],  [1], ["macOS is at least the specified version"])])
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [14.0], [AC_DEFINE([HAVE_MACOS_GE_10_10], [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [17.0], [AC_DEFINE([HAVE_MACOS_GE_10_13], [1], ["macOS is at least the specified version"])])
   # Check for macOS FSEvents.  FSEvents added file events in a later release, so
   # this check must be performed separately.
   AC_CHECK_HEADERS([CoreServices/CoreServices.h])
