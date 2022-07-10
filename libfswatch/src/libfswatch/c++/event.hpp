@@ -62,9 +62,9 @@ namespace fsw
      * @param path The path the event refers to.
      * @param evt_time The time the event was raised.
      * @param flags The vector of flags specifying the type of the event.
-     * @param inode The inode of the file the event refers to.
+     * @param correlation_id The correlation_id of the file the event refers to.
      */
-    event(std::string path, time_t evt_time, std::vector<fsw_event_flag> flags, unsigned long inode);
+    event(std::string path, time_t evt_time, std::vector<fsw_event_flag> flags, unsigned long correlation_id);
 
     /**
      * @brief Destructs an event.
@@ -95,10 +95,10 @@ namespace fsw
     std::vector<fsw_event_flag> get_flags() const;
 
     /**
-     * @brief Returns the inode of the file of the event.
-     * @return The inode of the file of the event.
+     * @brief Returns the correlation_id of the file of the event.
+     * @return The correlation_id of the file of the event.
      */
-    unsigned long get_inode() const;
+    unsigned long get_correlation_id() const;
 
     /**
      * @brief Get event flag by name.
@@ -122,7 +122,7 @@ namespace fsw
     std::string path;
     time_t evt_time;
     std::vector<fsw_event_flag> evt_flags;
-    unsigned long inode = 0;
+    unsigned long correlation_id = 0;
   };
 
   /**

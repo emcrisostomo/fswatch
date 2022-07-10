@@ -27,8 +27,8 @@ namespace fsw
   {
   }
 
-  event::event(string path, time_t evt_time, vector<fsw_event_flag> flags, unsigned long inode) :
-    path(std::move(path)), evt_time(evt_time), evt_flags(std::move(flags)), inode(inode)
+  event::event(string path, time_t evt_time, vector<fsw_event_flag> flags, unsigned long correlation_id) :
+    path(std::move(path)), evt_time(evt_time), evt_flags(std::move(flags)), correlation_id(correlation_id)
   {
   }
 
@@ -49,9 +49,9 @@ namespace fsw
     return evt_flags;
   }
 
-  unsigned long event::get_inode() const
+  unsigned long event::get_correlation_id() const
   {
-    return inode;
+    return correlation_id;
   }
 
   fsw_event_flag event::get_event_flag_by_name(const string& name)
