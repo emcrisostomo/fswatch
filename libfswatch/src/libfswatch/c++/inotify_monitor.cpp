@@ -201,7 +201,7 @@ namespace fsw
 
     if (!flags.empty())
     {
-      impl->events.emplace_back(impl->wd_to_path[event->wd], impl->curr_time, flags);
+      impl->events.emplace_back(impl->wd_to_path[event->wd], impl->curr_time, flags, event->cookie);
     }
 
     // If a new directory has been created, it should be rescanned if the
@@ -246,7 +246,7 @@ namespace fsw
 
     if (!flags.empty())
     {
-      impl->events.emplace_back(filename_stream.str(), impl->curr_time, flags);
+      impl->events.emplace_back(filename_stream.str(), impl->curr_time, flags, event->cookie);
     }
 
     {
