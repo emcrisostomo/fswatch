@@ -837,8 +837,8 @@ static int printf_event(const event& evt,
     case '0':
       os << '\0';
       break;
-    case 'i':
-      os << evt.get_inode();
+    case 'c':
+      os << evt.get_correlation_id();
       break;
     case 'n':
       os << '\n';
