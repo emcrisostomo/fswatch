@@ -126,7 +126,7 @@ namespace fsw
       throw libfsw_exception(_("Event stream could not be created."));
 
     // Creating dispatch queue
-    fsevents_queue = dispatch_queue_create("fswatch_event_queue", NULL);
+    fsevents_queue = dispatch_queue_create("fswatch_event_queue", nullptr);
     FSEventStreamSetDispatchQueue(stream, fsevents_queue);
 
     FSW_ELOG(_("Starting event stream...\n"));
@@ -207,7 +207,6 @@ namespace fsw
                                                                     kFSEventStreamEventExtendedFileIDKey));
       unsigned long inode;
       CFNumberGetValue(cf_inode, kCFNumberLongType, &inode);
-      FSW_ELOGF("INODE %ul\n", inode);
       events.emplace_back(std::string(CFStringGetCStringPtr(path, kCFStringEncodingUTF8)),
                           curr_time,
                           decode_flags(eventFlags[i]),
