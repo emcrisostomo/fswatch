@@ -17,10 +17,10 @@
  * @file
  * @brief Header of the fsw::event class.
  *
- * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
- * @version 1.8.0
+ * @version 1.18.0
  */
 
 #ifndef FSW_EVENT_H
@@ -43,6 +43,7 @@ namespace fsw
    *   - The path.
    *   - The time the event was raised.
    *   - A vector of flags specifying the type of the event.
+   *   - The correlation id of the event, if supported by the monitor, otherwise 0.
    */
   class event
   {

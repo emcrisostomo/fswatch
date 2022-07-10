@@ -10,6 +10,11 @@ New in 278-correlate-renames
     inodes to be collected with events.  This feature enables users to correlate
     rename events.
 
+  * Issue 278: inotify monitor: Add support for correlation cookie.  This
+    feature enables users to correlate rename events.
+
+  * Add %c format specifier to print the event correlation id.
+
 New in master:
 
   * Remove unused or obsolete configuration checks.
