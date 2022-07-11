@@ -78,6 +78,9 @@ check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_S
 check_include_file_cxx(unordered_map HAVE_UNORDERED_MAP)
 check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
+find_library(PTHREAD_LIBRARY pthread)
+set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
+
 check_include_file_cxx(sys/inotify.h HAVE_SYS_INOTIFY_H)
 
 if (HAVE_SYS_INOTIFY_H)
