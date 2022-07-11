@@ -6,15 +6,24 @@ New in remove-mutex-conditional-support:
   * Require <mutex>, <atomic> and thread_local and remove checks and conditional
     code.
 
+New in master:
+
+  * Remove unused or obsolete configuration checks.
+
+  * Use the #include predefined notation to include generated configuration
+    headers.
+
+  * Use target CPPFLAGS instead of AM_CPPFLAGS.
+
 New in 1.17.1:
 
   * Issue 291: Configuration header leaked into public interface in v. 1.17.0.
-  
+
 New in 1.17.0:
 
   * Refactor code to replace usages of deprecated function
     FSEventStreamScheduleWithRunLoop with FSEventStreamSetDispatchQueue.
-  
+
   * Issue 230: Improve responsiveness on macos: add support for
     kFSEventStreamCreateFlagNoDefer.
 

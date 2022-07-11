@@ -31,6 +31,10 @@ if(APPLE)
     if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "14.0")
         set(HAVE_MACOS_GE_10_10 1)
     endif()
+
+    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "17.0")
+        set(HAVE_MACOS_GE_10_13 1)
+    endif()
 endif()
 
 set(LIBFSWATCH_HEADER_FILES

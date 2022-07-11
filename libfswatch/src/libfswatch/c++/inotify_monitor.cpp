@@ -185,13 +185,13 @@ namespace fsw
 
   void inotify_monitor::scan_root_paths()
   {
-    for (std::string& path : paths)
+    for (const std::string& path : paths)
     {
       if (!is_watched(path)) scan(path);
     }
   }
 
-  void inotify_monitor::preprocess_dir_event(struct inotify_event *event)
+  void inotify_monitor::preprocess_dir_event(const struct inotify_event *event)
   {
     std::vector<fsw_event_flag> flags;
 
@@ -199,9 +199,9 @@ namespace fsw
     if (event->mask & IN_MOVE_SELF) flags.push_back(fsw_event_flag::Updated);
     if (event->mask & IN_UNMOUNT) flags.push_back(fsw_event_flag::PlatformSpecific);
 
-    if (flags.size())
+    if (!flags.empty())
     {
-      impl->events.push_back({impl->wd_to_path[event->wd], impl->curr_time, flags});
+      impl->events.emplace_back(impl->wd_to_path[event->wd], impl->curr_time, flags, event->cookie);
     }
 
     // If a new directory has been created, it should be rescanned if the
@@ -211,7 +211,7 @@ namespace fsw
     }
   }
 
-  void inotify_monitor::preprocess_node_event(struct inotify_event *event)
+  void inotify_monitor::preprocess_node_event(const struct inotify_event *event)
   {
     std::vector<fsw_event_flag> flags;
 
@@ -244,9 +244,9 @@ namespace fsw
       filename_stream << event->name;
     }
 
-    if (flags.size())
+    if (!flags.empty())
     {
-      impl->events.push_back({filename_stream.str(), impl->curr_time, flags});
+      impl->events.emplace_back(filename_stream.str(), impl->curr_time, flags, event->cookie);
     }
 
     {
@@ -309,7 +309,7 @@ namespace fsw
     }
   }
 
-  void inotify_monitor::preprocess_event(struct inotify_event *event)
+  void inotify_monitor::preprocess_event(const struct inotify_event *event)
   {
     if (event->mask & IN_Q_OVERFLOW)
     {
@@ -449,14 +449,14 @@ namespace fsw
 
       for (char *p = buffer; p < buffer + record_num;)
       {
-        struct inotify_event *event = reinterpret_cast<struct inotify_event *> (p);
+        struct inotify_event const *event = reinterpret_cast<struct inotify_event *> (p);
 
         preprocess_event(event);
 
         p += (sizeof(struct inotify_event)) + event->len;
       }
 
-      if (impl->events.size())
+      if (!impl->events.empty())
       {
         notify_events(impl->events);
         impl->events.clear();

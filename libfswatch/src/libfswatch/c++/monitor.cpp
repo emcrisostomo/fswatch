@@ -351,7 +351,8 @@ monitor::~monitor()
 
       filtered_events.emplace_back(event.get_path(),
                                    event.get_time(),
-                                   filtered_flags);
+                                   filtered_flags,
+                                   event.get_correlation_id());
     }
 
     if (bubble_events)
