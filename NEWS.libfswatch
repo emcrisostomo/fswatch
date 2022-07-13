@@ -1,7 +1,7 @@
 NEWS
 ****
 
-New in 278-correlate-renames
+New in master
 
   * Update FSEventStreamEventFlags flags and add support to macOS 10.13+
     features.
