@@ -22,9 +22,7 @@
 #include "libfswatch/gettext_defs.h"
 #include "libfswatch_exception.hpp"
 #include "libfswatch/c/libfswatch_log.h"
-#  ifdef HAVE_CXX_MUTEX
-#    include <mutex>
-#  endif
+#include <mutex>
 
 namespace fsw
 {
@@ -96,9 +94,7 @@ namespace fsw
 
   void fsevents_monitor::run()
   {
-#ifdef HAVE_CXX_MUTEX
     std::unique_lock<std::mutex> run_loop_lock(run_mutex);
-#endif
 
     if (stream) return;
 
@@ -132,17 +128,13 @@ namespace fsw
     FSW_ELOG(_("Starting event stream...\n"));
     FSEventStreamStart(stream);
 
-#ifdef HAVE_CXX_MUTEX
     run_loop_lock.unlock();
-#endif
 
     for(;;)
     {
-#ifdef HAVE_CXX_MUTEX
       run_loop_lock.lock();
       if (should_stop) break;
       run_loop_lock.unlock();
-#endif
 
       std::this_thread::sleep_for(std::chrono::milliseconds((long long) (latency * 1000)));
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2022 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -41,19 +41,10 @@ namespace fsw
     fsw_filter_type type;
   };
 
-#ifdef HAVE_CXX_MUTEX
   #define FSW_MONITOR_RUN_GUARD std::unique_lock<std::mutex> run_guard(run_mutex)
   #define FSW_MONITOR_RUN_GUARD_LOCK run_guard.lock()
   #define FSW_MONITOR_RUN_GUARD_UNLOCK run_guard.unlock()
-
   #define FSW_MONITOR_NOTIFY_GUARD std::unique_lock<std::mutex> notify_guard(notify_mutex)
-#else
-  #define FSW_MONITOR_RUN_GUARD
-  #define FSW_MONITOR_RUN_GUARD_LOCK
-  #define FSW_MONITOR_RUN_GUARD_UNLOCK
-
-  #define FSW_MONITOR_NOTIFY_GUARD
-#endif
 
   monitor::monitor(std::vector<std::string> paths,
                    FSW_EVENT_CALLBACK *callback,
@@ -66,11 +57,9 @@ namespace fsw
                              FSW_ERR_CALLBACK_NOT_SET);
     }
 
-#ifdef HAVE_INACTIVITY_CALLBACK
     milliseconds epoch =
       duration_cast<milliseconds>(system_clock::now().time_since_epoch());
     last_notification.store(epoch);
-#endif
   }
 
   void monitor::set_allow_overflow(bool overflow)
@@ -226,8 +215,6 @@ monitor::~monitor()
     stop();
   }
 
-#ifdef HAVE_INACTIVITY_CALLBACK
-
   void monitor::inactivity_callback(monitor *mon)
   {
     if (!mon) throw libfsw_exception(_("Callback argument cannot be null."));
@@ -270,8 +257,6 @@ monitor::~monitor()
     FSW_ELOG(_("Inactivity notification thread: exiting\n"));
   }
 
-#endif
-
   void monitor::start()
   {
     FSW_MONITOR_RUN_GUARD;
@@ -282,11 +267,10 @@ monitor::~monitor()
 
     // Fire the inactivity thread
     std::unique_ptr<std::thread> inactivity_thread;
-#ifdef HAVE_INACTIVITY_CALLBACK
+
     if (fire_idle_event)
       inactivity_thread.reset(
         new std::thread(monitor::inactivity_callback, this));
-#endif
 
     // Fire the monitor run loop.
     this->run();
@@ -350,12 +334,10 @@ monitor::~monitor()
     FSW_MONITOR_NOTIFY_GUARD;
 
     // Update the last notification timestamp
-#ifdef HAVE_INACTIVITY_CALLBACK
     milliseconds now =
       duration_cast<milliseconds>(
         system_clock::now().time_since_epoch());
     last_notification.store(now);
-#endif
 
     std::vector<event> filtered_events;
 

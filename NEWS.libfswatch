@@ -16,7 +16,12 @@ New in master
   * Update the event class to have a correlation id field.
 
   * Remove private headers from the list of installed header files.
-  
+
+  * Require <mutex>, <atomic> and thread_local and remove checks and conditional
+    code.
+
+  * Library interface does not depend on configuration any longer.
+
 New in 1.17.1:
 
   * Issue 291: Configuration header leaked into public interface in v. 1.17.0.

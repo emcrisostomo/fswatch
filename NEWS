@@ -22,6 +22,9 @@ New in master:
 
   * Add %c format specifier to print the event correlation id.
 
+  * Require <mutex>, <atomic> and thread_local and remove checks and conditional
+    code.
+
 New in 1.17.1:
 
   * Issue 291: Configuration header leaked into public interface in v. 1.17.0.

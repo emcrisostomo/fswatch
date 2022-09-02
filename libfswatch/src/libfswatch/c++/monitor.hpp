@@ -20,12 +20,11 @@
  * This header file defines the fsw::monitor class, the base type of a
  * `libfswatch` monitor and fundamental type of the C++ API.
  *
- * If `HAVE_CXX_MUTEX` is defined, this header includes `<mutex>`.
  *
  * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
- * @version 1.8.0
+ * @version 1.17.0
  */
 #ifndef FSW__MONITOR_H
 #  define FSW__MONITOR_H
@@ -34,9 +33,7 @@
 #  include "filter.hpp"
 #  include <vector>
 #  include <string>
-#  ifdef HAVE_CXX_MUTEX
-#    include <mutex>
-#  endif
+#  include <mutex>
 #  include <atomic>
 #  include <chrono>
 #  include <map>
@@ -75,8 +72,7 @@ namespace fsw
    *
    * Since some methods are designed to be called from different threads, this
    * class provides an internal mutex (monitor::run_mutex) that implementors
-   * should lock on when accessing shared state.  The mutex is available only
-   * when `HAVE_CXX_MUTEX` is defined.
+   * should lock on when accessing shared state.
    *
    * At least the following tasks must be performed to implement a monitor:
    *
@@ -93,11 +89,9 @@ namespace fsw
    *
    *       for (;;)
    *       {
-   *         #ifdef HAVE_CXX_MUTEX
-   *           unique_lock<mutex> run_guard(run_mutex);
-   *           if (should_stop) break;
-   *           run_guard.unlock();
-   *         #endif
+   *         unique_lock<mutex> run_guard(run_mutex);
+   *         if (should_stop) break;
+   *         run_guard.unlock();
    *
    *         scan_paths();
    *         wait_for_events();
@@ -126,9 +120,9 @@ namespace fsw
    *
    *   - It enters a loop, often infinite, where change events are waited for.
    *
-   *   - If `HAVE_CXX_MUTEX` is defined, it locks on monitor::run_mutex to
-   *     check whether monitor::should_stop is set to @c true.  If it is, the
-   *     monitor breaks the loop to return from run() as soon as possible.
+   *   - It locks on monitor::run_mutex to check whether monitor::should_stop is
+   *     set to @c true.  If it is, the monitor breaks the loop to return from
+   *     run() as soon as possible.
    *
    *   - It scans the paths that must be observed: this step might be necessary
    *     for example because some path may not have existed during the previous
@@ -607,7 +601,6 @@ namespace fsw
      */
     bool bubble_events = false;
 
-#  ifdef HAVE_CXX_MUTEX
     /**
      * @brief Mutex used to serialize access to the monitor state from multiple
      * threads.
@@ -618,20 +611,14 @@ namespace fsw
      * @brief Mutex used to serialize access to the notify_events() method.
      */
     mutable std::mutex notify_mutex;
-#  endif
 
   private:
     std::chrono::milliseconds get_latency_ms() const;
     std::vector<compiled_monitor_filter> filters;
     std::vector<fsw_event_type_filter> event_type_filters;
 
-#ifdef HAVE_CXX_MUTEX
-# ifdef HAVE_CXX_ATOMIC
-#   define HAVE_INACTIVITY_CALLBACK
     static void inactivity_callback(monitor *mon);
     mutable std::atomic<std::chrono::milliseconds> last_notification;
-# endif
-#endif
   };
 }
 

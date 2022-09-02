@@ -9,9 +9,6 @@
 #cmakedefine PACKAGE_URL       "@PACKAGE_URL@"
 #cmakedefine HAVE_GETOPT_LONG
 
-#cmakedefine HAVE_CXX_ATOMIC
-#cmakedefine HAVE_CXX_MUTEX
-#cmakedefine HAVE_CXX_THREAD_LOCAL
 #cmakedefine HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE
 #cmakedefine HAVE_PORT_H
 #cmakedefine HAVE_STRUCT_STAT_ST_MTIME
