@@ -32,6 +32,8 @@ libfswatch_la_SOURCES += libfswatch/c++/event.cpp
 libfswatch_la_SOURCES += libfswatch/c++/filter.cpp
 libfswatch_la_SOURCES += libfswatch/c++/monitor.cpp
 libfswatch_la_SOURCES += libfswatch/c++/monitor_factory.cpp
+libfswatch_la_SOURCES += libfswatch/c++/libfswatch_map.hpp
+libfswatch_la_SOURCES += libfswatch/c++/libfswatch_set.hpp
 libfswatch_la_SOURCES += libfswatch/c++/poll_monitor.cpp
 libfswatch_la_SOURCES += libfswatch/c++/path_utils.cpp
 libfswatch_la_SOURCES += libfswatch/c++/string/string_utils.cpp
@@ -97,8 +99,6 @@ libfswatch_c_HEADERS += libfswatch/c/libfswatch_log.h
 # Distribute C++ headers conditionally adding available backends.
 libfswatch_cpp_HEADERS  = libfswatch/c++/monitor.hpp
 libfswatch_cpp_HEADERS += libfswatch/c++/monitor_factory.hpp
-libfswatch_cpp_HEADERS += libfswatch/c++/libfswatch_map.hpp
-libfswatch_cpp_HEADERS += libfswatch/c++/libfswatch_set.hpp
 libfswatch_cpp_HEADERS += libfswatch/c++/path_utils.hpp
 libfswatch_cpp_HEADERS += libfswatch/c++/string/string_utils.hpp
 if USE_FSEVENTS
