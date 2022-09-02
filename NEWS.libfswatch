@@ -14,6 +14,8 @@ New in master
     feature enables users to correlate rename events.
 
   * Update the event class to have a correlation id field.
+
+  * Remove private headers from the list of installed header files.
   
 New in 1.17.1:
 

@@ -205,6 +205,7 @@ target_include_directories(libfswatch PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(libfswatch PRIVATE ${EXTRA_LIBS})
 
 install(TARGETS libfswatch LIBRARY DESTINATION lib)
+# TODO: should migrate to target_source(file_set) to install headers
 install(DIRECTORY src/libfswatch
     DESTINATION include
     FILES_MATCHING
