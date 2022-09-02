@@ -29,7 +29,6 @@
 #ifndef FSW__MONITOR_H
 #  define FSW__MONITOR_H
 
-#  include <libfswatch/libfswatch_config.h>
 #  include "filter.hpp"
 #  include <vector>
 #  include <string>
