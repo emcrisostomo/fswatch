@@ -159,7 +159,7 @@ Watch subdirectories recursively.  This option may not be supported on all
 systems.
 .It Fl t, -timestamp
 Print the event timestamp.
-.It Fl u, -utf-time
+.It Fl u, -utc-time
 Print the event time in UTC format.  When this option is not specified, the time
 is printed using the system
 .Em local
