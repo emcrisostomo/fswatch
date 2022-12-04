@@ -94,7 +94,7 @@ extern "C"
 
   /**
    * This function creates a new monitor session using the specified monitor
-   * and returns an handle to it.  This function is the `libfswatch` API entry
+   * and returns a handle to it.  This function is the `libfswatch` API entry
    * point.
    *
    * @see cmonitor.h for a list of all the available monitors.
