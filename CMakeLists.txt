@@ -28,7 +28,9 @@ set(PACKAGE_URL       "https://github.com/emcrisostomo/${PACKAGE}")
 set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "locale dir")
 #@formatter:on
 
-set(CMAKE_CXX_STANDARD 11)
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 11)
+endif()
 
 # Add option to choose between shared and static libraries
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
