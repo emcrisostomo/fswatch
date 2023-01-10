@@ -243,15 +243,16 @@ static void close_monitor()
 
 extern "C" void close_handler(int signal)
 {
+  (void)signal;
   FSW_ELOG(_("Executing termination handler.\n"));
   close_monitor();
 }
 
-static bool parse_event_bitmask(const char *optarg)
+static bool parse_event_bitmask(const char *poptarg)
 {
   try
   {
-    auto bitmask = std::stoul(optarg, nullptr, 10);
+    auto bitmask = std::stoul(poptarg, nullptr, 10);
 
     for (const auto& item : FSW_ALL_EVENT_FLAGS)
     {
@@ -269,13 +270,13 @@ static bool parse_event_bitmask(const char *optarg)
   }
 }
 
-static bool parse_event_filter(const char *optarg)
+static bool parse_event_filter(const char *poptarg)
 {
-  if (parse_event_bitmask(optarg)) return true;
+  if (parse_event_bitmask(poptarg)) return true;
 
   try
   {
-    event_filters.push_back({event::get_event_flag_by_name(optarg)});
+    event_filters.push_back({event::get_event_flag_by_name(poptarg)});
     return true;
   }
   catch (const libfsw_exception& ex)
@@ -285,17 +286,17 @@ static bool parse_event_filter(const char *optarg)
   }
 }
 
-static bool validate_latency(double latency, const char *optarg)
+static bool validate_latency(double latency, const char *poptarg)
 {
   if (latency == 0.0)
   {
-    std::cerr << _("Invalid value: ") << optarg << std::endl;
+    std::cerr << _("Invalid value: ") << poptarg << std::endl;
     return false;
   }
 
   if (errno == ERANGE || latency == HUGE_VAL)
   {
-    std::cerr << _("Value out of range: ") << optarg << std::endl;
+    std::cerr << _("Value out of range: ") << poptarg << std::endl;
     return false;
   }
 
@@ -440,12 +441,12 @@ static void process_events(const std::vector<event>& events, void *)
     write_events(events);
 }
 
-static void start_monitor(int argc, char **argv, int optind)
+static void start_monitor(int argc, char **argv, int poptind)
 {
   // parsing paths
   std::vector<std::string> paths;
 
-  for (auto i = optind; i < argc; ++i)
+  for (auto i = poptind; i < argc; ++i)
   {
     std::string path(fsw_realpath(argv[i], nullptr));
 

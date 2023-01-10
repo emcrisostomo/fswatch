@@ -21,6 +21,8 @@ void my_callback(fsw_cevent const *const events,
                  const unsigned int event_num,
                  void *data)
 {
+  (void)events;
+  (void)data;
   printf("my_callback: %d\n", event_num);
 }
 
@@ -60,7 +62,7 @@ int main(int argc, char **argv)
   if (handle == NULL)
   {
     fsw_last_error();
-    printf("Invalid fswatch handle: %p\n", handle);
+    printf("Invalid fswatch handle: %p\n", (void*)handle);
     return 2;
   }
 
