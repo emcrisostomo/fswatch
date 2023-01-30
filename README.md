@@ -251,7 +251,7 @@ monitored after the amount of configured latency has elapsed.
 The output of `fswatch` can be piped to other program in order to process it
 further:
 
-    $ fswatch -0 path | while read -d "" event \
+    $ fswatch -0 path | while read -d "" event
       do \
         // do something with ${event}
       done
