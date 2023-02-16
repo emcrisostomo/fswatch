@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+find_package(Threads REQUIRED)
 set(SOURCE_FILES
         fswatch_test.c
         ${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h)
@@ -20,4 +21,4 @@ set(SOURCE_FILES
 add_executable(fswatch_test ${SOURCE_FILES})
 target_include_directories(fswatch_test PRIVATE ../.. .)
 target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})
-target_link_libraries(fswatch_test PUBLIC libfswatch)
+target_link_libraries(fswatch_test PUBLIC libfswatch Threads::Threads)
