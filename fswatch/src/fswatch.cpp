@@ -245,6 +245,11 @@ extern "C" void close_handler(int signal)
 {
   FSW_ELOG(_("Executing termination handler.\n"));
   close_monitor();
+
+  if (_1flag)
+  {
+    exit(128 + signal);
+  }
 }
 
 static bool parse_event_bitmask(const char *optarg)
