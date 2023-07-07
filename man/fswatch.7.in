@@ -74,12 +74,16 @@ A space-separated list of
 ).
 .El
 .Pp
+By default,
 .Nm
 enters an infinite loop and never returns.  When it receives a SIGABRT, SIGINT
 or SIGTERM signal,
 .Nm
 closes the notification streams and exits gracefully returning 0 to the calling
-process.
+process.  (Unless running in
+.Op Fl 1, -one-event
+mode, in which case it sets its return code according to the signal it
+received, as usual.)
 .Pp
 The following options are available:
 .Bl -tag -width indent
