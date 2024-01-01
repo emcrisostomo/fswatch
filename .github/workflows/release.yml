@@ -31,7 +31,7 @@ jobs:
       run: docker run --name ${DOCKER_CONTAINER_NAME} -d ${DOCKER_IMAGE_TAG}
     - name: Copy Artifacts From Container
       run: |
-        docker cp -r ${DOCKER_CONTAINER_NAME}:/artifacts .
+        docker cp ${DOCKER_CONTAINER_NAME}:/artifacts .
     - name: Release
       uses: ncipollo/release-action@v1.13.0
       with:
