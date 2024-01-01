@@ -1,0 +1,33 @@
+
+name: Release
+
+on: 
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - name: update-pkgs
+      run: sudo apt-get -y update
+    - name: install-autotools
+      run: sudo apt-get install -y git autoconf automake gettext autopoint libtool make g++ texinfo curl
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make -j
+    - name: make check
+      run: make check
+    - name: make install
+      run: sudo make install
+    - uses: ncipollo/release-action@v1.13.0
+      with:
+        artifacts: "/usr/local/bin/fswatch,/usr/local/lib/*fswatch*"
+        name: ${{ github.ref_name }}
