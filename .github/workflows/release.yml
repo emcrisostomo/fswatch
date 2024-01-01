@@ -28,8 +28,16 @@ jobs:
       run: make check
     - name: make install
       run: sudo make install
+    - name: Package
+      run: |
+        mkdir artifacts package && \
+        cd package && \
+        cp /usr/local/bin/fswatch . && \
+        cp -r /usr/local/lib/*fswatch* . && \
+        tar -czvf ../artifacts/fswatch-${{ github.ref_name }}.tar.gz . && \
+        zip -r ../artifacts/fswatch-${{ github.ref_name }}.zip .
     - name: Release
       uses: ncipollo/release-action@v1.13.0
       with:
-        artifacts: "/usr/local/bin/fswatch,/usr/local/lib/*fswatch*"
+        artifacts: "artifacts/*"
         name: ${{ github.ref_name }}
