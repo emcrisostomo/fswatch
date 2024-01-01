@@ -135,3 +135,6 @@ docker/debian-testing/Dockerfile
 
 # Output files
 man/fswatch.7
+*.zip
+*.tar.gz
+*.tgz

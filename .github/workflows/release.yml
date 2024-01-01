@@ -31,15 +31,7 @@ jobs:
       run: docker run --name ${DOCKER_CONTAINER_NAME} -d ${DOCKER_IMAGE_TAG}
     - name: Copy Artifacts From Container
       run: |
-        mkdir package && \
-        docker cp ${DOCKER_CONTAINER_NAME}:/usr/local/bin/fswatch package/ && \
-        docker cp ${DOCKER_CONTAINER_NAME}:/usr/local/lib/*fswatch* package/
-    - name: Prepare Artifacts
-      run: |
-        mkdir artifacts && \
-        cd package && \
-        tar -czvf ../artifacts/fswatch-${{ github.ref_name }}.tar.gz . && \
-        zip -r ../artifacts/fswatch-${{ github.ref_name }}.zip .
+        docker cp -r ${DOCKER_CONTAINER_NAME}:/artifacts .
     - name: Release
       uses: ncipollo/release-action@v1.13.0
       with:
