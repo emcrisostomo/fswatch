@@ -32,6 +32,7 @@ jobs:
     - name: Copy Artifacts From Container
       run: |
         docker cp ${DOCKER_CONTAINER_NAME}:/artifacts .
+        ls -ltr artifacts
     - name: Release
       uses: ncipollo/release-action@v1.13.0
       with:
