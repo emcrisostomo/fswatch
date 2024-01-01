@@ -7,7 +7,8 @@ on:
     - '*'
 
 jobs:
-  build:
+  release:
+    name: Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -27,7 +28,8 @@ jobs:
       run: make check
     - name: make install
       run: sudo make install
-    - uses: ncipollo/release-action@v1.13.0
+    - name: Release
+      uses: ncipollo/release-action@v1.13.0
       with:
         artifacts: "/usr/local/bin/fswatch,/usr/local/lib/*fswatch*"
         name: ${{ github.ref_name }}
