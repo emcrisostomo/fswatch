@@ -12,32 +12,37 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    strategy:
+      matrix:
+        include:
+            - arch: arm64
+            - arch: amd64
+    env:
+        DOCKER_IMAGE_TAG: fswatch-${{ matrix.arch }}
+        DOCKER_CONTAINER_NAME: fswatch-${{ matrix.arch }}
+        DOCKER_PLATFORM: linux/${{ matrix.arch }}
     steps:
     - uses: actions/checkout@v4.1.1
-    - name: update-pkgs
-      run: sudo apt-get -y update
-    - name: install-autotools
-      run: sudo apt-get install -y git autoconf automake gettext autopoint libtool make g++ texinfo curl
-    - name: autogen
-      run: ./autogen.sh
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make -j
-    - name: make check
-      run: make check
-    - name: make install
-      run: sudo make install
-    - name: Package
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3.0.0
+    - name: Build Docker Image
+      run: docker build --platform ${DOCKER_PLATFORM} -t ${DOCKER_IMAGE_TAG} .
+    - name: Run Container
+      run: docker run --name ${DOCKER_CONTAINER_NAME} ${DOCKER_IMAGE_TAG} -d 
+    - name: Copy Artifacts From Container
       run: |
-        mkdir artifacts package && \
+        mkdir package && \
+        docker cp ${DOCKER_CONTAINER_NAME}:/usr/local/bin/fswatch package/ && \
+        docker cp ${DOCKER_CONTAINER_NAME}:/usr/local/lib/*fswatch* package/
+    - name: Prepare Artifacts
+      run: |
+        mkdir artifacts && \
         cd package && \
-        cp /usr/local/bin/fswatch . && \
-        cp -r /usr/local/lib/*fswatch* . && \
         tar -czvf ../artifacts/fswatch-${{ github.ref_name }}.tar.gz . && \
         zip -r ../artifacts/fswatch-${{ github.ref_name }}.zip .
     - name: Release
       uses: ncipollo/release-action@v1.13.0
       with:
         artifacts: "artifacts/*"
+        allowUpdates: true
         name: ${{ github.ref_name }}
