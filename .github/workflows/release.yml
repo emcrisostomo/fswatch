@@ -28,7 +28,7 @@ jobs:
     - name: Build Docker Image
       run: docker build --platform ${DOCKER_PLATFORM} -t ${DOCKER_IMAGE_TAG} .
     - name: Run Container
-      run: docker run --name ${DOCKER_CONTAINER_NAME} ${DOCKER_IMAGE_TAG} -d 
+      run: docker run --name ${DOCKER_CONTAINER_NAME} -d ${DOCKER_IMAGE_TAG}
     - name: Copy Artifacts From Container
       run: |
         mkdir package && \
