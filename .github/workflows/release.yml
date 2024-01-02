@@ -7,11 +7,9 @@ on:
     - '*'
 
 jobs:
-  release:
-    name: Release
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     strategy:
       matrix:
         include:
@@ -33,9 +31,28 @@ jobs:
       run: |
         docker cp ${DOCKER_CONTAINER_NAME}:/artifacts .
         ls -ltr artifacts
-    - name: Release
-      uses: ncipollo/release-action@v1.13.0
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4.0.0
       with:
-        artifacts: "artifacts/*"
-        allowUpdates: true
-        name: ${{ github.ref_name }}
+        name: artifacts-linux-${{ matrix.arch }}}
+        path: artifacts
+
+  release:
+    name: Release
+    needs: build
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4.1.0
+        with:
+          path: artifacts
+      - name: List artifacts
+        run: ls -ltr artifacts
+      - name: Release
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          artifacts: "artifacts/*"
+          allowUpdates: true
+          name: ${{ github.ref_name }}
