@@ -53,6 +53,6 @@ jobs:
       - name: Release
         uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: "artifacts/*"
+          artifacts: "artifacts/*.zip,artifacts/*.tar.gz"
           allowUpdates: true
           name: ${{ github.ref_name }}
