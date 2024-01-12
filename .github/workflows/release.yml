@@ -41,7 +41,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4.0.0
       with:
-        name: artifacts-linux-${{ matrix.arch }}
+        name: artifacts-linux-${{ matrix.os }}-${{ matrix.arch }}
         path: artifacts
 
   release:
