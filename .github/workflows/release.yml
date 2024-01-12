@@ -12,19 +12,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        os:
+          - ubuntu
+          - alpine
         include:
             - arch: arm64
             - arch: amd64
     env:
-        DOCKER_IMAGE_TAG: fswatch-${{ matrix.arch }}
-        DOCKER_CONTAINER_NAME: fswatch-${{ matrix.arch }}
+        DOCKER_IMAGE_TAG: fswatch-${{ matrix.os }}-${{ matrix.arch }}
+        DOCKER_CONTAINER_NAME: fswatch-${{ matrix.os }}-${{ matrix.arch }}
         DOCKER_PLATFORM: linux/${{ matrix.arch }}
+        DOCKER_OS: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4.1.1
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3.0.0
     - name: Build Docker Image
-      run: docker build --platform ${DOCKER_PLATFORM} -t ${DOCKER_IMAGE_TAG} .
+      run: docker build -f Dockerfile.${DOCKER_OS} --platform ${DOCKER_PLATFORM} -t ${DOCKER_IMAGE_TAG} .
     - name: Run Container
       run: docker run --name ${DOCKER_CONTAINER_NAME} -d ${DOCKER_IMAGE_TAG}
     - name: Copy Artifacts From Container
