@@ -12,12 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os:
-          - ubuntu
-          - alpine
         include:
             - arch: arm64
+              os: ubuntu
             - arch: amd64
+              os: ubuntu
+            - arch: arm64
+              os: alpine
+            - arch: amd64
+              os: alpine              
     env:
         DOCKER_IMAGE_TAG: fswatch-${{ matrix.os }}-${{ matrix.arch }}
         DOCKER_CONTAINER_NAME: fswatch-${{ matrix.os }}-${{ matrix.arch }}
