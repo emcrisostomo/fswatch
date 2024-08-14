@@ -41,7 +41,7 @@ Table of Contents
 libfswatch
 ----------
 
-`fswatch` is a frontend of `libfswatch`, a library with C and C++ binding.  More
+`fswatch` is a frontend of `libfswatch`, a library with C, C++ and [Go](https://github.com/dunglas/go-fswatch) binding.  More
 information on `libfswatch` can be found [here][README.libfswatch.md]. 
 
 [README.libfswatch.md]: README.libfswatch.md

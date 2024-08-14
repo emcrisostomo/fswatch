@@ -97,6 +97,8 @@
  * between the C library functions operating on a monitoring session and the
  * methods of the `monitor` class.
  *
+ * Go bindings are also available at https://github.com/dunglas/go-fswatch
+ *
  * @section thread-safety Thread Safety
  *
  * The C++ API does not deal with thread safety explicitly.  Rather, it leaves
