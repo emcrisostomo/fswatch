@@ -3,7 +3,7 @@ README
 
 `libfswatch` is a library that provides developers the functionality of
 `fswatch`, the main `libfswatch` frontend.  The library provides both C and C++
-bindings.
+bindings. [Go bindings](https://github.com/dunglas/go-fswatch) are also available.
 
 `libfswatch` provides the following [documentation]:
 
