@@ -1969,13 +1969,13 @@ certain integer @math{k}, then the numeric value of a set of event
 flags is univocally determined.
 
 To check whether a given event flag is present when processing
-@command{fswatch} output, iti s sufficient to check whether its bit is
+@command{fswatch} output, it is sufficient to check whether it's bit is
 set to 1 in the event value.  Let's suppose we want to check whether
 the event flag whose value is @math{e} is present in a record whose
 flag numerical value is @math{n}.  If the result @math{r} of
 
 @tex
-$$ r = e \wedge b $$
+$$ r = e \wedge n $$
 @end tex
 
 @noindent
