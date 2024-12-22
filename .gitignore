@@ -130,6 +130,7 @@ docker/alpine/Dockerfile
 docker/alpine-no-gettext/Dockerfile
 docker/debian9/Dockerfile
 docker/debian10/Dockerfile
+docker/debian11/Dockerfile
 docker/debian-stable/Dockerfile
 docker/debian-testing/Dockerfile
 
