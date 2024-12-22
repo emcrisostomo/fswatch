@@ -274,8 +274,8 @@ AS_VAR_IF([use_docker], [yes],
     AX_GIT_CURRENT_BRANCH
     AC_CONFIG_FILES([docker/alpine/Dockerfile])
     AC_CONFIG_FILES([docker/alpine-no-gettext/Dockerfile])
-    AC_CONFIG_FILES([docker/debian9/Dockerfile])
     AC_CONFIG_FILES([docker/debian10/Dockerfile])
+    AC_CONFIG_FILES([docker/debian11/Dockerfile])
     AC_CONFIG_FILES([docker/debian-stable/Dockerfile])
     AC_CONFIG_FILES([docker/debian-testing/Dockerfile])
   ],
