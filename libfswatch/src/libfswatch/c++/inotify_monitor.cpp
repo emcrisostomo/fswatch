@@ -165,7 +165,17 @@ namespace fsw
     if (!add_watch(path, fd_stat)) return;
     if (!recursive || !is_dir) return;
 
-    std::vector<std::string> children = get_directory_children(path);
+    auto start = std::chrono::high_resolution_clock::now();
+    std::vector<std::string> children = get_subdirectories(path);
+    // Get the ending time
+    auto end = std::chrono::high_resolution_clock::now();
+
+    // Calculate the duration
+    std::chrono::duration<double> duration = end - start;
+
+    // Print the duration in seconds
+    std::cout << "get_directory_children execution time: " << duration.count() << " seconds\n";
+
 
     for (const std::string& child : children)
     {
@@ -387,9 +397,19 @@ namespace fsw
       if (should_stop) break;
       run_guard.unlock();
 
+      FSW_LOG("First scan\n");
       process_pending_events();
+      FSW_LOG("Before scan root paths\n");
 
+      auto start = std::chrono::high_resolution_clock::now();
       scan_root_paths();
+      auto end = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double> duration = end - start;
+
+    // Print the duration in seconds
+    std::cout << "Function execution time: " << duration.count() << " seconds\n";
+
+      FSW_LOG("After scan\n");  
 
       // If no files can be watched, sleep and repeat the loop.
       if (!impl->watched_descriptors.size())

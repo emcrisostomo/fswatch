@@ -50,6 +50,14 @@ namespace fsw
    * @return A vector containing the list of children of @p path.
    */
   std::vector<std::string> get_directory_children(const std::string& path);
+  
+  /**
+   * @brief Gets a vector of direct directory children of type directory.
+   *
+   * @param path The directory whose children must be returned.
+   * @return A vector containing the list of directory children of @p path.
+   */
+  std::vector<std::string> get_subdirectories(const std::string& path);
 
   /**
    * @brief Resolves a path name.

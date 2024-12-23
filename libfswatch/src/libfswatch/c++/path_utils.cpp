@@ -56,6 +56,48 @@ namespace fsw
     return children;
   }
 
+  vector<string> get_subdirectories(const string& path)
+  {
+    vector<string> children;
+    DIR *dir = opendir(path.c_str());
+
+    if (!dir)
+    {
+      if (errno == EMFILE || errno == ENFILE)
+      {
+        perror("opendir");
+      }
+      else
+      {
+        fsw_log_perror("opendir");
+      }
+
+      return children;
+    }
+
+    while (struct dirent *ent = readdir(dir))
+    {
+      if (ent->d_type == DT_UNKNOWN)
+      {
+        struct stat fd_stat;
+
+        if (stat(ent->d_name, &fd_stat) == 0)
+        {
+          if (S_ISDIR(fd_stat.st_mode))
+          {
+            children.emplace_back(ent->d_name);
+          }
+        }
+      }
+      else if (ent->d_type == DT_DIR)
+        children.emplace_back(ent->d_name);
+    }
+
+    closedir(dir);
+
+    return children;
+  }
+
   bool read_link_path(const string& path, string& link_path)
   {
     link_path = fsw_realpath(path.c_str(), nullptr);
