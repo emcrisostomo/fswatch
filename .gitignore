@@ -35,6 +35,9 @@ out/*
 # NetBeans
 nbproject/
 
+# VSCode
+.vscode/
+
 # GNU Build System
 autoscan.log
 configure.scan
