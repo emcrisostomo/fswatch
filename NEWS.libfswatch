@@ -3,6 +3,8 @@ NEWS
 
 New in master
 
+  * Documentation: add reference to Go bindings.
+
   * Update FSEventStreamEventFlags flags and add support to macOS 10.13+
     features.
 

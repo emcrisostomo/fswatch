@@ -3,6 +3,10 @@ NEWS
 
 New in master:
 
+  * Documentation: add reference to Go bindings.
+
+  * Issue 313: Make -1, --one-event return $? when killed.
+
   * Remove unused or obsolete configuration checks.
 
   * Use the #include predefined notation to include generated configuration
