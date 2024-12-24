@@ -329,9 +329,28 @@ degradation that may result from frequent disk access.
 .Sh FILTERING PATHS
 Received events can be filtered by path using regular expressions.  Regular
 expressions can be used to include or exclude matching paths.  The user can
-specify multiple filter expression in any order and the
-.Em first
-matching expression wins.
+specify multiple filter expression in any order and filters are processed this
+way:
+.Bl -tag -width indent
+.It -
+If a path matches an including filter, the path is accepted no matter
+any other filter.
+.It -
+If a path matches an excluding filter, the path is rejected.
+.It -
+If a path matches no filters, the path is accepted.
+.El
+Said another way:
+.Bl -tag -width indent
+.It -
+All paths are accepted @emph{by default}, unless an exclusion filter
+says otherwise.
+.It -
+Inclusion filters may override any other exclusion filter.
+.It -
+The order in the definition of filters in the command line has no effect.
+.El
+
 .Pp
 Other options govern how regular expressions are interpreted:
 .Bl -tag -width indent
