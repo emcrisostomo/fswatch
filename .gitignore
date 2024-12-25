@@ -52,6 +52,10 @@ libtool
 stamp-h1
 .dirstamp
 
+# CMake
+CMakeCache.txt
+CMakeFiles/*
+
 # libtool
 **/m4/libtool.m4
 **/m4/ltoptions.m4
