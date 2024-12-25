@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 project(fswatch VERSION 1.17.1 LANGUAGES C CXX)
 
 #@formatter:off
@@ -29,6 +29,8 @@ set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "loc
 #@formatter:on
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Add option to choose between shared and static libraries
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
