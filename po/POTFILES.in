@@ -16,10 +16,12 @@
 # List of source files which contain translatable strings.
 #
 fswatch/src/fswatch.cpp
+libfswatch/src/libfswatch/c/cevent.cpp
 libfswatch/src/libfswatch/c/libfswatch.cpp
 libfswatch/src/libfswatch/c/libfswatch_log.cpp
 libfswatch/src/libfswatch/c++/event.cpp
 libfswatch/src/libfswatch/c++/fen_monitor.cpp
+libfswatch/src/libfswatch/c++/filter.cpp
 libfswatch/src/libfswatch/c++/fsevents_monitor.cpp
 libfswatch/src/libfswatch/c++/inotify_monitor.cpp
 libfswatch/src/libfswatch/c++/kqueue_monitor.cpp
@@ -28,9 +30,10 @@ libfswatch/src/libfswatch/c++/monitor.cpp
 libfswatch/src/libfswatch/c++/monitor_factory.cpp
 libfswatch/src/libfswatch/c++/path_utils.cpp
 libfswatch/src/libfswatch/c++/poll_monitor.cpp
-libfswatch/src/libfswatch/c++/windows_monitor.cpp
+libfswatch/src/libfswatch/c++/string/string_utils.cpp
 libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp
 libfswatch/src/libfswatch/c++/windows/win_error_message.cpp
 libfswatch/src/libfswatch/c++/windows/win_handle.cpp
 libfswatch/src/libfswatch/c++/windows/win_paths.cpp
 libfswatch/src/libfswatch/c++/windows/win_strings.cpp
+libfswatch/src/libfswatch/c++/windows_monitor.cpp

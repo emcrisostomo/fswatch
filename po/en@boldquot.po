@@ -32,8 +32,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.17.1\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2024-12-26 20:08+0100\n"
-"PO-Revision-Date: 2024-12-26 20:08+0100\n"
+"POT-Creation-Date: 2024-12-26 21:34+0100\n"
+"PO-Revision-Date: 2024-12-26 21:34+0100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@boldquot\n"
@@ -370,6 +370,18 @@ msgstr "Rescanning %s.\n"
 msgid "Event from unexpected source"
 msgstr "Event from unexpected source"
 
+#: libfswatch/src/libfswatch/c++/filter.cpp:40
+msgid "File not found: "
+msgstr "File not found: "
+
+#: libfswatch/src/libfswatch/c++/filter.cpp:112
+msgid "Unknown filter type: "
+msgstr "Unknown filter type: "
+
+#: libfswatch/src/libfswatch/c++/filter.cpp:127
+msgid "Unknown flag: "
+msgstr "Unknown flag: "
+
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:122
 msgid "Event stream could not be created."
 msgstr "Event stream could not be created."
@@ -507,6 +519,44 @@ msgstr "Cannot lstat %s"
 msgid "Done scanning.\n"
 msgstr "Done scanning.\n"
 
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:72
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:73
+msgid "malloc failed."
+msgstr "malloc failed."
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:90
+#, c-format
+msgid "%p.\n"
+msgstr "%p.\n"
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:109
+#, c-format
+msgid "GetOverlappedResult: %s\n"
+msgstr "GetOverlappedResult: %s\n"
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:116
+msgid "ResetEvent failed."
+msgstr "ResetEvent failed."
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:118
+#, c-format
+msgid "Event %d reset.\n"
+msgstr "Event %d reset.\n"
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:151
+msgid "File name unexpectedly empty."
+msgstr "File name unexpectedly empty."
+
+#: libfswatch/src/libfswatch/c++/windows/win_handle.cpp:40
+#, c-format
+msgid "Closing handle: %d.\n"
+msgstr "Closing handle: %d.\n"
+
+#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:30
+#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:42
+msgid "cygwin_create_path could not allocate memory to convert the path."
+msgstr "cygwin_create_path could not allocate memory to convert the path."
+
 #: libfswatch/src/libfswatch/c++/windows_monitor.cpp:81
 #, c-format
 msgid "Creating event for %s.\n"
@@ -558,41 +608,3 @@ msgstr "GetOverlappedResult returned %d bytes\n"
 #, c-format
 msgid "ReadDirectoryChangesW: %s\n"
 msgstr "ReadDirectoryChangesW: %s\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:72
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:73
-msgid "malloc failed."
-msgstr "malloc failed."
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:90
-#, c-format
-msgid "%p.\n"
-msgstr "%p.\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:109
-#, c-format
-msgid "GetOverlappedResult: %s\n"
-msgstr "GetOverlappedResult: %s\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:116
-msgid "ResetEvent failed."
-msgstr "ResetEvent failed."
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:118
-#, c-format
-msgid "Event %d reset.\n"
-msgstr "Event %d reset.\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:151
-msgid "File name unexpectedly empty."
-msgstr "File name unexpectedly empty."
-
-#: libfswatch/src/libfswatch/c++/windows/win_handle.cpp:40
-#, c-format
-msgid "Closing handle: %d.\n"
-msgstr "Closing handle: %d.\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:30
-#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:42
-msgid "cygwin_create_path could not allocate memory to convert the path."
-msgstr "cygwin_create_path could not allocate memory to convert the path."

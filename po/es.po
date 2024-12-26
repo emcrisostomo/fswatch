@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.11.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2024-12-26 20:08+0100\n"
+"POT-Creation-Date: 2024-12-26 21:34+0100\n"
 "PO-Revision-Date: 2017-10-29 14:04+0100\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -348,6 +348,18 @@ msgstr "Rastreando %s.\n"
 msgid "Event from unexpected source"
 msgstr "Evento de fuente inesperada"
 
+#: libfswatch/src/libfswatch/c++/filter.cpp:40
+msgid "File not found: "
+msgstr "Fichero no encontrado: "
+
+#: libfswatch/src/libfswatch/c++/filter.cpp:112
+msgid "Unknown filter type: "
+msgstr "Tipo filtro desconocido: "
+
+#: libfswatch/src/libfswatch/c++/filter.cpp:127
+msgid "Unknown flag: "
+msgstr "Flag desconocida: "
+
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:122
 msgid "Event stream could not be created."
 msgstr "El flujo de eventos no se puede crear."
@@ -485,6 +497,44 @@ msgstr "No se puede hacer lstat() de %s"
 msgid "Done scanning.\n"
 msgstr "Rastreo terminado.\n"
 
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:72
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:73
+msgid "malloc failed."
+msgstr "malloc falló."
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:90
+#, c-format
+msgid "%p.\n"
+msgstr "%p.\n"
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:109
+#, c-format
+msgid "GetOverlappedResult: %s\n"
+msgstr "GetOverlappedResult: %s\n"
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:116
+msgid "ResetEvent failed."
+msgstr "ResetEvent falló."
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:118
+#, c-format
+msgid "Event %d reset.\n"
+msgstr "Evento %d restablecido.\n"
+
+#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:151
+msgid "File name unexpectedly empty."
+msgstr "Nombre de fichero inesperadamente vacío."
+
+#: libfswatch/src/libfswatch/c++/windows/win_handle.cpp:40
+#, c-format
+msgid "Closing handle: %d.\n"
+msgstr "Cerrando handle: %d.\n"
+
+#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:30
+#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:42
+msgid "cygwin_create_path could not allocate memory to convert the path."
+msgstr "cygwin_create_path no pudo alocar memoria para convertir la ruta."
+
 #: libfswatch/src/libfswatch/c++/windows_monitor.cpp:81
 #, c-format
 msgid "Creating event for %s.\n"
@@ -536,68 +586,3 @@ msgstr "GetOverlappedResult devolvió %d bytes\n"
 #, c-format
 msgid "ReadDirectoryChangesW: %s\n"
 msgstr "ReadDirectoryChangesW: %s\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:72
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:73
-msgid "malloc failed."
-msgstr "malloc falló."
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:90
-#, c-format
-msgid "%p.\n"
-msgstr "%p.\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:109
-#, c-format
-msgid "GetOverlappedResult: %s\n"
-msgstr "GetOverlappedResult: %s\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:116
-msgid "ResetEvent failed."
-msgstr "ResetEvent falló."
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:118
-#, c-format
-msgid "Event %d reset.\n"
-msgstr "Evento %d restablecido.\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_directory_change_event.cpp:151
-msgid "File name unexpectedly empty."
-msgstr "Nombre de fichero inesperadamente vacío."
-
-#: libfswatch/src/libfswatch/c++/windows/win_handle.cpp:40
-#, c-format
-msgid "Closing handle: %d.\n"
-msgstr "Cerrando handle: %d.\n"
-
-#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:30
-#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:42
-msgid "cygwin_create_path could not allocate memory to convert the path."
-msgstr "cygwin_create_path no pudo alocar memoria para convertir la ruta."
-
-#~ msgid "Scheduling stream with run loop...\n"
-#~ msgstr "Planificando el flujo de eventos con el bucle de ejecución...\n"
-
-#~ msgid "Starting run loop...\n"
-#~ msgstr "Arrancando el bucle de ejecución...\n"
-
-#~ msgid "run loop is null"
-#~ msgstr "loop de ejecución nulo"
-
-#~ msgid "Stopping run loop...\n"
-#~ msgstr "Parando el bucle de ejecución...\n"
-
-#~ msgid "Error: "
-#~ msgstr "Error: "
-
-#~ msgid "Done.\n"
-#~ msgstr "Hecho.\n"
-
-#~ msgid "Latency set to: "
-#~ msgstr "Establece la latencia a: "
-
-#~ msgid "::select() on inotify descriptor encountered an error."
-#~ msgstr "::select() sobre el descriptor inotify encontró un error."
-
-#~ msgid "Notice: "
-#~ msgstr "Aviso: "
