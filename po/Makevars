@@ -59,6 +59,12 @@ USE_MSGCTXT = no
 #   --quiet               to reduce the verbosity.
 MSGMERGE_OPTIONS =
 
+# These options get passed to msginit.
+# If you want to disable line wrapping when writing PO files, add
+# --no-wrap to MSGMERGE_OPTIONS, XGETTEXT_OPTIONS, and
+# MSGINIT_OPTIONS.
+MSGINIT_OPTIONS =
+
 # This tells whether or not to regenerate a PO file when $(DOMAIN).pot
 # has changed.  Possible values are "yes" and "no".  Set this to no if
 # the POT file is checked in the repository and the version control
