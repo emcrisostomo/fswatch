@@ -30,6 +30,7 @@
 #  include <sys/stat.h>
 #  include <ctime>
 #  include <memory>
+#  include <filesystem>
 
 namespace fsw
 {
@@ -75,7 +76,7 @@ namespace fsw
 
     struct poll_monitor_data;
 
-    void scan(const std::string& path, poll_monitor_scan_callback fn);
+    void scan(const std::filesystem::path& path, poll_monitor_scan_callback fn);
     void collect_initial_data();
     void collect_data();
     bool add_path(const std::string& path,

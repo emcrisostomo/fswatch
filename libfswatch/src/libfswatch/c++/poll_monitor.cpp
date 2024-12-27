@@ -39,6 +39,7 @@ namespace fsw
 {
   using std::vector;
   using std::string;
+  using std::filesystem::path;
 
   using poll_monitor_data = struct poll_monitor::poll_monitor_data
   {
@@ -74,37 +75,40 @@ namespace fsw
   {
     if (new_data->tracked_files.count(path)) return false;
 
-    watched_file_info wfi{FSW_MTIME(stat), FSW_CTIME(stat)};
+    const auto mtime = FSW_MTIME(stat);
+    const auto ctime = FSW_CTIME(stat);
+
+    watched_file_info wfi{mtime, ctime};
     new_data->tracked_files[path] = wfi;
 
-    if (previous_data->tracked_files.count(path))
-    {
-      watched_file_info pwfi = previous_data->tracked_files[path];
-      vector<fsw_event_flag> flags;
-
-      if (FSW_MTIME(stat) > pwfi.mtime)
-      {
-        flags.push_back(fsw_event_flag::Updated);
-      }
-
-      if (FSW_CTIME(stat) > pwfi.ctime)
-      {
-        flags.push_back(fsw_event_flag::AttributeModified);
-      }
-
-      if (!flags.empty())
-      {
-        events.emplace_back(path, curr_time, flags);
-      }
-
-      previous_data->tracked_files.erase(path);
-    }
-    else
+    if (!previous_data->tracked_files.count(path))
     {
       vector<fsw_event_flag> flags;
       flags.push_back(fsw_event_flag::Created);
       events.emplace_back(path, curr_time, flags);
+
+      return true;
     }
+    
+    watched_file_info pwfi = previous_data->tracked_files[path];
+    vector<fsw_event_flag> flags;
+
+    if (mtime > pwfi.mtime)
+    {
+      flags.push_back(fsw_event_flag::Updated);
+    } 
+
+    if (ctime > pwfi.ctime)
+    {
+      flags.push_back(fsw_event_flag::AttributeModified);
+    }
+
+    if (!flags.empty())
+    {
+      events.emplace_back(path, curr_time, flags);
+    }
+
+    previous_data->tracked_files.erase(path);
 
     return true;
   }
@@ -116,32 +120,42 @@ namespace fsw
     return ((*this).*(poll_callback))(path, fd_stat);
   }
 
-  void poll_monitor::scan(const string& path, poll_monitor_scan_callback fn)
+  void poll_monitor::scan(const path& path, poll_monitor_scan_callback fn)
   {
-    struct stat fd_stat;
-    if (!lstat_path(path, fd_stat)) return;
-
-    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+    try
     {
-      string link_path;
-      if (read_link_path(path, link_path))
+      auto status = std::filesystem::symlink_status(path);
+      
+      // Check if the path is a symbolic link
+      if (follow_symlinks && std::filesystem::is_symlink(status))
+      {
+        auto link_path = std::filesystem::read_symlink(path);
         scan(link_path, fn);
+        return;
+      }
 
-      return;
+      if (!accept_path(path)) return;
+
+      // TODO: C++17 doesn't standardize access to ctime, so we need to keep
+      // using lstat for now.
+      struct stat fd_stat;
+      if (!lstat_path(path, fd_stat)) return;
+
+      if (!add_path(path, fd_stat, fn)) return;
+      if (!recursive) return;
+      if (!S_ISDIR(fd_stat.st_mode)) return;
+
+      const auto entries = get_directory_entries(path);
+
+      for (const auto& entry : entries)
+      {
+        scan(entry.path(), fn);
+      }
     }
-
-    if (!accept_path(path)) return;
-    if (!add_path(path, fd_stat, fn)) return;
-    if (!recursive) return;
-    if (!S_ISDIR(fd_stat.st_mode)) return;
-
-    vector<string> children = get_directory_children(path);
-
-    for (const string& child : children)
+    catch (const std::filesystem::filesystem_error& e) 
     {
-      if (child == "." || child == "..") continue;
-
-      scan(path + "/" + child, fn);
+        // Handle errors, such as permission issues or non-existent paths
+        FSW_ELOGF(_("Filesystem error: %s"), e.what());
     }
   }
 
