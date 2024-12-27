@@ -29,7 +29,7 @@
 #  include <ctime>
 #  include <cstdio>
 #  include <cmath>
-#include <utility>
+#  include <utility>
 #  include <unistd.h>
 #  include <fcntl.h>
 
@@ -174,38 +174,45 @@ namespace fsw
     return true;
   }
 
-  bool kqueue_monitor::scan(const std::string& path, bool is_root_path)
+  void kqueue_monitor::scan(const std::filesystem::path& path, bool is_root_path)
   {
-    struct stat fd_stat{};
-    if (!lstat_path(path, fd_stat)) return false;
-
-    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+    try
     {
-      std::string link_path;
-      if (read_link_path(path, link_path))
-        return scan(link_path);
+      const auto status = std::filesystem::symlink_status(path);
 
-      return false;
+      // Check if the path is a symbolic link
+      if (follow_symlinks && std::filesystem::is_symlink(status))
+      {
+        const auto link_path = std::filesystem::read_symlink(path);
+        scan(link_path, is_root_path);
+        return;
+      }
+
+      const bool is_dir = std::filesystem::is_directory(status);
+
+      if (!is_dir && !is_root_path && directory_only) return;
+      if (!accept_path(path)) return;
+
+      // TODO: C++17 doesn't provide a single, comparable, type to represent st_mode
+      struct stat fd_stat;
+      if (!lstat_path(path, fd_stat)) return;
+
+      if (!add_watch(path, fd_stat)) return;
+      if (!recursive || !is_dir) return;
+
+      // TODO: Consider using std::filesystem::recursive_directory_iterator
+      const auto entries = get_directory_entries(path);
+
+      for (const auto& entry : entries)
+      {
+        scan(entry, false);
+      }
     }
-
-    bool is_dir = S_ISDIR(fd_stat.st_mode);
-
-    if (!is_dir && !is_root_path && directory_only) return true;
-    if (!accept_path(path)) return true;
-    if (!add_watch(path, fd_stat)) return false;
-    if (!recursive) return true;
-    if (!is_dir) return true;
-
-    std::vector<std::string> children = get_directory_children(path);
-
-    for (const std::string& child : children)
+    catch (const std::filesystem::filesystem_error& e) 
     {
-      if (child == "." || child == "..") continue;
-
-      scan(path + "/" + child, false);
+        // Handle errors, such as permission issues or non-existent paths
+        FSW_ELOGF(_("Filesystem error: %s"), e.what());
     }
-
-    return true;
   }
 
   void kqueue_monitor::remove_deleted()
@@ -251,10 +258,7 @@ namespace fsw
     {
       if (is_path_watched(path)) continue;
 
-      if (!scan(path))
-      {
-        FSW_ELOGF(_("%s cannot be found. Will retry later.\n"), path.c_str());
-      }
+      scan(path);
     }
   }
 
@@ -328,21 +332,24 @@ namespace fsw
       // If a NOTE_WRITE flag is found and the descriptor is a directory, then
       // the directory needs to be rescanned because at least one file has
       // either been created or deleted.
+      //
+      // Since we're using EVFILTER_VNODE, e.ident is the file descriptor, which
+      // is guaranteed to be an int by POSIX.
       if (e.fflags & NOTE_DELETE)
       {
-        load->descriptors_to_remove.insert(e.ident);
+        load->descriptors_to_remove.insert(static_cast<int>(e.ident));
       }
       else if ((e.fflags & NOTE_RENAME) || (e.fflags & NOTE_REVOKE)
                || ((e.fflags & NOTE_WRITE) && S_ISDIR(load->file_modes[e.ident])))
       {
-        load->descriptors_to_rescan.insert(e.ident);
+        load->descriptors_to_rescan.insert(static_cast<int>(e.ident));
       }
 
       // Invoke the callback passing every path for which an event has been
       // received with a non empty filter flag.
       if (e.fflags)
       {
-        events.emplace_back(load->file_names_by_descriptor[e.ident],
+        events.emplace_back(load->file_names_by_descriptor[static_cast<int>(e.ident)],
                             curr_time,
                             decode_flags(e.fflags));
       }
@@ -380,6 +387,9 @@ namespace fsw
       {
         struct kevent change{};
 
+        // TODO: update the flags to be monitored
+        // TODO: there is a use case for NOTE_CLOSE_WRITE which can be used to
+        // monitor for file changes in a more efficient way.
         EV_SET(&change,
                key,
                EVFILT_VNODE,
@@ -398,7 +408,7 @@ namespace fsw
        */
       if (changes.empty())
       {
-        sleep(latency);
+        sleep(static_cast<unsigned int>(latency));
         continue;
       }
 
