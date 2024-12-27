@@ -22,6 +22,7 @@
 #include <cerrno>
 #include <iostream>
 #include <system_error>
+#include <filesystem>
 
 using namespace std;
 
@@ -29,29 +30,17 @@ namespace fsw
 {
   vector<string> get_directory_children(const string& path)
   {
-    vector<string> children;
-    DIR *dir = opendir(path.c_str());
+    std::vector<std::string> children;
 
-    if (!dir)
+    try
     {
-      if (errno == EMFILE || errno == ENFILE)
-      {
-        perror("opendir");
-      }
-      else
-      {
-        fsw_log_perror("opendir");
-      }
-
-      return children;
-    }
-
-    while (struct dirent *ent = readdir(dir))
+      for (const auto& entry : std::filesystem::directory_iterator(path)) 
+        children.emplace_back(entry.path().filename().string());
+    } 
+    catch (const std::filesystem::filesystem_error& e) 
     {
-      children.emplace_back(ent->d_name);
+      FSW_ELOGF(_("Error accessing directory: %s"), e.what());
     }
-
-    closedir(dir);
 
     return children;
   }
