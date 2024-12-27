@@ -53,10 +53,10 @@ namespace fsw
     /**
      * @brief Destroys an instance of this class.
      */
-    virtual ~poll_monitor();
+    ~poll_monitor() override;
 
   protected:
-    void run();
+    void run() override;
 
   private:
     static const unsigned int MIN_POLL_LATENCY = 1;
@@ -64,15 +64,17 @@ namespace fsw
     poll_monitor(const poll_monitor& orig) = delete;
     poll_monitor& operator=(const poll_monitor& that) = delete;
 
-    typedef bool (poll_monitor::*poll_monitor_scan_callback)(
+    using poll_monitor_scan_callback = bool (poll_monitor::*)(
       const std::string& path,
       const struct stat& stat);
 
-    typedef struct watched_file_info
+    struct watched_file_info
     {
       time_t mtime;
       time_t ctime;
-    } watched_file_info;
+    };
+
+    using watched_file_info = struct watched_file_info;
 
     struct poll_monitor_data;
 
