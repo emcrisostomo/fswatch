@@ -22,7 +22,7 @@
 #  include "libfswatch_map.hpp"
 #  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
-#  include "libfswatch//c/libfswatch_log.h"
+#  include "libfswatch/c/libfswatch_log.h"
 #  include "path_utils.hpp"
 #  include <iostream>
 #  include <sys/types.h>
@@ -97,14 +97,13 @@ namespace fsw
   kqueue_monitor::kqueue_monitor(std::vector<std::string> paths_to_monitor,
                                  FSW_EVENT_CALLBACK *callback,
                                  void *context) :
-    monitor(std::move(paths_to_monitor), callback, context), load(new kqueue_monitor_load())
+    monitor(std::move(paths_to_monitor), callback, context), load(std::make_unique<kqueue_monitor_load>())
   {
   }
 
   kqueue_monitor::~kqueue_monitor()
   {
     terminate_kqueue();
-    delete load;
   }
 
   static std::vector<fsw_event_flag> decode_flags(uint32_t flag)
@@ -129,8 +128,8 @@ namespace fsw
     nanoseconds *= 1000000000;
 
     struct timespec ts{};
-    ts.tv_sec = seconds;
-    ts.tv_nsec = nanoseconds;
+    ts.tv_sec = static_cast<__darwin_time_t>(seconds);
+    ts.tv_nsec = static_cast<long>(nanoseconds);
 
     return ts;
   }
@@ -377,12 +376,12 @@ namespace fsw
       std::vector<struct kevent> changes;
       std::vector<struct kevent> event_list;
 
-      for (const auto& fd_path : load->file_names_by_descriptor)
+      for (const auto& [key, value] : load->file_names_by_descriptor)
       {
         struct kevent change{};
 
         EV_SET(&change,
-               fd_path.first,
+               key,
                EVFILT_VNODE,
                EV_ADD | EV_ENABLE | EV_CLEAR,
                NOTE_DELETE | NOTE_EXTEND | NOTE_RENAME | NOTE_WRITE | NOTE_ATTRIB | NOTE_LINK | NOTE_REVOKE,

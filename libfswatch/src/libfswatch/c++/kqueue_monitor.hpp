@@ -89,7 +89,7 @@ namespace fsw
 
     int kq = -1;
     // initial load
-    kqueue_monitor_load *load;
+    std::unique_ptr<kqueue_monitor_load> load;
   };
 }
 
