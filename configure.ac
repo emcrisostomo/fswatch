@@ -99,7 +99,7 @@ AM_GNU_GETTEXT_VERSION([0.22.5])
 AM_CONDITIONAL([USE_NLS], [test "x${USE_NLS}" = "xyes"])
 
 # Configure C++ compiler
-AX_CXX_COMPILE_STDCXX_11
+AX_CXX_COMPILE_STDCXX_17
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
