@@ -30,7 +30,7 @@
 #  include <sys/inotify.h>
 #  include <string>
 #  include <vector>
-#  include <sys/stat.h>
+#  include <filesystem>
 
 namespace fsw
 {
@@ -80,9 +80,8 @@ namespace fsw
     void preprocess_dir_event(const struct inotify_event *event);
     void preprocess_event(const struct inotify_event *event);
     void preprocess_node_event(const struct inotify_event *event);
-    void scan(const std::string& path, const bool accept_non_dirs = true);
-    bool add_watch(const std::string& path,
-                   const struct stat& fd_stat);
+    void scan(const std::filesystem::path& path, const bool accept_non_dirs = true);
+    bool add_watch(const std::string& path);
     void process_pending_events();
     void remove_watch(int fd);
 

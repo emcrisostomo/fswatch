@@ -22,13 +22,48 @@
 #include <cerrno>
 #include <iostream>
 #include <system_error>
-#include <filesystem>
-
-using namespace std;
 
 namespace fsw
 {
-  vector<string> get_directory_children(const string& path)
+  std::vector<std::filesystem::directory_entry> get_directory_entries(const std::filesystem::path& path)
+  {
+    std::vector<std::filesystem::directory_entry> entries;
+    // Reserve capacity to optimize memory allocation
+    entries.reserve(std::distance(std::filesystem::directory_iterator(path), std::filesystem::directory_iterator{}));
+
+    try
+    {
+      for (const auto& entry : std::filesystem::directory_iterator(path)) 
+        entries.emplace_back(entry);
+    } 
+    catch (const std::filesystem::filesystem_error& e) 
+    {
+      FSW_ELOGF(_("Error accessing directory: %s"), e.what());
+    }
+
+    return entries;
+  }
+  
+  std::vector<std::filesystem::directory_entry> get_subdirectories(const std::filesystem::path& path)
+  {
+    std::vector<std::filesystem::directory_entry> entries;
+    // Reserve an initial capacity to reduce the number of reallocations
+    entries.reserve(64);
+
+    try
+    {
+      for (const auto& entry : std::filesystem::directory_iterator(path)) 
+        if (entry.is_directory()) entries.emplace_back(entry);
+    } 
+    catch (const std::filesystem::filesystem_error& e) 
+    {
+      FSW_ELOGF(_("Error accessing directory: %s"), e.what());
+    }
+
+    return entries;
+  }
+
+  std::vector<std::string> get_directory_children(const std::string& path)
   {
     std::vector<std::string> children;
 
@@ -45,7 +80,7 @@ namespace fsw
     return children;
   }
 
-  bool read_link_path(const string& path, string& link_path)
+  bool read_link_path(const std::string& path, std::string& link_path)
   {
     link_path = fsw_realpath(path.c_str(), nullptr);
 
@@ -71,7 +106,7 @@ namespace fsw
     return resolved;
   }
 
-  bool stat_path(const string& path, struct stat& fd_stat)
+  bool stat_path(const std::string& path, struct stat& fd_stat)
   {
     if (stat(path.c_str(), &fd_stat) == 0)
       return true;
@@ -81,7 +116,7 @@ namespace fsw
 
   }
 
-  bool lstat_path(const string& path, struct stat& fd_stat)
+  bool lstat_path(const std::string& path, struct stat& fd_stat)
   {
     if (lstat(path.c_str(), &fd_stat) == 0)
       return true;

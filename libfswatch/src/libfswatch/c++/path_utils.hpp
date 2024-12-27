@@ -28,6 +28,7 @@
 
 #  include <string>
 #  include <vector>
+#  include <filesystem>
 #  include <sys/stat.h>
 
 namespace fsw
@@ -42,6 +43,22 @@ namespace fsw
    * throws a std::system_error.
    */
   std::string fsw_realpath(const char *path, char *resolved_path);
+
+  /**
+   * @brief Gets a vector of direct directory entries.
+   * 
+   * @param path The directory whose entries must be returned.
+   * @return A vector containing the list of entries of @p path.
+   */
+  std::vector<std::filesystem::directory_entry> get_directory_entries(const std::filesystem::path& path);
+  
+  /**
+   * @brief Gets a vector of direct subdirectories.
+   * 
+   * @param path The directory whose subdirectories must be returned.
+   * @return A vector containing the list of subdirectories of @p path.
+   */
+  std::vector<std::filesystem::directory_entry> get_subdirectories(const std::filesystem::path& path);
 
   /**
    * @brief Gets a vector of direct directory children.
