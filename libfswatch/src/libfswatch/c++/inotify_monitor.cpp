@@ -139,37 +139,37 @@ namespace fsw
     {
       auto status = std::filesystem::symlink_status(path);
 
-        // Check if the path is a symbolic link
-        if (follow_symlinks && std::filesystem::is_symlink(status))
-        {
-          auto link_path = std::filesystem::read_symlink(path);
-          scan(link_path, accept_non_dirs);
-          return;
-        }
+      // Check if the path is a symbolic link
+      if (follow_symlinks && std::filesystem::is_symlink(status))
+      {
+        auto link_path = std::filesystem::read_symlink(path);
+        scan(link_path, accept_non_dirs);
+        return;
+      }
 
-        const bool is_dir = std::filesystem::is_directory(status);
+      const bool is_dir = std::filesystem::is_directory(status);
 
-        /*
-        * When watching a directory the inotify API will return change events of
-        * first-level children.  Therefore, we do not need to manually add a watch
-        * for a child unless it is a directory.  By default, accept_non_dirs is
-        * true to allow watching a file when first invoked on a node.
-        *
-        * For the same reason, the directory_only flag is ignored and treated as if
-        * it were always set to true.
-        */
-        if (!is_dir && !accept_non_dirs) return;
-        if (!is_dir && directory_only) return;
-        if (!accept_path(path)) return;
-        if (!add_watch(path)) return;
-        if (!recursive || !is_dir) return;
+      /*
+      * When watching a directory the inotify API will return change events of
+      * first-level children.  Therefore, we do not need to manually add a watch
+      * for a child unless it is a directory.  By default, accept_non_dirs is
+      * true to allow watching a file when first invoked on a node.
+      *
+      * For the same reason, the directory_only flag is ignored and treated as if
+      * it were always set to true.
+      */
+      if (!is_dir && !accept_non_dirs) return;
+      if (!is_dir && directory_only) return;
+      if (!accept_path(path)) return;
+      if (!add_watch(path)) return;
+      if (!recursive || !is_dir) return;
 
-        // TODO: Consider using std::filesystem::recursive_directory_iterator
-        const auto entries = get_subdirectories(path);
+      // TODO: Consider using std::filesystem::recursive_directory_iterator
+      const auto entries = get_subdirectories(path);
 
-        for (const auto& entry : entries)
-          // Scan children but only watch directories.
-          scan(entry, false);
+      for (const auto& entry : entries)
+        // Scan children but only watch directories.
+        scan(entry, false);
     }
     catch (const std::filesystem::filesystem_error& e) 
     {
