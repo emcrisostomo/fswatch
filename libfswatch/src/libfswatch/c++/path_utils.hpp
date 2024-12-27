@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief Header defining utility functions to manipulate paths.
  *
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2024 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
