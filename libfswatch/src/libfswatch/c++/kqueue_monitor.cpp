@@ -174,7 +174,7 @@ namespace fsw
     return true;
   }
 
-  void kqueue_monitor::scan(const std::filesystem::path& path, bool is_root_path)
+  void kqueue_monitor::scan(const std::filesystem::path& path)
   {
     try
     {
@@ -184,28 +184,32 @@ namespace fsw
       if (follow_symlinks && std::filesystem::is_symlink(status))
       {
         const auto link_path = std::filesystem::read_symlink(path);
-        scan(link_path, is_root_path);
+        scan(link_path);
         return;
       }
 
       const bool is_dir = std::filesystem::is_directory(status);
 
-      if (!is_dir && !is_root_path && directory_only) return;
+      // Do not fall through if the monitor is set to watch directories only,
+      // except for the case of root paths, where the user explicitly asked to
+      // watch the file itself.
+      if (!is_dir && directory_only) return;
       if (!accept_path(path)) return;
 
       // TODO: C++17 doesn't provide a single, comparable, type to represent st_mode
       struct stat fd_stat;
       if (!lstat_path(path, fd_stat)) return;
-
       if (!add_watch(path, fd_stat)) return;
       if (!recursive || !is_dir) return;
 
       // TODO: Consider using std::filesystem::recursive_directory_iterator
-      const auto entries = get_directory_entries(path);
+      const auto entries = directory_only 
+        ? get_subdirectories(path)
+        : get_directory_entries(path);
 
       for (const auto& entry : entries)
       {
-        scan(entry, false);
+        scan(entry);
       }
     }
     catch (const std::filesystem::filesystem_error& e) 

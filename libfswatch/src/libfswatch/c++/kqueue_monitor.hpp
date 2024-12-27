@@ -77,7 +77,7 @@ namespace fsw
 
     void initialize_kqueue();
     void terminate_kqueue();
-    void scan(const std::filesystem::path& path, bool is_root_path = true);
+    void scan(const std::filesystem::path& path);
     bool add_watch(const std::string& path, const struct stat& fd_stat);
     bool is_path_watched(const std::string& path) const;
     void remove_deleted();
