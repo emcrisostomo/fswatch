@@ -124,10 +124,8 @@ namespace fsw
   {
     try
     {
-      auto status = std::filesystem::symlink_status(path);
-      
       // Check if the path is a symbolic link
-      if (follow_symlinks && std::filesystem::is_symlink(status))
+      if (follow_symlinks && std::filesystem::is_symlink(std::filesystem::symlink_status(path)))
       {
         auto link_path = std::filesystem::read_symlink(path);
         scan(link_path, fn);
@@ -164,9 +162,9 @@ namespace fsw
     vector<fsw_event_flag> flags;
     flags.push_back(fsw_event_flag::Removed);
 
-    for (const auto& removed : previous_data->tracked_files)
+    for (const auto& [key, value] : previous_data->tracked_files)
     {
-      events.emplace_back(removed.first, curr_time, flags);
+      events.emplace_back(key, curr_time, flags);
     }
   }
 
