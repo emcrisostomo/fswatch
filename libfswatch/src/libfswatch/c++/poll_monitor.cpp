@@ -115,12 +115,12 @@ namespace fsw
 
   bool poll_monitor::add_path(const string& path,
                               const struct stat& fd_stat,
-                              poll_monitor_scan_callback poll_callback)
+                              const path_visitor& poll_callback)
   {
-    return ((*this).*(poll_callback))(path, fd_stat);
+    return poll_callback(path, fd_stat);
   }
 
-  void poll_monitor::scan(const path& path, poll_monitor_scan_callback fn)
+  void poll_monitor::scan(const path& path, const path_visitor& fn)
   {
     try
     {
@@ -176,7 +176,11 @@ namespace fsw
 
   void poll_monitor::collect_data()
   {
-    poll_monitor_scan_callback fn = &poll_monitor::intermediate_scan_callback;
+    path_visitor fn = std::bind(&poll_monitor::intermediate_scan_callback, 
+                                this,
+                                std::placeholders::_1,
+                                std::placeholders::_2);
+
 
     for (const string& path : paths)
     {
@@ -189,7 +193,10 @@ namespace fsw
 
   void poll_monitor::collect_initial_data()
   {
-    poll_monitor_scan_callback fn = &poll_monitor::initial_scan_callback;
+    path_visitor fn = std::bind(&poll_monitor::initial_scan_callback, 
+                                this,
+                                std::placeholders::_1,
+                                std::placeholders::_2);
 
     for (const string& path : paths)
     {

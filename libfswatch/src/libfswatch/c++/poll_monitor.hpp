@@ -64,9 +64,7 @@ namespace fsw
     poll_monitor(const poll_monitor& orig) = delete;
     poll_monitor& operator=(const poll_monitor& that) = delete;
 
-    using poll_monitor_scan_callback = bool (poll_monitor::*)(
-      const std::string& path,
-      const struct stat& stat);
+    using path_visitor = std::function<bool(const std::string&, const struct stat&)>;
 
     struct watched_file_info
     {
@@ -78,12 +76,12 @@ namespace fsw
 
     struct poll_monitor_data;
 
-    void scan(const std::filesystem::path& path, poll_monitor_scan_callback fn);
+    void scan(const std::filesystem::path& path, const path_visitor& fn);
     void collect_initial_data();
     void collect_data();
     bool add_path(const std::string& path,
                   const struct stat& fd_stat,
-                  poll_monitor_scan_callback poll_callback);
+                  const path_visitor& poll_callback);
     bool initial_scan_callback(const std::string& path, const struct stat& stat);
     bool intermediate_scan_callback(const std::string& path,
                                     const struct stat& stat);
