@@ -31,6 +31,7 @@
 #  include <ctime>
 #  include <memory>
 #  include <filesystem>
+#  include <functional>
 
 namespace fsw
 {
