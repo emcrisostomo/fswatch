@@ -4,7 +4,7 @@
 	"name": "C++",
 	"build": {
 		"dockerfile": "Dockerfile"
-	}
+	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -16,7 +16,16 @@
 	// "postCreateCommand": "gcc -v",
 
 	// Configure tool-specific properties.
-	// "customizations": {},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"sonarsource.sonarlint-vscode",
+				"ms-vscode.cpptools-themes",
+				"maelvalais.autoconf",
+				"eamodio.gitlens"
+			]
+		}
+	},
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
