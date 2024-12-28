@@ -73,7 +73,7 @@ namespace fsw
                                    FSW_EVENT_CALLBACK *callback,
                                    void *context) :
     monitor(paths_to_monitor, callback, context),
-    impl(new inotify_monitor_impl())
+    impl(std::make_unique<inotify_monitor_impl>())
   {
     impl->inotify_monitor_handle = inotify_init();
 
@@ -104,8 +104,6 @@ namespace fsw
     {
       close(impl->inotify_monitor_handle);
     }
-
-    delete impl;
   }
 
   bool inotify_monitor::add_watch(const std::string& path)

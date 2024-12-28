@@ -31,6 +31,7 @@
 #  include <string>
 #  include <vector>
 #  include <filesystem>
+#  include <functional>
 
 namespace fsw
 {
@@ -59,7 +60,7 @@ namespace fsw
     /**
      * @brief Destroys an instance of this class.
      */
-    virtual ~inotify_monitor();
+    ~inotify_monitor() override;
 
   protected:
     /**
@@ -69,7 +70,7 @@ namespace fsw
      *
      * @see stop()
      */
-    void run();
+    void run() override;
 
   private:
     inotify_monitor(const inotify_monitor& orig) = delete;
@@ -85,7 +86,7 @@ namespace fsw
     void process_pending_events();
     void remove_watch(int fd);
 
-    inotify_monitor_impl *impl;
+    std::unique_ptr<fsw::inotify_monitor_impl> impl;
   };
 }
 
