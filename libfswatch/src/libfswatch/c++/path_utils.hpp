@@ -34,17 +34,6 @@
 namespace fsw
 {
   /**
-   * @brief A thin wrapper about realpath.
-   *
-   * @param path The path to resolve.
-   * @param resolved_path A pointer to a buffer where the resolved path is
-   * stored.
-   * @return If there is no error, realpath() returns a string, otherwise it
-   * throws a std::system_error.
-   */
-  std::string fsw_realpath(const char *path, char *resolved_path);
-
-  /**
    * @brief Gets a vector of direct directory entries.
    * 
    * @param path The directory whose entries must be returned.
@@ -67,20 +56,6 @@ namespace fsw
    * @return A vector containing the list of children of @p path.
    */
   std::vector<std::string> get_directory_children(const std::string& path);
-
-  /**
-   * @brief Resolves a path name.
-   *
-   * This function resolves @p path using @c realpath() and stores the absolute
-   * pathname into @p link_path.  The function returns @c true if it succeeds,
-   * @c false otherwise.
-   *
-   * @param path The path to resolve.
-   * @param link_path A reference to a `std::string` where the resolved absolute
-   * path should be copied to.
-   * @return @c true if the function succeeds, @c false otherwise.
-   */
-  bool read_link_path(const std::string& path, std::string& link_path);
 
   /**
    * @brief Wraps a @c lstat(path, fd_stat) call that invokes @c perror() if it

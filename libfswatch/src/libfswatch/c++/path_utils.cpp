@@ -80,32 +80,6 @@ namespace fsw
     return children;
   }
 
-  bool read_link_path(const std::string& path, std::string& link_path)
-  {
-    link_path = fsw_realpath(path.c_str(), nullptr);
-
-    return true;
-  }
-
-  std::string fsw_realpath(const char *path, char *resolved_path)
-  {
-    char *ret = realpath(path, resolved_path);
-
-    if (ret == nullptr)
-    {
-      if (errno != ENOENT)
-        throw std::system_error(errno, std::generic_category());
-
-      return std::string(path);
-    }
-
-    std::string resolved(ret);
-
-    if (resolved_path == nullptr) free(ret);
-
-    return resolved;
-  }
-
   bool stat_path(const std::string& path, struct stat& fd_stat)
   {
     if (stat(path.c_str(), &fd_stat) == 0)

@@ -70,7 +70,6 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/poll_monitor.cpp
         src/libfswatch/c++/string/string_utils.cpp)
 
-check_cxx_symbol_exists(realpath cstdlib HAVE_REALPATH)
 check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MTIME)
 check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_ST_MTIMESPEC)
 

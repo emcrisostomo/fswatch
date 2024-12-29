@@ -27,6 +27,7 @@
 #include <vector>
 #include <array>
 #include <map>
+#include <filesystem>
 #include "libfswatch/c++/path_utils.hpp"
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
@@ -452,7 +453,7 @@ static void start_monitor(int argc, char **argv, int optind)
 
   for (auto i = optind; i < argc; ++i)
   {
-    std::string path(fsw_realpath(argv[i], nullptr));
+    std::string path = std::filesystem::canonical(argv[i]).string();
 
     FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 
