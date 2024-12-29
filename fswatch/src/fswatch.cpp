@@ -28,7 +28,6 @@
 #include <array>
 #include <map>
 #include <filesystem>
-#include "libfswatch/c++/path_utils.hpp"
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c++/monitor_factory.hpp"

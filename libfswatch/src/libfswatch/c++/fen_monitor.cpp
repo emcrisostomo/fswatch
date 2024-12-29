@@ -263,32 +263,38 @@ namespace fsw
       && (load->paths_to_rescan.find(path) == load->paths_to_rescan.end());
   }
 
-  bool fen_monitor::scan(const string& path, bool is_root_path)
+  bool fen_monitor::scan(const std::filesystem::path& path, bool is_root_path)
   {
-    struct stat fd_stat;
-    if (!stat_path(path, fd_stat))
+    try
     {
-      load->remove_watch(path);
-      return false;
+      struct stat fd_stat;
+      if (!stat_path(path, fd_stat))
+      {
+        load->remove_watch(path);
+        return false;
+      }
+
+      bool is_dir = S_ISDIR(fd_stat.st_mode);
+
+      if (!is_dir && !is_root_path && directory_only) return true;
+      if (!is_dir && !accept_path(path)) return true;
+      if (!is_dir) return add_watch(path, fd_stat);
+      if (!recursive) return true;
+
+      const auto entries = get_directory_entries(path);
+
+      for (const auto& entry : entries)
+      {
+        scan(entry, false);
+      }
+
+      return add_watch(path, fd_stat);
     }
-
-    bool is_dir = S_ISDIR(fd_stat.st_mode);
-
-    if (!is_dir && !is_root_path && directory_only) return true;
-    if (!is_dir && !accept_path(path)) return true;
-    if (!is_dir) return add_watch(path, fd_stat);
-    if (!recursive) return true;
-
-    vector<string> children = get_directory_children(path);
-
-    for (string& child : children)
+    catch (const std::filesystem::filesystem_error& e) 
     {
-      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
-
-      scan(path + "/" + child, false);
+        // Handle errors, such as permission issues or non-existent paths
+        FSW_ELOGF(_("Filesystem error: %s"), e.what());
     }
-
-    return add_watch(path, fd_stat);
   }
 
   void fen_monitor::scan_root_paths()

@@ -50,14 +50,6 @@ namespace fsw
   std::vector<std::filesystem::directory_entry> get_subdirectories(const std::filesystem::path& path);
 
   /**
-   * @brief Gets a vector of direct directory children.
-   *
-   * @param path The directory whose children must be returned.
-   * @return A vector containing the list of children of @p path.
-   */
-  std::vector<std::string> get_directory_children(const std::string& path);
-
-  /**
    * @brief Wraps a @c lstat(path, fd_stat) call that invokes @c perror() if it
    * fails.
    *

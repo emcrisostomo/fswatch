@@ -63,23 +63,6 @@ namespace fsw
     return entries;
   }
 
-  std::vector<std::string> get_directory_children(const std::string& path)
-  {
-    std::vector<std::string> children;
-
-    try
-    {
-      for (const auto& entry : std::filesystem::directory_iterator(path)) 
-        children.emplace_back(entry.path().filename().string());
-    } 
-    catch (const std::filesystem::filesystem_error& e) 
-    {
-      FSW_ELOGF(_("Error accessing directory: %s"), e.what());
-    }
-
-    return children;
-  }
-
   bool stat_path(const std::string& path, struct stat& fd_stat)
   {
     if (stat(path.c_str(), &fd_stat) == 0)

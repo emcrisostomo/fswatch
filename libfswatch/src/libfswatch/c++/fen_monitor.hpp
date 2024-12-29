@@ -29,6 +29,7 @@
 #  include "monitor.hpp"
 #  include <string>
 #  include <vector>
+#  include <filesystem>
 
 namespace fsw
 {
@@ -80,7 +81,7 @@ namespace fsw
     fen_monitor& operator=(const fen_monitor& that) = delete;
 
     void scan_root_paths();
-    bool scan(const std::string& path, bool is_root_path = true);
+    bool scan(const std::filesystem::path& path, bool is_root_path = true);
     bool is_path_watched(const std::string& path) const;
     bool add_watch(const std::string& path, const struct stat& fd_stat);
     bool associate_port(struct fen_info *finfo, const struct stat& fd_stat);
