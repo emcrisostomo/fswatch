@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2022 Enrico M. Crisostomo
+# Copyright (c) 2014-2024 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -37,6 +37,6 @@
 #
 # Libtool documentation, 7.3 Updating library version information
 #
-m4_define([LIBFSWATCH_VERSION], [1.17.1])
-m4_define([LIBFSWATCH_API_VERSION], [13:0:0])
+m4_define([LIBFSWATCH_VERSION], [1.18.0-rc1])
+m4_define([LIBFSWATCH_API_VERSION], [13:1:0])
 m4_define([LIBFSWATCH_REVISION], [1])

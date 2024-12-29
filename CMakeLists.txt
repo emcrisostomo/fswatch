@@ -14,12 +14,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 cmake_minimum_required(VERSION 3.14)
-project(fswatch VERSION 1.17.1 LANGUAGES C CXX)
+project(fswatch VERSION 1.18.0 LANGUAGES C CXX)
 
 #@formatter:off
 set(PACKAGE           "${PROJECT_NAME}")
 set(PACKAGE_NAME      "${PACKAGE}")
-set(PACKAGE_VERSION   "${PROJECT_VERSION}-develop")
+set(PACKAGE_VERSION   "${PROJECT_VERSION}-rc1")
 set(PACKAGE_STRING    "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_AUTHOR    "enrico.m.crisostomo@gmail.com")
 set(PACKAGE_BUGREPORT "${PACKAGE_AUTHOR}")

@@ -38,6 +38,7 @@ namespace fsw
    * 
    * @param path The directory whose entries must be returned.
    * @return A vector containing the list of entries of @p path.
+   * @since 1.18.0-rc1
    */
   std::vector<std::filesystem::directory_entry> get_directory_entries(const std::filesystem::path& path);
   
