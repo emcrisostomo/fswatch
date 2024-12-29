@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2022 Enrico M. Crisostomo
+ * Copyright (c) 2015-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -22,14 +22,14 @@
 #  include <cmath>
 #  include <cstring>
 #  include <cstdlib>
+#  include <unordered_map>
+#  include <unordered_set>
 #  include <unistd.h>
 #  include <port.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
 #  include "libfswatch/gettext_defs.h"
 #  include "fen_monitor.hpp"
-#  include "libfswatch_map.hpp"
-#  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
 #  include "libfswatch/c/libfswatch_log.h"
 #  include "path_utils.hpp"
@@ -47,9 +47,9 @@ namespace fsw
   struct fen_monitor_load
   {
     int port;
-    fsw_hash_map<string, struct fen_info *> descriptors_by_file_name;
-    fsw_hash_set<struct fen_info *> descriptors_to_remove;
-    fsw_hash_set<string> paths_to_rescan;
+    std::unordered_map<string, struct fen_info *> descriptors_by_file_name;
+    std::unordered_set<struct fen_info *> descriptors_to_remove;
+    std::unordered_set<string> paths_to_rescan;
 
     void initialize_fen()
     {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,14 +19,14 @@
 
 #  include "libfswatch/gettext_defs.h"
 #  include "windows_monitor.hpp"
-#  include "libfswatch_map.hpp"
-#  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
 #  include "libfswatch/c/libfswatch_log.h"
 #  include <algorithm>
 #  include <set>
 #  include <iostream>
 #  include <memory>
+#  include <unordered_map>
+#  include <unordered_set>
 #  include <sys/types.h>
 #  include <cstdlib>
 #  include <cstring>
@@ -47,9 +47,9 @@ namespace fsw
 {
   struct windows_monitor_load
   {
-    fsw_hash_set<wstring> win_paths;
-    fsw_hash_map<wstring, directory_change_event> dce_by_path;
-    fsw_hash_map<wstring, win_handle> event_by_path;
+    std::unordered_set<wstring> win_paths;
+    std::unordered_map<wstring, directory_change_event> dce_by_path;
+    std::unordered_map<wstring, win_handle> event_by_path;
     long buffer_size = 128;
   };
 

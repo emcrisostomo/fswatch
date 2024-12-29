@@ -19,11 +19,11 @@
 #include <fcntl.h>
 #include <iostream>
 #include <utility>
+#include <unordered_map>
 #include <libfswatch/libfswatch_config.h>
 #include "libfswatch/c/libfswatch_log.h"
 #include "poll_monitor.hpp"
 #include "path_utils.hpp"
-#include "libfswatch_map.hpp"
 
 #if defined HAVE_STRUCT_STAT_ST_MTIME
 #  define FSW_MTIME(stat) ((stat).st_mtime)
@@ -43,7 +43,7 @@ namespace fsw
 
   using poll_monitor_data = struct poll_monitor::poll_monitor_data
   {
-    fsw_hash_map<string, poll_monitor::watched_file_info> tracked_files;
+    std::unordered_map<string, poll_monitor::watched_file_info> tracked_files;
   };
 
   poll_monitor::poll_monitor(vector<string> paths,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,12 +19,12 @@
 
 #  include "libfswatch/gettext_defs.h"
 #  include "kqueue_monitor.hpp"
-#  include "libfswatch_map.hpp"
-#  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
 #  include "libfswatch/c/libfswatch_log.h"
 #  include "path_utils.hpp"
 #  include <iostream>
+#  include <unordered_map>
+#  include <unordered_set>
 #  include <sys/types.h>
 #  include <ctime>
 #  include <cstdio>
@@ -38,11 +38,11 @@ namespace fsw
 
   struct kqueue_monitor_load
   {
-    fsw_hash_map<std::string, int> descriptors_by_file_name;
-    fsw_hash_map<int, std::string> file_names_by_descriptor;
-    fsw_hash_map<int, mode_t> file_modes;
-    fsw_hash_set<int> descriptors_to_remove;
-    fsw_hash_set<int> descriptors_to_rescan;
+    std::unordered_map<std::string, int> descriptors_by_file_name;
+    std::unordered_map<int, std::string> file_names_by_descriptor;
+    std::unordered_map<int, mode_t> file_modes;
+    std::unordered_set<int> descriptors_to_remove;
+    std::unordered_set<int> descriptors_to_rescan;
 
     void add_watch(int fd, const std::string& path, const struct stat& fd_stat)
     {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,7 +16,7 @@
 /**
  * @file
  * @brief Main `libfswatch` source file.
- * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2024 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.17.0
@@ -442,9 +442,9 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <libfswatch/libfswatch_config.h>
 #include "libfswatch.h"
-#include "libfswatch/c++/libfswatch_map.hpp"
 #include "libfswatch/c++/filter.hpp"
 #include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c++/monitor_factory.hpp"

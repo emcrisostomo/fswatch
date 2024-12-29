@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2022 Enrico M. Crisostomo
+# Copyright (c) 2014-2024 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -48,8 +48,6 @@ set(LIBFSWATCH_HEADER_FILES
         src/libfswatch/c++/event.hpp
         src/libfswatch/c++/filter.hpp
         src/libfswatch/c++/libfswatch_exception.hpp
-        src/libfswatch/c++/libfswatch_map.hpp
-        src/libfswatch/c++/libfswatch_set.hpp
         src/libfswatch/c++/monitor.hpp
         src/libfswatch/c++/monitor_factory.hpp
         src/libfswatch/c++/path_utils.hpp
@@ -75,8 +73,6 @@ set(LIB_SOURCE_FILES
 check_cxx_symbol_exists(realpath cstdlib HAVE_REALPATH)
 check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MTIME)
 check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_ST_MTIMESPEC)
-check_include_file_cxx(unordered_map HAVE_UNORDERED_MAP)
-check_include_file_cxx(unordered_set HAVE_UNORDERED_SET)
 
 find_library(PTHREAD_LIBRARY pthread)
 set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})

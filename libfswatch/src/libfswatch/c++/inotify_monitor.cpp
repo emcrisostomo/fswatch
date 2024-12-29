@@ -18,6 +18,8 @@
 #include "libfswatch/gettext_defs.h"
 #include "inotify_monitor.hpp"
 #include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
 #include <limits.h>
 #ifdef __sun
 #  define NAME_MAX         255    /* # chars in a file name */
@@ -30,8 +32,6 @@
 #include <sys/select.h>
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
-#include "libfswatch_map.hpp"
-#include "libfswatch_set.hpp"
 #include "path_utils.hpp"
 
 namespace fsw
@@ -47,8 +47,8 @@ namespace fsw
      * child of a watched directory.  In all the other cases, we store the path
      * for easy retrieval.
      */
-    fsw_hash_set<int> watched_descriptors;
-    fsw_hash_map<std::string, int> path_to_wd;
+    std::unordered_set<int> watched_descriptors;
+    std::unordered_map<std::string, int> path_to_wd;
     /*
      * Since the inotify API maintains only works with watch
      * descriptors a cache maintaining a relationship between a watch
@@ -60,9 +60,9 @@ namespace fsw
      *   between watch descriptors and pathnames.  Be aware that directory
      *   renamings may affect multiple cached pathnames.
      */
-    fsw_hash_map<int, std::string> wd_to_path;
-    fsw_hash_set<int> descriptors_to_remove;
-    fsw_hash_set<int> watches_to_remove;
+    std::unordered_map<int, std::string> wd_to_path;
+    std::unordered_set<int> descriptors_to_remove;
+    std::unordered_set<int> watches_to_remove;
     std::vector<std::string> paths_to_rescan;
     time_t curr_time;
   };

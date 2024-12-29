@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2021 Enrico M. Crisostomo
+# Copyright (c) 2014-2024 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -32,8 +32,6 @@ libfswatch_la_SOURCES += libfswatch/c++/event.cpp
 libfswatch_la_SOURCES += libfswatch/c++/filter.cpp
 libfswatch_la_SOURCES += libfswatch/c++/monitor.cpp
 libfswatch_la_SOURCES += libfswatch/c++/monitor_factory.cpp
-libfswatch_la_SOURCES += libfswatch/c++/libfswatch_map.hpp
-libfswatch_la_SOURCES += libfswatch/c++/libfswatch_set.hpp
 libfswatch_la_SOURCES += libfswatch/c++/poll_monitor.cpp
 libfswatch_la_SOURCES += libfswatch/c++/path_utils.cpp
 libfswatch_la_SOURCES += libfswatch/c++/string/string_utils.cpp
