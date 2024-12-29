@@ -162,12 +162,14 @@ and the `INSTALL` file.
 
 A developer who wishes to modify `fswatch` should get the sources (either from a
 source tarball or cloning the repository) and have the GNU Build System
-installed on their machine.  Please read `README.gnu-build-system` to get further
-details about how to bootstrap `fswatch` from sources on your machine.
+installed on their machine.  Please read `README.gnu-build-system` to get
+further details about how to bootstrap `fswatch` from sources on your machine.
 
-Getting a copy of the source repository is not recommended unless you are a
-developer, you have the GNU Build System installed on your machine, and you know
-how to bootstrap it on the sources.
+Getting a copy of the source repository is not recommended unless (i) you are a
+developer, (ii) you have the GNU Build System installed on your machine, and
+(iii) you know how to bootstrap it on the sources.
+
+CMake-support is unofficially offered as a courtesy.
 
 [release]: https://github.com/emcrisostomo/fswatch/releases
 
