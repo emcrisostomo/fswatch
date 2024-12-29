@@ -29,8 +29,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.17.1\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2024-12-26 21:34+0100\n"
-"PO-Revision-Date: 2024-12-26 21:34+0100\n"
+"POT-Creation-Date: 2024-12-29 19:01+0100\n"
+"PO-Revision-Date: 2024-12-29 19:01+0100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@quot\n"
@@ -344,26 +344,33 @@ msgstr "Allocating fen_info.\n"
 msgid "Cannot allocate memory"
 msgstr "Cannot allocate memory"
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:302
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:257
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:296
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:175
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:218
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:156
+#, c-format
+msgid "Filesystem error: %s"
+msgstr "Filesystem error: %s"
+
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:308
 #, c-format
 msgid "%s cannot be found. Will retry later.\n"
 msgstr "%s cannot be found. Will retry later.\n"
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:325
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:331
 msgid "Processing deleted descriptors.\n"
 msgstr "Processing deleted descriptors.\n"
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:347
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:353
 msgid "Rescanning pending descriptors.\n"
 msgstr "Rescanning pending descriptors.\n"
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:353
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:359
 #, c-format
 msgid "Rescanning %s.\n"
 msgstr "Rescanning %s.\n"
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:393
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:399
 msgid "Event from unexpected source"
 msgstr "Event from unexpected source"
 
@@ -415,48 +422,48 @@ msgstr "Cannot initialize inotify."
 msgid "Removing: "
 msgstr "Removing: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:130
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:127
 msgid "Added: "
 msgstr "Added: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:254
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:252
 msgid "Generic event: "
 msgstr "Generic event: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:346
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:344
 msgid "Removed: "
 msgstr "Removed: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:433
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:431
 msgid "Number of records: "
 msgstr "Number of records: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:439
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:437
 msgid "read() on inotify descriptor read 0 records."
 msgstr "read() on inotify descriptor read 0 records."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:445
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:443
 msgid "read() on inotify descriptor returned -1."
 msgstr "read() on inotify descriptor returned -1."
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:167
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:166
 #, c-format
 msgid "Cannot open %s"
 msgstr "Cannot open %s"
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:264
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:271
 msgid "kqueue already running."
 msgstr "kqueue already running."
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:271
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:278
 msgid "kqueue failed."
 msgstr "kqueue failed."
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:297
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:304
 msgid "kevent returned -1, invalid event number."
 msgstr "kevent returned -1, invalid event number."
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:316
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:323
 msgid "Event with EV_ERROR"
 msgstr "Event with EV_ERROR"
 
@@ -502,17 +509,23 @@ msgstr "Event queue overflow."
 msgid "Notifying events #: %d.\n"
 msgstr "Notifying events #: %d.\n"
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:90
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:41
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:60
+#, c-format
+msgid "Error accessing directory: %s"
+msgstr "Error accessing directory: %s"
+
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:71
 #, c-format
 msgid "Cannot stat %s"
 msgstr "Cannot stat %s"
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:100
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:81
 #, c-format
 msgid "Cannot lstat %s"
 msgstr "Cannot lstat %s"
 
-#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:198
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:217
 msgid "Done scanning.\n"
 msgstr "Done scanning.\n"
 

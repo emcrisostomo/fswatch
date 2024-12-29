@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.17.1\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2024-12-26 21:34+0100\n"
+"POT-Creation-Date: 2024-12-29 19:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -314,26 +314,33 @@ msgstr ""
 msgid "Cannot allocate memory"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:302
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:257
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:296
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:175
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:218
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:156
+#, c-format
+msgid "Filesystem error: %s"
+msgstr ""
+
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:308
 #, c-format
 msgid "%s cannot be found. Will retry later.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:325
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:331
 msgid "Processing deleted descriptors.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:347
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:353
 msgid "Rescanning pending descriptors.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:353
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:359
 #, c-format
 msgid "Rescanning %s.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:393
+#: libfswatch/src/libfswatch/c++/fen_monitor.cpp:399
 msgid "Event from unexpected source"
 msgstr ""
 
@@ -385,48 +392,48 @@ msgstr ""
 msgid "Removing: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:130
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:127
 msgid "Added: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:254
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:252
 msgid "Generic event: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:346
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:344
 msgid "Removed: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:433
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:431
 msgid "Number of records: "
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:439
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:437
 msgid "read() on inotify descriptor read 0 records."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:445
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:443
 msgid "read() on inotify descriptor returned -1."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:167
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:166
 #, c-format
 msgid "Cannot open %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:264
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:271
 msgid "kqueue already running."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:271
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:278
 msgid "kqueue failed."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:297
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:304
 msgid "kevent returned -1, invalid event number."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:316
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:323
 msgid "Event with EV_ERROR"
 msgstr ""
 
@@ -472,17 +479,23 @@ msgstr ""
 msgid "Notifying events #: %d.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:90
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:41
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:60
+#, c-format
+msgid "Error accessing directory: %s"
+msgstr ""
+
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:71
 #, c-format
 msgid "Cannot stat %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:100
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:81
 #, c-format
 msgid "Cannot lstat %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:198
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:217
 msgid "Done scanning.\n"
 msgstr ""
 
