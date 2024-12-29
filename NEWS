@@ -3,6 +3,9 @@ NEWS
 
 New in master:
 
+  * The C++17 standard has been adopted: code has been rewritten and simplified
+    to adobe new features of the C++17 standard library such as std::filesystem.
+
   * gettextize: gettext v. 0.22.5
 
   * Documentation: add reference to Go bindings.
