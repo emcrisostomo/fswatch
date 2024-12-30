@@ -10,18 +10,37 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configuration: [ Release, Debug ]
+        compiler: [ gcc, clang ]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: update-pkgs
-      run: sudo apt-get -y update
-    - name: install-autotools
-      run: sudo apt-get install -y git autoconf automake gettext autopoint libtool make g++ texinfo curl
-    - name: autogen
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y autoconf automake autopoint gettext git libtool make texinfo
+        if [ "${{ matrix.compiler }}" == "gcc" ]; then sudo apt-get install -y g++; fi
+        if [ "${{ matrix.compiler }}" == "clang" ]; then sudo apt-get install -y clang; fi
+
+    - name: Run autogen
       run: ./autogen.sh
-    - name: configure
-      run: ./configure
-    - name: make
+
+    - name: Configure
+      run: |
+        if [ "${{ matrix.compiler }}" == "gcc" ]; then export CC=gcc CXX=g++; fi
+        if [ "${{ matrix.compiler }}" == "clang" ]; then export CC=clang CXX=clang++; fi
+        if [ "${{ matrix.configuration }}" == "Release" ]; then
+          export CFLAGS="-O2" CXXFLAGS="-O2";
+        else
+          export CFLAGS="-g -O0" CXXFLAGS="-g -O0";
+        fi
+        ./configure
+
+    - name: Build
       run: make
-    - name: make check
+
+    - name: Run checks
       run: make check
