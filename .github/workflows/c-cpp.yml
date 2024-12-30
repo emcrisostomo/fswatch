@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, fedora-latest, debian-latest]
+        os: [ubuntu-latest]
         configuration: [ Release, Debug ]
         compiler: [ gcc, clang ]
     runs-on: ${{ matrix.os }}
@@ -20,22 +20,6 @@ jobs:
 
     - name: Install dependencies on Ubuntu
       if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y autoconf automake autopoint gettext git libtool make texinfo
-        if [ "${{ matrix.compiler }}" == "gcc" ]; then sudo apt-get install -y g++; fi
-        if [ "${{ matrix.compiler }}" == "clang" ]; then sudo apt-get install -y clang; fi
-
-    - name: Install dependencies on Fedora
-      if: matrix.os == 'fedora-latest'
-      run: |
-        sudo dnf update -y
-        sudo dnf install -y autoconf automake gettext git libtool make texinfo
-        if [ "${{ matrix.compiler }}" == "gcc" ]; then sudo dnf install -y gcc gcc-c++; fi
-        if [ "${{ matrix.compiler }}" == "clang" ]; then sudo dnf install -y clang; fi
-
-    - name: Install dependencies on Debian
-      if: matrix.os == 'debian-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y autoconf automake autopoint gettext git libtool make texinfo
