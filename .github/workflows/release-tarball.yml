@@ -37,6 +37,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Build PDF documentation
+      run: make pdf    
+
     - name: Upload Release PDF documentation
       uses: actions/upload-release-asset@v1
       with:
