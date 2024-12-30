@@ -12,7 +12,6 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install dependencies on Ubuntu
-      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y autoconf automake autopoint g++ gettext git libtool make texinfo texlive
