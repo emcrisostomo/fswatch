@@ -1,9 +1,8 @@
 name: Release tarball
 
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -28,14 +27,10 @@ jobs:
     - name: Build and Test
       run: make distcheck
 
-    - name: Extract Tag Name
-      id: extract_tag
-      run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./fswatch-${{ env.TAG_NAME }}.tar.gz
-        asset_name: fswatch-${{ env.TAG_NAME }}.tar.gz
+        asset_path: ./fswatch-${{ github.event.release.tag_name }}.tar.gz
+        asset_name: fswatch-${{ github.event.release.tag_name }}.tar.gz
         asset_content_type: application/gzip
