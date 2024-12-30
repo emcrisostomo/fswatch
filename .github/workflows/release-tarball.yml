@@ -6,15 +6,16 @@ on:
 
 jobs:
   build:
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install dependencies
+    - name: Install dependencies on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y autoconf automake autopoint gettext git libtool make texinfo g++
+        sudo apt-get install -y autoconf automake autopoint g++ gettext git libtool make texinfo
 
     - name: Run autogen
       run: ./autogen.sh
