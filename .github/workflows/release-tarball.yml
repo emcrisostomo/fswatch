@@ -34,6 +34,8 @@ jobs:
         asset_path: ./fswatch-${{ github.event.release.tag_name }}.tar.gz
         asset_name: fswatch-${{ github.event.release.tag_name }}.tar.gz
         asset_content_type: application/gzip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Release PDF documentation
       uses: actions/upload-release-asset@v1
@@ -42,3 +44,5 @@ jobs:
         asset_path: ./fswatch/doc/fswatch.pdf
         asset_name: fswatch-${{ github.event.release.tag_name }}.pdf
         asset_content_type: application/gzip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
