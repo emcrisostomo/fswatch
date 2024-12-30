@@ -15,7 +15,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y autoconf automake autopoint g++ gettext git libtool make texinfo
+        sudo apt-get install -y autoconf automake autopoint g++ gettext git libtool make texinfo texlive
 
     - name: Run autogen
       run: ./autogen.sh
@@ -34,4 +34,12 @@ jobs:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./fswatch-${{ github.event.release.tag_name }}.tar.gz
         asset_name: fswatch-${{ github.event.release.tag_name }}.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload Release PDF documentation
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./fswatch/doc/fswatch.pdf
+        asset_name: fswatch-${{ github.event.release.tag_name }}.pdf
         asset_content_type: application/gzip
