@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <libfswatch/c/libfswatch.h>
-#include <pthread.h>
+#include <thread>
 #include <unistd.h>
 
 /**
@@ -79,15 +79,9 @@ int main(int argc, char **argv)
 
   fsw_set_allow_overflow(handle, 0);
 
-  pthread_t start_thread;
+  std::thread start_thread(start_monitor, &handle);
 
-  if (pthread_create(&start_thread, NULL, start_monitor, (void *) &handle))
-  {
-    fprintf(stderr, "Error creating thread\n");
-    return 1;
-  }
-
-  sleep(5);
+  std::this_thread::sleep_for(std::chrono::seconds(5));
 
   if (FSW_OK != fsw_stop_monitor(handle))
   {
@@ -95,7 +89,7 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  sleep(3);
+  std::this_thread::sleep_for(std::chrono::seconds(3));
 
   if (FSW_OK != fsw_destroy_session(handle))
   {
@@ -104,11 +98,7 @@ int main(int argc, char **argv)
   }
 
   // Wait for the monitor thread to finish
-  if (pthread_join(start_thread, NULL))
-  {
-    fprintf(stderr, "Error joining monitor thread\n");
-    return 2;
-  }
+  start_thread.join();
 
   return 0;
 }

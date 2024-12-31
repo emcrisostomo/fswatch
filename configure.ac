@@ -103,7 +103,6 @@ AX_CXX_COMPILE_STDCXX([17], [noext], [mandatory])
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
-AC_SEARCH_LIBS([pthread_create], [pthread])
 
 # Check for optional header files.
 AC_CHECK_HEADERS([getopt.h])

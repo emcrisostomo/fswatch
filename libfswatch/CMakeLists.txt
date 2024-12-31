@@ -73,9 +73,6 @@ set(LIB_SOURCE_FILES
 check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MTIME)
 check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_ST_MTIMESPEC)
 
-find_library(PTHREAD_LIBRARY pthread)
-set(EXTRA_LIBS ${EXTRA_LIBS} ${PTHREAD_LIBRARY})
-
 check_include_file_cxx(sys/inotify.h HAVE_SYS_INOTIFY_H)
 
 if (HAVE_SYS_INOTIFY_H)
