@@ -14,7 +14,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 set(SOURCE_FILES
-        fswatch_test.c
+        fswatch_test.cpp
         ${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h)
 
 add_executable(fswatch_test ${SOURCE_FILES})
