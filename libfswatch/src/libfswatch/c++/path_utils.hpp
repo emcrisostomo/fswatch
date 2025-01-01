@@ -69,5 +69,19 @@ namespace fsw
    * @return @c true if the function succeeds, @c false otherwise.
    */
   bool stat_path(const std::string& path, struct stat& fd_stat);
+
+  /**
+   * @brief Wraps a @c stat(path, fd_stat) call or a @c lstat(path, fd_stat)
+   * call, depending on the value of @p follow_symlink.  The function invokes
+   * @c perror() if it fails.
+   * 
+   * @param path The path to @c stat() or @c lstat().
+   * @param fd_stat The @c stat structure where @c stat() or @c lstat() writes
+   * its results.
+   * @param follow_symlink @c true if the function should call @c lstat(),
+   * @c false if it should call @c stat().
+   * @return @c true if the function succeeds, @c false otherwise.
+   */
+  bool stat_path(const std::string& path, struct stat& fd_stat, bool follow_symlink);
 }
 #endif  /* FSW_PATH_UTILS_H */
