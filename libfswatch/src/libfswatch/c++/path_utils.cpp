@@ -63,6 +63,23 @@ namespace fsw
     return entries;
   }
 
+  bool stat_path(const std::string& path, struct stat& fd_stat, bool follow_symlink)
+  {
+    if (follow_symlink)
+    {
+      if (lstat(path.c_str(), &fd_stat) == 0)
+        return true;
+    }
+    else
+    {
+      if (stat(path.c_str(), &fd_stat) == 0)
+        return true;
+    }
+
+    fsw_logf_perror(_("Cannot stat %s"), path.c_str());
+    return false;
+  }
+
   bool stat_path(const std::string& path, struct stat& fd_stat)
   {
     if (stat(path.c_str(), &fd_stat) == 0)
@@ -70,7 +87,6 @@ namespace fsw
 
     fsw_logf_perror(_("Cannot stat %s"), path.c_str());
     return false;
-
   }
 
   bool lstat_path(const std::string& path, struct stat& fd_stat)

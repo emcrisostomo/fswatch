@@ -137,7 +137,7 @@ namespace fsw
       // TODO: C++17 doesn't standardize access to ctime, so we need to keep
       // using lstat for now.
       struct stat fd_stat;
-      if (!lstat_path(path, fd_stat)) return;
+      if (!stat_path(path, fd_stat, follow_symlinks)) return;
 
       if (!add_path(path, fd_stat, fn)) return;
       if (!recursive) return;

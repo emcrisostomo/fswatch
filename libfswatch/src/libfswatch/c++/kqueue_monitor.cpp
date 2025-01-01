@@ -198,7 +198,7 @@ namespace fsw
 
       // TODO: C++17 doesn't provide a single, comparable, type to represent st_mode
       struct stat fd_stat;
-      if (!lstat_path(path, fd_stat)) return;
+      if (!stat_path(path, fd_stat, follow_symlinks)) return;
       if (!add_watch(path, fd_stat)) return;
       if (!recursive || !is_dir) return;
 
