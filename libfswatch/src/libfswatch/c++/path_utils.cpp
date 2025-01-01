@@ -65,19 +65,7 @@ namespace fsw
 
   bool stat_path(const std::string& path, struct stat& fd_stat, bool follow_symlink)
   {
-    if (follow_symlink)
-    {
-      if (lstat(path.c_str(), &fd_stat) == 0)
-        return true;
-    }
-    else
-    {
-      if (stat(path.c_str(), &fd_stat) == 0)
-        return true;
-    }
-
-    fsw_logf_perror(_("Cannot stat %s"), path.c_str());
-    return false;
+    return follow_symlink ? lstat_path(path, fd_stat) : stat_path(path, fd_stat);
   }
 
   bool stat_path(const std::string& path, struct stat& fd_stat)
