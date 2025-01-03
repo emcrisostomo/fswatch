@@ -1,4 +1,6 @@
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat)](https://github.com/emcrisostomo/fswatch/blob/master/COPYING)
+[![C/C++ CI](https://github.com/emcrisostomo/fswatch/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/emcrisostomo/fswatch/actions/workflows/c-cpp.yml)
+[![CMake](https://github.com/emcrisostomo/fswatch/actions/workflows/cmake.yml/badge.svg)](https://github.com/emcrisostomo/fswatch/actions/workflows/cmake.yml)
 
 README
 ======
