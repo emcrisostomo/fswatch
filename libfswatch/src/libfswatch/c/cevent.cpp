@@ -38,7 +38,8 @@ const fsw_event_flag FSW_ALL_EVENT_FLAGS[] =
     IsDir,
     IsSymLink,
     Link,
-    Overflow
+    Overflow,
+    CloseWrite
   };
 
 FSW_STATUS fsw_get_event_flag_by_name(const char *name, fsw_event_flag *flag)
