@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.11.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2024-12-29 23:54+0100\n"
+"POT-Creation-Date: 2025-01-03 13:06+0100\n"
 "PO-Revision-Date: 2018-05-02 17:29+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -496,12 +496,12 @@ msgstr "Notificando eventi #: %d.\n"
 msgid "Error accessing directory: %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:71
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:76
 #, c-format
 msgid "Cannot stat %s"
 msgstr "Non posso eseguire stat() di %s"
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:81
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:85
 #, c-format
 msgid "Cannot lstat %s"
 msgstr "Non posso eseguire lstat() di %s"
