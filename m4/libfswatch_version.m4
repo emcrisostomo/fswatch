@@ -37,6 +37,6 @@
 #
 # Libtool documentation, 7.3 Updating library version information
 #
-m4_define([LIBFSWATCH_VERSION], [1.18.0-rc3])
+m4_define([LIBFSWATCH_VERSION], [1.18.0])
 m4_define([LIBFSWATCH_API_VERSION], [13:1:0])
 m4_define([LIBFSWATCH_REVISION], [1])

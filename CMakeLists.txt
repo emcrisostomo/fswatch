@@ -19,7 +19,7 @@ project(fswatch VERSION 1.18.0 LANGUAGES C CXX)
 #@formatter:off
 set(PACKAGE           "${PROJECT_NAME}")
 set(PACKAGE_NAME      "${PACKAGE}")
-set(PACKAGE_VERSION   "${PROJECT_VERSION}-rc3")
+set(PACKAGE_VERSION   "${PROJECT_VERSION}")
 set(PACKAGE_STRING    "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_AUTHOR    "enrico.m.crisostomo@gmail.com")
 set(PACKAGE_BUGREPORT "${PACKAGE_AUTHOR}")

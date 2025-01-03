@@ -1,7 +1,7 @@
 NEWS
 ****
 
-New in 1.18.0-rc3:
+New in 1.18.0:
 
   * The C++17 standard has been adopted: code has been rewritten and simplified
     to adobe new features of the C++17 standard library such as std::filesystem.
