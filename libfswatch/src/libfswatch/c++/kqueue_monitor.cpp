@@ -180,6 +180,11 @@ namespace fsw
     {
       const auto status = std::filesystem::symlink_status(path);
 
+      if (!std::filesystem::exists(status))
+      {
+        return;
+      }
+
       // Check if the path is a symbolic link
       if (follow_symlinks && std::filesystem::is_symlink(status))
       {
