@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -81,6 +81,9 @@ namespace fsw
   static std::vector<KqueueFlagType> create_flag_type_vector()
   {
     std::vector<KqueueFlagType> flags;
+    #ifdef NOTE_CLOSE_WRITE
+      flags.push_back({NOTE_CLOSE_WRITE, fsw_event_flag::CloseWrite});
+    #endif
     flags.push_back({NOTE_DELETE, fsw_event_flag::Removed});
     flags.push_back({NOTE_WRITE, fsw_event_flag::Updated});
     flags.push_back({NOTE_EXTEND, fsw_event_flag::PlatformSpecific});
@@ -396,14 +399,19 @@ namespace fsw
       {
         struct kevent change{};
 
-        // TODO: update the flags to be monitored
-        // TODO: there is a use case for NOTE_CLOSE_WRITE which can be used to
-        // monitor for file changes in a more efficient way.
+        // Set the flags to be monitored
+        int flags = NOTE_DELETE | NOTE_EXTEND | NOTE_RENAME | NOTE_WRITE | NOTE_ATTRIB | NOTE_LINK | NOTE_REVOKE;
+
+        // Conditionally include NOTE_CLOSE_WRITE if it is defined
+        #ifdef NOTE_CLOSE_WRITE
+          flags |= NOTE_CLOSE_WRITE;
+        #endif
+
         EV_SET(&change,
                key,
                EVFILT_VNODE,
                EV_ADD | EV_ENABLE | EV_CLEAR,
-               NOTE_DELETE | NOTE_EXTEND | NOTE_RENAME | NOTE_WRITE | NOTE_ATTRIB | NOTE_LINK | NOTE_REVOKE,
+               flags,
                0,
                0);
 
