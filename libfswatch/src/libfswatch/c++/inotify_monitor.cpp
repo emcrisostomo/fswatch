@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -64,6 +64,7 @@ namespace fsw
     std::unordered_set<int> descriptors_to_remove;
     std::unordered_set<int> watches_to_remove;
     std::vector<std::string> paths_to_rescan;
+    std::vector<std::string> paths_to_fire_create;
     time_t curr_time;
   };
 
@@ -201,12 +202,6 @@ namespace fsw
     {
       impl->events.emplace_back(impl->wd_to_path[event->wd], impl->curr_time, flags, event->cookie);
     }
-
-    // If a new directory has been created, it should be rescanned if the
-    if ((event->mask & IN_ISDIR) && (event->mask & IN_CREATE))
-    {
-      impl->paths_to_rescan.push_back(impl->wd_to_path[event->wd]);
-    }
   }
 
   void inotify_monitor::preprocess_node_event(const struct inotify_event *event)
@@ -240,6 +235,26 @@ namespace fsw
     {
       filename_stream << "/";
       filename_stream << event->name;
+    }
+
+    // If a new directory has been created, it should be rescanned.
+    //
+    // Since inotify doesn't send events for new directories until watched,
+    // there's a potential race condition where:
+    //   * A new directory is created.
+    //   * The directory is not watched.
+    //   * A file is created in the directory.
+    //   * The directory is watched.
+    // This has been reported, amongst other, in issue #330
+    // (https://github.com/emcrisostomo/fswatch/issues/330).
+    //
+    // To avoid this, we add the directory to the list of paths to rescan, and
+    // we also synthetically add the directory contents to the list of IN_CREATE
+    // events to be fired.
+    if ((event->mask & IN_ISDIR) && (event->mask & IN_CREATE))
+    {
+      impl->paths_to_rescan.push_back(filename_stream.str());
+      impl->paths_to_fire_create.push_back(filename_stream.str());
     }
 
     if (!flags.empty())
@@ -373,6 +388,32 @@ namespace fsw
     impl->paths_to_rescan.clear();
   }
 
+  void inotify_monitor::process_synthetic_events()
+  {
+    for (const std::string& path : impl->paths_to_fire_create)
+    {
+      std::ostringstream log;
+      log << "Synthetic event: Processing: " << path << "\n";
+      FSW_ELOG(log.str().c_str());
+
+      const auto& children = get_directory_entries(path);
+
+      for (const auto& entry : children)
+      {
+        const auto& entry_path = entry.path().string();
+
+        log.clear();
+        log << "Synthetic event: Adding: " << entry_path << "\n";
+        FSW_ELOG(log.str().c_str());
+
+        std::vector<fsw_event_flag> flags(1, fsw_event_flag::Created);
+        impl->events.emplace_back(entry_path, impl->curr_time, flags);
+      }
+    }
+
+    impl->paths_to_fire_create.clear();
+  }
+
   void inotify_monitor::run()
   {
     char buffer[BUFFER_SIZE];
@@ -384,8 +425,6 @@ namespace fsw
       std::unique_lock<std::mutex> run_guard(run_mutex);
       if (should_stop) break;
       run_guard.unlock();
-
-      process_pending_events();
 
       scan_root_paths();
 
@@ -453,6 +492,18 @@ namespace fsw
 
         p += (sizeof(struct inotify_event)) + event->len;
       }
+
+      if (!impl->events.empty())
+      {
+        notify_events(impl->events);
+        impl->events.clear();
+      }
+
+      process_pending_events();
+      // We fire synthetic events after processing pending events to avoid the
+      // race condition where a directory is added and contents are created in
+      // it before the directory is watched.
+      process_synthetic_events();
 
       if (!impl->events.empty())
       {
