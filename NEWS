@@ -1,6 +1,16 @@
 NEWS
 ****
 
+New in current-develop:
+
+  * Added event flag CloseWrite: file open for write has been closed. 
+
+  * kqueue_monitor: added support for CloseWrite, adding support for events of
+    type NOTE_CLOSE_WRITE.
+
+  * inotify_monitor: added support for CloseWrite, adding support for events of
+    type IN_CLOSE_WRITE.
+
 New in 1.18.0:
 
   * The C++17 standard has been adopted: code has been rewritten and simplified
