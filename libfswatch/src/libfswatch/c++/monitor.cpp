@@ -226,7 +226,7 @@ monitor::~monitor()
     for (;;)
     {
       {
-        std::unique_lock<std::mutex> run_guard(mon->run_mutex);
+        std::unique_lock run_guard(mon->run_mutex);
         if (mon->should_stop) break;
       }
 
@@ -367,11 +367,8 @@ monitor::~monitor()
       }
 
       filtered_events.clear();
-      for (auto const& evt : bubbled_events)
+      for (const auto& [bubble_key, flags] : bubbled_events)
       {
-        auto const& bubble_key = evt.first;
-        auto const& flags = evt.second;
-
         std::vector<fsw_event_flag> bubbled_flags(flags.size());
         std::move(flags.begin(), flags.end(), bubbled_flags.begin());
 

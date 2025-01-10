@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -137,6 +137,11 @@ namespace fsw
     {
       auto status = std::filesystem::symlink_status(path);
 
+      if (!std::filesystem::exists(status))
+      {
+        return;
+      }
+
       // Check if the path is a symbolic link
       if (follow_symlinks && std::filesystem::is_symlink(status))
       {
@@ -195,6 +200,16 @@ namespace fsw
 
     if (event->mask & IN_ISDIR) flags.push_back(fsw_event_flag::IsDir);
     if (event->mask & IN_MOVE_SELF) flags.push_back(fsw_event_flag::Updated);
+    if (event->mask & IN_MOVED_FROM)
+    {
+      flags.push_back(fsw_event_flag::Removed);
+      flags.push_back(fsw_event_flag::MovedFrom);
+    }
+    if (event->mask & IN_MOVED_TO)
+    {
+      flags.push_back(fsw_event_flag::Created);
+      flags.push_back(fsw_event_flag::MovedTo);
+    }
     if (event->mask & IN_UNMOUNT) flags.push_back(fsw_event_flag::PlatformSpecific);
 
     if (!flags.empty())
@@ -216,20 +231,11 @@ namespace fsw
     if (event->mask & IN_ACCESS) flags.push_back(fsw_event_flag::PlatformSpecific);
     if (event->mask & IN_ATTRIB) flags.push_back(fsw_event_flag::AttributeModified);
     if (event->mask & IN_CLOSE_NOWRITE) flags.push_back(fsw_event_flag::PlatformSpecific);
-    if (event->mask & IN_CLOSE_WRITE) flags.push_back(fsw_event_flag::Updated);
+    if (event->mask & IN_CLOSE_WRITE) flags.push_back(fsw_event_flag::CloseWrite);
     if (event->mask & IN_CREATE) flags.push_back(fsw_event_flag::Created);
     if (event->mask & IN_DELETE) flags.push_back(fsw_event_flag::Removed);
+    if (event->mask & IN_DELETE_SELF) flags.push_back(fsw_event_flag::Removed);
     if (event->mask & IN_MODIFY) flags.push_back(fsw_event_flag::Updated);
-    if (event->mask & IN_MOVED_FROM)
-    {
-      flags.push_back(fsw_event_flag::Removed);
-      flags.push_back(fsw_event_flag::MovedFrom);
-    }
-    if (event->mask & IN_MOVED_TO)
-    {
-      flags.push_back(fsw_event_flag::Created);
-      flags.push_back(fsw_event_flag::MovedTo);
-    }
     if (event->mask & IN_OPEN) flags.push_back(fsw_event_flag::PlatformSpecific);
 
     // Build the file name.
@@ -276,7 +282,7 @@ namespace fsw
      * unnoticed when a watched file x is removed and a new file named x is
      * created thereafter.  In this case, fswatch could be blocked on read and
      * it would not have any chance to create a new watch descriptor for x until
-     *  an event is received and read unblocks.
+     * an event is received and read unblocks.
      */
     if (event->mask & IN_MOVE_SELF)
     {

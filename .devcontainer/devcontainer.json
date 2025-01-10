@@ -21,6 +21,7 @@
 			"extensions": [
 				"sonarsource.sonarlint-vscode",
 				"ms-vscode.cpptools-themes",
+				"ms-vscode.cpptools-extension-pack",
 				"maelvalais.autoconf",
 				"eamodio.gitlens"
 			]

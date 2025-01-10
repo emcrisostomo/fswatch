@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2021 Enrico M. Crisostomo
+ * Copyright (c) 2015-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -38,7 +38,8 @@ const fsw_event_flag FSW_ALL_EVENT_FLAGS[] =
     IsDir,
     IsSymLink,
     Link,
-    Overflow
+    Overflow,
+    CloseWrite
   };
 
 FSW_STATUS fsw_get_event_flag_by_name(const char *name, fsw_event_flag *flag)
