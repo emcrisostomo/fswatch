@@ -27,10 +27,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.18.0\n"
+"Project-Id-Version: fswatch 1.18.1\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2025-01-03 13:06+0100\n"
-"PO-Revision-Date: 2025-01-03 13:06+0100\n"
+"POT-Creation-Date: 2025-01-18 01:36+0100\n"
+"PO-Revision-Date: 2025-01-18 01:36+0100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@quot\n"
@@ -410,7 +410,7 @@ msgstr "Releasing event stream...\n"
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "The callback info cannot be cast to fsevents_monitor."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:246
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:259
 msgid "Creating FSEvent stream...\n"
 msgstr "Creating FSEvent stream...\n"
 
