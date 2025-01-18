@@ -197,9 +197,22 @@ namespace fsw
                                                                 kFSEventStreamEventExtendedDataPathKey));
       auto cf_inode = static_cast<CFNumberRef>(CFDictionaryGetValue(path_info_dict,
                                                                     kFSEventStreamEventExtendedFileIDKey));
+
+      // Get the length of the UTF8-encoded CFString in bytes
+      CFIndex length = CFStringGetLength(path);
+      CFIndex max_path_size = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8) + 1;
+
+      // Allocate a buffer dynamically
+      std::vector<char> path_buffer(max_path_size);
+      if (!CFStringGetCString(path, path_buffer.data(), max_path_size, kCFStringEncodingUTF8))
+      {
+          std::cerr << "Warning: Failed to convert CFStringRef to C string." << std::endl;
+          continue;
+      }
+
       unsigned long inode;
       CFNumberGetValue(cf_inode, kCFNumberLongType, &inode);
-      events.emplace_back(std::string(CFStringGetCStringPtr(path, kCFStringEncodingUTF8)),
+      events.emplace_back(std::string(path_buffer.data()),
                           curr_time,
                           decode_flags(eventFlags[i]),
                           inode);

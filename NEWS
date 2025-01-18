@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 1.18.1:
+
+  * Issue 333: Fix: Handle non-ASCII characters in file paths to prevent
+    segmentation faults in FSEvents callback.
+
 New in 1.18.0:
 
   * The C++17 standard has been adopted: code has been rewritten and simplified
