@@ -124,8 +124,15 @@ namespace fsw
   {
     try
     {
+      auto status = std::filesystem::symlink_status(path);
+
+      if (!std::filesystem::exists(status))
+      {
+        return;
+      }
+
       // Check if the path is a symbolic link
-      if (follow_symlinks && std::filesystem::is_symlink(std::filesystem::symlink_status(path)))
+      if (follow_symlinks && std::filesystem::is_symlink(status))
       {
         auto link_path = std::filesystem::read_symlink(path);
         scan(link_path, fn);
