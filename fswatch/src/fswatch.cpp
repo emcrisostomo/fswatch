@@ -172,7 +172,7 @@ static void usage(std::ostream& stream)
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
   stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
-  #if defined(HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
+  #ifdef HAVE_MACOS_GE_10_5
   stream << "     --no-defer        " << _("Set the no defer flag in the monitor.\n");
   #endif
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -190,7 +190,7 @@ namespace fsw
 
     for (size_t i = 0; i < numEvents; ++i)
     {
-#if defined(HAVE_MACOS_GE_10_13)
+#ifdef HAVE_MACOS_GE_10_13
       auto path_info_dict = static_cast<CFDictionaryRef>(CFArrayGetValueAtIndex((CFArrayRef) eventPaths,
                                                                                 i));
       auto path = static_cast<CFStringRef>(CFDictionaryGetValue(path_info_dict,
@@ -242,16 +242,20 @@ namespace fsw
 
   void fsevents_monitor::create_stream(CFArrayRef pathsToWatch)
   {
-    std::unique_ptr<FSEventStreamContext> context(new FSEventStreamContext());
+    auto context = std::make_unique<FSEventStreamContext>();
     context->version = 0;
     context->info = this;
     context->retain = nullptr;
     context->release = nullptr;
     context->copyDescription = nullptr;
 
-    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
+    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagNone;
     if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
-#if defined (HAVE_MACOS_GE_10_13)
+#ifdef HAVE_MACOS_GE_10_7
+    streamFlags |= kFSEventStreamCreateFlagFileEvents;
+#endif
+
+#ifdef HAVE_MACOS_GE_10_13
     streamFlags |= kFSEventStreamCreateFlagUseExtendedData;
     streamFlags |= kFSEventStreamCreateFlagUseCFTypes;
 #endif
