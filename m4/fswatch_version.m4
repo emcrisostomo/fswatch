@@ -13,5 +13,5 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-m4_define([FSWATCH_VERSION], [1.18.2])
+m4_define([FSWATCH_VERSION], [1.19.0-develop])
 m4_define([FSWATCH_REVISION], [1])
