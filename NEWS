@@ -1,6 +1,11 @@
 NEWS
 ****
 
+New in 1.19.0-develop:
+
+  * Issue 335: v. 1.18.0: build error: 'kFSEventStreamCreateFlagFileEvents' was
+    not declared in this scope.
+
 New in 1.18.2:
 
   * Added event flag CloseWrite: file open for write has been closed. 

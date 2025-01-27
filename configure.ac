@@ -119,6 +119,7 @@ AS_CASE([${HOST_OS}], ["darwin"*], [
 
 AS_VAR_SET_IF([IS_DARWIN], [
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [9.0],  [AC_DEFINE([HAVE_MACOS_GE_10_5],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [10.0], [AC_DEFINE([HAVE_MACOS_GE_10_6],  [1], ["macOS is at least the specified version"])])
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [11.0], [AC_DEFINE([HAVE_MACOS_GE_10_7],  [1], ["macOS is at least the specified version"])])
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [13.0], [AC_DEFINE([HAVE_MACOS_GE_10_9],  [1], ["macOS is at least the specified version"])])
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [14.0], [AC_DEFINE([HAVE_MACOS_GE_10_10], [1], ["macOS is at least the specified version"])])
@@ -126,10 +127,10 @@ AS_VAR_SET_IF([IS_DARWIN], [
   # Check for macOS FSEvents.  FSEvents added file events in a later release, so
   # this check must be performed separately.
   AC_CHECK_HEADERS([CoreServices/CoreServices.h])
-  AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS])
+  AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS()])
 ])
 
-AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_fseventstreamsetdispatchqueue}" = "xyes"])
+AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_fsevents}" = "xyes"])
 
 # Check for kqueue: if the sys/event.h header is present, perform a check for
 # the kqueue and kevent functions.

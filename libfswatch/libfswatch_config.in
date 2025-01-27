@@ -18,6 +18,7 @@
 #cmakedefine HAVE_WINDOWS
 
 #cmakedefine HAVE_MACOS_GE_10_5
+#cmakedefine HAVE_MACOS_GE_10_6
 #cmakedefine HAVE_MACOS_GE_10_7
 #cmakedefine HAVE_MACOS_GE_10_9
 #cmakedefine HAVE_MACOS_GE_10_10
