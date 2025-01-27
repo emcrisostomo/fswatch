@@ -11,6 +11,21 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Check autotools status
+      id: check_status
+      uses: actions/github-script@v4
+      with:
+        script: |
+          const status = await github.repos.getCombinedStatusForRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: context.payload.release.target_commitish
+          });
+          const autotoolsStatus = status.data.statuses.find(s => s.context === 'autotools');
+          if (!autotoolsStatus || autotoolsStatus.state !== 'success') {
+            core.setFailed('Autotools build did not complete successfully');
+          }
+
     - name: Install dependencies on Ubuntu
       run: |
         sudo apt-get update
