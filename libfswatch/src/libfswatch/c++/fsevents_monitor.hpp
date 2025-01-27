@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief macOS FSEvents monitor.
  *
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2025 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -80,7 +80,15 @@ namespace fsw
      */
     void run() override;
 
+    /**
+     * @brief Execute an implementation-specific stop handler.
+     */
+    void on_stop() override;
+
   private:
+    class Impl;
+    std::unique_ptr<Impl> pImpl;
+    
     static void fsevents_callback(ConstFSEventStreamRef streamRef,
                                   void *clientCallBackInfo,
                                   size_t numEvents,
@@ -88,8 +96,6 @@ namespace fsw
                                   const FSEventStreamEventFlags eventFlags[],
                                   const FSEventStreamEventId eventIds[]);
 
-    FSEventStreamRef stream = nullptr;
-    dispatch_queue_t fsevents_queue = nullptr;
     bool no_defer();
     void create_stream(CFArrayRef pathsToWatch);
   };
