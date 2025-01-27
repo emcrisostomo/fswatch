@@ -452,7 +452,7 @@ static void start_monitor(int argc, char **argv, int optind)
 
   for (auto i = optind; i < argc; ++i)
   {
-    std::string path = std::filesystem::canonical(argv[i]).string();
+    std::string path = std::filesystem::absolute(argv[i]).string();
 
     FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 
