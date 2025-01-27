@@ -45,3 +45,17 @@ jobs:
 
     - name: Run checks
       run: make check
+
+    - name: Set commit status
+      uses: actions/github-script@v4
+      with:
+        script: |
+          github.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.sha,
+            state: 'success',
+            context: 'autotools',
+            description: 'Autotools build successful',
+            target_url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          })
