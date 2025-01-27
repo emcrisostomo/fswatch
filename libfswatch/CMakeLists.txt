@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2024 Enrico M. Crisostomo
+# Copyright (c) 2014-2025 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -18,6 +18,10 @@
 if(APPLE)
     if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "9.0")
         set(HAVE_MACOS_GE_10_5 1)
+    endif()
+
+    if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "10.0")
+        set(HAVE_MACOS_GE_10_6 1)
     endif()
 
     if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "11.0")
