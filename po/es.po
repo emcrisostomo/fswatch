@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.11.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2025-01-18 01:36+0100\n"
+"POT-Creation-Date: 2025-01-27 11:53+0100\n"
 "PO-Revision-Date: 2017-10-29 14:04+0100\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -294,11 +294,11 @@ msgstr "Ha ocurrido un error y el programa terminará.\n"
 msgid "An unknown error occurred and the program will be terminated.\n"
 msgstr "Ha ocurrido un error desconocido y el programa terminará.\n"
 
-#: libfswatch/src/libfswatch/c++/event.cpp:82
+#: libfswatch/src/libfswatch/c++/event.cpp:83
 msgid "Unknown event type: "
 msgstr "Tipo evento desconocido: "
 
-#: libfswatch/src/libfswatch/c++/event.cpp:112
+#: libfswatch/src/libfswatch/c++/event.cpp:114
 msgid "Unknown event type."
 msgstr "Tipo evento desconocido."
 
@@ -326,9 +326,9 @@ msgid "Cannot allocate memory"
 msgstr "No se puede reservar memoria"
 
 #: libfswatch/src/libfswatch/c++/fen_monitor.cpp:296
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:175
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:218
-#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:156
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:180
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:226
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:163
 #, c-format
 msgid "Filesystem error: %s"
 msgstr ""
@@ -407,44 +407,44 @@ msgstr "Eliminando: "
 msgid "Added: "
 msgstr "Añadiendo: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:252
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:258
 msgid "Generic event: "
 msgstr "Evento genérico: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:344
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:350
 msgid "Removed: "
 msgstr "Eliminado: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:431
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:437
 msgid "Number of records: "
 msgstr "Numero de registros: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:437
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:443
 msgid "read() on inotify descriptor read 0 records."
 msgstr "read() sobre el descriptor inotify leyó 0 registros."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:443
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:449
 msgid "read() on inotify descriptor returned -1."
 msgstr "read() sobre le descriptor inotify devolvió -1."
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:166
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:169
 #, c-format
 msgid "Cannot open %s"
 msgstr "No se puede abrir %s"
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:271
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:279
 msgid "kqueue already running."
 msgstr "kqueue ya está ejecutándose."
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:278
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:286
 msgid "kqueue failed."
 msgstr "kqueue falló."
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:304
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:312
 msgid "kevent returned -1, invalid event number."
 msgstr "kevent devolvió -1, numero de evento inválido."
 
-#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:323
+#: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:331
 msgid "Event with EV_ERROR"
 msgstr "Evento con EV_ERROR"
 
@@ -485,7 +485,7 @@ msgstr "Parando el monitor...\n"
 msgid "Event queue overflow."
 msgstr "Cola de eventos saturada."
 
-#: libfswatch/src/libfswatch/c++/monitor.cpp:384
+#: libfswatch/src/libfswatch/c++/monitor.cpp:381
 #, c-format
 msgid "Notifying events #: %d.\n"
 msgstr "Notificando eventos #: %d.\n"
@@ -506,7 +506,7 @@ msgstr "No se puede hacer stat() de %s"
 msgid "Cannot lstat %s"
 msgstr "No se puede hacer lstat() de %s"
 
-#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:217
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:224
 msgid "Done scanning.\n"
 msgstr "Rastreo terminado.\n"
 
