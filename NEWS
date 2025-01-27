@@ -1,7 +1,7 @@
 NEWS
 ****
 
-New in current-develop:
+New in 1.18.2:
 
   * Added event flag CloseWrite: file open for write has been closed. 
 
@@ -10,6 +10,8 @@ New in current-develop:
 
   * inotify_monitor: added support for CloseWrite, adding support for events of
     type IN_CLOSE_WRITE.
+
+  * Issue 337: fswatch exits on non-existing paths.
 
 New in 1.18.1:
 
