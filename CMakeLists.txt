@@ -16,10 +16,13 @@
 cmake_minimum_required(VERSION 3.14)
 project(fswatch VERSION 1.19.0 LANGUAGES C CXX)
 
+set(VERSION_MODIFIER "-develop")
+set(FULL_VERSION "${PROJECT_VERSION}${VERSION_MODIFIER}")
+
 #@formatter:off
 set(PACKAGE           "${PROJECT_NAME}")
 set(PACKAGE_NAME      "${PACKAGE}")
-set(PACKAGE_VERSION   "${PROJECT_VERSION}-develop")
+set(PACKAGE_VERSION   "${FULL_VERSION}")
 set(PACKAGE_STRING    "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_AUTHOR    "enrico.m.crisostomo@gmail.com")
 set(PACKAGE_BUGREPORT "${PACKAGE_AUTHOR}")
