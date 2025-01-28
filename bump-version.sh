@@ -31,10 +31,9 @@ typeset -r FSWATCH_DOC_DIR=fswatch/doc
 typeset -i ARGS_PROCESSED=0
 typeset -a develop_flag
 typeset -a help_flag
-typeset -a verbose_flag
+typeset -a version_string
 typeset -a version_flag
 DEVELOP=0
-VERBOSE=0
 typeset -a configure_opts
 REQUIRED_PROGS=( git semver)
 
@@ -63,7 +62,9 @@ print_usage()
   print -- "${PROGNAME}"
   print
   print -- "Usage:"
-  print -- "${PROGNAME}"
+  print -- "${PROGNAME} [-s|--set version]* [-d|--develop]*"
+  print -- "${PROGNAME} [-h|--help]"
+  print -- "${PROGNAME} [--version]"
   print
   print -- "Bumps the project version in all the relevant files:"
   print -- " - m4/fswatch_version.m4"
@@ -79,7 +80,7 @@ print_usage()
   print -- "Options:"
   print -- " -d, --develop  The -develop suffix is appended."
   print -- " -h, --help     Print this message."
-  print -- " -v, --verbose  Print verbose output."
+  print -- " -s, --set      Set the version to the specified value."
   print -- "     --version  Print the program version."
 }
 
@@ -102,7 +103,7 @@ parse_opts()
 zparseopts -D \
            d=develop_flag -develop=develop_flag \
            h=help_flag -help=help_flag \
-           v=verbose_flag -verbose=verbose_flag \
+           s+:=version_string --set=version_string \
            -version=version_flag
 
 if (( ${+help_flag[1]} > 0 ))
@@ -116,10 +117,6 @@ then
   DEVELOP=1
 fi
 
-if (( ${+verbose_flag[1]} > 0 ))
-then
-  VERBOSE=1
-fi
 
 if (( ${+version_flag[1]} > 0 ))
 then
@@ -135,14 +132,17 @@ parse_opts $* && shift ${ARGS_PROCESSED}
     exit 1
   }
 
-if (( ${VERBOSE} > 0 ))
+if (( ${+version_string[1]} > 0 ))
 then
-  configure_opts=( --enable-silent-rules )
+  (( ${#version_string} == 2)) ||
+    {
+      >&2 print -- "Invalid number of version strings."
+      exit 1
+    }
+  NEW_VERSION=${version_string[2]}
 else
-  configure_opts=( --disable-silent-rules )
-fi
-
-NEW_VERSION=$(git tag | semver -sr 2> /dev/null | semver --max | semver -b minor)
+  NEW_VERSION=$(git tag | semver -sr 2> /dev/null | semver --max | semver -b minor)
+fi 
 
 if (( ${DEVELOP} > 0 ))
 then
