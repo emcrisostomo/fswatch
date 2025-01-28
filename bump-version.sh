@@ -26,15 +26,12 @@ PROGNAME=${0:t}
 PROGDIR=${0:h}
 BUG_REPORT=enrico.m.crisostomo@gmail.com
 PACKAGE_VERSION=1.0.0
-typeset -r LIBFSWATCH_DOC_DIR=libfswatch/doc/doxygen
-typeset -r FSWATCH_DOC_DIR=fswatch/doc
 typeset -i ARGS_PROCESSED=0
 typeset -a develop_flag
 typeset -a help_flag
 typeset -a version_string
 typeset -a version_flag
 DEVELOP=0
-typeset -a configure_opts
 REQUIRED_PROGS=( git semver)
 
 for p in ${REQUIRED_PROGS}
