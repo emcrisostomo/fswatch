@@ -311,7 +311,7 @@ v. 2.0.
 
 -----
 
-Copyright (c) 2013-2024 Enrico M. Crisostomo
+Copyright (c) 2013-2025 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
