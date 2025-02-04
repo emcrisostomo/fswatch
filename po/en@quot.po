@@ -27,10 +27,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.18.2\n"
+"Project-Id-Version: fswatch 1.18.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2025-01-27 11:53+0100\n"
-"PO-Revision-Date: 2025-01-27 11:53+0100\n"
+"POT-Creation-Date: 2025-02-04 22:22+0100\n"
+"PO-Revision-Date: 2025-02-04 22:22+0100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@quot\n"
@@ -345,7 +345,7 @@ msgid "Cannot allocate memory"
 msgstr "Cannot allocate memory"
 
 #: libfswatch/src/libfswatch/c++/fen_monitor.cpp:296
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:180
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:175
 #: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:226
 #: libfswatch/src/libfswatch/c++/poll_monitor.cpp:163
 #, c-format
@@ -386,31 +386,47 @@ msgstr "Unknown filter type: "
 msgid "Unknown flag: "
 msgstr "Unknown flag: "
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:122
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:139
 msgid "Event stream could not be created."
 msgstr "Event stream could not be created."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:128
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:150
+msgid "Scheduling stream with run loop...\n"
+msgstr "Scheduling stream with run loop...\n"
+
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:156
 msgid "Starting event stream...\n"
 msgstr "Starting event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:143
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:172
+msgid "Starting run loop...\n"
+msgstr "Starting run loop...\n"
+
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:177
 msgid "Stopping event stream...\n"
 msgstr "Stopping event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:146
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:180
 msgid "Invalidating event stream...\n"
 msgstr "Invalidating event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:149
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:183
 msgid "Releasing event stream...\n"
 msgstr "Releasing event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:182
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:198
+msgid "run loop is null"
+msgstr "run loop is null"
+
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:200
+msgid "Stopping run loop...\n"
+msgstr "Stopping run loop...\n"
+
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:233
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "The callback info cannot be cast to fsevents_monitor."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:259
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:314
 msgid "Creating FSEvent stream...\n"
 msgstr "Creating FSEvent stream...\n"
 
@@ -422,27 +438,27 @@ msgstr "Cannot initialize inotify."
 msgid "Removing: "
 msgstr "Removing: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:127
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:122
 msgid "Added: "
 msgstr "Added: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:258
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:253
 msgid "Generic event: "
 msgstr "Generic event: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:350
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:345
 msgid "Removed: "
 msgstr "Removed: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:437
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:432
 msgid "Number of records: "
 msgstr "Number of records: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:443
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:438
 msgid "read() on inotify descriptor read 0 records."
 msgstr "read() on inotify descriptor read 0 records."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:449
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:444
 msgid "read() on inotify descriptor returned -1."
 msgstr "read() on inotify descriptor returned -1."
 
