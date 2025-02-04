@@ -3,10 +3,14 @@ NEWS
 
 New in 1.19.0-develop:
 
-  * Fixes spurious output 'inotify_rm_watch: Invalid argument'
+  * Fix: spurious output 'inotify_rm_watch: Invalid argument'
 
   * Issue 335: v. 1.18.0: build error: 'kFSEventStreamCreateFlagFileEvents' was
     not declared in this scope.
+
+  * Grammar fix in documentation.
+
+  * Fix: typo in man page. 
 
 New in 1.18.2:
 
