@@ -86,20 +86,15 @@ namespace fsw
 
   inotify_monitor::~inotify_monitor()
   {
-    // close inotify watchers
+    // log removal of inotify watchers (automatically removed by close below)
     for (auto inotify_desc_pair : impl->watched_descriptors)
     {
       std::ostringstream log;
       log << _("Removing: ") << inotify_desc_pair << "\n";
       FSW_ELOG(log.str().c_str());
-
-      if (inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair))
-      {
-        perror("inotify_rm_watch");
-      }
     }
 
-    // close inotify
+    // close inotify (removes watches)
     if (impl->inotify_monitor_handle > 0)
     {
       close(impl->inotify_monitor_handle);
