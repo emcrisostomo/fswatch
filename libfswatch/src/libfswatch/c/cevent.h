@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,8 @@
  * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
- * @version 1.8.0
+ * @version 13:1:0
+ * TODO: Update version number reflecting changes of the API.
  */
 #ifndef FSW__CEVENT_H
 #  define FSW__CEVENT_H
@@ -76,10 +77,11 @@ extern "C"
     IsDir = (1 << 10),            /**< The object is a directory. */
     IsSymLink = (1 << 11),        /**< The object is a symbolic link. */
     Link = (1 << 12),             /**< The link count of an object has changed. */
-    Overflow = (1 << 13)          /**< The event queue has overflowed. */
+    Overflow = (1 << 13),         /**< The event queue has overflowed. */
+    CloseWrite = (1 << 14)        /**< A file was closed after being opened in write mode. */
   };
 
-  extern const enum fsw_event_flag FSW_ALL_EVENT_FLAGS[15];
+  extern const enum fsw_event_flag FSW_ALL_EVENT_FLAGS[16];
 
   /**
    * @brief Get event flag by name.

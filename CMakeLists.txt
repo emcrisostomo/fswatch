@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2022 Enrico M. Crisostomo
+# Copyright (c) 2014-2025 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -13,13 +13,16 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-cmake_minimum_required(VERSION 3.8)
-project(fswatch VERSION 1.17.1 LANGUAGES C CXX)
+cmake_minimum_required(VERSION 3.14)
+project(fswatch VERSION 1.19.0 LANGUAGES C CXX)
+
+set(VERSION_MODIFIER "-develop")
+set(FULL_VERSION "${PROJECT_VERSION}${VERSION_MODIFIER}")
 
 #@formatter:off
 set(PACKAGE           "${PROJECT_NAME}")
 set(PACKAGE_NAME      "${PACKAGE}")
-set(PACKAGE_VERSION   "${PROJECT_VERSION}-develop")
+set(PACKAGE_VERSION   "${FULL_VERSION}")
 set(PACKAGE_STRING    "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_AUTHOR    "enrico.m.crisostomo@gmail.com")
 set(PACKAGE_BUGREPORT "${PACKAGE_AUTHOR}")
@@ -28,7 +31,11 @@ set(PACKAGE_URL       "https://github.com/emcrisostomo/${PACKAGE}")
 set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "locale dir")
 #@formatter:on
 
-set(CMAKE_CXX_STANDARD 11)
+if (NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 17)
+endif ()
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Add option to choose between shared and static libraries
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)

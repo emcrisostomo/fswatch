@@ -21,9 +21,8 @@ fswatch.
 
 fswatch is a C++ program and a C++ compiler compliant with the C++11 standard is
 required to compile it.  FreeBSD v. >= 10.0 ships by default with the CLang
-compiler suite which builds this package correctly.  The GCC compiler collection
-shipped with FreeBSD, however, is not C++11 compliant and cannot build this
-package.
+compiler suite which builds this package correctly.  It can also be built with
+GCC installed from the package collection or ports tree.
 
 The configure script enforces an ordered compiler search list and clang++ will
 be used first if available.  If you do not like this choice and wish to use

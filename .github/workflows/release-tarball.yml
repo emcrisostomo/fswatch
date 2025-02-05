@@ -1,0 +1,66 @@
+name: Release tarball
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Check autotools status
+      id: check_status
+      uses: actions/github-script@v4
+      with:
+        script: |
+          const status = await github.repos.getCombinedStatusForRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: context.payload.release.target_commitish
+          });
+          const autotoolsStatus = status.data.statuses.find(s => s.context === 'autotools');
+          if (!autotoolsStatus || autotoolsStatus.state !== 'success') {
+            core.setFailed('Autotools build did not complete successfully');
+          }
+
+    - name: Install dependencies on Ubuntu
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y autoconf automake autopoint g++ gettext git libtool make texinfo texlive
+
+    - name: Run autogen
+      run: ./autogen.sh
+
+    - name: Configure
+      run: |
+        export CC=gcc CXX=g++
+        ./configure
+
+    - name: Build and Test
+      run: make distcheck
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./fswatch-${{ github.event.release.tag_name }}.tar.gz
+        asset_name: fswatch-${{ github.event.release.tag_name }}.tar.gz
+        asset_content_type: application/gzip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build PDF documentation
+      run: make pdf    
+
+    - name: Upload Release PDF documentation
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./fswatch/doc/fswatch.pdf
+        asset_name: fswatch-${{ github.event.release.tag_name }}.pdf
+        asset_content_type: application/gzip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

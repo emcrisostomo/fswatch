@@ -1,4 +1,4 @@
-FROM debian:9
+FROM debian:11
 LABEL org.opencontainers.image.authors="enrico.m.crisostomo@gmail.com>"
 
 RUN apt-get -y update && apt-get install -y git autoconf automake gettext autopoint libtool make g++ texinfo curl

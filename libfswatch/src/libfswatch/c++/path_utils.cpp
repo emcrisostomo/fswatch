@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -23,76 +23,61 @@
 #include <iostream>
 #include <system_error>
 
-using namespace std;
-
 namespace fsw
 {
-  vector<string> get_directory_children(const string& path)
+  std::vector<std::filesystem::directory_entry> get_directory_entries(const std::filesystem::path& path)
   {
-    vector<string> children;
-    DIR *dir = opendir(path.c_str());
+    std::vector<std::filesystem::directory_entry> entries;
+    // Reserve capacity to optimize memory allocation
+    entries.reserve(std::distance(std::filesystem::directory_iterator(path), std::filesystem::directory_iterator{}));
 
-    if (!dir)
+    try
     {
-      if (errno == EMFILE || errno == ENFILE)
-      {
-        perror("opendir");
-      }
-      else
-      {
-        fsw_log_perror("opendir");
-      }
-
-      return children;
+      for (const auto& entry : std::filesystem::directory_iterator(path)) 
+        entries.emplace_back(entry);
+    } 
+    catch (const std::filesystem::filesystem_error& e) 
+    {
+      FSW_ELOGF(_("Error accessing directory: %s"), e.what());
     }
 
-    while (struct dirent *ent = readdir(dir))
+    return entries;
+  }
+  
+  std::vector<std::filesystem::directory_entry> get_subdirectories(const std::filesystem::path& path)
+  {
+    std::vector<std::filesystem::directory_entry> entries;
+    // Reserve an initial capacity to reduce the number of reallocations
+    entries.reserve(64);
+
+    try
     {
-      children.emplace_back(ent->d_name);
+      for (const auto& entry : std::filesystem::directory_iterator(path)) 
+        if (entry.is_directory()) entries.emplace_back(entry);
+    } 
+    catch (const std::filesystem::filesystem_error& e) 
+    {
+      FSW_ELOGF(_("Error accessing directory: %s"), e.what());
     }
 
-    closedir(dir);
-
-    return children;
+    return entries;
   }
 
-  bool read_link_path(const string& path, string& link_path)
+  bool stat_path(const std::string& path, struct stat& fd_stat, bool follow_symlink)
   {
-    link_path = fsw_realpath(path.c_str(), nullptr);
-
-    return true;
+    return follow_symlink ? lstat_path(path, fd_stat) : stat_path(path, fd_stat);
   }
 
-  std::string fsw_realpath(const char *path, char *resolved_path)
-  {
-    char *ret = realpath(path, resolved_path);
-
-    if (ret == nullptr)
-    {
-      if (errno != ENOENT)
-        throw std::system_error(errno, std::generic_category());
-
-      return std::string(path);
-    }
-
-    std::string resolved(ret);
-
-    if (resolved_path == nullptr) free(ret);
-
-    return resolved;
-  }
-
-  bool stat_path(const string& path, struct stat& fd_stat)
+  bool stat_path(const std::string& path, struct stat& fd_stat)
   {
     if (stat(path.c_str(), &fd_stat) == 0)
       return true;
 
     fsw_logf_perror(_("Cannot stat %s"), path.c_str());
     return false;
-
   }
 
-  bool lstat_path(const string& path, struct stat& fd_stat)
+  bool lstat_path(const std::string& path, struct stat& fd_stat)
   {
     if (lstat(path.c_str(), &fd_stat) == 0)
       return true;

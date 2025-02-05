@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,17 +19,17 @@
 
 #  include "libfswatch/gettext_defs.h"
 #  include "kqueue_monitor.hpp"
-#  include "libfswatch_map.hpp"
-#  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
-#  include "libfswatch//c/libfswatch_log.h"
+#  include "libfswatch/c/libfswatch_log.h"
 #  include "path_utils.hpp"
 #  include <iostream>
+#  include <unordered_map>
+#  include <unordered_set>
 #  include <sys/types.h>
 #  include <ctime>
 #  include <cstdio>
 #  include <cmath>
-#include <utility>
+#  include <utility>
 #  include <unistd.h>
 #  include <fcntl.h>
 
@@ -38,11 +38,11 @@ namespace fsw
 
   struct kqueue_monitor_load
   {
-    fsw_hash_map<std::string, int> descriptors_by_file_name;
-    fsw_hash_map<int, std::string> file_names_by_descriptor;
-    fsw_hash_map<int, mode_t> file_modes;
-    fsw_hash_set<int> descriptors_to_remove;
-    fsw_hash_set<int> descriptors_to_rescan;
+    std::unordered_map<std::string, int> descriptors_by_file_name;
+    std::unordered_map<int, std::string> file_names_by_descriptor;
+    std::unordered_map<int, mode_t> file_modes;
+    std::unordered_set<int> descriptors_to_remove;
+    std::unordered_set<int> descriptors_to_rescan;
 
     void add_watch(int fd, const std::string& path, const struct stat& fd_stat)
     {
@@ -81,6 +81,9 @@ namespace fsw
   static std::vector<KqueueFlagType> create_flag_type_vector()
   {
     std::vector<KqueueFlagType> flags;
+    #ifdef NOTE_CLOSE_WRITE
+      flags.push_back({NOTE_CLOSE_WRITE, fsw_event_flag::CloseWrite});
+    #endif
     flags.push_back({NOTE_DELETE, fsw_event_flag::Removed});
     flags.push_back({NOTE_WRITE, fsw_event_flag::Updated});
     flags.push_back({NOTE_EXTEND, fsw_event_flag::PlatformSpecific});
@@ -97,14 +100,13 @@ namespace fsw
   kqueue_monitor::kqueue_monitor(std::vector<std::string> paths_to_monitor,
                                  FSW_EVENT_CALLBACK *callback,
                                  void *context) :
-    monitor(std::move(paths_to_monitor), callback, context), load(new kqueue_monitor_load())
+    monitor(std::move(paths_to_monitor), callback, context), load(std::make_unique<kqueue_monitor_load>())
   {
   }
 
   kqueue_monitor::~kqueue_monitor()
   {
     terminate_kqueue();
-    delete load;
   }
 
   static std::vector<fsw_event_flag> decode_flags(uint32_t flag)
@@ -129,8 +131,8 @@ namespace fsw
     nanoseconds *= 1000000000;
 
     struct timespec ts{};
-    ts.tv_sec = seconds;
-    ts.tv_nsec = nanoseconds;
+    ts.tv_sec = static_cast<__darwin_time_t>(seconds);
+    ts.tv_nsec = static_cast<long>(nanoseconds);
 
     return ts;
   }
@@ -175,38 +177,54 @@ namespace fsw
     return true;
   }
 
-  bool kqueue_monitor::scan(const std::string& path, bool is_root_path)
+  void kqueue_monitor::scan(const std::filesystem::path& path)
   {
-    struct stat fd_stat{};
-    if (!lstat_path(path, fd_stat)) return false;
-
-    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+    try
     {
-      std::string link_path;
-      if (read_link_path(path, link_path))
-        return scan(link_path);
+      const auto status = std::filesystem::symlink_status(path);
 
-      return false;
+      if (!std::filesystem::exists(status))
+      {
+        return;
+      }
+
+      // Check if the path is a symbolic link
+      if (follow_symlinks && std::filesystem::is_symlink(status))
+      {
+        const auto link_path = std::filesystem::read_symlink(path);
+        scan(link_path);
+        return;
+      }
+
+      const bool is_dir = std::filesystem::is_directory(status);
+
+      // Do not fall through if the monitor is set to watch directories only,
+      // except for the case of root paths, where the user explicitly asked to
+      // watch the file itself.
+      if (!is_dir && directory_only) return;
+      if (!accept_path(path)) return;
+
+      // TODO: C++17 doesn't provide a single, comparable, type to represent st_mode
+      struct stat fd_stat;
+      if (!stat_path(path, fd_stat, follow_symlinks)) return;
+      if (!add_watch(path, fd_stat)) return;
+      if (!recursive || !is_dir) return;
+
+      // TODO: Consider using std::filesystem::recursive_directory_iterator
+      const auto entries = directory_only 
+        ? get_subdirectories(path)
+        : get_directory_entries(path);
+
+      for (const auto& entry : entries)
+      {
+        scan(entry);
+      }
     }
-
-    bool is_dir = S_ISDIR(fd_stat.st_mode);
-
-    if (!is_dir && !is_root_path && directory_only) return true;
-    if (!accept_path(path)) return true;
-    if (!add_watch(path, fd_stat)) return false;
-    if (!recursive) return true;
-    if (!is_dir) return true;
-
-    std::vector<std::string> children = get_directory_children(path);
-
-    for (const std::string& child : children)
+    catch (const std::filesystem::filesystem_error& e) 
     {
-      if (child == "." || child == "..") continue;
-
-      scan(path + "/" + child, false);
+        // Handle errors, such as permission issues or non-existent paths
+        FSW_ELOGF(_("Filesystem error: %s"), e.what());
     }
-
-    return true;
   }
 
   void kqueue_monitor::remove_deleted()
@@ -252,10 +270,7 @@ namespace fsw
     {
       if (is_path_watched(path)) continue;
 
-      if (!scan(path))
-      {
-        FSW_ELOGF(_("%s cannot be found. Will retry later.\n"), path.c_str());
-      }
+      scan(path);
     }
   }
 
@@ -329,21 +344,24 @@ namespace fsw
       // If a NOTE_WRITE flag is found and the descriptor is a directory, then
       // the directory needs to be rescanned because at least one file has
       // either been created or deleted.
+      //
+      // Since we're using EVFILTER_VNODE, e.ident is the file descriptor, which
+      // is guaranteed to be an int by POSIX.
       if (e.fflags & NOTE_DELETE)
       {
-        load->descriptors_to_remove.insert(e.ident);
+        load->descriptors_to_remove.insert(static_cast<int>(e.ident));
       }
       else if ((e.fflags & NOTE_RENAME) || (e.fflags & NOTE_REVOKE)
                || ((e.fflags & NOTE_WRITE) && S_ISDIR(load->file_modes[e.ident])))
       {
-        load->descriptors_to_rescan.insert(e.ident);
+        load->descriptors_to_rescan.insert(static_cast<int>(e.ident));
       }
 
       // Invoke the callback passing every path for which an event has been
       // received with a non empty filter flag.
       if (e.fflags)
       {
-        events.emplace_back(load->file_names_by_descriptor[e.ident],
+        events.emplace_back(load->file_names_by_descriptor[static_cast<int>(e.ident)],
                             curr_time,
                             decode_flags(e.fflags));
       }
@@ -377,15 +395,23 @@ namespace fsw
       std::vector<struct kevent> changes;
       std::vector<struct kevent> event_list;
 
-      for (const auto& fd_path : load->file_names_by_descriptor)
+      for (const auto& [key, value] : load->file_names_by_descriptor)
       {
         struct kevent change{};
 
+        // Set the flags to be monitored
+        int flags = NOTE_DELETE | NOTE_EXTEND | NOTE_RENAME | NOTE_WRITE | NOTE_ATTRIB | NOTE_LINK | NOTE_REVOKE;
+
+        // Conditionally include NOTE_CLOSE_WRITE if it is defined
+        #ifdef NOTE_CLOSE_WRITE
+          flags |= NOTE_CLOSE_WRITE;
+        #endif
+
         EV_SET(&change,
-               fd_path.first,
+               key,
                EVFILT_VNODE,
                EV_ADD | EV_ENABLE | EV_CLEAR,
-               NOTE_DELETE | NOTE_EXTEND | NOTE_RENAME | NOTE_WRITE | NOTE_ATTRIB | NOTE_LINK | NOTE_REVOKE,
+               flags,
                0,
                0);
 
@@ -399,7 +425,7 @@ namespace fsw
        */
       if (changes.empty())
       {
-        sleep(latency);
+        sleep(static_cast<unsigned int>(latency));
         continue;
       }
 

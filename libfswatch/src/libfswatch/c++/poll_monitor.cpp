@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,11 +19,11 @@
 #include <fcntl.h>
 #include <iostream>
 #include <utility>
+#include <unordered_map>
 #include <libfswatch/libfswatch_config.h>
 #include "libfswatch/c/libfswatch_log.h"
 #include "poll_monitor.hpp"
 #include "path_utils.hpp"
-#include "libfswatch_map.hpp"
 
 #if defined HAVE_STRUCT_STAT_ST_MTIME
 #  define FSW_MTIME(stat) ((stat).st_mtime)
@@ -39,10 +39,11 @@ namespace fsw
 {
   using std::vector;
   using std::string;
+  using std::filesystem::path;
 
   using poll_monitor_data = struct poll_monitor::poll_monitor_data
   {
-    fsw_hash_map<string, poll_monitor::watched_file_info> tracked_files;
+    std::unordered_map<string, poll_monitor::watched_file_info> tracked_files;
   };
 
   poll_monitor::poll_monitor(vector<string> paths,
@@ -74,74 +75,92 @@ namespace fsw
   {
     if (new_data->tracked_files.count(path)) return false;
 
-    watched_file_info wfi{FSW_MTIME(stat), FSW_CTIME(stat)};
+    const auto mtime = FSW_MTIME(stat);
+    const auto ctime = FSW_CTIME(stat);
+
+    watched_file_info wfi{mtime, ctime};
     new_data->tracked_files[path] = wfi;
 
-    if (previous_data->tracked_files.count(path))
-    {
-      watched_file_info pwfi = previous_data->tracked_files[path];
-      vector<fsw_event_flag> flags;
-
-      if (FSW_MTIME(stat) > pwfi.mtime)
-      {
-        flags.push_back(fsw_event_flag::Updated);
-      }
-
-      if (FSW_CTIME(stat) > pwfi.ctime)
-      {
-        flags.push_back(fsw_event_flag::AttributeModified);
-      }
-
-      if (!flags.empty())
-      {
-        events.emplace_back(path, curr_time, flags);
-      }
-
-      previous_data->tracked_files.erase(path);
-    }
-    else
+    if (!previous_data->tracked_files.count(path))
     {
       vector<fsw_event_flag> flags;
       flags.push_back(fsw_event_flag::Created);
       events.emplace_back(path, curr_time, flags);
+
+      return true;
     }
+    
+    watched_file_info pwfi = previous_data->tracked_files[path];
+    vector<fsw_event_flag> flags;
+
+    if (mtime > pwfi.mtime)
+    {
+      flags.push_back(fsw_event_flag::Updated);
+    } 
+
+    if (ctime > pwfi.ctime)
+    {
+      flags.push_back(fsw_event_flag::AttributeModified);
+    }
+
+    if (!flags.empty())
+    {
+      events.emplace_back(path, curr_time, flags);
+    }
+
+    previous_data->tracked_files.erase(path);
 
     return true;
   }
 
   bool poll_monitor::add_path(const string& path,
                               const struct stat& fd_stat,
-                              poll_monitor_scan_callback poll_callback)
+                              const path_visitor& poll_callback)
   {
-    return ((*this).*(poll_callback))(path, fd_stat);
+    return poll_callback(path, fd_stat);
   }
 
-  void poll_monitor::scan(const string& path, poll_monitor_scan_callback fn)
+  void poll_monitor::scan(const path& path, const path_visitor& fn)
   {
-    struct stat fd_stat;
-    if (!lstat_path(path, fd_stat)) return;
-
-    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+    try
     {
-      string link_path;
-      if (read_link_path(path, link_path))
+      auto status = std::filesystem::symlink_status(path);
+
+      if (!std::filesystem::exists(status))
+      {
+        return;
+      }
+
+      // Check if the path is a symbolic link
+      if (follow_symlinks && std::filesystem::is_symlink(status))
+      {
+        auto link_path = std::filesystem::read_symlink(path);
         scan(link_path, fn);
+        return;
+      }
 
-      return;
+      if (!accept_path(path)) return;
+
+      // TODO: C++17 doesn't standardize access to ctime, so we need to keep
+      // using lstat for now.
+      struct stat fd_stat;
+      if (!stat_path(path, fd_stat, follow_symlinks)) return;
+
+      if (!add_path(path, fd_stat, fn)) return;
+      if (!recursive) return;
+      if (!S_ISDIR(fd_stat.st_mode)) return;
+
+      const auto entries = get_directory_entries(path);
+
+      for (const auto& entry : entries)
+      {
+        scan(entry.path(), fn);
+      }
     }
-
-    if (!accept_path(path)) return;
-    if (!add_path(path, fd_stat, fn)) return;
-    if (!recursive) return;
-    if (!S_ISDIR(fd_stat.st_mode)) return;
-
-    vector<string> children = get_directory_children(path);
-
-    for (const string& child : children)
+    catch (const std::filesystem::filesystem_error& e) 
     {
-      if (child == "." || child == "..") continue;
-
-      scan(path + "/" + child, fn);
+        // Handle errors, such as permission issues or non-existent paths
+        FSW_ELOGF(_("Filesystem error: %s"), e.what());
     }
   }
 
@@ -150,9 +169,9 @@ namespace fsw
     vector<fsw_event_flag> flags;
     flags.push_back(fsw_event_flag::Removed);
 
-    for (const auto& removed : previous_data->tracked_files)
+    for (const auto& [key, value] : previous_data->tracked_files)
     {
-      events.emplace_back(removed.first, curr_time, flags);
+      events.emplace_back(key, curr_time, flags);
     }
   }
 
@@ -164,7 +183,11 @@ namespace fsw
 
   void poll_monitor::collect_data()
   {
-    poll_monitor_scan_callback fn = &poll_monitor::intermediate_scan_callback;
+    path_visitor fn = std::bind(&poll_monitor::intermediate_scan_callback, 
+                                this,
+                                std::placeholders::_1,
+                                std::placeholders::_2);
+
 
     for (const string& path : paths)
     {
@@ -177,7 +200,10 @@ namespace fsw
 
   void poll_monitor::collect_initial_data()
   {
-    poll_monitor_scan_callback fn = &poll_monitor::initial_scan_callback;
+    path_visitor fn = std::bind(&poll_monitor::initial_scan_callback, 
+                                this,
+                                std::placeholders::_1,
+                                std::placeholders::_2);
 
     for (const string& path : paths)
     {

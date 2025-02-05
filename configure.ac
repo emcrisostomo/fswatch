@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (C) 2014-2022 Enrico M. Crisostomo
+# Copyright (C) 2014-2024 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,12 +16,12 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
-dnl Copyright (C) 2014-2022 Enrico M. Crisostomo
+dnl Copyright (C) 2014-2024 Enrico M. Crisostomo
 AC_PREREQ([2.69])
 m4_include([m4/fswatch_version.m4])
 m4_include([m4/libfswatch_version.m4])
 AC_INIT([fswatch], LIBFSWATCH_VERSION, [enrico.m.crisostomo@gmail.com], [], [https://github.com/emcrisostomo/fswatch])
-AC_COPYRIGHT([2013-2022 (C) Enrico M. Crisostomo])
+AC_COPYRIGHT([2013-2024 (C) Enrico M. Crisostomo])
 AC_REVISION([$Revision: LIBFSWATCH_REVISION$])
 AC_CONFIG_SRCDIR([fswatch/src/fswatch.cpp])
 AC_CONFIG_AUX_DIR([config])
@@ -95,18 +95,16 @@ AM_CONDITIONAL([HAVE_MAKEINFO], [test -n "${MAKEINFO_PROG}"])
 
 # Initialize gettext.
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.19.4])
+AM_GNU_GETTEXT_VERSION([0.21])
 AM_CONDITIONAL([USE_NLS], [test "x${USE_NLS}" = "xyes"])
 
 # Configure C++ compiler
-AX_CXX_COMPILE_STDCXX_11
+AX_CXX_COMPILE_STDCXX([17], [noext], [mandatory])
 AX_CXXFLAGS_WARN_ALL
 
 # Checks for libraries.
-AC_SEARCH_LIBS([pthread_create], [pthread])
 
 # Check for optional header files.
-AC_CHECK_HEADERS([unordered_map unordered_set])
 AC_CHECK_HEADERS([getopt.h])
 
 # Check for optional header files required to support OS-specific monitors
@@ -121,6 +119,7 @@ AS_CASE([${HOST_OS}], ["darwin"*], [
 
 AS_VAR_SET_IF([IS_DARWIN], [
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [9.0],  [AC_DEFINE([HAVE_MACOS_GE_10_5],  [1], ["macOS is at least the specified version"])])
+  AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [10.0], [AC_DEFINE([HAVE_MACOS_GE_10_6],  [1], ["macOS is at least the specified version"])])
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [11.0], [AC_DEFINE([HAVE_MACOS_GE_10_7],  [1], ["macOS is at least the specified version"])])
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [13.0], [AC_DEFINE([HAVE_MACOS_GE_10_9],  [1], ["macOS is at least the specified version"])])
   AX_COMPARE_VERSION([${DARWIN_VER}], [ge], [14.0], [AC_DEFINE([HAVE_MACOS_GE_10_10], [1], ["macOS is at least the specified version"])])
@@ -128,10 +127,10 @@ AS_VAR_SET_IF([IS_DARWIN], [
   # Check for macOS FSEvents.  FSEvents added file events in a later release, so
   # this check must be performed separately.
   AC_CHECK_HEADERS([CoreServices/CoreServices.h])
-  AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS])
+  AS_VAR_IF([ac_cv_header_CoreServices_CoreServices_h], ["yes"], [AX_FSEVENTS_HAVE_FILE_EVENTS()])
 ])
 
-AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_fseventstreamsetdispatchqueue}" = "xyes"])
+AM_CONDITIONAL([USE_FSEVENTS], [test "x${ax_cv_fsevents_have_fsevents}" = "xyes"])
 
 # Check for kqueue: if the sys/event.h header is present, perform a check for
 # the kqueue and kevent functions.
@@ -248,23 +247,6 @@ AC_CHECK_MEMBERS([struct stat.st_mtimespec],
 # Checks for library functions.
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 
-# Check if realpath is available: if it is not and the host OS is Windows, then
-# build its implementation, otherwise fail
-AC_CHECK_FUNCS([realpath], [AS_VAR_SET([HAVE_REALPATH], ["yes"])], [AS_VAR_SET([HAVE_REALPATH], ["no"])])
-AS_VAR_IF([HAVE_REALPATH],
-  ["no"],
-  [AS_VAR_IF([WINDOWS_AVAILABLE],
-    ["yes"],
-    [dnl
-      AS_VAR_SET([BUILD_WIN_REALPATH], ["yes"])
-    ],
-    [AC_MSG_ERROR([The realpath function cannot be found.])])
-  ]
-)
-
-AM_CONDITIONAL([BUILD_WIN_REALPATH], [test "x${BUILD_WIN_REALPATH}" = "xyes"])
-AS_VAR_IF([HAVE_REALPATH], ["yes"], [AC_DEFINE([HAVE_REALPATH], [1], [Realpath present.])])
-
 # Check for optional library functions.
 AS_VAR_IF([ac_cv_header_getopt_h], ["yes"], [AC_CHECK_FUNCS([getopt_long])])
 
@@ -274,8 +256,8 @@ AS_VAR_IF([use_docker], [yes],
     AX_GIT_CURRENT_BRANCH
     AC_CONFIG_FILES([docker/alpine/Dockerfile])
     AC_CONFIG_FILES([docker/alpine-no-gettext/Dockerfile])
-    AC_CONFIG_FILES([docker/debian9/Dockerfile])
     AC_CONFIG_FILES([docker/debian10/Dockerfile])
+    AC_CONFIG_FILES([docker/debian11/Dockerfile])
     AC_CONFIG_FILES([docker/debian-stable/Dockerfile])
     AC_CONFIG_FILES([docker/debian-testing/Dockerfile])
   ],

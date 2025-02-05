@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -35,6 +35,23 @@ namespace fsw
       FSEventStreamEventFlags flag;
       fsw_event_flag type;
     };
+
+  class fsevents_monitor::Impl
+  {
+  public:
+    Impl() = default;
+    ~Impl() = default;
+  
+    Impl(const Impl&) = delete;
+    Impl& operator=(const Impl&) = delete;
+
+    FSEventStreamRef stream = nullptr;
+#ifdef HAVE_MACOS_GE_10_6
+    dispatch_queue_t fsevents_queue = nullptr;
+#else
+    CFRunLoopRef run_loop = nullptr;
+#endif
+  };
 
   static vector<FSEventFlagType> create_flag_type_vector()
   {
@@ -88,7 +105,7 @@ namespace fsw
   fsevents_monitor::fsevents_monitor(vector<string> paths_to_monitor,
                                      FSW_EVENT_CALLBACK *callback,
                                      void *context) :
-    monitor(std::move(paths_to_monitor), callback, context)
+    monitor(std::move(paths_to_monitor), callback, context), pImpl(std::make_unique<Impl>())
   {
   }
 
@@ -96,7 +113,7 @@ namespace fsw
   {
     std::unique_lock<std::mutex> run_loop_lock(run_mutex);
 
-    if (stream) return;
+    if (pImpl->stream) return;
 
     // parsing paths
     vector<CFStringRef> dirs;
@@ -118,18 +135,30 @@ namespace fsw
 
     create_stream(pathsToWatch);
 
-    if (!stream)
+    if (!pImpl->stream)
       throw libfsw_exception(_("Event stream could not be created."));
 
+#ifdef HAVE_MACOS_GE_10_6
     // Creating dispatch queue
-    fsevents_queue = dispatch_queue_create("fswatch_event_queue", nullptr);
-    FSEventStreamSetDispatchQueue(stream, fsevents_queue);
+    pImpl->fsevents_queue = dispatch_queue_create("fswatch_event_queue", nullptr);
+    FSEventStreamSetDispatchQueue(pImpl->stream, pImpl->fsevents_queue);
+#else
+    // Fire the event loop
+    pImpl->run_loop = CFRunLoopGetCurrent();
+
+    // Loop Initialization
+    FSW_ELOG(_("Scheduling stream with run loop...\n"));
+    FSEventStreamScheduleWithRunLoop(pImpl->stream,
+                                     pImpl->run_loop,
+                                     kCFRunLoopDefaultMode);
+#endif
 
     FSW_ELOG(_("Starting event stream...\n"));
-    FSEventStreamStart(stream);
+    FSEventStreamStart(pImpl->stream);
 
     run_loop_lock.unlock();
 
+#ifdef HAVE_MACOS_GE_10_6
     for(;;)
     {
       run_loop_lock.lock();
@@ -138,19 +167,41 @@ namespace fsw
 
       std::this_thread::sleep_for(std::chrono::milliseconds((long long) (latency * 1000)));
     }
+#else
+    // Loop
+    FSW_ELOG(_("Starting run loop...\n"));
+    CFRunLoopRun();
+#endif
 
     // Deinitialization part
     FSW_ELOG(_("Stopping event stream...\n"));
-    FSEventStreamStop(stream);
+    FSEventStreamStop(pImpl->stream);
 
     FSW_ELOG(_("Invalidating event stream...\n"));
-    FSEventStreamInvalidate(stream);
+    FSEventStreamInvalidate(pImpl->stream);
 
     FSW_ELOG(_("Releasing event stream...\n"));
-    FSEventStreamRelease(stream);
+    FSEventStreamRelease(pImpl->stream);
 
-    dispatch_release(fsevents_queue);
-    stream = nullptr;
+#ifdef HAVE_MACOS_GE_10_6
+    dispatch_release(pImpl->fsevents_queue);
+#endif
+    pImpl->stream = nullptr;
+  }
+
+  /*
+   * on_stop() is designed to be invoked with a lock on the run_mutex.
+   */
+  void fsevents_monitor::on_stop()
+  {
+#ifndef HAVE_MACOS_GE_10_6
+    if (!pImpl->run_loop) throw libfsw_exception(_("run loop is null"));
+
+    FSW_ELOG(_("Stopping run loop...\n"));
+    CFRunLoopStop(pImpl->run_loop);
+
+    pImpl->run_loop = nullptr;
+#endif
   }
 
   static vector<fsw_event_flag> decode_flags(FSEventStreamEventFlags flag)
@@ -190,16 +241,29 @@ namespace fsw
 
     for (size_t i = 0; i < numEvents; ++i)
     {
-#if defined(HAVE_MACOS_GE_10_13)
+#ifdef HAVE_MACOS_GE_10_13
       auto path_info_dict = static_cast<CFDictionaryRef>(CFArrayGetValueAtIndex((CFArrayRef) eventPaths,
                                                                                 i));
       auto path = static_cast<CFStringRef>(CFDictionaryGetValue(path_info_dict,
                                                                 kFSEventStreamEventExtendedDataPathKey));
       auto cf_inode = static_cast<CFNumberRef>(CFDictionaryGetValue(path_info_dict,
                                                                     kFSEventStreamEventExtendedFileIDKey));
+
+      // Get the length of the UTF8-encoded CFString in bytes
+      CFIndex length = CFStringGetLength(path);
+      CFIndex max_path_size = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8) + 1;
+
+      // Allocate a buffer dynamically
+      std::vector<char> path_buffer(max_path_size);
+      if (!CFStringGetCString(path, path_buffer.data(), max_path_size, kCFStringEncodingUTF8))
+      {
+          std::cerr << "Warning: Failed to convert CFStringRef to C string." << std::endl;
+          continue;
+      }
+
       unsigned long inode;
       CFNumberGetValue(cf_inode, kCFNumberLongType, &inode);
-      events.emplace_back(std::string(CFStringGetCStringPtr(path, kCFStringEncodingUTF8)),
+      events.emplace_back(std::string(path_buffer.data()),
                           curr_time,
                           decode_flags(eventFlags[i]),
                           inode);
@@ -229,22 +293,26 @@ namespace fsw
 
   void fsevents_monitor::create_stream(CFArrayRef pathsToWatch)
   {
-    std::unique_ptr<FSEventStreamContext> context(new FSEventStreamContext());
+    auto context = std::make_unique<FSEventStreamContext>();
     context->version = 0;
     context->info = this;
     context->retain = nullptr;
     context->release = nullptr;
     context->copyDescription = nullptr;
 
-    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagFileEvents;
+    FSEventStreamCreateFlags streamFlags = kFSEventStreamCreateFlagNone;
     if (this->no_defer()) streamFlags |= kFSEventStreamCreateFlagNoDefer;
-#if defined (HAVE_MACOS_GE_10_13)
+#ifdef HAVE_MACOS_GE_10_7
+    streamFlags |= kFSEventStreamCreateFlagFileEvents;
+#endif
+
+#ifdef HAVE_MACOS_GE_10_13
     streamFlags |= kFSEventStreamCreateFlagUseExtendedData;
     streamFlags |= kFSEventStreamCreateFlagUseCFTypes;
 #endif
 
     FSW_ELOG(_("Creating FSEvent stream...\n"));
-    stream = FSEventStreamCreate(nullptr,
+    pImpl->stream = FSEventStreamCreate(nullptr,
                                  &fsevents_monitor::fsevents_callback,
                                  context.get(),
                                  pathsToWatch,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,7 +16,7 @@
 /**
  * @file
  * @brief Main `libfswatch` source file.
- * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2024 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.17.0
@@ -96,6 +96,8 @@
  * facade of the C++ monitor class.  In fact there is an evident similarity
  * between the C library functions operating on a monitoring session and the
  * methods of the `monitor` class.
+ *
+ * Go bindings are also available at https://github.com/dunglas/go-fswatch
  *
  * @section thread-safety Thread Safety
  *
@@ -440,9 +442,9 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <libfswatch/libfswatch_config.h>
 #include "libfswatch.h"
-#include "libfswatch/c++/libfswatch_map.hpp"
 #include "libfswatch/c++/filter.hpp"
 #include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c++/monitor_factory.hpp"

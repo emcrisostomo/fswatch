@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2022 Enrico M. Crisostomo
+ * Copyright (c) 2015-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -22,14 +22,14 @@
 #  include <cmath>
 #  include <cstring>
 #  include <cstdlib>
+#  include <unordered_map>
+#  include <unordered_set>
 #  include <unistd.h>
 #  include <port.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
 #  include "libfswatch/gettext_defs.h"
 #  include "fen_monitor.hpp"
-#  include "libfswatch_map.hpp"
-#  include "libfswatch_set.hpp"
 #  include "libfswatch_exception.hpp"
 #  include "libfswatch/c/libfswatch_log.h"
 #  include "path_utils.hpp"
@@ -47,9 +47,9 @@ namespace fsw
   struct fen_monitor_load
   {
     int port;
-    fsw_hash_map<string, struct fen_info *> descriptors_by_file_name;
-    fsw_hash_set<struct fen_info *> descriptors_to_remove;
-    fsw_hash_set<string> paths_to_rescan;
+    std::unordered_map<string, struct fen_info *> descriptors_by_file_name;
+    std::unordered_set<struct fen_info *> descriptors_to_remove;
+    std::unordered_set<string> paths_to_rescan;
 
     void initialize_fen()
     {
@@ -263,32 +263,38 @@ namespace fsw
       && (load->paths_to_rescan.find(path) == load->paths_to_rescan.end());
   }
 
-  bool fen_monitor::scan(const string& path, bool is_root_path)
+  bool fen_monitor::scan(const std::filesystem::path& path, bool is_root_path)
   {
-    struct stat fd_stat;
-    if (!stat_path(path, fd_stat))
+    try
     {
-      load->remove_watch(path);
-      return false;
+      struct stat fd_stat;
+      if (!stat_path(path, fd_stat))
+      {
+        load->remove_watch(path);
+        return false;
+      }
+
+      bool is_dir = S_ISDIR(fd_stat.st_mode);
+
+      if (!is_dir && !is_root_path && directory_only) return true;
+      if (!is_dir && !accept_path(path)) return true;
+      if (!is_dir) return add_watch(path, fd_stat);
+      if (!recursive) return true;
+
+      const auto entries = get_directory_entries(path);
+
+      for (const auto& entry : entries)
+      {
+        scan(entry, false);
+      }
+
+      return add_watch(path, fd_stat);
     }
-
-    bool is_dir = S_ISDIR(fd_stat.st_mode);
-
-    if (!is_dir && !is_root_path && directory_only) return true;
-    if (!is_dir && !accept_path(path)) return true;
-    if (!is_dir) return add_watch(path, fd_stat);
-    if (!recursive) return true;
-
-    vector<string> children = get_directory_children(path);
-
-    for (string& child : children)
+    catch (const std::filesystem::filesystem_error& e) 
     {
-      if (child.compare(".") == 0 || child.compare("..") == 0) continue;
-
-      scan(path + "/" + child, false);
+        // Handle errors, such as permission issues or non-existent paths
+        FSW_ELOGF(_("Filesystem error: %s"), e.what());
     }
-
-    return add_watch(path, fd_stat);
   }
 
   void fen_monitor::scan_root_paths()

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief Header defining utility functions to manipulate paths.
  *
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2024 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -28,42 +28,27 @@
 
 #  include <string>
 #  include <vector>
+#  include <filesystem>
 #  include <sys/stat.h>
 
 namespace fsw
 {
   /**
-   * @brief A thin wrapper about realpath.
-   *
-   * @param path The path to resolve.
-   * @param resolved_path A pointer to a buffer where the resolved path is
-   * stored.
-   * @return If there is no error, realpath() returns a string, otherwise it
-   * throws a std::system_error.
+   * @brief Gets a vector of direct directory entries.
+   * 
+   * @param path The directory whose entries must be returned.
+   * @return A vector containing the list of entries of @p path.
+   * @since 1.18.0
    */
-  std::string fsw_realpath(const char *path, char *resolved_path);
-
+  std::vector<std::filesystem::directory_entry> get_directory_entries(const std::filesystem::path& path);
+  
   /**
-   * @brief Gets a vector of direct directory children.
-   *
-   * @param path The directory whose children must be returned.
-   * @return A vector containing the list of children of @p path.
+   * @brief Gets a vector of direct subdirectories.
+   * 
+   * @param path The directory whose subdirectories must be returned.
+   * @return A vector containing the list of subdirectories of @p path.
    */
-  std::vector<std::string> get_directory_children(const std::string& path);
-
-  /**
-   * @brief Resolves a path name.
-   *
-   * This function resolves @p path using @c realpath() and stores the absolute
-   * pathname into @p link_path.  The function returns @c true if it succeeds,
-   * @c false otherwise.
-   *
-   * @param path The path to resolve.
-   * @param link_path A reference to a `std::string` where the resolved absolute
-   * path should be copied to.
-   * @return @c true if the function succeeds, @c false otherwise.
-   */
-  bool read_link_path(const std::string& path, std::string& link_path);
+  std::vector<std::filesystem::directory_entry> get_subdirectories(const std::filesystem::path& path);
 
   /**
    * @brief Wraps a @c lstat(path, fd_stat) call that invokes @c perror() if it
@@ -84,5 +69,19 @@ namespace fsw
    * @return @c true if the function succeeds, @c false otherwise.
    */
   bool stat_path(const std::string& path, struct stat& fd_stat);
+
+  /**
+   * @brief Wraps a @c stat(path, fd_stat) call or a @c lstat(path, fd_stat)
+   * call, depending on the value of @p follow_symlink.  The function invokes
+   * @c perror() if it fails.
+   * 
+   * @param path The path to @c stat() or @c lstat().
+   * @param fd_stat The @c stat structure where @c stat() or @c lstat() writes
+   * its results.
+   * @param follow_symlink @c true if the function should call @c lstat(),
+   * @c false if it should call @c stat().
+   * @return @c true if the function succeeds, @c false otherwise.
+   */
+  bool stat_path(const std::string& path, struct stat& fd_stat, bool follow_symlink);
 }
 #endif  /* FSW_PATH_UTILS_H */

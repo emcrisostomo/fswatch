@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief `stat()` based monitor.
  *
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2024 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -30,6 +30,8 @@
 #  include <sys/stat.h>
 #  include <ctime>
 #  include <memory>
+#  include <filesystem>
+#  include <functional>
 
 namespace fsw
 {
@@ -52,10 +54,10 @@ namespace fsw
     /**
      * @brief Destroys an instance of this class.
      */
-    virtual ~poll_monitor();
+    ~poll_monitor() override;
 
   protected:
-    void run();
+    void run() override;
 
   private:
     static const unsigned int MIN_POLL_LATENCY = 1;
@@ -63,24 +65,24 @@ namespace fsw
     poll_monitor(const poll_monitor& orig) = delete;
     poll_monitor& operator=(const poll_monitor& that) = delete;
 
-    typedef bool (poll_monitor::*poll_monitor_scan_callback)(
-      const std::string& path,
-      const struct stat& stat);
+    using path_visitor = std::function<bool(const std::string&, const struct stat&)>;
 
-    typedef struct watched_file_info
+    struct watched_file_info
     {
       time_t mtime;
       time_t ctime;
-    } watched_file_info;
+    };
+
+    using watched_file_info = struct watched_file_info;
 
     struct poll_monitor_data;
 
-    void scan(const std::string& path, poll_monitor_scan_callback fn);
+    void scan(const std::filesystem::path& path, const path_visitor& fn);
     void collect_initial_data();
     void collect_data();
     bool add_path(const std::string& path,
                   const struct stat& fd_stat,
-                  poll_monitor_scan_callback poll_callback);
+                  const path_visitor& poll_callback);
     bool initial_scan_callback(const std::string& path, const struct stat& stat);
     bool intermediate_scan_callback(const std::string& path,
                                     const struct stat& stat);

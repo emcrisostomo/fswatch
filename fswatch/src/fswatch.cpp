@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -27,7 +27,7 @@
 #include <vector>
 #include <array>
 #include <map>
-#include "libfswatch/c++/path_utils.hpp"
+#include <filesystem>
 #include "libfswatch/c++/event.hpp"
 #include "libfswatch/c++/monitor.hpp"
 #include "libfswatch/c++/monitor_factory.hpp"
@@ -137,7 +137,7 @@ static void list_monitor_types(std::ostream& stream)
 static void print_version(std::ostream& stream)
 {
   stream << PACKAGE_STRING << "\n";
-  stream << "Copyright (C) 2013-2021 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
+  stream << "Copyright (C) 2013-2025 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
   stream << _("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
   stream << _("This is free software: you are free to change and redistribute it.\n");
   stream << _("There is NO WARRANTY, to the extent permitted by law.\n");
@@ -172,7 +172,7 @@ static void usage(std::ostream& stream)
   stream << " -i, --include=REGEX   " << _("Include paths matching REGEX.\n");
   stream << " -I, --insensitive     " << _("Use case insensitive regular expressions.\n");
   stream << " -l, --latency=DOUBLE  " << _("Set the latency.\n");
-  #if defined(HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE)
+  #ifdef HAVE_MACOS_GE_10_5
   stream << "     --no-defer        " << _("Set the no defer flag in the monitor.\n");
   #endif
   stream << " -L, --follow-links    " << _("Follow symbolic links.\n");
@@ -245,13 +245,18 @@ extern "C" void close_handler(int signal)
 {
   FSW_ELOG(_("Executing termination handler.\n"));
   close_monitor();
+
+  if (_1flag)
+  {
+    exit(128 + signal);
+  }
 }
 
-static bool parse_event_bitmask(const char *optarg)
+static bool parse_event_bitmask(const char *pOptarg)
 {
   try
   {
-    auto bitmask = std::stoul(optarg, nullptr, 10);
+    auto bitmask = std::stoul(pOptarg, nullptr, 10);
 
     for (const auto& item : FSW_ALL_EVENT_FLAGS)
     {
@@ -269,13 +274,13 @@ static bool parse_event_bitmask(const char *optarg)
   }
 }
 
-static bool parse_event_filter(const char *optarg)
+static bool parse_event_filter(const char *pOptarg)
 {
-  if (parse_event_bitmask(optarg)) return true;
+  if (parse_event_bitmask(pOptarg)) return true;
 
   try
   {
-    event_filters.push_back({event::get_event_flag_by_name(optarg)});
+    event_filters.push_back({event::get_event_flag_by_name(pOptarg)});
     return true;
   }
   catch (const libfsw_exception& ex)
@@ -285,17 +290,17 @@ static bool parse_event_filter(const char *optarg)
   }
 }
 
-static bool validate_latency(double latency, const char *optarg)
+static bool validate_latency(double latency, const char *pOptarg)
 {
   if (latency == 0.0)
   {
-    std::cerr << _("Invalid value: ") << optarg << std::endl;
+    std::cerr << _("Invalid value: ") << pOptarg << std::endl;
     return false;
   }
 
   if (errno == ERANGE || latency == HUGE_VAL)
   {
-    std::cerr << _("Value out of range: ") << optarg << std::endl;
+    std::cerr << _("Value out of range: ") << pOptarg << std::endl;
     return false;
   }
 
@@ -440,14 +445,14 @@ static void process_events(const std::vector<event>& events, void *)
     write_events(events);
 }
 
-static void start_monitor(int argc, char **argv, int optind)
+static void start_monitor(int argc, char **argv, int argIndex)
 {
   // parsing paths
   std::vector<std::string> paths;
 
-  for (auto i = optind; i < argc; ++i)
+  for (auto i = argIndex; i < argc; ++i)
   {
-    std::string path(fsw_realpath(argv[i], nullptr));
+    std::string path = std::filesystem::absolute(argv[i]).string();
 
     FSW_ELOGF(_("Adding path: %s\n"), path.c_str());
 

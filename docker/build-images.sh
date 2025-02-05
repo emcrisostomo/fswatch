@@ -25,7 +25,7 @@ SCRIPT_HOME=${0:h}
 for i in ${SCRIPT_HOME}/*/
 do
   TAG=${i:t}
-  [[ ${TAG} =~ "^[a-zA-Z0-9]+(/[a-zA-Z0-9]+)*$" ]] ||
+  [[ ${TAG} =~ ^[a-zA-Z0-9._-]+(/[a-zA-Z0-9._-]+)*$ ]] ||
   {
     >&2 print -- Invalid tag ${TAG}. Skipping.
     continue

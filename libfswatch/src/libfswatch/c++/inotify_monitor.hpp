@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * Copyright (c) 2014-2024 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief Solaris/Illumos monitor.
  *
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2024 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -30,7 +30,8 @@
 #  include <sys/inotify.h>
 #  include <string>
 #  include <vector>
-#  include <sys/stat.h>
+#  include <filesystem>
+#  include <functional>
 
 namespace fsw
 {
@@ -59,7 +60,7 @@ namespace fsw
     /**
      * @brief Destroys an instance of this class.
      */
-    virtual ~inotify_monitor();
+    ~inotify_monitor() override;
 
   protected:
     /**
@@ -69,7 +70,7 @@ namespace fsw
      *
      * @see stop()
      */
-    void run();
+    void run() override;
 
   private:
     inotify_monitor(const inotify_monitor& orig) = delete;
@@ -80,13 +81,12 @@ namespace fsw
     void preprocess_dir_event(const struct inotify_event *event);
     void preprocess_event(const struct inotify_event *event);
     void preprocess_node_event(const struct inotify_event *event);
-    void scan(const std::string& path, const bool accept_non_dirs = true);
-    bool add_watch(const std::string& path,
-                   const struct stat& fd_stat);
+    void scan(const std::filesystem::path& path, const bool accept_non_dirs = true);
+    bool add_watch(const std::string& path);
     void process_pending_events();
     void remove_watch(int fd);
 
-    inotify_monitor_impl *impl;
+    std::unique_ptr<fsw::inotify_monitor_impl> impl;
   };
 }
 

@@ -15,11 +15,10 @@
 #cmakedefine HAVE_STRUCT_STAT_ST_MTIMESPEC
 #cmakedefine HAVE_SYS_EVENT_H
 #cmakedefine HAVE_SYS_INOTIFY_H
-#cmakedefine HAVE_UNORDERED_MAP
-#cmakedefine HAVE_UNORDERED_SET
 #cmakedefine HAVE_WINDOWS
 
 #cmakedefine HAVE_MACOS_GE_10_5
+#cmakedefine HAVE_MACOS_GE_10_6
 #cmakedefine HAVE_MACOS_GE_10_7
 #cmakedefine HAVE_MACOS_GE_10_9
 #cmakedefine HAVE_MACOS_GE_10_10

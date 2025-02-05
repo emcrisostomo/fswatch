@@ -1,7 +1,44 @@
 NEWS
 ****
 
-New in master:
+New in 1.19.0-develop:
+
+  * Fix: spurious output 'inotify_rm_watch: Invalid argument'
+
+  * Issue 335: v. 1.18.0: build error: 'kFSEventStreamCreateFlagFileEvents' was
+    not declared in this scope.
+
+  * Grammar fix in documentation.
+
+  * Fix: typo in man page. 
+
+New in 1.18.2:
+
+  * Added event flag CloseWrite: file open for write has been closed. 
+
+  * kqueue_monitor: added support for CloseWrite, adding support for events of
+    type NOTE_CLOSE_WRITE.
+
+  * inotify_monitor: added support for CloseWrite, adding support for events of
+    type IN_CLOSE_WRITE.
+
+  * Issue 337: fswatch exits on non-existing paths.
+
+New in 1.18.1:
+
+  * Issue 333: Fix: Handle non-ASCII characters in file paths to prevent
+    segmentation faults in FSEvents callback.
+
+New in 1.18.0:
+
+  * The C++17 standard has been adopted: code has been rewritten and simplified
+    to adobe new features of the C++17 standard library such as std::filesystem.
+
+  * gettextize: gettext v. 0.22.5
+
+  * Documentation: add reference to Go bindings.
+
+  * Issue 313: Make -1, --one-event return $? when killed.
 
   * Remove unused or obsolete configuration checks.
 

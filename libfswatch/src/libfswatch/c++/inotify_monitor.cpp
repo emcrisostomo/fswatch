@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -18,6 +18,8 @@
 #include "libfswatch/gettext_defs.h"
 #include "inotify_monitor.hpp"
 #include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
 #include <limits.h>
 #ifdef __sun
 #  define NAME_MAX         255    /* # chars in a file name */
@@ -30,8 +32,6 @@
 #include <sys/select.h>
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
-#include "libfswatch_map.hpp"
-#include "libfswatch_set.hpp"
 #include "path_utils.hpp"
 
 namespace fsw
@@ -47,8 +47,8 @@ namespace fsw
      * child of a watched directory.  In all the other cases, we store the path
      * for easy retrieval.
      */
-    fsw_hash_set<int> watched_descriptors;
-    fsw_hash_map<std::string, int> path_to_wd;
+    std::unordered_set<int> watched_descriptors;
+    std::unordered_map<std::string, int> path_to_wd;
     /*
      * Since the inotify API maintains only works with watch
      * descriptors a cache maintaining a relationship between a watch
@@ -60,9 +60,9 @@ namespace fsw
      *   between watch descriptors and pathnames.  Be aware that directory
      *   renamings may affect multiple cached pathnames.
      */
-    fsw_hash_map<int, std::string> wd_to_path;
-    fsw_hash_set<int> descriptors_to_remove;
-    fsw_hash_set<int> watches_to_remove;
+    std::unordered_map<int, std::string> wd_to_path;
+    std::unordered_set<int> descriptors_to_remove;
+    std::unordered_set<int> watches_to_remove;
     std::vector<std::string> paths_to_rescan;
     time_t curr_time;
   };
@@ -73,7 +73,7 @@ namespace fsw
                                    FSW_EVENT_CALLBACK *callback,
                                    void *context) :
     monitor(paths_to_monitor, callback, context),
-    impl(new inotify_monitor_impl())
+    impl(std::make_unique<inotify_monitor_impl>())
   {
     impl->inotify_monitor_handle = inotify_init();
 
@@ -86,30 +86,22 @@ namespace fsw
 
   inotify_monitor::~inotify_monitor()
   {
-    // close inotify watchers
+    // log removal of inotify watchers (automatically removed by close below)
     for (auto inotify_desc_pair : impl->watched_descriptors)
     {
       std::ostringstream log;
       log << _("Removing: ") << inotify_desc_pair << "\n";
       FSW_ELOG(log.str().c_str());
-
-      if (inotify_rm_watch(impl->inotify_monitor_handle, inotify_desc_pair))
-      {
-        perror("inotify_rm_watch");
-      }
     }
 
-    // close inotify
+    // close inotify (removes watches)
     if (impl->inotify_monitor_handle > 0)
     {
       close(impl->inotify_monitor_handle);
     }
-
-    delete impl;
   }
 
-  bool inotify_monitor::add_watch(const std::string& path,
-                                  const struct stat& fd_stat)
+  bool inotify_monitor::add_watch(const std::string& path)
   {
     // TODO: Consider optionally adding the IN_EXCL_UNLINK flag.
     int inotify_desc = inotify_add_watch(impl->inotify_monitor_handle,
@@ -134,47 +126,53 @@ namespace fsw
     return (inotify_desc != -1);
   }
 
-  void inotify_monitor::scan(const std::string& path, const bool accept_non_dirs)
+  void inotify_monitor::scan(const std::filesystem::path& path, const bool accept_non_dirs)
   {
-    struct stat fd_stat;
-    if (!lstat_path(path, fd_stat)) return;
-
-    if (follow_symlinks && S_ISLNK(fd_stat.st_mode))
+    try 
     {
-      std::string link_path;
-      if (read_link_path(path, link_path))
+      auto status = std::filesystem::symlink_status(path);
+
+      if (!std::filesystem::exists(status))
+      {
+        return;
+      }
+
+      // Check if the path is a symbolic link
+      if (follow_symlinks && std::filesystem::is_symlink(status))
+      {
+        auto link_path = std::filesystem::read_symlink(path);
         scan(link_path, accept_non_dirs);
+        return;
+      }
 
-      return;
-    }
-
-    bool is_dir = S_ISDIR(fd_stat.st_mode);
-
-    /*
-     * When watching a directory the inotify API will return change events of
-     * first-level children.  Therefore, we do not need to manually add a watch
-     * for a child unless it is a directory.  By default, accept_non_dirs is
-     * true to allow watching a file when first invoked on a node.
-     *
-     * For the same reason, the directory_only flag is ignored and treated as if
-     * it were always set to true.
-     */
-    if (!is_dir && !accept_non_dirs) return;
-    if (!is_dir && directory_only) return;
-    if (!accept_path(path)) return;
-    if (!add_watch(path, fd_stat)) return;
-    if (!recursive || !is_dir) return;
-
-    std::vector<std::string> children = get_directory_children(path);
-
-    for (const std::string& child : children)
-    {
-      if (child == "." || child == "..") continue;
+      const bool is_dir = std::filesystem::is_directory(status);
 
       /*
-       * Scan children but only watch directories.
-       */
-      scan(path + "/" + child, false);
+      * When watching a directory the inotify API will return change events of
+      * first-level children.  Therefore, we do not need to manually add a watch
+      * for a child unless it is a directory.  By default, accept_non_dirs is
+      * true to allow watching a file when first invoked on a node.
+      *
+      * For the same reason, the directory_only flag is ignored and treated as if
+      * it were always set to true.
+      */
+      if (!is_dir && !accept_non_dirs) return;
+      if (!is_dir && directory_only) return;
+      if (!accept_path(path)) return;
+      if (!add_watch(path)) return;
+      if (!recursive || !is_dir) return;
+
+      // TODO: Consider using std::filesystem::recursive_directory_iterator
+      const auto entries = get_subdirectories(path);
+
+      for (const auto& entry : entries)
+        // Scan children but only watch directories.
+        scan(entry, false);
+    }
+    catch (const std::filesystem::filesystem_error& e) 
+    {
+        // Handle errors, such as permission issues or non-existent paths
+        FSW_ELOGF(_("Filesystem error: %s"), e.what());
     }
   }
 
@@ -197,6 +195,16 @@ namespace fsw
 
     if (event->mask & IN_ISDIR) flags.push_back(fsw_event_flag::IsDir);
     if (event->mask & IN_MOVE_SELF) flags.push_back(fsw_event_flag::Updated);
+    if (event->mask & IN_MOVED_FROM)
+    {
+      flags.push_back(fsw_event_flag::Removed);
+      flags.push_back(fsw_event_flag::MovedFrom);
+    }
+    if (event->mask & IN_MOVED_TO)
+    {
+      flags.push_back(fsw_event_flag::Created);
+      flags.push_back(fsw_event_flag::MovedTo);
+    }
     if (event->mask & IN_UNMOUNT) flags.push_back(fsw_event_flag::PlatformSpecific);
 
     if (!flags.empty())
@@ -218,20 +226,11 @@ namespace fsw
     if (event->mask & IN_ACCESS) flags.push_back(fsw_event_flag::PlatformSpecific);
     if (event->mask & IN_ATTRIB) flags.push_back(fsw_event_flag::AttributeModified);
     if (event->mask & IN_CLOSE_NOWRITE) flags.push_back(fsw_event_flag::PlatformSpecific);
-    if (event->mask & IN_CLOSE_WRITE) flags.push_back(fsw_event_flag::Updated);
+    if (event->mask & IN_CLOSE_WRITE) flags.push_back(fsw_event_flag::CloseWrite);
     if (event->mask & IN_CREATE) flags.push_back(fsw_event_flag::Created);
     if (event->mask & IN_DELETE) flags.push_back(fsw_event_flag::Removed);
+    if (event->mask & IN_DELETE_SELF) flags.push_back(fsw_event_flag::Removed);
     if (event->mask & IN_MODIFY) flags.push_back(fsw_event_flag::Updated);
-    if (event->mask & IN_MOVED_FROM)
-    {
-      flags.push_back(fsw_event_flag::Removed);
-      flags.push_back(fsw_event_flag::MovedFrom);
-    }
-    if (event->mask & IN_MOVED_TO)
-    {
-      flags.push_back(fsw_event_flag::Created);
-      flags.push_back(fsw_event_flag::MovedTo);
-    }
     if (event->mask & IN_OPEN) flags.push_back(fsw_event_flag::PlatformSpecific);
 
     // Build the file name.
@@ -278,7 +277,7 @@ namespace fsw
      * unnoticed when a watched file x is removed and a new file named x is
      * created thereafter.  In this case, fswatch could be blocked on read and
      * it would not have any chance to create a new watch descriptor for x until
-     *  an event is received and read unblocks.
+     * an event is received and read unblocks.
      */
     if (event->mask & IN_MOVE_SELF)
     {
