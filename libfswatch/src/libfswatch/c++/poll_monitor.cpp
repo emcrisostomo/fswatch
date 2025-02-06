@@ -89,14 +89,14 @@ namespace fsw
 
       return true;
     }
-    
+
     watched_file_info pwfi = previous_data->tracked_files[path];
     vector<fsw_event_flag> flags;
 
     if (mtime > pwfi.mtime)
     {
       flags.push_back(fsw_event_flag::Updated);
-    } 
+    }
 
     if (ctime > pwfi.ctime)
     {
@@ -139,6 +139,9 @@ namespace fsw
         return;
       }
 
+#if defined(_WIN32) && !defined(__CYGWIN__)
+      fsw_log_perror("Poll monitor on Windows requires Cygwin");
+#else
       if (!accept_path(path)) return;
 
       // TODO: C++17 doesn't standardize access to ctime, so we need to keep
@@ -149,6 +152,7 @@ namespace fsw
       if (!add_path(path, fd_stat, fn)) return;
       if (!recursive) return;
       if (!S_ISDIR(fd_stat.st_mode)) return;
+#endif
 
       const auto entries = get_directory_entries(path);
 
@@ -157,7 +161,7 @@ namespace fsw
         scan(entry.path(), fn);
       }
     }
-    catch (const std::filesystem::filesystem_error& e) 
+    catch (const std::filesystem::filesystem_error& e)
     {
         // Handle errors, such as permission issues or non-existent paths
         FSW_ELOGF(_("Filesystem error: %s"), e.what());
@@ -183,7 +187,7 @@ namespace fsw
 
   void poll_monitor::collect_data()
   {
-    path_visitor fn = std::bind(&poll_monitor::intermediate_scan_callback, 
+    path_visitor fn = std::bind(&poll_monitor::intermediate_scan_callback,
                                 this,
                                 std::placeholders::_1,
                                 std::placeholders::_2);
@@ -200,7 +204,7 @@ namespace fsw
 
   void poll_monitor::collect_initial_data()
   {
-    path_visitor fn = std::bind(&poll_monitor::initial_scan_callback, 
+    path_visitor fn = std::bind(&poll_monitor::initial_scan_callback,
                                 this,
                                 std::placeholders::_1,
                                 std::placeholders::_2);
