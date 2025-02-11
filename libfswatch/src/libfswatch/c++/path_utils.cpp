@@ -33,17 +33,17 @@ namespace fsw
 
     try
     {
-      for (const auto& entry : std::filesystem::directory_iterator(path)) 
+      for (const auto& entry : std::filesystem::directory_iterator(path))
         entries.emplace_back(entry);
-    } 
-    catch (const std::filesystem::filesystem_error& e) 
+    }
+    catch (const std::filesystem::filesystem_error& e)
     {
       FSW_ELOGF(_("Error accessing directory: %s"), e.what());
     }
 
     return entries;
   }
-  
+
   std::vector<std::filesystem::directory_entry> get_subdirectories(const std::filesystem::path& path)
   {
     std::vector<std::filesystem::directory_entry> entries;
@@ -52,10 +52,10 @@ namespace fsw
 
     try
     {
-      for (const auto& entry : std::filesystem::directory_iterator(path)) 
+      for (const auto& entry : std::filesystem::directory_iterator(path))
         if (entry.is_directory()) entries.emplace_back(entry);
-    } 
-    catch (const std::filesystem::filesystem_error& e) 
+    }
+    catch (const std::filesystem::filesystem_error& e)
     {
       FSW_ELOGF(_("Error accessing directory: %s"), e.what());
     }
@@ -79,10 +79,15 @@ namespace fsw
 
   bool lstat_path(const std::string& path, struct stat& fd_stat)
   {
+#if defined(_WIN32) && !defined(__CYGWIN__)
+    fsw_logf_perror(_("Cannot lstat %s (not implemented on Windows)"), path.c_str());
+    return false;
+#else
     if (lstat(path.c_str(), &fd_stat) == 0)
       return true;
 
     fsw_logf_perror(_("Cannot lstat %s"), path.c_str());
     return false;
+#endif
   }
 }

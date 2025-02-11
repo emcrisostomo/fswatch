@@ -90,7 +90,7 @@ extern "C"
    * returns FSW_OK, otherwise the initialization routine failed and the library
    * should not be usable.
    */
-  FSW_STATUS fsw_init_library();
+  FSW_STATUS fsw_init_library(void);
 
   /**
    * This function creates a new monitor session using the specified monitor
@@ -195,12 +195,12 @@ extern "C"
   /**
    * Gets the last error code.
    */
-  FSW_STATUS fsw_last_error();
+  FSW_STATUS fsw_last_error(void);
 
   /**
    * Check whether the verbose mode is active.
    */
-  bool fsw_is_verbose();
+  bool fsw_is_verbose(void);
 
   /**
    * Set the verbose mode.
