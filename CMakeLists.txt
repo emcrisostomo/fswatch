@@ -39,6 +39,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Add option to choose between shared and static libraries
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+# Add option to build libfswatch only (without fswatch or tests)
+option(BUILD_LIBS_ONLY "Build libfswatch only" OFF)
 
 # include modules
 include(FindGettext)
@@ -74,5 +76,7 @@ if (USE_NLS)
 endif ()
 
 add_subdirectory(libfswatch)
+if (NOT BUILD_LIBS_ONLY)
 add_subdirectory(fswatch/src)
 add_subdirectory(test/src)
+endif ()
