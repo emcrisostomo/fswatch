@@ -6,8 +6,9 @@ Introduction
 
 This file describes the steps required to build fswatch on Windows.  fswatch was
 born as a POSIX application and the Windows monitor has been developed trying to
-reduce the dependencies on the Windows API at a minimum.  To fulfill this goal,
-a dependency to Cygwin has been introduced.
+reduce the dependencies on the Windows API at a minimum.  As a consequence of
+this choice, the poll_monitor will not be built on Windows, since it relies on
+POSIX APIs.
 
 Windows has historically provided multiple versions of the same API for single
 byte and multibyte character sets.  We have decided to only support the
@@ -15,38 +16,18 @@ multibyte API: the Windows monitor will thus not build on Windows system
 supporting only the single-byte APIs.  In this case, the only available monitor
 on the Windows OS will be the poll monitor.
 
-Cygwin
-======
-
-Cygwin is a required dependency and must be installed to provide the toolchain
-and the libraries required by fswatch.  The current Cygwin distribution can be
-downloaded at:
-
-    https://cygwin.com
-
-Cygwin is a modular environment and the following componentes are required to
-successfully build fswatch:
-
-  * GNU GCC C++ compiler.
-
-  * GNU Autoconf.
-
-  * GNU Automake.
-
-  * GNU Autoconf.
-
-  * GNU libtool.
-
-The following are optional:
-
-  * GNU gettext (optional)
-
 Windows SDK
 ===========
 
 The Windows SDK is required to successfully build fswatch since it ships the
 headers and the libraries required to build Windows applications.  Please,
 consult your Windows documentation to get the latest SDK for your platform.
+
+CMake
+=====
+
+First-class support for Windows has been added to CMake build files.  CMake is
+the only build system supported by fswatch on Windows.
 
 GNU Build System
 ================
@@ -76,7 +57,7 @@ or, which is equivalent, config.h will contain the following definition:
 
 -----
 
-Copyright (c) 2014-2015 Enrico M. Crisostomo
+Copyright (c) 2014-2025 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

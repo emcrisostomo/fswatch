@@ -79,9 +79,6 @@ AS_VAR_IF([ax_cv_cxx_compiler_vendor], [gnu], [dnl
   AX_COMPARE_VERSION([${ax_cv_cxx_compiler_version}], [lt], [4.9], [AC_MSG_ERROR([GCC v. 4.9 is required])])
 ])
 
-# OS-specific treatment
-AM_CONDITIONAL([OS_CYGWIN], [test "x${target_os}" = "xcygwin"])
-
 # Set library interface version
 AC_SUBST([AM_LIBFSWATCH_API_VERSION], LIBFSWATCH_API_VERSION)
 
@@ -206,26 +203,6 @@ AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
 
 AM_CONDITIONAL([USE_WINDOWS], [test "x${WINDOWS_AVAILABLE}" = "xyes"])
 AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_WINDOWS], [1], [Windows API present.])])
-
-# Check for CygWin only if Windows is available
-AS_VAR_IF([WINDOWS_AVAILABLE], ["yes"], [
-  AS_VAR_SET([CYGWIN_AVAILABLE], ["yes"])
-  AC_CHECK_HEADERS([sys/cygwin.h], [], [AS_VAR_SET([CYGWIN_AVAILABLE], ["no"])])
-  AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [
-    AC_CHECK_DECLS(
-      [cygwin_create_path],
-      [],
-      [AS_VAR_SET([CYGWIN_AVAILABLE], ["no"])],
-      [
-        AC_INCLUDES_DEFAULT
-        [#include <sys/cygwin.h>]
-      ]
-    )
-  ])
-])
-
-AM_CONDITIONAL([USE_CYGWIN], [test "x${CYGWIN_AVAILABLE}" = "xyes"])
-AS_VAR_IF([CYGWIN_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_CYGWIN], [1], [CygWin API present.])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_MEMBERS([struct stat.st_mtime],

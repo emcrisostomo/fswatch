@@ -55,7 +55,6 @@ set(LIBFSWATCH_HEADER_FILES
         src/libfswatch/c++/monitor.hpp
         src/libfswatch/c++/monitor_factory.hpp
         src/libfswatch/c++/path_utils.hpp
-        src/libfswatch/c++/poll_monitor.hpp
         src/libfswatch/c++/string/string_utils.hpp
         src/libfswatch/gettext.h
         src/libfswatch/gettext_defs.h
@@ -71,7 +70,6 @@ set(LIB_SOURCE_FILES
         src/libfswatch/c++/monitor.cpp
         src/libfswatch/c++/monitor_factory.cpp
         src/libfswatch/c++/path_utils.cpp
-        src/libfswatch/c++/poll_monitor.cpp
         src/libfswatch/c++/string/string_utils.cpp)
 
 check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MTIME)
@@ -111,6 +109,16 @@ if (HAVE_PORT_H)
 endif (HAVE_PORT_H)
 
 check_cxx_symbol_exists(FindFirstChangeNotification windows.h HAVE_WINDOWS_HEADER)
+
+# poll_monitor is not supported on Windows
+if (NOT HAVE_WINDOWS_HEADER)
+    set(LIBFSWATCH_HEADER_FILES
+            ${LIBFSWATCH_HEADER_FILES}
+            src/libfswatch/c++/poll_monitor.hpp)
+    set(LIB_SOURCE_FILES
+            ${LIB_SOURCE_FILES}
+            src/libfswatch/c++/poll_monitor.cpp)
+endif()
 
 if (HAVE_WINDOWS_HEADER)
 

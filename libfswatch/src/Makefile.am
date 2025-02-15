@@ -52,7 +52,6 @@ if USE_INOTIFY
   libfswatch_la_SOURCES += libfswatch/c++/inotify_monitor.cpp
 endif
 if USE_WINDOWS
-if USE_CYGWIN
   libfswatch_la_SOURCES += libfswatch/c++/windows_monitor.cpp
   libfswatch_la_SOURCES += libfswatch/c++/windows/win_handle.cpp
   libfswatch_la_SOURCES += libfswatch/c++/windows/win_handle.hpp
@@ -65,14 +64,9 @@ if USE_CYGWIN
   libfswatch_la_SOURCES += libfswatch/c++/windows/win_directory_change_event.cpp
   libfswatch_la_SOURCES += libfswatch/c++/windows/win_directory_change_event.hpp
 endif
-endif
 
 libfswatch_la_LDFLAGS  = -version-info $(LIBFSWATCH_API_VERSION)
 libfswatch_la_LDFLAGS += @LTLIBINTL@
-
-if OS_CYGWIN
-  libfswatch_la_LDFLAGS += -no-undefined
-endif
 
 if USE_FSEVENTS
   libfswatch_la_LDFLAGS += -framework CoreServices
