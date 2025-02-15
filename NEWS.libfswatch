@@ -1,6 +1,10 @@
 NEWS
 ****
 
+New in 1.19.0-develop:
+
+  * Removed requirement for Cygwin on Windows.
+
 New in 1.18.0:
 
   * Documentation: add reference to Go bindings.

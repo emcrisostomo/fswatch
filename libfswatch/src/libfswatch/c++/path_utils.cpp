@@ -79,7 +79,7 @@ namespace fsw
 
   bool lstat_path(const std::string& path, struct stat& fd_stat)
   {
-#if defined(_WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32)
     fsw_logf_perror(_("Cannot lstat %s (not implemented on Windows)"), path.c_str());
     return false;
 #else

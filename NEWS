@@ -12,6 +12,8 @@ New in 1.19.0-develop:
 
   * Fix: typo in man page. 
 
+  * Removed requirement for Cygwin on Windows.
+
 New in 1.18.2:
 
   * Added event flag CloseWrite: file open for write has been closed. 

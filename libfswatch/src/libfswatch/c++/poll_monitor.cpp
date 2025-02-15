@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * Copyright (c) 2014-2025 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -139,9 +139,6 @@ namespace fsw
         return;
       }
 
-#if defined(_WIN32) && !defined(__CYGWIN__)
-      fsw_log_perror("Poll monitor on Windows requires Cygwin");
-#else
       if (!accept_path(path)) return;
 
       // TODO: C++17 doesn't standardize access to ctime, so we need to keep
@@ -152,7 +149,6 @@ namespace fsw
       if (!add_path(path, fd_stat, fn)) return;
       if (!recursive) return;
       if (!S_ISDIR(fd_stat.st_mode)) return;
-#endif
 
       const auto entries = get_directory_entries(path);
 
