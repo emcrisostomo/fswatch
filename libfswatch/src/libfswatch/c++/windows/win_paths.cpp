@@ -23,7 +23,7 @@ namespace fsw
 {
   namespace win_paths
   {
-    wstring posix_to_win_w(string path)
+    std::wstring posix_to_win_w(std::string path)
     {
       int pathlen = (int) path.length() + 1;
       int buflen = MultiByteToWideChar(CP_ACP, 0, path.c_str(), pathlen, 0, 0);
@@ -32,7 +32,7 @@ namespace fsw
       return std::wstring(buf.data());
     }
 
-    string win_w_to_posix(wstring path)
+    std::string win_w_to_posix(std::wstring path)
     {
       int pathlen = (int)path.length() + 1;
       int buflen = WideCharToMultiByte(CP_ACP, 0, path.c_str(), pathlen, 0, 0, 0, 0);
