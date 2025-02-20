@@ -173,14 +173,17 @@ if (USE_NLS)
     endif ()
 endif ()
 
-target_include_directories(libfswatch PUBLIC src/libfswatch)
-target_include_directories(libfswatch PUBLIC src)
+target_include_directories(libfswatch PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<INSTALL_INTERFACE:include>)
 target_include_directories(libfswatch PUBLIC ${Intl_INCLUDE_DIRS})
 target_include_directories(libfswatch PRIVATE ${PROJECT_BINARY_DIR})
-target_include_directories(libfswatch PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(libfswatch PRIVATE ${EXTRA_LIBS})
 
-install(TARGETS libfswatch LIBRARY DESTINATION lib)
+install(TARGETS libfswatch EXPORT libfswatch-export LIBRARY DESTINATION lib)
+install(EXPORT libfswatch-export DESTINATION lib/cmake/libfswatch
+    NAMESPACE libfswatch::
+    FILE libfswatch-config.cmake)
 # TODO: should migrate to target_source(file_set) to install headers
 install(DIRECTORY src/libfswatch
     DESTINATION include
