@@ -32,6 +32,8 @@
 #  include <cstring>
 #  include <ctime>
 #  include <cstdio>
+#  include <thread>
+#  include <chrono>
 #  include <unistd.h>
 #  include <fcntl.h>
 #  include <windows.h>
@@ -229,7 +231,7 @@ namespace fsw
       if (should_stop) break;
       run_guard.unlock();
 
-      sleep(latency);
+      std::this_thread::sleep_for(std::chrono::milliseconds((long long) (latency * 1000)));
 
       for (const auto & path : load->win_paths)
       {
