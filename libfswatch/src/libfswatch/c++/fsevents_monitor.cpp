@@ -109,6 +109,8 @@ namespace fsw
   {
   }
 
+  fsevents_monitor::~fsevents_monitor() = default;
+
   void fsevents_monitor::run()
   {
     std::unique_lock<std::mutex> run_loop_lock(run_mutex);

@@ -28,6 +28,7 @@
 
 #  include "monitor.hpp"
 #  include <CoreServices/CoreServices.h>
+#  include <memory>
 
 namespace fsw
 {
@@ -67,6 +68,7 @@ namespace fsw
     fsevents_monitor(std::vector<std::string> paths,
                      FSW_EVENT_CALLBACK *callback,
                      void *context = nullptr);
+    ~fsevents_monitor() override;
     fsevents_monitor(const fsevents_monitor& orig) = delete;
     fsevents_monitor& operator=(const fsevents_monitor& that) = delete;
 
