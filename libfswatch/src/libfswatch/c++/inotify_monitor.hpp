@@ -84,6 +84,7 @@ namespace fsw
     void scan(const std::filesystem::path& path, const bool accept_non_dirs = true);
     bool add_watch(const std::string& path);
     void process_pending_events();
+    void process_synthetic_events();
     void remove_watch(int fd);
 
     std::unique_ptr<fsw::inotify_monitor_impl> impl;
