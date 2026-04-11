@@ -1,0 +1,65 @@
+
+name: Release
+
+on: 
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+            - arch: arm64
+              os: ubuntu
+            - arch: amd64
+              os: ubuntu
+            - arch: arm64
+              os: alpine
+            - arch: amd64
+              os: alpine              
+    env:
+        DOCKER_IMAGE_TAG: fswatch-${{ matrix.os }}-${{ matrix.arch }}
+        DOCKER_CONTAINER_NAME: fswatch-${{ matrix.os }}-${{ matrix.arch }}
+        DOCKER_PLATFORM: linux/${{ matrix.arch }}
+        DOCKER_OS: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3.0.0
+    - name: Build Docker Image
+      run: docker build -f Dockerfile.${DOCKER_OS} --platform ${DOCKER_PLATFORM} -t ${DOCKER_IMAGE_TAG} .
+    - name: Run Container
+      run: docker run --name ${DOCKER_CONTAINER_NAME} -d ${DOCKER_IMAGE_TAG}
+    - name: Copy Artifacts From Container
+      run: |
+        docker cp ${DOCKER_CONTAINER_NAME}:/artifacts .
+        ls -ltr artifacts
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: artifacts-linux-${{ matrix.os }}-${{ matrix.arch }}
+        path: artifacts
+
+  release:
+    name: Release
+    needs: build
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4.1.0
+        with:
+          path: artifacts
+      - name: List artifacts
+        run: ls -ltr artifacts
+      - name: Release
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          artifacts: "artifacts/**/*.zip,artifacts/**/*.tar.gz"
+          allowUpdates: true
+          name: ${{ github.ref_name }}
