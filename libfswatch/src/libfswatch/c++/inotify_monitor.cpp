@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -64,6 +64,7 @@ namespace fsw
     std::unordered_set<int> descriptors_to_remove;
     std::unordered_set<int> watches_to_remove;
     std::vector<std::string> paths_to_rescan;
+    std::vector<std::string> paths_to_fire_create;
     time_t curr_time;
   };
 
@@ -212,11 +213,6 @@ namespace fsw
       impl->events.emplace_back(impl->wd_to_path[event->wd], impl->curr_time, flags, event->cookie);
     }
 
-    // If a new directory has been created, it should be rescanned if the
-    if ((event->mask & IN_ISDIR) && (event->mask & IN_CREATE))
-    {
-      impl->paths_to_rescan.push_back(impl->wd_to_path[event->wd]);
-    }
   }
 
   void inotify_monitor::preprocess_node_event(const struct inotify_event *event)
@@ -241,6 +237,13 @@ namespace fsw
     {
       filename_stream << "/";
       filename_stream << event->name;
+    }
+
+    if ((event->mask & IN_ISDIR) && (event->mask & IN_CREATE))
+    {
+      const std::string created_dir_path = filename_stream.str();
+      impl->paths_to_rescan.push_back(created_dir_path);
+      impl->paths_to_fire_create.push_back(created_dir_path);
     }
 
     if (!flags.empty())
@@ -374,6 +377,34 @@ namespace fsw
     impl->paths_to_rescan.clear();
   }
 
+  void inotify_monitor::process_synthetic_events()
+  {
+    for (const std::string& path : impl->paths_to_fire_create)
+    {
+      FSW_ELOGF(_("Synthetic event: processing directory: %s\n"), path.c_str());
+
+      const auto entries = get_directory_entries(path);
+
+      for (const auto& entry : entries)
+      {
+        std::vector<fsw_event_flag> flags{fsw_event_flag::Created};
+
+        try
+        {
+          if (entry.is_directory()) flags.push_back(fsw_event_flag::IsDir);
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+          FSW_ELOGF(_("Filesystem error: %s"), e.what());
+        }
+
+        impl->events.emplace_back(entry.path().string(), impl->curr_time, flags);
+      }
+    }
+
+    impl->paths_to_fire_create.clear();
+  }
+
   void inotify_monitor::run()
   {
     char buffer[BUFFER_SIZE];
@@ -454,6 +485,15 @@ namespace fsw
 
         p += (sizeof(struct inotify_event)) + event->len;
       }
+
+      if (!impl->events.empty())
+      {
+        notify_events(impl->events);
+        impl->events.clear();
+      }
+
+      process_pending_events();
+      process_synthetic_events();
 
       if (!impl->events.empty())
       {

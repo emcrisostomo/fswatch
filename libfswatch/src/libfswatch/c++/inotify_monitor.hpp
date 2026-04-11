@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief Solaris/Illumos monitor.
  *
- * @copyright Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2026 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -84,6 +84,7 @@ namespace fsw
     void scan(const std::filesystem::path& path, const bool accept_non_dirs = true);
     bool add_watch(const std::string& path);
     void process_pending_events();
+    void process_synthetic_events();
     void remove_watch(int fd);
 
     std::unique_ptr<fsw::inotify_monitor_impl> impl;

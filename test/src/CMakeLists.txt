@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2022 Enrico M. Crisostomo
+# Copyright (c) 2014-2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -21,3 +21,19 @@ add_executable(fswatch_test ${SOURCE_FILES})
 target_include_directories(fswatch_test PRIVATE ../.. .)
 target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})
 target_link_libraries(fswatch_test PUBLIC libfswatch)
+
+if (BUILD_TESTING)
+    find_program(SH_EXECUTABLE sh)
+    find_program(GIT_EXECUTABLE git)
+
+    if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND SH_EXECUTABLE AND GIT_EXECUTABLE)
+        add_test(NAME inotify_recursive_create
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/inotify_recursive_create.sh
+                        $<TARGET_FILE:fswatch>
+                        ${GIT_EXECUTABLE})
+        set_tests_properties(inotify_recursive_create PROPERTIES
+                LABELS "integration;inotify"
+                TIMEOUT 15)
+    endif ()
+endif ()

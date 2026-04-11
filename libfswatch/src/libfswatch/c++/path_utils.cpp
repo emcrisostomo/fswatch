@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -28,11 +28,11 @@ namespace fsw
   std::vector<std::filesystem::directory_entry> get_directory_entries(const std::filesystem::path& path)
   {
     std::vector<std::filesystem::directory_entry> entries;
-    // Reserve capacity to optimize memory allocation
-    entries.reserve(std::distance(std::filesystem::directory_iterator(path), std::filesystem::directory_iterator{}));
 
     try
     {
+      entries.reserve(std::distance(std::filesystem::directory_iterator(path), std::filesystem::directory_iterator{}));
+
       for (const auto& entry : std::filesystem::directory_iterator(path))
         entries.emplace_back(entry);
     }

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2025 Enrico M. Crisostomo
+# Copyright (c) 2014-2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -48,6 +48,7 @@ include(FindIntl)
 include(CheckIncludeFileCXX)
 include(CheckStructHasMember)
 include(CheckCXXSymbolExists)
+include(CTest)
 
 # check for gettext and libintl
 check_include_file_cxx(getopt.h HAVE_GETOPT_H)
