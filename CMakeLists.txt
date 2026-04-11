@@ -48,6 +48,7 @@ include(FindIntl)
 include(CheckIncludeFileCXX)
 include(CheckStructHasMember)
 include(CheckCXXSymbolExists)
+include(CTest)
 
 # check for gettext and libintl
 check_include_file_cxx(getopt.h HAVE_GETOPT_H)
