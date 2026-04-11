@@ -109,6 +109,8 @@ namespace fsw
   {
   }
 
+  fsevents_monitor::~fsevents_monitor() = default;
+
   void fsevents_monitor::run()
   {
     std::unique_lock<std::mutex> run_loop_lock(run_mutex);
@@ -242,10 +244,26 @@ namespace fsw
     for (size_t i = 0; i < numEvents; ++i)
     {
 #ifdef HAVE_MACOS_GE_10_13
-      auto path_info_dict = static_cast<CFDictionaryRef>(CFArrayGetValueAtIndex((CFArrayRef) eventPaths,
+      auto event_paths = static_cast<CFArrayRef>(eventPaths);
+      if (!event_paths)
+      {
+        continue;
+      }
+
+      auto path_info_dict = static_cast<CFDictionaryRef>(CFArrayGetValueAtIndex(event_paths,
                                                                                 i));
+      if (!path_info_dict)
+      {
+        continue;
+      }
+
       auto path = static_cast<CFStringRef>(CFDictionaryGetValue(path_info_dict,
                                                                 kFSEventStreamEventExtendedDataPathKey));
+      if (!path)
+      {
+        continue;
+      }
+
       auto cf_inode = static_cast<CFNumberRef>(CFDictionaryGetValue(path_info_dict,
                                                                     kFSEventStreamEventExtendedFileIDKey));
 
@@ -261,8 +279,12 @@ namespace fsw
           continue;
       }
 
-      unsigned long inode;
-      CFNumberGetValue(cf_inode, kCFNumberLongType, &inode);
+      unsigned long inode = 0;
+      if (cf_inode)
+      {
+        CFNumberGetValue(cf_inode, kCFNumberLongType, &inode);
+      }
+
       events.emplace_back(std::string(path_buffer.data()),
                           curr_time,
                           decode_flags(eventFlags[i]),
