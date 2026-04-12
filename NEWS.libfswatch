@@ -1,6 +1,16 @@
 NEWS
 ****
 
+New in 1.19.0-rc1:
+
+  * PR 353, Issue 343: Fix a segmentation fault in the macOS FSEvents monitor
+    when file event metadata does not include an inode.
+
+  * PR 354, Issue 330: Fix recursive inotify monitoring so fast file creation
+    in newly-created directories is detected.
+
+  * PR 340: Enable libfswatch compilation under Windows MinGW.
+
 New in 1.18.0:
 
   * Documentation: add reference to Go bindings.
