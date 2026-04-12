@@ -1,6 +1,9 @@
 NEWS
 ****
 
+New in 1.20.0-develop:
+
+
 New in 1.19.0:
 
   * PR 353, Issue 343: Fix a segmentation fault in the macOS FSEvents monitor
