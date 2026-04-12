@@ -16,7 +16,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(fswatch VERSION 1.19.0 LANGUAGES C CXX)
 
-set(VERSION_MODIFIER "-rc1")
+set(VERSION_MODIFIER "")
 set(FULL_VERSION "${PROJECT_VERSION}${VERSION_MODIFIER}")
 
 #@formatter:off
