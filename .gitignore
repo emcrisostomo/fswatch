@@ -146,3 +146,6 @@ docker/debian-testing/Dockerfile
 # Output files
 man/fswatch.7
 *~
+
+# Agentic files
+.agents/
