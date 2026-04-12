@@ -18,6 +18,7 @@ fswatch/doc/fswatch.pdf
 
 # Distribution files
 *.tar.gz
+release-notes.md
 
 # GNU Build System
 autom4te.cache/
