@@ -64,7 +64,7 @@ jobs:
         ./configure
 
     - name: Build and Test
-      run: make distcheck
+      run: make -j distcheck
 
     - name: Check distribution tarball
       run: scripts/release/check.zsh --release --require-dist ${{ github.event.release.tag_name }}
@@ -80,7 +80,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build PDF documentation
-      run: make pdf    
+      run: make -j pdf
 
     - name: Upload Release PDF documentation
       uses: actions/upload-release-asset@v1

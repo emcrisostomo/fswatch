@@ -36,8 +36,8 @@ usage()
   print -- "Options:"
   print -- "  --release VERSION       Simulated release version. Default: 1.19.0."
   print -- "  --next VERSION          Simulated next development version. Default: 1.20.0."
-  print -- "  --dist                  Also run autogen, configure, and make dist."
-  print -- "  --distcheck             Also run autogen, configure, and make distcheck."
+  print -- "  --dist                  Also run autogen, configure, and make -j dist."
+  print -- "  --distcheck             Also run autogen, configure, and make -j distcheck."
   print -- "  --keep-worktree         Keep the temporary worktree for inspection."
   print -- "  -h, --help              Print this message."
 }
@@ -139,15 +139,26 @@ print -- "Checking current development metadata."
 current_version=$(release_m4_define m4/fswatch_version.m4 FSWATCH_VERSION)
 scripts/release/check.zsh "${current_version}"
 
-print -- "Checking expected release-guard failures."
-if scripts/release/check.zsh --release "${current_version}" > release-check-develop.log 2>&1
+release_parse_version "${current_version}"
+current_is_develop=${RELEASE_IS_DEVELOP}
+
+print -- "Checking release guards."
+if (( current_is_develop ))
 then
-  release_die "--release unexpectedly accepted ${current_version}"
+  if scripts/release/check.zsh --release "${current_version}" > release-check-develop.log 2>&1
+  then
+    release_die "--release unexpectedly accepted ${current_version}"
+  fi
+else
+  scripts/release/check.zsh --release "${current_version}" > /dev/null
 fi
 
-if scripts/release/check.zsh --release "${release_version}" > release-check-unprepared.log 2>&1
+if [[ "${current_version}" != "${release_version}" ]]
 then
-  release_die "unprepared release check unexpectedly passed for ${release_version}"
+  if scripts/release/check.zsh --release "${release_version}" > release-check-unprepared.log 2>&1
+  then
+    release_die "unprepared release check unexpectedly passed for ${release_version}"
+  fi
 fi
 
 print -- "Running dry-run helpers."
@@ -195,15 +206,15 @@ fi
 
 if (( run_dist ))
 then
-  print -- "Running make dist."
-  make dist
+  print -- "Running make -j dist."
+  make -j dist
   scripts/release/check.zsh --release --require-dist "${release_version}"
 fi
 
 if (( run_distcheck ))
 then
-  print -- "Running make distcheck."
-  make distcheck
+  print -- "Running make -j distcheck."
+  make -j distcheck
   scripts/release/check.zsh --release --require-dist "${release_version}"
 fi
 
