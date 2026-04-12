@@ -1,7 +1,7 @@
 NEWS
 ****
 
-New in 1.19.0-develop:
+New in 1.19.0-rc1:
 
   * Fix: spurious output 'inotify_rm_watch: Invalid argument'
 
