@@ -19,20 +19,51 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: r-lib/actions/setup-r@v2
+    - uses: actions/checkout@v5
+
+    - name: Install MSYS2 MinGW toolchain
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        $msys2 = 'C:\msys64'
+
+        if (-not (Test-Path "$msys2\usr\bin\bash.exe")) {
+          choco install msys2 --no-progress -y
+        }
+
+        & "$msys2\usr\bin\bash.exe" -lc 'pacman --noconfirm -Sy --needed mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-ninja'
+
+        if ($LASTEXITCODE -ne 0) {
+          exit $LASTEXITCODE
+        }
+
+        "$msys2\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        "$msys2\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_LIBS_ONLY=1
+      shell: pwsh
+      run: |
+        cmake `
+          -G Ninja `
+          -B "${{ github.workspace }}/build" `
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
+          -DBUILD_LIBS_ONLY=1
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      shell: pwsh
+      run: |
+        cmake `
+          --build "${{ github.workspace }}/build" `
+          --config "${{ env.BUILD_TYPE }}"
 
     - name: Test
-      working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
+      shell: pwsh
+      run: |
+        ctest `
+          --test-dir "${{ github.workspace }}/build" `
+          -C "${{ env.BUILD_TYPE }}"

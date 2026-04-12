@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+  statuses: write
+
 jobs:
   build:
     strategy:
@@ -16,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Install dependencies on Ubuntu
       if: matrix.os == 'ubuntu-latest'
@@ -47,10 +51,10 @@ jobs:
       run: make check
 
     - name: Set commit status
-      uses: actions/github-script@v4
+      uses: actions/github-script@v8
       with:
         script: |
-          github.repos.createCommitStatus({
+          github.rest.repos.createCommitStatus({
             owner: context.repo.owner,
             repo: context.repo.repo,
             sha: context.sha,

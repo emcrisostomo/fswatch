@@ -4,24 +4,28 @@ on:
   release:
     types: [created]
 
+permissions:
+  contents: write
+  statuses: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: ${{ github.event.release.tag_name }}
 
     - name: Check autotools status
       id: check_status
-      uses: actions/github-script@v4
+      uses: actions/github-script@v8
       with:
         script: |
           const owner = context.repo.owner;
           const repo = context.repo.repo;
           const tagName = context.payload.release.tag_name;
-          const tagRef = await github.git.getRef({
+          const tagRef = await github.rest.git.getRef({
             owner,
             repo,
             ref: `tags/${tagName}`
@@ -29,7 +33,7 @@ jobs:
 
           let releaseCommit = tagRef.data.object.sha;
           if (tagRef.data.object.type === 'tag') {
-            const tag = await github.git.getTag({
+            const tag = await github.rest.git.getTag({
               owner,
               repo,
               tag_sha: releaseCommit
@@ -37,7 +41,7 @@ jobs:
             releaseCommit = tag.data.object.sha;
           }
 
-          const status = await github.repos.getCombinedStatusForRef({
+          const status = await github.rest.repos.getCombinedStatusForRef({
             owner,
             repo,
             ref: releaseCommit
@@ -70,24 +74,24 @@ jobs:
       run: scripts/release/check.zsh --release --require-dist ${{ github.event.release.tag_name }}
 
     - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./fswatch-${{ github.event.release.tag_name }}.tar.gz
-        asset_name: fswatch-${{ github.event.release.tag_name }}.tar.gz
-        asset_content_type: application/gzip
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TAG_NAME: ${{ github.event.release.tag_name }}
+      run: |
+        gh release upload "${TAG_NAME}" \
+          "./fswatch-${TAG_NAME}.tar.gz#fswatch-${TAG_NAME}.tar.gz" \
+          --repo "${GITHUB_REPOSITORY}" \
+          --clobber
 
     - name: Build PDF documentation
       run: make -j pdf
 
     - name: Upload Release PDF documentation
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./fswatch/doc/fswatch.pdf
-        asset_name: fswatch-${{ github.event.release.tag_name }}.pdf
-        asset_content_type: application/gzip
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TAG_NAME: ${{ github.event.release.tag_name }}
+      run: |
+        gh release upload "${TAG_NAME}" \
+          "./fswatch/doc/fswatch.pdf#fswatch-${TAG_NAME}.pdf" \
+          --repo "${GITHUB_REPOSITORY}" \
+          --clobber
