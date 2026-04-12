@@ -30,7 +30,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.19.0-rc1\n"
+"Project-Id-Version: fswatch 1.19.0\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
 "POT-Creation-Date: 2026-04-11 22:37+0200\n"
 "PO-Revision-Date: 2026-04-11 22:37+0200\n"
