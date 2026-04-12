@@ -9,17 +9,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.release.tag_name }}
 
     - name: Check autotools status
       id: check_status
       uses: actions/github-script@v4
       with:
         script: |
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+          const tagName = context.payload.release.tag_name;
+          const tagRef = await github.git.getRef({
+            owner,
+            repo,
+            ref: `tags/${tagName}`
+          });
+
+          let releaseCommit = tagRef.data.object.sha;
+          if (tagRef.data.object.type === 'tag') {
+            const tag = await github.git.getTag({
+              owner,
+              repo,
+              tag_sha: releaseCommit
+            });
+            releaseCommit = tag.data.object.sha;
+          }
+
           const status = await github.repos.getCombinedStatusForRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: context.payload.release.target_commitish
+            owner,
+            repo,
+            ref: releaseCommit
           });
           const autotoolsStatus = status.data.statuses.find(s => s.context === 'autotools');
           if (!autotoolsStatus || autotoolsStatus.state !== 'success') {
@@ -29,7 +50,10 @@ jobs:
     - name: Install dependencies on Ubuntu
       run: |
         sudo apt-get update
-        sudo apt-get install -y autoconf automake autopoint g++ gettext git libtool make texinfo texlive
+        sudo apt-get install -y autoconf automake autopoint g++ gettext git libtool make texinfo texlive zsh
+
+    - name: Check release metadata
+      run: scripts/release/check.zsh --release ${{ github.event.release.tag_name }}
 
     - name: Run autogen
       run: ./autogen.sh
@@ -40,7 +64,10 @@ jobs:
         ./configure
 
     - name: Build and Test
-      run: make distcheck
+      run: make -j distcheck
+
+    - name: Check distribution tarball
+      run: scripts/release/check.zsh --release --require-dist ${{ github.event.release.tag_name }}
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
@@ -53,7 +80,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build PDF documentation
-      run: make pdf    
+      run: make -j pdf
 
     - name: Upload Release PDF documentation
       uses: actions/upload-release-asset@v1

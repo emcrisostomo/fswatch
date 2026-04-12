@@ -1,7 +1,7 @@
 # English translations for fswatch package.
-# Copyright (C) 2025 Enrico M. Crisostomo
+# Copyright (C) 2026 Enrico M. Crisostomo
 # This file is distributed under the same license as the fswatch package.
-# Automatically generated, 2025.
+# Automatically generated, 2026.
 #
 # All this catalog "translates" are quotation characters.
 # The msgids must be ASCII and therefore cannot contain real quotation
@@ -30,10 +30,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.18.3\n"
+"Project-Id-Version: fswatch 1.19.0-rc1\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2025-02-04 22:22+0100\n"
-"PO-Revision-Date: 2025-02-04 22:22+0100\n"
+"POT-Creation-Date: 2026-04-11 22:37+0200\n"
+"PO-Revision-Date: 2026-04-11 22:37+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@boldquot\n"
@@ -44,11 +44,11 @@ msgstr ""
 
 #: fswatch/src/fswatch.cpp:141
 msgid ""
-"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-"html>.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/"
+"gpl.html>.\n"
 msgstr ""
-"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-"html>.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/"
+"gpl.html>.\n"
 
 #: fswatch/src/fswatch.cpp:142
 msgid "This is free software: you are free to change and redistribute it.\n"
@@ -348,9 +348,10 @@ msgid "Cannot allocate memory"
 msgstr "Cannot allocate memory"
 
 #: libfswatch/src/libfswatch/c++/fen_monitor.cpp:296
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:175
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:176
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:398
 #: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:226
-#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:163
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:167
 #, c-format
 msgid "Filesystem error: %s"
 msgstr "Filesystem error: %s"
@@ -389,79 +390,84 @@ msgstr "Unknown filter type: "
 msgid "Unknown flag: "
 msgstr "Unknown flag: "
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:139
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:141
 msgid "Event stream could not be created."
 msgstr "Event stream could not be created."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:150
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:152
 msgid "Scheduling stream with run loop...\n"
 msgstr "Scheduling stream with run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:156
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:158
 msgid "Starting event stream...\n"
 msgstr "Starting event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:172
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:174
 msgid "Starting run loop...\n"
 msgstr "Starting run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:177
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:179
 msgid "Stopping event stream...\n"
 msgstr "Stopping event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:180
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:182
 msgid "Invalidating event stream...\n"
 msgstr "Invalidating event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:183
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:185
 msgid "Releasing event stream...\n"
 msgstr "Releasing event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:198
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:200
 msgid "run loop is null"
 msgstr "run loop is null"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:200
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:202
 msgid "Stopping run loop...\n"
 msgstr "Stopping run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:233
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:235
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "The callback info cannot be cast to fsevents_monitor."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:314
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:336
 msgid "Creating FSEvent stream...\n"
 msgstr "Creating FSEvent stream...\n"
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:83
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:84
 msgid "Cannot initialize inotify."
 msgstr "Cannot initialize inotify."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:93
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:94
 msgid "Removing: "
 msgstr "Removing: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:122
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:123
 msgid "Added: "
 msgstr "Added: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:253
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:256
 msgid "Generic event: "
 msgstr "Generic event: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:345
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:348
 msgid "Removed: "
 msgstr "Removed: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:432
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:384
+#, c-format
+msgid "Synthetic event: processing directory: %s\n"
+msgstr "Synthetic event: processing directory: %s\n"
+
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:463
 msgid "Number of records: "
 msgstr "Number of records: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:438
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:469
 msgid "read() on inotify descriptor read 0 records."
 msgstr "read() on inotify descriptor read 0 records."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:444
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:475
 msgid "read() on inotify descriptor returned -1."
 msgstr "read() on inotify descriptor returned -1."
 
@@ -539,12 +545,17 @@ msgstr "Error accessing directory: %s"
 msgid "Cannot stat %s"
 msgstr "Cannot stat %s"
 
-#: libfswatch/src/libfswatch/c++/path_utils.cpp:85
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:83
+#, c-format
+msgid "Cannot lstat %s (not implemented on Windows)"
+msgstr "Cannot lstat %s (not implemented on Windows)"
+
+#: libfswatch/src/libfswatch/c++/path_utils.cpp:89
 #, c-format
 msgid "Cannot lstat %s"
 msgstr "Cannot lstat %s"
 
-#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:224
+#: libfswatch/src/libfswatch/c++/poll_monitor.cpp:228
 msgid "Done scanning.\n"
 msgstr "Done scanning.\n"
 
@@ -581,8 +592,8 @@ msgstr "File name unexpectedly empty."
 msgid "Closing handle: %d.\n"
 msgstr "Closing handle: %d.\n"
 
-#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:30
-#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:42
+#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:36
+#: libfswatch/src/libfswatch/c++/windows/win_paths.cpp:56
 msgid "cygwin_create_path could not allocate memory to convert the path."
 msgstr "cygwin_create_path could not allocate memory to convert the path."
 
