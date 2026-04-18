@@ -26,15 +26,25 @@ if (BUILD_TESTING)
     find_program(SH_EXECUTABLE sh)
     find_program(GIT_EXECUTABLE git)
 
-    if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND SH_EXECUTABLE AND GIT_EXECUTABLE)
-        add_test(NAME inotify_recursive_create
+    if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND SH_EXECUTABLE)
+        add_test(NAME inotify_access_events
                 COMMAND ${SH_EXECUTABLE}
-                        ${PROJECT_SOURCE_DIR}/test/inotify_recursive_create.sh
-                        $<TARGET_FILE:fswatch>
-                        ${GIT_EXECUTABLE})
-        set_tests_properties(inotify_recursive_create PROPERTIES
+                        ${PROJECT_SOURCE_DIR}/test/inotify_access_events.sh
+                        $<TARGET_FILE:fswatch>)
+        set_tests_properties(inotify_access_events PROPERTIES
                 LABELS "integration;inotify"
                 TIMEOUT 15)
+
+        if (GIT_EXECUTABLE)
+            add_test(NAME inotify_recursive_create
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_recursive_create.sh
+                            $<TARGET_FILE:fswatch>
+                            ${GIT_EXECUTABLE})
+            set_tests_properties(inotify_recursive_create PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 15)
+        endif ()
     endif ()
 
     if (APPLE)
