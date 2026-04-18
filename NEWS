@@ -3,6 +3,9 @@ NEWS
 
 New in 1.20.0-develop:
 
+  * Issue 352: inotify no longer reports access, open, or close-without-write
+    events unless access events are enabled with -a or --access.
+
 
 New in 1.19.0:
 

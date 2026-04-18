@@ -105,9 +105,15 @@ namespace fsw
   bool inotify_monitor::add_watch(const std::string& path)
   {
     // TODO: Consider optionally adding the IN_EXCL_UNLINK flag.
+    auto event_mask = IN_ALL_EVENTS;
+    if (!watch_access)
+    {
+      event_mask &= ~(IN_ACCESS | IN_CLOSE_NOWRITE | IN_OPEN);
+    }
+
     int inotify_desc = inotify_add_watch(impl->inotify_monitor_handle,
                                          path.c_str(),
-                                         IN_ALL_EVENTS);
+                                         event_mask);
 
     if (inotify_desc == -1)
     {
