@@ -1,7 +1,10 @@
 NEWS
 ****
 
-New in 1.20.0-develop:
+New in 1.19.1:
+
+  * PR 350, Issue 349: Fix latency values lower than one second in the Windows
+    monitor.
 
   * Issue 352: inotify no longer reports access, open, or close-without-write
     events unless access events are enabled with -a or --access.
