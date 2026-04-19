@@ -91,7 +91,8 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TAG_NAME: ${{ github.event.release.tag_name }}
       run: |
+        cp ./fswatch/doc/fswatch.pdf "./fswatch-${TAG_NAME}.pdf"
         gh release upload "${TAG_NAME}" \
-          "./fswatch/doc/fswatch.pdf#fswatch-${TAG_NAME}.pdf" \
+          "./fswatch-${TAG_NAME}.pdf" \
           --repo "${GITHUB_REPOSITORY}" \
           --clobber
