@@ -1,6 +1,9 @@
 NEWS
 ****
 
+New in 1.20.0-develop:
+
+
 New in 1.19.1:
 
   * PR 350, Issue 349: Fix latency values lower than one second in the Windows
