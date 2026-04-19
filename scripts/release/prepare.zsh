@@ -133,3 +133,4 @@ mv "${tmp_file}" CMakeLists.txt
   release_die "failed to update CMake VERSION_MODIFIER"
 
 print -- "Updated version files. Review LIBFSWATCH_API_VERSION and changelogs manually."
+print -- "When a changelog item comes from a GitHub PR or issue, include those numbers."
