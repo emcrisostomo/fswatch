@@ -14,9 +14,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        configuration: [ Release, Debug ]
-        compiler: [ gcc, clang ]
+        include:
+          - os: ubuntu-latest
+            configuration: Release
+            compiler: gcc
+          - os: ubuntu-latest
+            configuration: Debug
+            compiler: gcc
+          - os: ubuntu-latest
+            configuration: Release
+            compiler: clang
+          - os: ubuntu-latest
+            configuration: Debug
+            compiler: clang
+          - os: macos-latest
+            configuration: Release
+            compiler: clang
+          - os: macos-latest
+            configuration: Debug
+            compiler: clang
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -29,6 +45,18 @@ jobs:
         sudo apt-get install -y autoconf automake autopoint gettext git libtool make texinfo
         if [ "${{ matrix.compiler }}" == "gcc" ]; then sudo apt-get install -y g++; fi
         if [ "${{ matrix.compiler }}" == "clang" ]; then sudo apt-get install -y clang; fi
+
+    - name: Install dependencies on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install autoconf automake gettext libtool texinfo
+        for package in gettext libtool texinfo; do
+          echo "$(brew --prefix "${package}")/bin" >> "${GITHUB_PATH}"
+        done
+        echo "ACLOCAL_PATH=$(brew --prefix gettext)/share/aclocal" >> "${GITHUB_ENV}"
+        echo "LIBTOOLIZE=glibtoolize" >> "${GITHUB_ENV}"
+        echo "CPPFLAGS=-I$(brew --prefix gettext)/include" >> "${GITHUB_ENV}"
+        echo "LDFLAGS=-L$(brew --prefix gettext)/lib" >> "${GITHUB_ENV}"
 
     - name: Run autogen
       run: ./autogen.sh
