@@ -1895,6 +1895,15 @@ lacks the required permissions for the selected fanotify mode,
 @command{fswatch} may be unable to reconstruct paths or start the
 monitor.
 
+Fanotify directory marks are not equivalent to macOS FSEvents recursive
+tree watches.  With ordinary directory marks, @code{FAN_EVENT_ON_CHILD}
+reports events for the immediate children of a marked directory, but it
+does not report events for grandchildren or deeper descendants.  As a
+result, recursive fanotify monitoring in this implementation still scans
+and marks subdirectories explicitly.  Monitoring a complete tree without
+explicit subdirectory marks requires fanotify mount or filesystem marks,
+which have broader scope and different permission constraints.
+
 The inotify monitor remains the default Linux monitor because fanotify
 has stricter kernel, filesystem, and privilege constraints.  Use
 fanotify when Linux-specific process attribution is more important than

@@ -304,6 +304,15 @@ Fanotify support depends on kernel, C library, filesystem, and permission
 support for the requested mode.  Some filesystems do not support file handles,
 and some fanotify modes require additional privileges.  Use the inotify monitor
 when broad Linux compatibility is more important than process attribution.
+.Pp
+Fanotify directory marks are not equivalent to macOS FSEvents recursive tree
+watches.  With ordinary directory marks,
+.Em FAN_EVENT_ON_CHILD
+reports events for immediate children only, not grandchildren or deeper
+descendants.  Recursive fanotify monitoring therefore still marks
+subdirectories explicitly.  Avoiding recursive mark expansion requires
+fanotify mount or filesystem marks, which have broader scope and different
+permission constraints.
 .Ss The Poll Monitor
 The
 .Em poll monitor

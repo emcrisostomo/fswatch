@@ -30,6 +30,15 @@ fanotify modes and metadata, including pidfd reporting, may require newer
 kernels or additional privileges.  When the kernel omits process attribution,
 fswatch leaves the process fields empty.
 
+The current fanotify monitor does not provide macOS FSEvents-style recursive
+tree monitoring with a single mark on an arbitrary directory.  Linux fanotify
+directory marks report events for the marked directory and, with
+`FAN_EVENT_ON_CHILD`, its immediate children.  They do not report events for
+grandchildren or deeper descendants.  For this reason, `fswatch -r` still marks
+subdirectories explicitly.  Avoiding recursive mark expansion requires
+fanotify mount or filesystem marks, which have broader scope and different
+permission constraints.
+
 The list of monitors built into libfswatch can be read in the help message of
 fswatch:
 
