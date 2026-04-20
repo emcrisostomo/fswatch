@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief Header of the fsw::event class.
  *
- * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2026 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.18.0
@@ -30,10 +30,26 @@
 #  include <ctime>
 #  include <vector>
 #  include <iostream>
+#  include <optional>
 #  include "../c/cevent.h"
 
 namespace fsw
 {
+  enum class process_id_kind
+  {
+    none = 0,
+    pid,
+    tid
+  };
+
+  struct process_metadata
+  {
+    process_id_kind kind = process_id_kind::none;
+    long long id = 0;
+    int pidfd = -1;
+    bool has_pidfd = false;
+  };
+
   /**
    * @brief Type representing a file change event.
    *
@@ -66,6 +82,21 @@ namespace fsw
      * @param correlation_id The correlation_id of the file the event refers to.
      */
     event(std::string path, time_t evt_time, std::vector<fsw_event_flag> flags, unsigned long correlation_id);
+
+    /**
+     * @brief Constructs an event with optional process metadata.
+     *
+     * @param path The path the event refers to.
+     * @param evt_time The time the event was raised.
+     * @param flags The vector of flags specifying the type of the event.
+     * @param correlation_id The correlation_id of the file the event refers to.
+     * @param process The optional process metadata associated with the event.
+     */
+    event(std::string path,
+          time_t evt_time,
+          std::vector<fsw_event_flag> flags,
+          unsigned long correlation_id,
+          process_metadata process);
 
     /**
      * @brief Destructs an event.
@@ -102,6 +133,42 @@ namespace fsw
     unsigned long get_correlation_id() const;
 
     /**
+     * @brief Returns true if the event has process attribution metadata.
+     */
+    bool has_process_id() const;
+
+    /**
+     * @brief Returns the process or thread identifier associated with this event.
+     *
+     * Returns 0 when no process attribution metadata is available.
+     */
+    long long get_process_id() const;
+
+    /**
+     * @brief Returns the process identifier kind.
+     */
+    process_id_kind get_process_id_kind() const;
+
+    /**
+     * @brief Returns true if the event has a process file descriptor.
+     */
+    bool has_process_pidfd() const;
+
+    /**
+     * @brief Returns the process file descriptor associated with this event.
+     *
+     * Returns -1 when no process file descriptor is available.  The descriptor
+     * is owned by the event producer and is only valid during callback
+     * processing.
+     */
+    int get_process_pidfd() const;
+
+    /**
+     * @brief Get the display name of a process identifier kind.
+     */
+    static std::string get_process_id_kind_name(process_id_kind kind);
+
+    /**
      * @brief Get event flag by name.
      *
      * @param name The name of the event flag to look for.
@@ -124,6 +191,7 @@ namespace fsw
     time_t evt_time;
     std::vector<fsw_event_flag> evt_flags;
     unsigned long correlation_id = 0;
+    process_metadata process;
   };
 
   /**

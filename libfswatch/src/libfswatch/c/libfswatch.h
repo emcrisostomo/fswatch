@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +19,7 @@
  *
  * This header file defines the API of the `libfswatch` library.
  *
- * @copyright Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2026 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -127,6 +127,17 @@ extern "C"
   FSW_STATUS fsw_set_callback(const FSW_HANDLE handle,
                               const FSW_CEVENT_CALLBACK callback,
                               void * data);
+
+  /**
+   * Sets the callback the monitor invokes when events with extended metadata
+   * are received.  This additive callback receives correlation and optional
+   * process attribution fields without changing the ABI of fsw_cevent.
+   *
+   * See cevent.h for the definition of FSW_CEVENT_CALLBACK_V2.
+   */
+  FSW_STATUS fsw_set_callback_v2(const FSW_HANDLE handle,
+                                 const FSW_CEVENT_CALLBACK_V2 callback,
+                                 void * data);
 
   /**
    * Sets the latency of the monitor.  By default, the latency is set to 1 s.

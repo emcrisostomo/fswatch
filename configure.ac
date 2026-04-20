@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 #
-# Copyright (C) 2014-2024 Enrico M. Crisostomo
+# Copyright (C) 2014-2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,7 +16,7 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
-dnl Copyright (C) 2014-2024 Enrico M. Crisostomo
+dnl Copyright (C) 2014-2026 Enrico M. Crisostomo
 AC_PREREQ([2.69])
 m4_include([m4/fswatch_version.m4])
 m4_include([m4/libfswatch_version.m4])
@@ -32,6 +32,7 @@ AC_CONFIG_FILES([libfswatch/doc/doxygen/Makefile])
 AC_CONFIG_FILES([libfswatch/src/Makefile])
 AC_CONFIG_FILES([libfswatch/src/libfswatch.pc])
 AC_CONFIG_FILES([fswatch/Makefile fswatch/src/Makefile fswatch/doc/Makefile])
+AC_CONFIG_FILES([test/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([man/fswatch.7])
 AC_CONFIG_MACRO_DIRS([m4])
@@ -188,6 +189,27 @@ AS_VAR_IF([ac_cv_header_sys_inotify_h], ["yes"], [
 ])
 
 AM_CONDITIONAL([USE_INOTIFY],  [test "x${INOTIFY_AVAILABLE}" = "xyes"])
+
+# Check for Linux fanotify.
+AC_CHECK_HEADERS([sys/fanotify.h])
+AS_VAR_IF([ac_cv_header_sys_fanotify_h], ["yes"], [
+  AS_VAR_SET([FANOTIFY_AVAILABLE], ["yes"])
+  AC_CHECK_DECLS(
+    [fanotify_init, fanotify_mark,
+     FAN_REPORT_DFID_NAME, FAN_CREATE, FAN_DELETE, FAN_MOVED_FROM,
+     FAN_MOVED_TO, FAN_EVENT_ON_CHILD, FAN_Q_OVERFLOW],
+    [],
+    [AS_VAR_SET([FANOTIFY_AVAILABLE], ["no"])],
+    [
+      AC_INCLUDES_DEFAULT
+      [#include <sys/fanotify.h>]
+    ]
+  )
+  AC_CHECK_LIB([c], [fanotify_init], [], [AS_VAR_SET([FANOTIFY_AVAILABLE], ["no"])])
+])
+
+AM_CONDITIONAL([USE_FANOTIFY], [test "x${FANOTIFY_AVAILABLE}" = "xyes"])
+AS_VAR_IF([FANOTIFY_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_FANOTIFY], [1], [Linux fanotify API present.])])
 
 # Check for Microsoft Windows directory change notification API
 AS_VAR_SET([WINDOWS_AVAILABLE], ["yes"])

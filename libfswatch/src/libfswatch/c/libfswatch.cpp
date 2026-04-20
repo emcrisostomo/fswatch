@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,7 +16,7 @@
 /**
  * @file
  * @brief Main `libfswatch` source file.
- * @copyright Copyright (c) 2014-2024 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2026 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.17.0
@@ -459,6 +459,7 @@ using FSW_SESSION = struct FSW_SESSION
   fsw_monitor_type type;
   fsw::monitor *monitor;
   FSW_CEVENT_CALLBACK callback;
+  FSW_CEVENT_CALLBACK_V2 callback_v2;
   double latency;
   bool allow_overflow;
   bool recursive;
@@ -499,6 +500,7 @@ using fsw_callback_context = struct fsw_callback_context
 {
   FSW_HANDLE handle;
   FSW_CEVENT_CALLBACK callback;
+  FSW_CEVENT_CALLBACK_V2 callback_v2;
   void *data;
 };
 
@@ -510,6 +512,77 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
     throw int(FSW_ERR_MISSING_CONTEXT);
 
   const fsw_callback_context *context = static_cast<fsw_callback_context *> (context_ptr);
+
+  if (context->callback_v2)
+  {
+    auto *const cevents = static_cast<fsw_cevent_v2 *> (malloc(
+      sizeof(fsw_cevent_v2) * events.size()));
+
+    if (cevents == nullptr)
+      throw int(FSW_ERR_MEMORY);
+
+    for (unsigned int i = 0; i < events.size(); ++i)
+    {
+      fsw_cevent_v2 *cevt = &cevents[i];
+      const event& evt = events[i];
+
+      const string path = evt.get_path();
+      cevt->path = static_cast<char *> (malloc(path.length() + 1));
+      if (!cevt->path) throw int(FSW_ERR_MEMORY);
+
+      strncpy(cevt->path, path.c_str(), path.length());
+      cevt->path[path.length()] = '\0';
+      cevt->evt_time = evt.get_time();
+      cevt->correlation_id = evt.get_correlation_id();
+
+      switch (evt.get_process_id_kind())
+      {
+      case process_id_kind::pid:
+        cevt->process_id_kind = FSW_PROCESS_ID_PID;
+        break;
+      case process_id_kind::tid:
+        cevt->process_id_kind = FSW_PROCESS_ID_TID;
+        break;
+      case process_id_kind::none:
+        cevt->process_id_kind = FSW_PROCESS_ID_NONE;
+        break;
+      }
+
+      cevt->process_id = evt.get_process_id();
+      cevt->process_pidfd = evt.get_process_pidfd();
+      cevt->has_process_pidfd = evt.has_process_pidfd();
+
+      const vector<fsw_event_flag> flags = evt.get_flags();
+      cevt->flags_num = flags.size();
+
+      if (!cevt->flags_num) cevt->flags = nullptr;
+      else
+      {
+        cevt->flags =
+          static_cast<fsw_event_flag *> (
+            malloc(sizeof(fsw_event_flag) * cevt->flags_num));
+        if (!cevt->flags) throw int(FSW_ERR_MEMORY);
+      }
+
+      for (unsigned int e = 0; e < cevt->flags_num; ++e)
+      {
+        cevt->flags[e] = flags[e];
+      }
+    }
+
+    (*(context->callback_v2))(cevents, events.size(), context->data);
+
+    for (unsigned int i = 0; i < events.size(); ++i)
+    {
+      fsw_cevent_v2 *cevt = &cevents[i];
+
+      if (cevt->flags) free(static_cast<void *> (cevt->flags));
+      free(static_cast<void *> (cevt->path));
+    }
+
+    free(static_cast<void *> (cevents));
+    return;
+  }
 
   auto *const cevents = static_cast<fsw_cevent *> (malloc(
     sizeof(fsw_cevent) * events.size()));
@@ -526,8 +599,7 @@ void libfsw_cpp_callback_proxy(const std::vector<event>& events,
     const string path = evt.get_path();
 
     // Copy std::string into char * buffer and null-terminate it.
-    cevt->path = static_cast<char *> (malloc(
-      sizeof(char *) * (path.length() + 1)));
+    cevt->path = static_cast<char *> (malloc(path.length() + 1));
     if (!cevt->path) throw int(FSW_ERR_MEMORY);
 
     strncpy(cevt->path, path.c_str(), path.length());
@@ -582,7 +654,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     FSW_SESSION *session = get_session(handle);
 
     // Check sufficient data is present to build a monitor.
-    if (!session->callback)
+    if (!session->callback && !session->callback_v2)
       return fsw_set_last_error(int(FSW_ERR_CALLBACK_NOT_SET));
 
     if (session->monitor)
@@ -594,6 +666,7 @@ int create_monitor(const FSW_HANDLE handle, const fsw_monitor_type type)
     auto *context_ptr = new fsw_callback_context{};
     context_ptr->handle = session;
     context_ptr->callback = session->callback;
+    context_ptr->callback_v2 = session->callback_v2;
     context_ptr->data = session->data;
 
     monitor *current_monitor = monitor_factory::create_monitor(type,
@@ -647,6 +720,22 @@ FSW_STATUS fsw_set_callback(const FSW_HANDLE handle,
 
   FSW_SESSION *session = get_session(handle);
   session->callback = callback;
+  session->callback_v2 = nullptr;
+  session->data = data;
+
+  return fsw_set_last_error(FSW_OK);
+}
+
+FSW_STATUS fsw_set_callback_v2(const FSW_HANDLE handle,
+                               const FSW_CEVENT_CALLBACK_V2 callback,
+                               void *data)
+{
+  if (!callback)
+    return fsw_set_last_error(int(FSW_ERR_INVALID_CALLBACK));
+
+  FSW_SESSION *session = get_session(handle);
+  session->callback = nullptr;
+  session->callback_v2 = callback;
   session->data = data;
 
   return fsw_set_last_error(FSW_OK);

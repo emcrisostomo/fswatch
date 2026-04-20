@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2014-2026 Enrico M. Crisostomo
+# Copyright (c) 2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -23,8 +23,13 @@ elif [ -z "${FSWATCH:-}" ]; then
   exit 2
 fi
 
+if ! "${FSWATCH}" -M | grep -q '^  fanotify_monitor$'; then
+  echo "fanotify monitor is not built on this platform" >&2
+  exit 77
+fi
+
 TMPDIR=${TMPDIR:-/tmp}
-WORKDIR=$(mktemp -d "${TMPDIR%/}/fswatch-inotify-access.XXXXXX")
+WORKDIR=$(mktemp -d "${TMPDIR%/}/fswatch-fanotify-access.XXXXXX")
 PID=
 
 cleanup() {
@@ -50,15 +55,27 @@ start_fswatch() {
   : > "${WORKDIR}/err.log"
 
   if [ -n "${access_flag}" ]; then
-    "${FSWATCH}" -m inotify_monitor -rx "${access_flag}" --event PlatformSpecific "${TESTDIR}" \
+    "${FSWATCH}" -m fanotify_monitor -rx "${access_flag}" --event PlatformSpecific "${TESTDIR}" \
       > "${WORKDIR}/out.log" 2> "${WORKDIR}/err.log" &
   else
-    "${FSWATCH}" -m inotify_monitor -rx --event PlatformSpecific "${TESTDIR}" \
+    "${FSWATCH}" -m fanotify_monitor -rx --event PlatformSpecific "${TESTDIR}" \
       > "${WORKDIR}/out.log" 2> "${WORKDIR}/err.log" &
   fi
   PID=$!
 
   sleep 1
+
+  if ! kill -0 "${PID}" 2>/dev/null; then
+    if grep -Eqi 'fanotify|permission|operation not permitted|not supported|Cannot initialize' "${WORKDIR}/err.log"; then
+      echo "fanotify is unavailable in this environment" >&2
+      sed -n '1,120p' "${WORKDIR}/err.log" >&2
+      exit 77
+    fi
+
+    echo "fanotify monitor exited unexpectedly" >&2
+    sed -n '1,120p' "${WORKDIR}/err.log" >&2
+    exit 1
+  fi
 }
 
 stop_fswatch() {
@@ -69,22 +86,15 @@ stop_fswatch() {
   fi
 }
 
-print_logs() {
-  echo "--- fswatch output ---" >&2
-  sed -n '1,160p' "${WORKDIR}/out.log" >&2
-  echo "--- fswatch stderr ---" >&2
-  sed -n '1,80p' "${WORKDIR}/err.log" >&2
-}
-
 start_fswatch ""
-ls "${TESTDIR}" >/dev/null
 cat "${TESTFILE}" >/dev/null
 sleep 1
 stop_fswatch
 
 if [ -s "${WORKDIR}/out.log" ]; then
   echo "read-only operations produced access events without --access" >&2
-  print_logs
+  sed -n '1,160p' "${WORKDIR}/out.log" >&2
+  sed -n '1,160p' "${WORKDIR}/err.log" >&2
   exit 1
 fi
 
@@ -108,6 +118,7 @@ stop_fswatch
 
 if [ -z "${found}" ]; then
   echo "missing access event when --access is specified" >&2
-  print_logs
+  sed -n '1,160p' "${WORKDIR}/out.log" >&2
+  sed -n '1,160p' "${WORKDIR}/err.log" >&2
   exit 1
 fi

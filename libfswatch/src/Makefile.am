@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2024 Enrico M. Crisostomo
+# Copyright (c) 2014-2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -50,6 +50,9 @@ if USE_FEN
 endif
 if USE_INOTIFY
   libfswatch_la_SOURCES += libfswatch/c++/inotify_monitor.cpp
+endif
+if USE_FANOTIFY
+  libfswatch_la_SOURCES += libfswatch/c++/fanotify_monitor.cpp
 endif
 if USE_WINDOWS
 if USE_CYGWIN
@@ -107,6 +110,9 @@ if USE_FEN
 endif
 if USE_INOTIFY
   libfswatch_cpp_HEADERS += libfswatch/c++/inotify_monitor.hpp
+endif
+if USE_FANOTIFY
+  libfswatch_cpp_HEADERS += libfswatch/c++/fanotify_monitor.hpp
 endif
 if USE_WINDOWS
   libfswatch_cpp_HEADERS += libfswatch/c++/windows_monitor.hpp

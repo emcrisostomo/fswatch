@@ -16,13 +16,13 @@
 
 set -eu
 
-if [ "$#" -ne 2 ]; then
+if [ "$#" -eq 2 ]; then
+  FSWATCH=$1
+  GIT=$2
+elif [ -z "${FSWATCH:-}" ] || [ -z "${GIT:-}" ]; then
   echo "usage: $0 FSWATCH GIT" >&2
   exit 2
 fi
-
-FSWATCH=$1
-GIT=$2
 
 TMPDIR=${TMPDIR:-/tmp}
 WORKDIR=$(mktemp -d "${TMPDIR%/}/fswatch-inotify-recursive.XXXXXX")

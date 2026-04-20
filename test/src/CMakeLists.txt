@@ -45,6 +45,26 @@ if (BUILD_TESTING)
                     LABELS "integration;inotify"
                     TIMEOUT 15)
         endif ()
+
+        if (HAVE_FANOTIFY)
+            add_test(NAME fanotify_basic
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/fanotify_basic.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(fanotify_basic PROPERTIES
+                    LABELS "integration;fanotify"
+                    SKIP_RETURN_CODE 77
+                    TIMEOUT 20)
+
+            add_test(NAME fanotify_access_events
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/fanotify_access_events.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(fanotify_access_events PROPERTIES
+                    LABELS "integration;fanotify"
+                    SKIP_RETURN_CODE 77
+                    TIMEOUT 20)
+        endif ()
     endif ()
 
     if (APPLE)
