@@ -44,10 +44,9 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 TESTDIR="${WORKDIR}/watched"
-TESTFILE="${TESTDIR}/file.txt"
 mkdir "${TESTDIR}"
 
-"${FSWATCH}" -m fanotify_monitor -r --format '%p %f %K:%P' "${TESTDIR}" \
+"${FSWATCH}" -m fanotify_monitor -r --format '%p %f' "${TESTDIR}" \
   > "${WORKDIR}/out.log" 2> "${WORKDIR}/err.log" &
 PID=$!
 
@@ -65,33 +64,94 @@ if ! kill -0 "${PID}" 2>/dev/null; then
   exit 1
 fi
 
-echo one > "${TESTFILE}"
-echo two >> "${TESTFILE}"
-rm "${TESTFILE}"
+CREATE_FILE="${TESTDIR}/fanotify-create-file.txt"
+MODIFY_FILE="${TESTDIR}/fanotify-modify-file.txt"
+RENAME_SOURCE="${TESTDIR}/fanotify-rename-source.txt"
+RENAME_TARGET="${TESTDIR}/fanotify-rename-target.txt"
+DELETE_FILE="${TESTDIR}/fanotify-delete-file.txt"
+CREATED_DIR="${TESTDIR}/fanotify-created-dir"
+RENAME_DIR_SOURCE="${TESTDIR}/fanotify-rename-dir-source"
+RENAME_DIR_TARGET="${TESTDIR}/fanotify-rename-dir-target"
+DELETE_DIR="${TESTDIR}/fanotify-delete-dir"
+FAST_DIR="${TESTDIR}/fanotify-fast-dir"
+FAST_CHILD="${FAST_DIR}/fanotify-recursive-child.txt"
 
-found_create=
-found_update=
-found_remove=
-attempt=0
+echo created > "${CREATE_FILE}"
 
-while [ "${attempt}" -lt 10 ]; do
-  if grep -q ' Created' "${WORKDIR}/out.log"; then found_create=1; fi
-  if grep -Eq ' (Updated|CloseWrite)' "${WORKDIR}/out.log"; then found_update=1; fi
-  if grep -q ' Removed' "${WORKDIR}/out.log"; then found_remove=1; fi
+echo original > "${MODIFY_FILE}"
+sleep 1
+echo modified >> "${MODIFY_FILE}"
 
-  if [ -n "${found_create}" ] && [ -n "${found_update}" ] && [ -n "${found_remove}" ]; then
-    break
+echo renamed > "${RENAME_SOURCE}"
+sleep 1
+mv "${RENAME_SOURCE}" "${RENAME_TARGET}"
+
+echo deleted > "${DELETE_FILE}"
+sleep 1
+rm "${DELETE_FILE}"
+
+mkdir "${CREATED_DIR}"
+
+mkdir "${RENAME_DIR_SOURCE}"
+sleep 1
+mv "${RENAME_DIR_SOURCE}" "${RENAME_DIR_TARGET}"
+
+mkdir "${DELETE_DIR}"
+sleep 1
+rmdir "${DELETE_DIR}"
+
+mkdir "${FAST_DIR}"
+echo child > "${FAST_CHILD}"
+
+event_seen() {
+  basename=$1
+  flag=$2
+
+  grep -E "${basename} .*${flag}" "${WORKDIR}/out.log" >/dev/null
+}
+
+wait_for_event() {
+  basename=$1
+  flag=$2
+  attempt=0
+
+  while [ "${attempt}" -lt 10 ]; do
+    if event_seen "${basename}" "${flag}"; then
+      return 0
+    fi
+
+    attempt=$((attempt + 1))
+    sleep 1
+  done
+
+  return 1
+}
+
+assert_event() {
+  basename=$1
+  flag=$2
+  description=$3
+
+  if wait_for_event "${basename}" "${flag}"; then
+    return 0
   fi
 
-  attempt=$((attempt + 1))
-  sleep 1
-done
-
-if [ -z "${found_create}" ] || [ -z "${found_update}" ] || [ -z "${found_remove}" ]; then
-  echo "missing expected fanotify events" >&2
+  echo "missing fanotify event: ${description}" >&2
   echo "--- fswatch output ---" >&2
-  sed -n '1,160p' "${WORKDIR}/out.log" >&2
+  sed -n '1,240p' "${WORKDIR}/out.log" >&2
   echo "--- fswatch stderr ---" >&2
   sed -n '1,160p' "${WORKDIR}/err.log" >&2
   exit 1
-fi
+}
+
+assert_event 'fanotify-create-file\.txt' 'Created' 'file creation'
+assert_event 'fanotify-modify-file\.txt' '(Updated|CloseWrite)' 'file modification'
+assert_event 'fanotify-rename-source\.txt' 'MovedFrom' 'file rename source'
+assert_event 'fanotify-rename-target\.txt' 'MovedTo' 'file rename target'
+assert_event 'fanotify-delete-file\.txt' 'Removed' 'file deletion'
+assert_event 'fanotify-created-dir' 'Created' 'subdirectory creation'
+assert_event 'fanotify-created-dir' 'IsDir' 'subdirectory creation directory flag'
+assert_event 'fanotify-rename-dir-source' 'MovedFrom' 'subdirectory rename source'
+assert_event 'fanotify-rename-dir-target' 'MovedTo' 'subdirectory rename target'
+assert_event 'fanotify-delete-dir' 'Removed' 'subdirectory deletion'
+assert_event 'fanotify-recursive-child\.txt' 'Created' 'recursive child creation in a new subdirectory'
