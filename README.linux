@@ -10,11 +10,25 @@ system.
 The supported monitors on GNU/Linux systems are:
 
   * The inotify monitor (on Linux kernels > 2.6.13).
+  * The fanotify monitor, when the build host exposes the required fanotify
+    headers and symbols.
   * The poll monitor.
 
 The availability of the inotify API is checked by configure and it will be built
 into fswatch when found.  When available, the inotify monitor is the default
 choice on GNU/Linux systems.
+
+The fanotify monitor is also detected at configure time, but it is not selected
+as the default Linux monitor.  Users must request it explicitly:
+
+    $ fswatch -m fanotify_monitor [paths] ...
+
+The fanotify monitor is intended for Linux-specific workflows that need process
+attribution.  It uses file-handle based fanotify events and therefore depends on
+kernel, C library, and filesystem support for FID/name reporting.  Some
+fanotify modes and metadata, including pidfd reporting, may require newer
+kernels or additional privileges.  When the kernel omits process attribution,
+fswatch leaves the process fields empty.
 
 The list of monitors built into libfswatch can be read in the help message of
 fswatch:
@@ -47,7 +61,7 @@ use this command to configure the build:
 
 -----
 
-Copyright (c) 2014-2015 Enrico M. Crisostomo
+Copyright (c) 2014-2026 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

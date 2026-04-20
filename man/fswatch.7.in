@@ -1,5 +1,5 @@
 .\"   $Id$
-.\" Copyright (c) 2013-2021 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
+.\" Copyright (c) 2013-2026 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ Info documentation shipped with
 The
 .Nm
 command receives notifications when the contents of the specified files or
-directories are modified.  @FSWATCH@ implements six kind of monitors:
+directories are modified.  @FSWATCH@ implements seven kind of monitors:
 .Bl -tag -width indent
 .It -
 A monitor based on the File System Events API of Apple macOS.
@@ -50,6 +50,9 @@ its derivatives.
 .It -
 A monitor based on inotify, a Linux kernel subsystem that reports file system
 changes to applications.
+.It -
+A monitor based on fanotify, a Linux kernel subsystem that can report file
+system changes with optional process attribution.
 .It -
 A monitor based on the ReadDirectoryChangesW Microsoft Windows API.
 .It -
@@ -117,6 +120,11 @@ Print the event time using the specified
 .Ar format .
 Supported formats are specified by
 .Xr strftime 3 .
+.It Fl -format Ar format
+Use the specified event record format.  The
+.Ar format
+string supports path, flag, timestamp, correlation, and monitor-specific
+metadata directives including fanotify process attribution.
 .It Fl h, -help
 Show the help message.
 .It Fl i, -include Ar regexp
@@ -201,6 +209,11 @@ The
 a Linux kernel subsystem that reports file system changes to applications.
 .It -
 The
+.Em fanotify monitor ,
+a Linux kernel subsystem that can report file system changes with optional
+process attribution.
+.It -
+The
 .Em poll monitor ,
 a monitor which periodically stats the file system, saves file modification
 times in memory and manually calculates file system changes, which can work on
@@ -265,6 +278,32 @@ directory and it scales pretty well with the number of watched items.  For this
 reason, depending on the number of files to watch, it may sometimes be
 preferable to watch a common parent directory and filter received events rather
 than adding a huge number of file watches.
+.Ss The fanotify Monitor
+The
+.Em fanotify monitor ,
+available on Linux when the build system detects the required fanotify headers
+and symbols, uses file-handle based fanotify events.  It is not the default
+Linux monitor; select it explicitly with:
+.Pp
+.Dl "$ @FSWATCH@ -m fanotify_monitor path ..."
+.Pp
+The fanotify monitor is useful when Linux-specific process attribution is
+required.  Custom format directive
+.Em %K
+prints the identifier kind, such as `pid' or `tid', and
+.Em %P
+prints the reported process or thread identifier.  The monitor property
+.Em fanotify.process-id
+accepts `pid' or `tid'.  The
+.Em fanotify.report-pidfd
+property requests pidfd reporting when supported by the build headers and
+kernel; the pidfd is exposed through the library event metadata only while the
+callback is executing.
+.Pp
+Fanotify support depends on kernel, C library, filesystem, and permission
+support for the requested mode.  Some filesystems do not support file handles,
+and some fanotify modes require additional privileges.  Use the inotify monitor
+when broad Linux compatibility is more important than process attribution.
 .Ss The Poll Monitor
 The
 .Em poll monitor
@@ -306,6 +345,9 @@ Usage recommendations are as follows:
 On macOS, use only the FSEvents monitor (which is the default behaviour).
 .It -
 On Linux, use the inotify monitor (which is the default behaviour).
+.It -
+On Linux, use the fanotify monitor only when its Linux-specific process
+attribution or fanotify semantics are required.
 .It -
 If the number of files to observe is sufficiently small, use the kqueue monitor.
 Beware that on some systems the maximum number of file descriptors that can be

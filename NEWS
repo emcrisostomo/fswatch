@@ -3,6 +3,9 @@ NEWS
 
 New in 1.20.0-develop:
 
+  * Issue 365: Add an opt-in Linux fanotify monitor with process attribution
+    support and custom output directives for process ID metadata.
+
 
 New in 1.19.1:
 

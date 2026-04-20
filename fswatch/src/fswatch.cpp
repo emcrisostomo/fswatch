@@ -172,6 +172,7 @@ static void usage(std::ostream& stream)
   stream << "     --filter-from=FILE\n";
   stream << "                       " << _("Load filters from file.") << "\n";
   stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
+  stream << "                       " << _("Directives: %p path, %f flags, %t time, %c correlation, %K process id kind, %P process id.") << "\n";
   stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
   stream << "     --fire-idle-event " << _("Fire idle events.\n");
   stream << " -h, --help            " << _("Show this message.\n");
@@ -214,6 +215,8 @@ static void usage(std::ostream& stream)
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
   stream << " -f  Print the event time stamp with the specified format.\n";
+  stream << "     Format directives include %p path, %f flags, %t time, %c correlation,\n";
+  stream << "     %K process id kind, and %P process id.\n";
   stream << " -h  Show this message.\n";
   stream << " -i  Include paths matching REGEX.\n";
   stream << " -I  Use case insensitive regular expressions.\n";
