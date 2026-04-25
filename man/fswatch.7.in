@@ -300,6 +300,19 @@ property requests pidfd reporting when supported by the build headers and
 kernel; the pidfd is exposed through the library event metadata only while the
 callback is executing.
 .Pp
+The
+.Em fanotify.unlimited-queue
+and
+.Em fanotify.unlimited-marks
+properties request
+.Em FAN_UNLIMITED_QUEUE
+and
+.Em FAN_UNLIMITED_MARKS ,
+respectively.  These properties are opt-in because they require matching build
+headers and the capability expected by the running kernel, typically
+.Em CAP_SYS_ADMIN ,
+and fanotify initialization fails if the process lacks it.
+.Pp
 Fanotify support depends on kernel, C library, filesystem, and permission
 support for the requested mode.  Some filesystems do not support file handles,
 and some fanotify modes require additional privileges.  Use the inotify monitor

@@ -295,6 +295,29 @@ namespace fsw
 
     unsigned int init_flags = FAN_CLASS_NOTIF | FAN_CLOEXEC | FAN_NONBLOCK | FAN_REPORT_DFID_NAME;
 
+    const bool unlimited_queue = string_to_bool(get_property(UNLIMITED_QUEUE_PROPERTY));
+    const bool unlimited_marks = string_to_bool(get_property(UNLIMITED_MARKS_PROPERTY));
+
+    if (unlimited_queue)
+    {
+#if defined(FAN_UNLIMITED_QUEUE)
+      init_flags |= FAN_UNLIMITED_QUEUE;
+#else
+      throw libfsw_exception(std::string(UNLIMITED_QUEUE_PROPERTY) +
+                             "=true requires FAN_UNLIMITED_QUEUE support in the build headers.");
+#endif
+    }
+
+    if (unlimited_marks)
+    {
+#if defined(FAN_UNLIMITED_MARKS)
+      init_flags |= FAN_UNLIMITED_MARKS;
+#else
+      throw libfsw_exception(std::string(UNLIMITED_MARKS_PROPERTY) +
+                             "=true requires FAN_UNLIMITED_MARKS support in the build headers.");
+#endif
+    }
+
 #if defined(FAN_REPORT_TID)
     if (impl->process_kind == process_id_kind::tid) init_flags |= FAN_REPORT_TID;
 #endif
@@ -311,7 +334,13 @@ namespace fsw
     scoped_fd fanotify_fd(fanotify_init(init_flags, O_RDONLY | O_CLOEXEC | O_LARGEFILE));
     if (fanotify_fd.get() < 0)
     {
+      const int fanotify_errno = errno;
       fsw_log_perror("fanotify_init");
+      if (fanotify_errno == EPERM && (unlimited_queue || unlimited_marks))
+      {
+        throw libfsw_exception("fanotify.unlimited-queue=true or fanotify.unlimited-marks=true requires CAP_SYS_ADMIN.");
+      }
+
       throw libfsw_exception(_("Cannot initialize fanotify."));
     }
 

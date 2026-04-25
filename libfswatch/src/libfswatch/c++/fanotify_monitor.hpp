@@ -43,6 +43,8 @@ namespace fsw
   public:
     static constexpr const char *PROCESS_ID_PROPERTY = "fanotify.process-id";
     static constexpr const char *REPORT_PIDFD_PROPERTY = "fanotify.report-pidfd";
+    static constexpr const char *UNLIMITED_QUEUE_PROPERTY = "fanotify.unlimited-queue";
+    static constexpr const char *UNLIMITED_MARKS_PROPERTY = "fanotify.unlimited-marks";
 
     fanotify_monitor(std::vector<std::string> paths,
                      FSW_EVENT_CALLBACK *callback,

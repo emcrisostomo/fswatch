@@ -6,6 +6,9 @@ New in 1.20.0-develop:
   * Issue 365: Add an opt-in Linux fanotify monitor with process attribution
     support and custom output directives for process ID metadata.
 
+  * Issue 365: Add opt-in fanotify monitor properties for unlimited event queue
+    and mark limits.
+
   * Issue 365: Fix CMake builds when ignored Autotools configuration headers
     exist in the source tree.
 

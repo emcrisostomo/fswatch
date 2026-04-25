@@ -1924,6 +1924,20 @@ When set to @code{true}, request @code{FAN_REPORT_PIDFD} if supported
 by the build headers and kernel.  The pidfd is exposed through the
 library event metadata for the duration of the callback.  pidfd
 reporting is incompatible with @code{fanotify.process-id=tid}.
+
+@item fanotify.unlimited-queue
+When set to @code{true}, request @code{FAN_UNLIMITED_QUEUE}.  This
+removes the kernel event queue limit for the fanotify group.  The
+build headers must expose @code{FAN_UNLIMITED_QUEUE}, and the running
+process needs the required kernel capability, typically
+@code{CAP_SYS_ADMIN}; otherwise fanotify initialization fails.
+
+@item fanotify.unlimited-marks
+When set to @code{true}, request @code{FAN_UNLIMITED_MARKS}.  This
+removes the fanotify mark limit for the real user ID.  The build
+headers must expose @code{FAN_UNLIMITED_MARKS}, and the running
+process needs the required kernel capability, typically
+@code{CAP_SYS_ADMIN}; otherwise fanotify initialization fails.
 @end table
 
 @section The Windows monitor

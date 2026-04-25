@@ -64,6 +64,15 @@ if (BUILD_TESTING)
                     LABELS "integration;fanotify"
                     SKIP_RETURN_CODE 77
                     TIMEOUT 20)
+
+            add_test(NAME fanotify_unlimited_properties
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/fanotify_unlimited_properties.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(fanotify_unlimited_properties PROPERTIES
+                    LABELS "integration;fanotify"
+                    SKIP_RETURN_CODE 77
+                    TIMEOUT 20)
         endif ()
     endif ()
 

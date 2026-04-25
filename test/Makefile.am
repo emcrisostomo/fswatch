@@ -29,11 +29,12 @@ endif
 if USE_FANOTIFY
 TESTS += fanotify_basic.sh
 TESTS += fanotify_access_events.sh
+TESTS += fanotify_unlimited_properties.sh
 endif
 
 EXTRA_DIST = \
-  STRESS_TESTS.md \
   inotify_access_events.sh \
   inotify_recursive_create.sh \
   fanotify_basic.sh \
-  fanotify_access_events.sh
+  fanotify_access_events.sh \
+  fanotify_unlimited_properties.sh
