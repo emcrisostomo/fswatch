@@ -167,3 +167,4 @@ test/test-suite.log
 
 # Agentic files
 .agents/
+.codex
