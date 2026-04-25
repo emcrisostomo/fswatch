@@ -32,6 +32,7 @@ TESTS += fanotify_access_events.sh
 endif
 
 EXTRA_DIST = \
+  STRESS_TESTS.md \
   inotify_access_events.sh \
   inotify_recursive_create.sh \
   fanotify_basic.sh \

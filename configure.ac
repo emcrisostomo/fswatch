@@ -191,11 +191,12 @@ AS_VAR_IF([ac_cv_header_sys_inotify_h], ["yes"], [
 AM_CONDITIONAL([USE_INOTIFY],  [test "x${INOTIFY_AVAILABLE}" = "xyes"])
 
 # Check for Linux fanotify.
-AC_CHECK_HEADERS([sys/fanotify.h])
+AC_CHECK_HEADERS([sys/fanotify.h sys/epoll.h sys/eventfd.h])
 AS_VAR_IF([ac_cv_header_sys_fanotify_h], ["yes"], [
   AS_VAR_SET([FANOTIFY_AVAILABLE], ["yes"])
   AC_CHECK_DECLS(
     [fanotify_init, fanotify_mark,
+     epoll_create1, epoll_ctl, epoll_wait, eventfd,
      FAN_REPORT_DFID_NAME, FAN_CREATE, FAN_DELETE, FAN_MOVED_FROM,
      FAN_MOVED_TO, FAN_EVENT_ON_CHILD, FAN_Q_OVERFLOW],
     [],
@@ -203,6 +204,8 @@ AS_VAR_IF([ac_cv_header_sys_fanotify_h], ["yes"], [
     [
       AC_INCLUDES_DEFAULT
       [#include <sys/fanotify.h>]
+      [#include <sys/epoll.h>]
+      [#include <sys/eventfd.h>]
     ]
   )
   AC_CHECK_LIB([c], [fanotify_init], [], [AS_VAR_SET([FANOTIFY_AVAILABLE], ["no"])])

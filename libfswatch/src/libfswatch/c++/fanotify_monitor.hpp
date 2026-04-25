@@ -52,6 +52,7 @@ namespace fsw
 
   protected:
     void run() override;
+    void on_stop() override;
 
   private:
     fanotify_monitor(const fanotify_monitor& orig) = delete;

@@ -31,14 +31,16 @@
 #include <array>
 #include <cerrno>
 #include <cmath>
+#include <cstdint>
 #include <cstring>
 #include <ctime>
 #include <fcntl.h>
 #include <limits.h>
 #include <sstream>
 #include <string>
+#include <sys/epoll.h>
+#include <sys/eventfd.h>
 #include <sys/fanotify.h>
-#include <sys/select.h>
 #include <sys/stat.h>
 #include <sys/vfs.h>
 #include <unistd.h>
@@ -60,6 +62,7 @@ namespace fsw
   {
     constexpr size_t FANOTIFY_BUFFER_SIZE = 4096;
     constexpr size_t FILE_HANDLE_BUFFER_SIZE = sizeof(struct file_handle) + MAX_HANDLE_SZ;
+    constexpr int EPOLL_EVENT_COUNT = 2;
 
     struct scoped_fd
     {
@@ -117,6 +120,47 @@ namespace fsw
     static bool string_to_bool(const std::string& value)
     {
       return value == "1" || value == "true" || value == "yes" || value == "on";
+    }
+
+    static int latency_to_timeout_ms(double latency)
+    {
+      if (latency <= 0) return 0;
+      if (latency >= INT_MAX / 1000.0) return INT_MAX;
+
+      return static_cast<int>(std::ceil(latency * 1000.0));
+    }
+
+    static void add_epoll_interest(int epoll_fd, int fd)
+    {
+      struct epoll_event event {};
+      event.events = EPOLLIN;
+      event.data.fd = fd;
+
+      if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &event) != 0)
+      {
+        fsw_log_perror("epoll_ctl");
+        throw libfsw_exception(_("Cannot initialize fanotify."));
+      }
+    }
+
+    static void drain_eventfd(int fd)
+    {
+      for (;;)
+      {
+        uint64_t value = 0;
+        ssize_t read_count = read(fd, &value, sizeof(value));
+
+        if (read_count == static_cast<ssize_t>(sizeof(value))) continue;
+        if (read_count == -1 && errno == EINTR) continue;
+        if (read_count == -1 && errno == EAGAIN) break;
+        if (read_count == -1)
+        {
+          fsw_log_perror("read");
+          break;
+        }
+
+        break;
+      }
     }
 
     static std::string make_handle_key(const void *fsid,
@@ -195,6 +239,8 @@ namespace fsw
   struct fanotify_monitor_impl
   {
     scoped_fd fanotify_fd;
+    scoped_fd epoll_fd;
+    scoped_fd wake_fd;
     std::vector<event> events;
     std::vector<int> pidfds_to_close;
     std::unordered_set<std::string> watched_paths;
@@ -262,14 +308,33 @@ namespace fsw
 #endif
     }
 
-    int fd = fanotify_init(init_flags, O_RDONLY | O_CLOEXEC | O_LARGEFILE);
-    if (fd < 0)
+    scoped_fd fanotify_fd(fanotify_init(init_flags, O_RDONLY | O_CLOEXEC | O_LARGEFILE));
+    if (fanotify_fd.get() < 0)
     {
       fsw_log_perror("fanotify_init");
       throw libfsw_exception(_("Cannot initialize fanotify."));
     }
 
-    impl->fanotify_fd.reset(fd);
+    scoped_fd wake_fd(eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK));
+    if (wake_fd.get() < 0)
+    {
+      fsw_log_perror("eventfd");
+      throw libfsw_exception(_("Cannot initialize fanotify."));
+    }
+
+    scoped_fd epoll_fd(epoll_create1(EPOLL_CLOEXEC));
+    if (epoll_fd.get() < 0)
+    {
+      fsw_log_perror("epoll_create1");
+      throw libfsw_exception(_("Cannot initialize fanotify."));
+    }
+
+    add_epoll_interest(epoll_fd.get(), fanotify_fd.get());
+    add_epoll_interest(epoll_fd.get(), wake_fd.get());
+
+    impl->fanotify_fd = std::move(fanotify_fd);
+    impl->wake_fd = std::move(wake_fd);
+    impl->epoll_fd = std::move(epoll_fd);
     impl->initialized = true;
   }
 
@@ -517,13 +582,31 @@ namespace fsw
     impl->pidfds_to_close.clear();
   }
 
+  void fanotify_monitor::on_stop()
+  {
+    if (!impl || impl->wake_fd.get() < 0) return;
+
+    uint64_t value = 1;
+    for (;;)
+    {
+      ssize_t write_count = write(impl->wake_fd.get(), &value, sizeof(value));
+
+      if (write_count == static_cast<ssize_t>(sizeof(value))) break;
+      if (write_count == -1 && errno == EINTR) continue;
+      if (write_count == -1 && errno == EAGAIN) break;
+
+      fsw_log_perror("write");
+      break;
+    }
+  }
+
   void fanotify_monitor::run()
   {
     initialize();
 
-    double sec;
-    double frac = modf(this->latency, &sec);
+    const int timeout_ms = latency_to_timeout_ms(this->latency);
     std::array<char, FANOTIFY_BUFFER_SIZE> buffer{};
+    std::array<struct epoll_event, EPOLL_EVENT_COUNT> epoll_events{};
 
     for (;;)
     {
@@ -536,58 +619,89 @@ namespace fsw
 
       if (impl->watched_paths.empty())
       {
-        sleep(latency);
+        int rv = epoll_wait(impl->epoll_fd.get(),
+                            epoll_events.data(),
+                            epoll_events.size(),
+                            timeout_ms);
+
+        if (rv == -1)
+        {
+          if (errno == EINTR) continue;
+          fsw_log_perror("epoll_wait");
+          continue;
+        }
+
+        if (rv > 0)
+        {
+          for (int i = 0; i < rv; ++i)
+          {
+            if (epoll_events[i].data.fd == impl->wake_fd.get())
+            {
+              drain_eventfd(impl->wake_fd.get());
+              return;
+            }
+          }
+        }
+
         continue;
       }
 
-      fd_set set;
-      struct timeval timeout;
-
-      FD_ZERO(&set);
-      FD_SET(impl->fanotify_fd.get(), &set);
-      timeout.tv_sec = sec;
-      timeout.tv_usec = 1000 * 1000 * frac;
-
-      int rv = select(impl->fanotify_fd.get() + 1,
-                      &set,
-                      nullptr,
-                      nullptr,
-                      &timeout);
+      int rv = epoll_wait(impl->epoll_fd.get(),
+                          epoll_events.data(),
+                          epoll_events.size(),
+                          timeout_ms);
 
       if (rv == -1)
       {
         if (errno == EINTR) continue;
-        fsw_log_perror("select");
+        fsw_log_perror("epoll_wait");
         continue;
       }
 
       if (rv == 0) continue;
 
-      for (;;)
-      {
-        ssize_t record_num = read(impl->fanotify_fd.get(),
-                                  buffer.data(),
-                                  buffer.size());
+      bool wake_requested = false;
 
-        if (record_num == -1)
+      for (int i = 0; i < rv; ++i)
+      {
+        if (epoll_events[i].data.fd == impl->wake_fd.get())
         {
-          if (errno == EAGAIN) break;
-          if (errno == EINTR) continue;
-          fsw_log_perror("read");
-          throw libfsw_exception(_("read() on fanotify descriptor returned -1."));
+          drain_eventfd(impl->wake_fd.get());
+          wake_requested = true;
+          continue;
         }
 
-        if (record_num == 0) break;
+        if (epoll_events[i].data.fd != impl->fanotify_fd.get())
+        {
+          continue;
+        }
 
-        process_events(buffer.data(), record_num);
+        for (;;)
+        {
+          ssize_t record_num = read(impl->fanotify_fd.get(),
+                                    buffer.data(),
+                                    buffer.size());
+
+          if (record_num == -1)
+          {
+            if (errno == EAGAIN) break;
+            if (errno == EINTR) continue;
+            fsw_log_perror("read");
+            throw libfsw_exception(_("read() on fanotify descriptor returned -1."));
+          }
+
+          if (record_num == 0) break;
+
+          process_events(buffer.data(), record_num);
+        }
       }
 
       notify_and_clear_events();
+      if (wake_requested) break;
+
       process_pending_paths();
       process_synthetic_events();
       notify_and_clear_events();
-
-      sleep(latency);
     }
   }
 }
