@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2021 Enrico M. Crisostomo
+# Copyright (c) 2014-2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -27,8 +27,8 @@ if (USE_NLS)
     endif ()
 endif ()
 
+target_include_directories(fswatch BEFORE PRIVATE ${PROJECT_BINARY_DIR})
 target_include_directories(fswatch PUBLIC ../.. .)
-target_include_directories(fswatch PRIVATE ${PROJECT_BINARY_DIR})
 target_link_libraries(fswatch PUBLIC libfswatch)
 
 install(TARGETS fswatch DESTINATION bin)
