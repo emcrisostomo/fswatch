@@ -71,7 +71,7 @@ msgstr "Observa accesos a ficheros.\n"
 
 #: fswatch/src/fswatch.cpp:168
 msgid "Bubble events with the same timestamp and path.\n"
-msgstr ""
+msgstr "Agrupa los eventos con la misma marca de tiempo y ruta.\n"
 
 #: fswatch/src/fswatch.cpp:169
 msgid "Watch directories only.\n"
@@ -91,13 +91,15 @@ msgstr "Carga filtros desde un fichero."
 
 #: fswatch/src/fswatch.cpp:174
 msgid "Use the specified record format."
-msgstr "Usa el monitor especificado."
+msgstr "Usa el formato de registro especificado."
 
 #: fswatch/src/fswatch.cpp:175
 msgid ""
 "Directives: %p path, %f flags, %t time, %c correlation, %K process id kind, "
 "%P process id."
 msgstr ""
+"Directivas: %p ruta, %f indicadores, %t hora, %c correlación, %K tipo de id "
+"de proceso, %P id de proceso."
 
 #: fswatch/src/fswatch.cpp:176
 msgid "Print the event time using the specified format.\n"
@@ -125,9 +127,8 @@ msgid "Set the latency.\n"
 msgstr "Establece la latencia.\n"
 
 #: fswatch/src/fswatch.cpp:183
-#, fuzzy
 msgid "Set the no defer flag in the monitor.\n"
-msgstr "Parando el monitor...\n"
+msgstr "Establece el indicador no defer en el monitor.\n"
 
 #: fswatch/src/fswatch.cpp:185
 msgid "Follow symbolic links.\n"
@@ -312,32 +313,32 @@ msgstr "Tipo evento desconocido."
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:344
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:351
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:358
-#, fuzzy
-#| msgid "Cannot initialize inotify."
 msgid "Cannot initialize fanotify."
-msgstr "inotify no puede ser inicializado."
+msgstr "fanotify no puede ser inicializado."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:282
 msgid "fanotify TID reporting is not supported by the build headers."
-msgstr ""
+msgstr "Los encabezados de compilación no soportan informar TID con fanotify."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:287
 msgid "Invalid fanotify.process-id value."
-msgstr ""
+msgstr "Valor de fanotify.process-id inválido."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:294
 msgid ""
 "fanotify.report-pidfd=true is incompatible with fanotify.process-id=tid."
 msgstr ""
+"fanotify.report-pidfd=true es incompatible con fanotify.process-id=tid."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:330
 msgid "fanotify pidfd reporting is not supported by the build headers."
 msgstr ""
+"Los encabezados de compilación no soportan informar pidfd con fanotify."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:406
 #, c-format
 msgid "fanotify added: %s\n"
-msgstr ""
+msgstr "fanotify añadido: %s\n"
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:440
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:480
@@ -348,29 +349,25 @@ msgstr ""
 #: libfswatch/src/libfswatch/c++/poll_monitor.cpp:167
 #, c-format
 msgid "Filesystem error: %s"
-msgstr ""
+msgstr "Error del sistema de ficheros: %s"
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:466
 #: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:390
 #, c-format
 msgid "Synthetic event: processing directory: %s\n"
-msgstr ""
+msgstr "Evento sintético: procesando carpeta: %s\n"
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:499
 msgid "fanotify metadata version mismatch."
-msgstr ""
+msgstr "La versión de los metadatos de fanotify no coincide."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:570
-#, fuzzy
-#| msgid "Event stream could not be created."
 msgid "fanotify event path could not be reconstructed.\n"
-msgstr "El flujo de eventos no se puede crear."
+msgstr "La ruta del evento de fanotify no se pudo reconstruir.\n"
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:719
-#, fuzzy
-#| msgid "read() on inotify descriptor returned -1."
 msgid "read() on fanotify descriptor returned -1."
-msgstr "read() sobre le descriptor inotify devolvió -1."
+msgstr "read() sobre el descriptor fanotify devolvió -1."
 
 #: libfswatch/src/libfswatch/c++/fen_monitor.cpp:59
 msgid "An error occurred while creating a port."
@@ -435,17 +432,15 @@ msgstr "El flujo de eventos no se puede crear."
 
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:152
 msgid "Scheduling stream with run loop...\n"
-msgstr ""
+msgstr "Planificando el flujo con el bucle de ejecución...\n"
 
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:158
 msgid "Starting event stream...\n"
 msgstr "Arrancando el flujo de eventos...\n"
 
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:174
-#, fuzzy
-#| msgid "Starting event stream...\n"
 msgid "Starting run loop...\n"
-msgstr "Arrancando el flujo de eventos...\n"
+msgstr "Arrancando el bucle de ejecución...\n"
 
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:179
 msgid "Stopping event stream...\n"
@@ -461,13 +456,11 @@ msgstr "Liberando el flujo de eventos...\n"
 
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:200
 msgid "run loop is null"
-msgstr ""
+msgstr "el bucle de ejecución es nulo"
 
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:202
-#, fuzzy
-#| msgid "Stopping event stream...\n"
 msgid "Stopping run loop...\n"
-msgstr "Parando el flujo de eventos...\n"
+msgstr "Parando el bucle de ejecución...\n"
 
 #: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:235
 msgid "The callback info cannot be cast to fsevents_monitor."
@@ -576,7 +569,7 @@ msgstr "Notificando eventos #: %d.\n"
 #: libfswatch/src/libfswatch/c++/path_utils.cpp:60
 #, c-format
 msgid "Error accessing directory: %s"
-msgstr ""
+msgstr "Error al acceder a la carpeta: %s"
 
 #: libfswatch/src/libfswatch/c++/path_utils.cpp:76
 #, c-format
@@ -586,7 +579,7 @@ msgstr "No se puede hacer stat() de %s"
 #: libfswatch/src/libfswatch/c++/path_utils.cpp:83
 #, c-format
 msgid "Cannot lstat %s (not implemented on Windows)"
-msgstr ""
+msgstr "No se puede hacer lstat() de %s (no implementado en Windows)"
 
 #: libfswatch/src/libfswatch/c++/path_utils.cpp:89
 #, c-format
