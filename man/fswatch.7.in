@@ -55,6 +55,8 @@ A monitor based on fanotify, a Linux kernel subsystem that can report file
 system changes with optional process attribution.
 .It -
 A monitor based on the ReadDirectoryChangesW Microsoft Windows API.
+Native MinGW-w64 builds are the recommended Windows target; Cygwin builds are
+kept for compatibility when the Cygwin path conversion API is available.
 .It -
 A monitor which periodically stats the file system, saves file modification
 times in memory and manually calculates changes.

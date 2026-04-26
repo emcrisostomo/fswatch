@@ -5,9 +5,12 @@ Introduction
 ============
 
 This file describes the steps required to build fswatch on Windows.  fswatch was
-born as a POSIX application and the Windows monitor has been developed trying to
-reduce the dependencies on the Windows API at a minimum.  To fulfill this goal,
-a dependency to Cygwin has been introduced.
+born as a POSIX application, but Windows builds are supported through the native
+Windows monitor based on ReadDirectoryChangesW.
+
+The recommended Windows build environment is MSYS2 with a MinGW-w64 toolchain.
+Cygwin compatibility is kept on a best-effort basis for users who need a POSIX
+environment on Windows, but Cygwin is not required to build fswatch on Windows.
 
 Windows has historically provided multiple versions of the same API for single
 byte and multibyte character sets.  We have decided to only support the
@@ -15,17 +18,39 @@ multibyte API: the Windows monitor will thus not build on Windows system
 supporting only the single-byte APIs.  In this case, the only available monitor
 on the Windows OS will be the poll monitor.
 
+MSYS2/MinGW
+===========
+
+MSYS2 is the recommended environment to build fswatch on Windows.  It provides
+the MinGW-w64 native Windows toolchain, build tools, and libraries through the
+pacman package manager:
+
+    https://www.msys2.org
+
+For a CMake build, install the MinGW-w64 compiler, CMake, and Ninja packages
+for the MSYS2 environment you intend to use.  For example, in the UCRT64
+environment:
+
+  $ pacman -S --needed \
+      mingw-w64-ucrt-x86_64-cmake \
+      mingw-w64-ucrt-x86_64-gcc \
+      mingw-w64-ucrt-x86_64-ninja
+
+For the GNU Build System, install the corresponding compiler together with the
+Autoconf, Automake, libtool, make, and gettext packages required by the build.
+
 Cygwin
 ======
 
-Cygwin is a required dependency and must be installed to provide the toolchain
-and the libraries required by fswatch.  The current Cygwin distribution can be
-downloaded at:
+Cygwin builds are supported on a best-effort basis.  When configure detects the
+Cygwin headers and the cygwin_create_path API, fswatch uses them to translate
+between POSIX and Windows paths for the Windows monitor.  The current Cygwin
+distribution can be downloaded at:
 
     https://cygwin.com
 
-Cygwin is a modular environment and the following componentes are required to
-successfully build fswatch:
+Cygwin is a modular environment and the following components are required to
+build fswatch with the GNU Build System:
 
   * GNU GCC C++ compiler.
 
@@ -41,12 +66,13 @@ The following are optional:
 
   * GNU gettext (optional)
 
-Windows SDK
-===========
+Windows Headers and Libraries
+=============================
 
-The Windows SDK is required to successfully build fswatch since it ships the
-headers and the libraries required to build Windows applications.  Please,
-consult your Windows documentation to get the latest SDK for your platform.
+The Windows monitor requires Windows headers and libraries.  MinGW-w64 provides
+compatible headers and import libraries when building through MSYS2.  Other
+toolchains may require installing the Microsoft Windows SDK separately; consult
+your Windows toolchain documentation for the appropriate SDK version.
 
 GNU Build System
 ================
@@ -76,7 +102,7 @@ or, which is equivalent, config.h will contain the following definition:
 
 -----
 
-Copyright (c) 2014-2015 Enrico M. Crisostomo
+Copyright (c) 2014-2026 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

@@ -1950,6 +1950,11 @@ events using overlapped I/O.  The Windows monitor is the default
 choice on Windows because it is the best performing monitor on that
 platform and it is affected by virtually no limitations.
 
+The recommended Windows build target is a native MinGW-w64 build,
+typically using MSYS2 as the build environment.  Cygwin builds are kept
+for compatibility when the Cygwin path conversion API is available, but
+Cygwin is not required for Windows support.
+
 @subsection Peculiarities
 @cpindex monitor, Windows, peculiarities
 @subsubsection Buffer Overflow

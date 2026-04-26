@@ -173,6 +173,10 @@ developer, (ii) you have the GNU Build System installed on your machine, and
 
 CMake-support is unofficially offered as a courtesy.
 
+On Windows, MSYS2 with a MinGW-w64 toolchain is the recommended build
+environment.  Cygwin builds are kept for compatibility, but Cygwin is not
+required to build `fswatch` on Windows.  See `README.windows` for details.
+
 [release]: https://github.com/emcrisostomo/fswatch/releases
 
 Installation
