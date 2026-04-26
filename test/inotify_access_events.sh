@@ -16,10 +16,14 @@
 
 set -eu
 
-if [ "$#" -eq 1 ]; then
-  FSWATCH=$1
-elif [ -z "${FSWATCH:-}" ]; then
-  echo "usage: $0 FSWATCH" >&2
+if [ "$#" -gt 1 ]; then
+  echo "usage: $0 [FSWATCH]" >&2
+  exit 2
+fi
+
+FSWATCH=${1:-${FSWATCH:-}}
+if [ -z "${FSWATCH}" ]; then
+  echo "FSWATCH is required" >&2
   exit 2
 fi
 

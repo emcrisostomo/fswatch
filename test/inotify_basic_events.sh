@@ -16,12 +16,16 @@
 
 set -eu
 
-if [ "$#" -ne 1 ]; then
-  echo "usage: $0 FSWATCH" >&2
+if [ "$#" -gt 1 ]; then
+  echo "usage: $0 [FSWATCH]" >&2
   exit 2
 fi
 
-FSWATCH=$1
+FSWATCH=${1:-${FSWATCH:-}}
+if [ -z "${FSWATCH}" ]; then
+  echo "FSWATCH is required" >&2
+  exit 2
+fi
 
 TMPDIR=${TMPDIR:-/tmp}
 WORKDIR=$(mktemp -d "${TMPDIR%/}/fswatch-inotify-basic.XXXXXX")

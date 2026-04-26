@@ -36,6 +36,15 @@ if (BUILD_TESTING)
                 LABELS "integration;inotify"
                 TIMEOUT 5)
 
+        add_executable(inotify_stop_with_pending_events_test inotify_stop_with_pending_events_test.cpp)
+        target_include_directories(inotify_stop_with_pending_events_test PRIVATE ../.. .)
+        target_include_directories(inotify_stop_with_pending_events_test BEFORE PRIVATE ${PROJECT_BINARY_DIR})
+        target_link_libraries(inotify_stop_with_pending_events_test PUBLIC libfswatch)
+        add_test(NAME inotify_stop_with_pending_events_test COMMAND inotify_stop_with_pending_events_test)
+        set_tests_properties(inotify_stop_with_pending_events_test PROPERTIES
+                LABELS "integration;inotify"
+                TIMEOUT 5)
+
         if (SH_EXECUTABLE)
             add_test(NAME inotify_basic_events
                     COMMAND ${SH_EXECUTABLE}
@@ -58,6 +67,22 @@ if (BUILD_TESTING)
                             ${PROJECT_SOURCE_DIR}/test/inotify_missing_root_rescan.sh
                             $<TARGET_FILE:fswatch>)
             set_tests_properties(inotify_missing_root_rescan PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 20)
+
+            add_test(NAME inotify_watched_file_recreate
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_watched_file_recreate.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_watched_file_recreate PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 20)
+
+            add_test(NAME inotify_burst_create
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_burst_create.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_burst_create PROPERTIES
                     LABELS "integration;inotify"
                     TIMEOUT 20)
 
