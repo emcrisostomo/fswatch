@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -32,6 +32,19 @@ namespace fsw
   {
   }
 
+  event::event(string path,
+               time_t evt_time,
+               vector<fsw_event_flag> flags,
+               unsigned long correlation_id,
+               process_metadata process) :
+    path(std::move(path)),
+    evt_time(evt_time),
+    evt_flags(std::move(flags)),
+    correlation_id(correlation_id),
+    process(process)
+  {
+  }
+
   event::~event() = default;
 
   string event::get_path() const
@@ -52,6 +65,46 @@ namespace fsw
   unsigned long event::get_correlation_id() const
   {
     return correlation_id;
+  }
+
+  bool event::has_process_id() const
+  {
+    return process.kind != process_id_kind::none;
+  }
+
+  long long event::get_process_id() const
+  {
+    return process.id;
+  }
+
+  process_id_kind event::get_process_id_kind() const
+  {
+    return process.kind;
+  }
+
+  bool event::has_process_pidfd() const
+  {
+    return process.has_pidfd;
+  }
+
+  int event::get_process_pidfd() const
+  {
+    return process.has_pidfd ? process.pidfd : -1;
+  }
+
+  string event::get_process_id_kind_name(process_id_kind kind)
+  {
+    switch (kind)
+    {
+    case process_id_kind::pid:
+      return "pid";
+    case process_id_kind::tid:
+      return "tid";
+    case process_id_kind::none:
+      return "";
+    }
+
+    return "";
   }
 
   fsw_event_flag event::get_event_flag_by_name(const string& name)

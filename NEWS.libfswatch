@@ -1,6 +1,18 @@
 NEWS
 ****
 
+New in 1.20.0-develop:
+
+  * Issue 365: Add a Linux fanotify monitor and generic event process
+    attribution metadata.
+
+  * Issue 365: Add opt-in fanotify monitor properties for unlimited event queue
+    and mark limits.
+
+  * Issue 365: Add the fsw_cevent_v2 C callback API for correlation and
+    process attribution metadata without changing the existing fsw_cevent ABI.
+
+
 New in 1.19.1:
 
   * PR 350, Issue 349: Fix latency values lower than one second in the Windows

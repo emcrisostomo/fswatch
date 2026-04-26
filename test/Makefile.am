@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2026 Enrico M. Crisostomo
+# Copyright (c) 2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -13,22 +13,28 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-set(FSWATCH_SRC_FILES
-        fswatch.cpp
-        fswatch.hpp
-        gettext.h)
 
-add_executable(fswatch ${FSWATCH_SRC_FILES})
+LOG_COMPILER = $(SHELL)
+AM_TESTS_ENVIRONMENT = \
+  FSWATCH='$(abs_top_builddir)/fswatch/src/fswatch'; export FSWATCH; \
+  GIT='git'; export GIT;
 
-# check for gettext and libintl
-if (USE_NLS)
-    if (Intl_LIBRARIES)
-        target_link_libraries(fswatch PRIVATE ${Intl_LIBRARIES})
-    endif ()
-endif ()
+TESTS =
 
-target_include_directories(fswatch BEFORE PRIVATE ${PROJECT_BINARY_DIR})
-target_include_directories(fswatch PUBLIC ../.. .)
-target_link_libraries(fswatch PUBLIC libfswatch)
+if USE_INOTIFY
+TESTS += inotify_access_events.sh
+TESTS += inotify_recursive_create.sh
+endif
 
-install(TARGETS fswatch DESTINATION bin)
+if USE_FANOTIFY
+TESTS += fanotify_basic.sh
+TESTS += fanotify_access_events.sh
+TESTS += fanotify_unlimited_properties.sh
+endif
+
+EXTRA_DIST = \
+  inotify_access_events.sh \
+  inotify_recursive_create.sh \
+  fanotify_basic.sh \
+  fanotify_access_events.sh \
+  fanotify_unlimited_properties.sh

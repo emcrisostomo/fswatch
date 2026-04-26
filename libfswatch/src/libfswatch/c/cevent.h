@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +19,7 @@
  *
  * This header file defines the event types of the `libfswatch` API.
  *
- * @copyright Copyright (c) 2014-2015 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2026 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 13:1:0
@@ -30,6 +30,7 @@
 
 #  include <time.h>
 #  include <limits.h>
+#  include <stdbool.h>
 #  include "libfswatch_types.h"
 
 #  ifdef __cplusplus
@@ -124,6 +125,36 @@ extern "C"
   } fsw_cevent;
 
   /**
+   * @brief Type of process identifier associated with an event.
+   */
+  enum fsw_process_id_kind
+  {
+    FSW_PROCESS_ID_NONE = 0, /**< No process attribution is available. */
+    FSW_PROCESS_ID_PID,      /**< The identifier is a process ID. */
+    FSW_PROCESS_ID_TID       /**< The identifier is a thread ID. */
+  };
+
+  /**
+   * A file change event with extended metadata.
+   *
+   * This type is additive and preserves the ABI of fsw_cevent.  The process
+   * file descriptor is owned by libfswatch and is valid only while the
+   * callback is executing.
+   */
+  typedef struct fsw_cevent_v2
+  {
+    char * path;
+    time_t evt_time;
+    enum fsw_event_flag * flags;
+    unsigned int flags_num;
+    unsigned long correlation_id;
+    enum fsw_process_id_kind process_id_kind;
+    long long process_id;
+    int process_pidfd;
+    bool has_process_pidfd;
+  } fsw_cevent_v2;
+
+  /**
    * A function pointer of type FSW_CEVENT_CALLBACK is used by the API as a
    * callback to provide information about received events.  The callback is
    * passed the following arguments:
@@ -138,6 +169,13 @@ extern "C"
   typedef void (*FSW_CEVENT_CALLBACK)(fsw_cevent const *const events,
                                       const unsigned int event_num,
                                       void *data);
+
+  /**
+   * A callback receiving events with extended metadata.
+   */
+  typedef void (*FSW_CEVENT_CALLBACK_V2)(fsw_cevent_v2 const *const events,
+                                         const unsigned int event_num,
+                                         void *data);
 
 #  ifdef __cplusplus
 }

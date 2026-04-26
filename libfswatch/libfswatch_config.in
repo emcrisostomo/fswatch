@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2026 Enrico M. Crisostomo
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #cmakedefine ENABLE_NLS        @ENABLE_NLS@
 #cmakedefine LOCALEDIR         "@LOCALEDIR@"
 #cmakedefine PACKAGE           "@PACKAGE@"
@@ -10,10 +26,12 @@
 #cmakedefine HAVE_GETOPT_LONG
 
 #cmakedefine HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE
+#cmakedefine HAVE_FANOTIFY
 #cmakedefine HAVE_PORT_H
 #cmakedefine HAVE_STRUCT_STAT_ST_MTIME
 #cmakedefine HAVE_STRUCT_STAT_ST_MTIMESPEC
 #cmakedefine HAVE_SYS_EVENT_H
+#cmakedefine HAVE_SYS_FANOTIFY_H
 #cmakedefine HAVE_SYS_INOTIFY_H
 #cmakedefine HAVE_WINDOWS
 

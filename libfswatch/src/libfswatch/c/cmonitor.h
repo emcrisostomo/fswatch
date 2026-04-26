@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
  * @file
  * @brief Header of the `libfswatch` library defining the monitor types.
  *
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2026 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -48,7 +48,8 @@ extern "C"
     inotify_monitor_type,            /**< Linux `inotify` monitor. */
     windows_monitor_type,            /**< Windows monitor. */
     poll_monitor_type,               /**< `stat()`-based poll monitor. */
-    fen_monitor_type                 /**< Solaris/Illumos monitor. */
+    fen_monitor_type,                /**< Solaris/Illumos monitor. */
+    fanotify_monitor_type            /**< Linux `fanotify` monitor. */
   };
 
 #  ifdef __cplusplus

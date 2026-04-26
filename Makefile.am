@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2017 Enrico M. Crisostomo
+# Copyright (c) 2014-2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -24,7 +24,7 @@ if USE_NLS
   FSW_PO_SUBDIR = po
 endif
 
-SUBDIRS = libfswatch fswatch $(FSW_PO_SUBDIR)
+SUBDIRS = libfswatch fswatch test $(FSW_PO_SUBDIR)
 
 dist_man_MANS  = man/fswatch.7
 dist_doc_DATA  = README.bsd

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -52,6 +52,8 @@ using namespace fsw;
  */
 static void print_event_flags(const event& evt);
 static void print_event_path(const event& evt);
+static void print_event_process_id(const event& evt);
+static void print_event_process_id_kind(const event& evt);
 static void print_event_timestamp(const event& evt);
 static int printf_event_validate_format();
 
@@ -60,6 +62,8 @@ static FSW_EVENT_CALLBACK process_events;
 struct printf_event_callbacks
 {
   void (*format_f)(const event& evt);
+  void (*format_K)(const event& evt);
+  void (*format_P)(const event& evt);
   void (*format_p)(const event& evt);
   void (*format_t)(const event& evt);
 };
@@ -67,6 +71,8 @@ struct printf_event_callbacks
 struct printf_event_callbacks event_format_callbacks
   {
     print_event_flags,
+    print_event_process_id_kind,
+    print_event_process_id,
     print_event_path,
     print_event_timestamp
   };
@@ -166,6 +172,7 @@ static void usage(std::ostream& stream)
   stream << "     --filter-from=FILE\n";
   stream << "                       " << _("Load filters from file.") << "\n";
   stream << "     --format=FORMAT   " << _("Use the specified record format.") << "\n";
+  stream << "                       " << _("Directives: %p path, %f flags, %t time, %c correlation, %K process id kind, %P process id.") << "\n";
   stream << " -f, --format-time     " << _("Print the event time using the specified format.\n");
   stream << "     --fire-idle-event " << _("Fire idle events.\n");
   stream << " -h, --help            " << _("Show this message.\n");
@@ -208,6 +215,8 @@ static void usage(std::ostream& stream)
   stream << " -e  Exclude paths matching REGEX.\n";
   stream << " -E  Use extended regular expressions.\n";
   stream << " -f  Print the event time stamp with the specified format.\n";
+  stream << "     Format directives include %p path, %f flags, %t time, %c correlation,\n";
+  stream << "     %K process id kind, and %P process id.\n";
   stream << " -h  Show this message.\n";
   stream << " -i  Include paths matching REGEX.\n";
   stream << " -I  Use case insensitive regular expressions.\n";
@@ -389,6 +398,16 @@ static void print_event_flags(const event& evt)
       if (i != flags.size() - 1) std::cout << event_flag_separator;
     }
   }
+}
+
+static void print_event_process_id(const event& evt)
+{
+  if (evt.has_process_id()) std::cout << evt.get_process_id();
+}
+
+static void print_event_process_id_kind(const event& evt)
+{
+  std::cout << event::get_process_id_kind_name(evt.get_process_id_kind());
 }
 
 static void print_end_of_event_record()
@@ -797,6 +816,8 @@ static int printf_event_validate_format()
     {
       format_noop,
       format_noop,
+      format_noop,
+      format_noop,
       format_noop
     };
 
@@ -815,6 +836,8 @@ static int printf_event(const event& evt,
    * %t - time (further formatted using -f and strftime.
    * %p - event path
    * %f - event flags (event separator will be formatted with a separate option)
+   * %K - process id kind, if supported by the monitor
+   * %P - process id, if supported by the monitor
    */
   for (size_t i = 0; i < format.length(); ++i)
   {
@@ -851,8 +874,14 @@ static int printf_event(const event& evt,
     case 'f':
       callback.format_f(evt);
       break;
+    case 'K':
+      callback.format_K(evt);
+      break;
     case 'p':
       callback.format_p(evt);
+      break;
+    case 'P':
+      callback.format_P(evt);
       break;
     case 't':
       callback.format_t(evt);

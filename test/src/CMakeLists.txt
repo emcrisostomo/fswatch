@@ -18,8 +18,8 @@ set(SOURCE_FILES
         ${PROJECT_BINARY_DIR}/libfswatch/libfswatch_config.h)
 
 add_executable(fswatch_test ${SOURCE_FILES})
+target_include_directories(fswatch_test BEFORE PRIVATE ${PROJECT_BINARY_DIR})
 target_include_directories(fswatch_test PRIVATE ../.. .)
-target_include_directories(fswatch_test PRIVATE ${PROJECT_BINARY_DIR})
 target_link_libraries(fswatch_test PUBLIC libfswatch)
 
 if (BUILD_TESTING)
@@ -45,12 +45,41 @@ if (BUILD_TESTING)
                     LABELS "integration;inotify"
                     TIMEOUT 15)
         endif ()
+
+        if (HAVE_FANOTIFY)
+            add_test(NAME fanotify_basic
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/fanotify_basic.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(fanotify_basic PROPERTIES
+                    LABELS "integration;fanotify"
+                    SKIP_RETURN_CODE 77
+                    TIMEOUT 20)
+
+            add_test(NAME fanotify_access_events
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/fanotify_access_events.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(fanotify_access_events PROPERTIES
+                    LABELS "integration;fanotify"
+                    SKIP_RETURN_CODE 77
+                    TIMEOUT 20)
+
+            add_test(NAME fanotify_unlimited_properties
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/fanotify_unlimited_properties.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(fanotify_unlimited_properties PROPERTIES
+                    LABELS "integration;fanotify"
+                    SKIP_RETURN_CODE 77
+                    TIMEOUT 20)
+        endif ()
     endif ()
 
     if (APPLE)
         add_executable(fsevents_missing_inode_test fsevents_missing_inode_test.cpp)
+        target_include_directories(fsevents_missing_inode_test BEFORE PRIVATE ${PROJECT_BINARY_DIR})
         target_include_directories(fsevents_missing_inode_test PRIVATE ../.. .)
-        target_include_directories(fsevents_missing_inode_test PRIVATE ${PROJECT_BINARY_DIR})
         find_library(CORESERVICES_LIBRARY CoreServices)
         target_link_libraries(fsevents_missing_inode_test PUBLIC libfswatch ${CORESERVICES_LIBRARY})
         add_test(NAME fsevents_missing_inode_test COMMAND fsevents_missing_inode_test)

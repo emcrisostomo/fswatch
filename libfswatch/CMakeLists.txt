@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2025 Enrico M. Crisostomo
+# Copyright (c) 2014-2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -87,6 +87,40 @@ if (HAVE_SYS_INOTIFY_H)
             ${LIB_SOURCE_FILES}
             src/libfswatch/c++/inotify_monitor.cpp)
 endif (HAVE_SYS_INOTIFY_H)
+
+check_include_file_cxx(sys/fanotify.h HAVE_SYS_FANOTIFY_H)
+check_include_file_cxx(sys/epoll.h HAVE_SYS_EPOLL_H)
+check_include_file_cxx(sys/eventfd.h HAVE_SYS_EVENTFD_H)
+
+if (HAVE_SYS_FANOTIFY_H AND HAVE_SYS_EPOLL_H AND HAVE_SYS_EVENTFD_H)
+    check_cxx_symbol_exists(fanotify_init sys/fanotify.h HAVE_FANOTIFY_INIT)
+    check_cxx_symbol_exists(fanotify_mark sys/fanotify.h HAVE_FANOTIFY_MARK)
+    check_cxx_symbol_exists(epoll_create1 sys/epoll.h HAVE_EPOLL_CREATE1)
+    check_cxx_symbol_exists(epoll_ctl sys/epoll.h HAVE_EPOLL_CTL)
+    check_cxx_symbol_exists(epoll_wait sys/epoll.h HAVE_EPOLL_WAIT)
+    check_cxx_symbol_exists(eventfd sys/eventfd.h HAVE_EVENTFD)
+    check_cxx_symbol_exists(FAN_REPORT_DFID_NAME sys/fanotify.h HAVE_FAN_REPORT_DFID_NAME)
+    check_cxx_symbol_exists(FAN_CREATE sys/fanotify.h HAVE_FAN_CREATE)
+    check_cxx_symbol_exists(FAN_DELETE sys/fanotify.h HAVE_FAN_DELETE)
+    check_cxx_symbol_exists(FAN_MOVED_FROM sys/fanotify.h HAVE_FAN_MOVED_FROM)
+    check_cxx_symbol_exists(FAN_MOVED_TO sys/fanotify.h HAVE_FAN_MOVED_TO)
+    check_cxx_symbol_exists(FAN_EVENT_ON_CHILD sys/fanotify.h HAVE_FAN_EVENT_ON_CHILD)
+    check_cxx_symbol_exists(FAN_Q_OVERFLOW sys/fanotify.h HAVE_FAN_Q_OVERFLOW)
+
+    if (HAVE_FANOTIFY_INIT AND HAVE_FANOTIFY_MARK AND
+        HAVE_EPOLL_CREATE1 AND HAVE_EPOLL_CTL AND HAVE_EPOLL_WAIT AND HAVE_EVENTFD AND
+        HAVE_FAN_REPORT_DFID_NAME AND HAVE_FAN_CREATE AND HAVE_FAN_DELETE AND
+        HAVE_FAN_MOVED_FROM AND HAVE_FAN_MOVED_TO AND
+        HAVE_FAN_EVENT_ON_CHILD AND HAVE_FAN_Q_OVERFLOW)
+        set(HAVE_FANOTIFY ON CACHE BOOL "Enable fanotify support")
+        set(LIBFSWATCH_HEADER_FILES
+                ${LIBFSWATCH_HEADER_FILES}
+                src/libfswatch/c++/fanotify_monitor.hpp)
+        set(LIB_SOURCE_FILES
+                ${LIB_SOURCE_FILES}
+                src/libfswatch/c++/fanotify_monitor.cpp)
+    endif ()
+endif ()
 
 check_include_file_cxx(sys/event.h HAVE_SYS_EVENT_H)
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -29,6 +29,9 @@
 #endif
 #if defined(HAVE_SYS_INOTIFY_H)
   #include "inotify_monitor.hpp"
+#endif
+#if defined(HAVE_FANOTIFY)
+  #include "fanotify_monitor.hpp"
 #endif
 #if defined(HAVE_WINDOWS)
   #include "windows_monitor.hpp"
@@ -84,6 +87,10 @@ namespace fsw
       case inotify_monitor_type:
         return new inotify_monitor(paths, callback, context);
 #endif
+#if defined(HAVE_FANOTIFY)
+      case fanotify_monitor_type:
+        return new fanotify_monitor(paths, callback, context);
+#endif
 #if defined(HAVE_WINDOWS)
       case windows_monitor_type:
         return new windows_monitor(paths, callback, context);
@@ -116,6 +123,9 @@ namespace fsw
 #endif
 #if defined(HAVE_SYS_INOTIFY_H)
     creator_by_string_set[fsw_quote(inotify_monitor)] = fsw_monitor_type::inotify_monitor_type;
+#endif
+#if defined(HAVE_FANOTIFY)
+    creator_by_string_set[fsw_quote(fanotify_monitor)] = fsw_monitor_type::fanotify_monitor_type;
 #endif
 #if defined(HAVE_WINDOWS)
     creator_by_string_set[fsw_quote(windows_monitor)] = fsw_monitor_type::windows_monitor_type;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Enrico M. Crisostomo
+ * Copyright (c) 2014-2026 Enrico M. Crisostomo
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -30,6 +30,7 @@
 #include <ctime>
 #include <map>
 #include <set>
+#include <tuple>
 
 using namespace std::chrono;
 
@@ -352,18 +353,31 @@ monitor::~monitor()
       filtered_events.emplace_back(event.get_path(),
                                    event.get_time(),
                                    filtered_flags,
-                                   event.get_correlation_id());
+                                   event.get_correlation_id(),
+                                   process_metadata{event.get_process_id_kind(),
+                                                    event.get_process_id(),
+                                                    event.get_process_pidfd(),
+                                                    event.has_process_pidfd()});
     }
 
     if (bubble_events)
     {
-      // Bubble events by ({time, path})
-      std::map<std::pair<time_t, std::string>, std::set<fsw_event_flag>> bubbled_events;
+      // Bubble events by stable event identity.
+      using bubble_key =
+        std::tuple<time_t, std::string, unsigned long, process_id_kind, long long, int, bool>;
+
+      std::map<bubble_key, std::set<fsw_event_flag>> bubbled_events;
 
       for (auto const& event : filtered_events)
       {
         const auto& flags = event.get_flags();
-        bubbled_events[{event.get_time(), event.get_path()}].insert(flags.begin(), flags.end());
+        bubbled_events[{event.get_time(),
+                        event.get_path(),
+                        event.get_correlation_id(),
+                        event.get_process_id_kind(),
+                        event.get_process_id(),
+                        event.get_process_pidfd(),
+                        event.has_process_pidfd()}].insert(flags.begin(), flags.end());
       }
 
       filtered_events.clear();
@@ -372,7 +386,17 @@ monitor::~monitor()
         std::vector<fsw_event_flag> bubbled_flags(flags.size());
         std::move(flags.begin(), flags.end(), bubbled_flags.begin());
 
-        filtered_events.emplace_back(bubble_key.second, bubble_key.first, bubbled_flags);
+        process_metadata process;
+        process.kind = std::get<3>(bubble_key);
+        process.id = std::get<4>(bubble_key);
+        process.pidfd = std::get<5>(bubble_key);
+        process.has_pidfd = std::get<6>(bubble_key);
+
+        filtered_events.emplace_back(std::get<1>(bubble_key),
+                                     std::get<0>(bubble_key),
+                                     bubbled_flags,
+                                     std::get<2>(bubble_key),
+                                     process);
       }
     }
 
