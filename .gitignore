@@ -21,6 +21,8 @@ fswatch_test
 *.o
 cmake-build-debug/
 build/
+build-inotify-soak/
+build-sanitize/
 dist/
 
 # Documentation
