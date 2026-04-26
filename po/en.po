@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.11.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2026-04-20 10:28+0200\n"
+"POT-Creation-Date: 2026-04-25 18:33+0200\n"
 "PO-Revision-Date: 2017-10-29 14:04+0100\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: English\n"
@@ -297,34 +297,37 @@ msgstr ""
 msgid "Unknown event type."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:236
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:142
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:344
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:351
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:358
+msgid "Cannot initialize fanotify."
+msgstr ""
+
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:282
 msgid "fanotify TID reporting is not supported by the build headers."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:241
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:287
 msgid "Invalid fanotify.process-id value."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:248
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:294
 msgid ""
 "fanotify.report-pidfd=true is incompatible with fanotify.process-id=tid."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:261
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:330
 msgid "fanotify pidfd reporting is not supported by the build headers."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:269
-msgid "Cannot initialize fanotify."
-msgstr ""
-
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:312
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:406
 #, c-format
 msgid "fanotify added: %s\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:346
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:386
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:440
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:480
 #: libfswatch/src/libfswatch/c++/fen_monitor.cpp:296
 #: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:182
 #: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:404
@@ -334,21 +337,21 @@ msgstr ""
 msgid "Filesystem error: %s"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:372
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:466
 #: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:390
 #, c-format
 msgid "Synthetic event: processing directory: %s\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:405
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:499
 msgid "fanotify metadata version mismatch."
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:476
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:570
 msgid "fanotify event path could not be reconstructed.\n"
 msgstr ""
 
-#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:577
+#: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:719
 msgid "read() on fanotify descriptor returned -1."
 msgstr ""
 
