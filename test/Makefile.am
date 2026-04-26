@@ -29,18 +29,23 @@ check_PROGRAMS =
 if USE_INOTIFY
   check_PROGRAMS += inotify_stop_latency_test
   check_PROGRAMS += inotify_stop_with_pending_events_test
+  check_PROGRAMS += inotify_stop_with_ready_events_test
 
   inotify_stop_latency_test_SOURCES = src/inotify_stop_latency_test.cpp
   inotify_stop_with_pending_events_test_SOURCES = src/inotify_stop_with_pending_events_test.cpp
+  inotify_stop_with_ready_events_test_SOURCES = src/inotify_stop_with_ready_events_test.cpp
 
   TESTS += inotify_basic_events.sh
   TESTS += inotify_access_events.sh
   TESTS += inotify_missing_root_rescan.sh
   TESTS += inotify_watched_file_recreate.sh
+  TESTS += inotify_watched_directory_replace.sh
   TESTS += inotify_burst_create.sh
+  TESTS += inotify_queue_drain.sh
   TESTS += inotify_recursive_create.sh
   TESTS += inotify_stop_latency_test
   TESTS += inotify_stop_with_pending_events_test
+  TESTS += inotify_stop_with_ready_events_test
 endif
 
 if USE_FANOTIFY
@@ -53,7 +58,9 @@ EXTRA_DIST += inotify_basic_events.sh
 EXTRA_DIST += inotify_access_events.sh
 EXTRA_DIST += inotify_missing_root_rescan.sh
 EXTRA_DIST += inotify_watched_file_recreate.sh
+EXTRA_DIST += inotify_watched_directory_replace.sh
 EXTRA_DIST += inotify_burst_create.sh
+EXTRA_DIST += inotify_queue_drain.sh
 EXTRA_DIST += inotify_recursive_create.sh
 EXTRA_DIST += fanotify_basic.sh
 EXTRA_DIST += fanotify_access_events.sh

@@ -45,6 +45,15 @@ if (BUILD_TESTING)
                 LABELS "integration;inotify"
                 TIMEOUT 5)
 
+        add_executable(inotify_stop_with_ready_events_test inotify_stop_with_ready_events_test.cpp)
+        target_include_directories(inotify_stop_with_ready_events_test PRIVATE ../.. .)
+        target_include_directories(inotify_stop_with_ready_events_test BEFORE PRIVATE ${PROJECT_BINARY_DIR})
+        target_link_libraries(inotify_stop_with_ready_events_test PUBLIC libfswatch)
+        add_test(NAME inotify_stop_with_ready_events_test COMMAND inotify_stop_with_ready_events_test)
+        set_tests_properties(inotify_stop_with_ready_events_test PROPERTIES
+                LABELS "integration;inotify"
+                TIMEOUT 5)
+
         if (SH_EXECUTABLE)
             add_test(NAME inotify_basic_events
                     COMMAND ${SH_EXECUTABLE}
@@ -78,6 +87,14 @@ if (BUILD_TESTING)
                     LABELS "integration;inotify"
                     TIMEOUT 20)
 
+            add_test(NAME inotify_watched_directory_replace
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_watched_directory_replace.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_watched_directory_replace PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 25)
+
             add_test(NAME inotify_burst_create
                     COMMAND ${SH_EXECUTABLE}
                             ${PROJECT_SOURCE_DIR}/test/inotify_burst_create.sh
@@ -85,6 +102,14 @@ if (BUILD_TESTING)
             set_tests_properties(inotify_burst_create PROPERTIES
                     LABELS "integration;inotify"
                     TIMEOUT 20)
+
+            add_test(NAME inotify_queue_drain
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_queue_drain.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_queue_drain PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 25)
 
             if (GIT_EXECUTABLE)
                 add_test(NAME inotify_recursive_create
