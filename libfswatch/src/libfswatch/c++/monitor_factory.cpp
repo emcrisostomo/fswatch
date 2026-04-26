@@ -27,7 +27,7 @@
 #if defined(HAVE_PORT_H)
   #include "fen_monitor.hpp"
 #endif
-#if defined(HAVE_SYS_INOTIFY_H)
+#if defined(HAVE_INOTIFY_MONITOR)
   #include "inotify_monitor.hpp"
 #endif
 #if defined(HAVE_FANOTIFY)
@@ -52,7 +52,7 @@ namespace fsw
     type = fsw_monitor_type::kqueue_monitor_type;
 #elif defined(HAVE_PORT_H)
     type = fsw_monitor_type::fen_monitor_type;
-#elif defined(HAVE_SYS_INOTIFY_H)
+#elif defined(HAVE_INOTIFY_MONITOR)
     type = fsw_monitor_type::inotify_monitor_type;
 #elif defined(HAVE_WINDOWS)
     type = fsw_monitor_type::windows_monitor_type;
@@ -83,7 +83,7 @@ namespace fsw
 #if defined(HAVE_SYS_EVENT_H)
       case kqueue_monitor_type:return new kqueue_monitor(paths, callback, context);
 #endif
-#if defined(HAVE_SYS_INOTIFY_H)
+#if defined(HAVE_INOTIFY_MONITOR)
       case inotify_monitor_type:
         return new inotify_monitor(paths, callback, context);
 #endif
@@ -121,7 +121,7 @@ namespace fsw
 #if defined(HAVE_PORT_H)
     creator_by_string_set[fsw_quote(fen_monitor)] = fsw_monitor_type::fen_monitor_type;
 #endif
-#if defined(HAVE_SYS_INOTIFY_H)
+#if defined(HAVE_INOTIFY_MONITOR)
     creator_by_string_set[fsw_quote(inotify_monitor)] = fsw_monitor_type::inotify_monitor_type;
 #endif
 #if defined(HAVE_FANOTIFY)

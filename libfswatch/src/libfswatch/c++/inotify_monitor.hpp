@@ -71,6 +71,7 @@ namespace fsw
      * @see stop()
      */
     void run() override;
+    void on_stop() override;
 
   private:
     inotify_monitor(const inotify_monitor& orig) = delete;

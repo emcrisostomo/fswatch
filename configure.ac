@@ -173,22 +173,31 @@ AS_VAR_IF([ac_cv_header_port_h], ["yes"], [
 AM_CONDITIONAL([USE_FEN], [test "x${FEN_AVAILABLE}" = "xyes"])
 
 # Check for Linux inotify.
-AC_CHECK_HEADERS([sys/inotify.h])
-AS_VAR_IF([ac_cv_header_sys_inotify_h], ["yes"], [
+AC_CHECK_HEADERS([sys/inotify.h sys/epoll.h sys/eventfd.h])
+AS_IF([test "x${ac_cv_header_sys_inotify_h}" = "xyes" \
+       && test "x${ac_cv_header_sys_epoll_h}" = "xyes" \
+       && test "x${ac_cv_header_sys_eventfd_h}" = "xyes"], [
   AS_VAR_SET([INOTIFY_AVAILABLE], ["yes"])
   AC_CHECK_DECLS(
-    [inotify_init, inotify_add_watch, inotify_rm_watch],
+    [inotify_init1, inotify_add_watch, inotify_rm_watch,
+     epoll_create1, epoll_ctl, epoll_wait, eventfd],
     [],
     [AS_VAR_SET([INOTIFY_AVAILABLE], ["no"])],
     [
+      [#ifndef _GNU_SOURCE]
+      [#  define _GNU_SOURCE]
+      [#endif]
       AC_INCLUDES_DEFAULT
       [#include <sys/inotify.h>]
+      [#include <sys/epoll.h>]
+      [#include <sys/eventfd.h>]
     ]
   )
-  AC_CHECK_LIB([c], [inotify_init], [], [AS_VAR_SET([INOTIFY_AVAILABLE], ["no"])])
+  AC_CHECK_LIB([c], [inotify_init1], [], [AS_VAR_SET([INOTIFY_AVAILABLE], ["no"])])
 ])
 
 AM_CONDITIONAL([USE_INOTIFY],  [test "x${INOTIFY_AVAILABLE}" = "xyes"])
+AS_VAR_IF([INOTIFY_AVAILABLE], ["yes"], [AC_DEFINE([HAVE_INOTIFY_MONITOR], [1], [Linux inotify monitor available.])])
 
 # Check for Linux fanotify.
 AC_CHECK_HEADERS([sys/fanotify.h sys/epoll.h sys/eventfd.h])
