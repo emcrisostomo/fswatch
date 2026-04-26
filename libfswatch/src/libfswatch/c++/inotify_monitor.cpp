@@ -13,11 +13,18 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef _GNU_SOURCE
+#  define _GNU_SOURCE
+#endif
+
 #include <libfswatch/libfswatch_config.h>
 
 #include "libfswatch/gettext_defs.h"
 #include "inotify_monitor.hpp"
 #include <algorithm>
+#include <array>
+#include <cerrno>
+#include <cstdint>
 #include <unordered_map>
 #include <unordered_set>
 #include <limits.h>
@@ -29,7 +36,8 @@
 #include <sstream>
 #include <ctime>
 #include <cmath>
-#include <sys/select.h>
+#include <sys/epoll.h>
+#include <sys/eventfd.h>
 #include "libfswatch_exception.hpp"
 #include "../c/libfswatch_log.h"
 #include "path_utils.hpp"
@@ -40,6 +48,8 @@ namespace fsw
   struct inotify_monitor_impl
   {
     int inotify_monitor_handle = -1;
+    int epoll_handle = -1;
+    int wake_handle = -1;
     std::vector<event> events;
     /*
      * A map of file names by descriptor is kept in sync because the name field
@@ -69,6 +79,75 @@ namespace fsw
   };
 
   static const unsigned int BUFFER_SIZE = (10 * ((sizeof(struct inotify_event)) + NAME_MAX + 1));
+  static const int EPOLL_EVENT_COUNT = 2;
+
+  struct scoped_fd
+  {
+    int fd = -1;
+
+    scoped_fd() = default;
+    explicit scoped_fd(int fd) : fd(fd) {}
+    scoped_fd(const scoped_fd&) = delete;
+    scoped_fd& operator=(const scoped_fd&) = delete;
+
+    ~scoped_fd()
+    {
+      if (fd >= 0) close(fd);
+    }
+
+    int get() const
+    {
+      return fd;
+    }
+
+    int release()
+    {
+      const int released = fd;
+      fd = -1;
+      return released;
+    }
+  };
+
+  static int latency_to_timeout_ms(double latency)
+  {
+    if (latency <= 0) return 0;
+    if (latency >= INT_MAX / 1000.0) return INT_MAX;
+
+    return static_cast<int>(std::ceil(latency * 1000.0));
+  }
+
+  static void add_epoll_interest(int epoll_fd, int fd)
+  {
+    struct epoll_event event {};
+    event.events = EPOLLIN;
+    event.data.fd = fd;
+
+    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &event) != 0)
+    {
+      fsw_log_perror("epoll_ctl");
+      throw libfsw_exception(_("Cannot initialize inotify."));
+    }
+  }
+
+  static void drain_eventfd(int fd)
+  {
+    for (;;)
+    {
+      uint64_t value = 0;
+      ssize_t read_count = read(fd, &value, sizeof(value));
+
+      if (read_count == static_cast<ssize_t>(sizeof(value))) continue;
+      if (read_count == -1 && errno == EINTR) continue;
+      if (read_count == -1 && errno == EAGAIN) break;
+      if (read_count == -1)
+      {
+        fsw_log_perror("read");
+        break;
+      }
+
+      break;
+    }
+  }
 
   inotify_monitor::inotify_monitor(std::vector<std::string> paths_to_monitor,
                                    FSW_EVENT_CALLBACK *callback,
@@ -76,13 +155,34 @@ namespace fsw
     monitor(paths_to_monitor, callback, context),
     impl(std::make_unique<inotify_monitor_impl>())
   {
-    impl->inotify_monitor_handle = inotify_init();
+    scoped_fd inotify_fd(inotify_init1(IN_CLOEXEC | IN_NONBLOCK));
 
-    if (impl->inotify_monitor_handle == -1)
+    if (inotify_fd.get() == -1)
     {
-      perror("inotify_init");
+      perror("inotify_init1");
       throw libfsw_exception(_("Cannot initialize inotify."));
     }
+
+    scoped_fd wake_fd(eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK));
+    if (wake_fd.get() == -1)
+    {
+      fsw_log_perror("eventfd");
+      throw libfsw_exception(_("Cannot initialize inotify."));
+    }
+
+    scoped_fd epoll_fd(epoll_create1(EPOLL_CLOEXEC));
+    if (epoll_fd.get() == -1)
+    {
+      fsw_log_perror("epoll_create1");
+      throw libfsw_exception(_("Cannot initialize inotify."));
+    }
+
+    add_epoll_interest(epoll_fd.get(), inotify_fd.get());
+    add_epoll_interest(epoll_fd.get(), wake_fd.get());
+
+    impl->inotify_monitor_handle = inotify_fd.release();
+    impl->wake_handle = wake_fd.release();
+    impl->epoll_handle = epoll_fd.release();
   }
 
   inotify_monitor::~inotify_monitor()
@@ -96,9 +196,19 @@ namespace fsw
     }
 
     // close inotify (removes watches)
-    if (impl->inotify_monitor_handle > 0)
+    if (impl->inotify_monitor_handle >= 0)
     {
       close(impl->inotify_monitor_handle);
+    }
+
+    if (impl->epoll_handle >= 0)
+    {
+      close(impl->epoll_handle);
+    }
+
+    if (impl->wake_handle >= 0)
+    {
+      close(impl->wake_handle);
     }
   }
 
@@ -411,11 +521,29 @@ namespace fsw
     impl->paths_to_fire_create.clear();
   }
 
+  void inotify_monitor::on_stop()
+  {
+    if (!impl || impl->wake_handle < 0) return;
+
+    uint64_t value = 1;
+    for (;;)
+    {
+      ssize_t write_count = write(impl->wake_handle, &value, sizeof(value));
+
+      if (write_count == static_cast<ssize_t>(sizeof(value))) break;
+      if (write_count == -1 && errno == EINTR) continue;
+      if (write_count == -1 && errno == EAGAIN) break;
+
+      fsw_log_perror("write");
+      break;
+    }
+  }
+
   void inotify_monitor::run()
   {
-    char buffer[BUFFER_SIZE];
-    double sec;
-    double frac = modf(this->latency, &sec);
+    std::array<char, BUFFER_SIZE> buffer{};
+    std::array<struct epoll_event, EPOLL_EVENT_COUNT> epoll_events{};
+    const int timeout_ms = latency_to_timeout_ms(this->latency);
 
     for(;;)
     {
@@ -427,69 +555,76 @@ namespace fsw
 
       scan_root_paths();
 
-      // If no files can be watched, sleep and repeat the loop.
-      if (!impl->watched_descriptors.size())
-      {
-        sleep(latency);
-        continue;
-      }
-
-      // Use select to timeout on file descriptor read the amount specified by
+      // Use epoll to timeout on file descriptor read the amount specified by
       // the monitor latency.  This way, the monitor has a chance to update its
       // watches with at least the periodicity expected by the user.
-      fd_set set;
-      struct timeval timeout;
-
-      FD_ZERO(&set);
-      FD_SET(impl->inotify_monitor_handle, &set);
-      timeout.tv_sec = sec;
-      timeout.tv_usec = 1000 * 1000 * frac;
-
-      int rv = select(impl->inotify_monitor_handle + 1,
-                      &set,
-                      nullptr,
-                      nullptr,
-                      &timeout);
+      int rv = epoll_wait(impl->epoll_handle,
+                          epoll_events.data(),
+                          epoll_events.size(),
+                          timeout_ms);
 
       if (rv == -1)
       {
-	fsw_log_perror("select");
-	continue;
+        if (errno == EINTR) continue;
+        fsw_log_perror("epoll_wait");
+        continue;
       }
 
-      // In case of read timeout just repeat the loop.
+      // In case of wait timeout just repeat the loop.
       if (rv == 0) continue;
 
-      ssize_t record_num = read(impl->inotify_monitor_handle,
-                                buffer,
-                                BUFFER_SIZE);
+      bool wake_requested = false;
 
+      for (int i = 0; i < rv; ++i)
       {
-        std::ostringstream log;
-        log << _("Number of records: ") << record_num << "\n";
-        FSW_ELOG(log.str().c_str());
-      }
+        if (epoll_events[i].data.fd == impl->wake_handle)
+        {
+          drain_eventfd(impl->wake_handle);
+          wake_requested = true;
+          continue;
+        }
 
-      if (!record_num)
-      {
-        throw libfsw_exception(_("read() on inotify descriptor read 0 records."));
-      }
+        if (epoll_events[i].data.fd != impl->inotify_monitor_handle)
+        {
+          continue;
+        }
 
-      if (record_num == -1)
-      {
-        perror("read()");
-        throw libfsw_exception(_("read() on inotify descriptor returned -1."));
-      }
+        for (;;)
+        {
+          ssize_t record_num = read(impl->inotify_monitor_handle,
+                                    buffer.data(),
+                                    buffer.size());
 
-      time(&impl->curr_time);
+          {
+            std::ostringstream log;
+            log << _("Number of records: ") << record_num << "\n";
+            FSW_ELOG(log.str().c_str());
+          }
 
-      for (char *p = buffer; p < buffer + record_num;)
-      {
-        struct inotify_event const *event = reinterpret_cast<struct inotify_event *> (p);
+          if (!record_num)
+          {
+            throw libfsw_exception(_("read() on inotify descriptor read 0 records."));
+          }
 
-        preprocess_event(event);
+          if (record_num == -1)
+          {
+            if (errno == EAGAIN) break;
+            if (errno == EINTR) continue;
+            perror("read()");
+            throw libfsw_exception(_("read() on inotify descriptor returned -1."));
+          }
 
-        p += (sizeof(struct inotify_event)) + event->len;
+          time(&impl->curr_time);
+
+          for (char *p = buffer.data(); p < buffer.data() + record_num;)
+          {
+            struct inotify_event const *event = reinterpret_cast<struct inotify_event *> (p);
+
+            preprocess_event(event);
+
+            p += (sizeof(struct inotify_event)) + event->len;
+          }
+        }
       }
 
       if (!impl->events.empty())
@@ -506,8 +641,7 @@ namespace fsw
         notify_events(impl->events);
         impl->events.clear();
       }
-
-      sleep(latency);
+      if (wake_requested) break;
     }
   }
 }

@@ -26,54 +26,132 @@ if (BUILD_TESTING)
     find_program(SH_EXECUTABLE sh)
     find_program(GIT_EXECUTABLE git)
 
-    if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND SH_EXECUTABLE)
-        add_test(NAME inotify_access_events
-                COMMAND ${SH_EXECUTABLE}
-                        ${PROJECT_SOURCE_DIR}/test/inotify_access_events.sh
-                        $<TARGET_FILE:fswatch>)
-        set_tests_properties(inotify_access_events PROPERTIES
+    if (HAVE_INOTIFY_MONITOR)
+        add_executable(inotify_stop_latency_test inotify_stop_latency_test.cpp)
+        target_include_directories(inotify_stop_latency_test PRIVATE ../.. .)
+        target_include_directories(inotify_stop_latency_test BEFORE PRIVATE ${PROJECT_BINARY_DIR})
+        target_link_libraries(inotify_stop_latency_test PUBLIC libfswatch)
+        add_test(NAME inotify_stop_latency_test COMMAND inotify_stop_latency_test)
+        set_tests_properties(inotify_stop_latency_test PROPERTIES
                 LABELS "integration;inotify"
-                TIMEOUT 15)
+                TIMEOUT 5)
 
-        if (GIT_EXECUTABLE)
-            add_test(NAME inotify_recursive_create
+        add_executable(inotify_stop_with_pending_events_test inotify_stop_with_pending_events_test.cpp)
+        target_include_directories(inotify_stop_with_pending_events_test PRIVATE ../.. .)
+        target_include_directories(inotify_stop_with_pending_events_test BEFORE PRIVATE ${PROJECT_BINARY_DIR})
+        target_link_libraries(inotify_stop_with_pending_events_test PUBLIC libfswatch)
+        add_test(NAME inotify_stop_with_pending_events_test COMMAND inotify_stop_with_pending_events_test)
+        set_tests_properties(inotify_stop_with_pending_events_test PROPERTIES
+                LABELS "integration;inotify"
+                TIMEOUT 5)
+
+        add_executable(inotify_stop_with_ready_events_test inotify_stop_with_ready_events_test.cpp)
+        target_include_directories(inotify_stop_with_ready_events_test PRIVATE ../.. .)
+        target_include_directories(inotify_stop_with_ready_events_test BEFORE PRIVATE ${PROJECT_BINARY_DIR})
+        target_link_libraries(inotify_stop_with_ready_events_test PUBLIC libfswatch)
+        add_test(NAME inotify_stop_with_ready_events_test COMMAND inotify_stop_with_ready_events_test)
+        set_tests_properties(inotify_stop_with_ready_events_test PROPERTIES
+                LABELS "integration;inotify"
+                TIMEOUT 5)
+
+        if (SH_EXECUTABLE)
+            add_test(NAME inotify_basic_events
                     COMMAND ${SH_EXECUTABLE}
-                            ${PROJECT_SOURCE_DIR}/test/inotify_recursive_create.sh
-                            $<TARGET_FILE:fswatch>
-                            ${GIT_EXECUTABLE})
-            set_tests_properties(inotify_recursive_create PROPERTIES
+                            ${PROJECT_SOURCE_DIR}/test/inotify_basic_events.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_basic_events PROPERTIES
                     LABELS "integration;inotify"
                     TIMEOUT 15)
+
+            add_test(NAME inotify_access_events
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_access_events.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_access_events PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 15)
+
+            add_test(NAME inotify_missing_root_rescan
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_missing_root_rescan.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_missing_root_rescan PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 20)
+
+            add_test(NAME inotify_watched_file_recreate
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_watched_file_recreate.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_watched_file_recreate PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 20)
+
+            add_test(NAME inotify_watched_directory_replace
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_watched_directory_replace.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_watched_directory_replace PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 25)
+
+            add_test(NAME inotify_burst_create
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_burst_create.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_burst_create PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 20)
+
+            add_test(NAME inotify_queue_drain
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/inotify_queue_drain.sh
+                            $<TARGET_FILE:fswatch>)
+            set_tests_properties(inotify_queue_drain PROPERTIES
+                    LABELS "integration;inotify"
+                    TIMEOUT 25)
+
+            if (GIT_EXECUTABLE)
+                add_test(NAME inotify_recursive_create
+                        COMMAND ${SH_EXECUTABLE}
+                                ${PROJECT_SOURCE_DIR}/test/inotify_recursive_create.sh
+                                $<TARGET_FILE:fswatch>
+                                ${GIT_EXECUTABLE})
+                set_tests_properties(inotify_recursive_create PROPERTIES
+                        LABELS "integration;inotify"
+                        TIMEOUT 15)
+            endif ()
         endif ()
 
-        if (HAVE_FANOTIFY)
-            add_test(NAME fanotify_basic
-                    COMMAND ${SH_EXECUTABLE}
-                            ${PROJECT_SOURCE_DIR}/test/fanotify_basic.sh
-                            $<TARGET_FILE:fswatch>)
-            set_tests_properties(fanotify_basic PROPERTIES
-                    LABELS "integration;fanotify"
-                    SKIP_RETURN_CODE 77
-                    TIMEOUT 20)
+    endif ()
 
-            add_test(NAME fanotify_access_events
-                    COMMAND ${SH_EXECUTABLE}
-                            ${PROJECT_SOURCE_DIR}/test/fanotify_access_events.sh
-                            $<TARGET_FILE:fswatch>)
-            set_tests_properties(fanotify_access_events PROPERTIES
-                    LABELS "integration;fanotify"
-                    SKIP_RETURN_CODE 77
-                    TIMEOUT 20)
+    if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND SH_EXECUTABLE AND HAVE_FANOTIFY)
+        add_test(NAME fanotify_basic
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/fanotify_basic.sh
+                        $<TARGET_FILE:fswatch>)
+        set_tests_properties(fanotify_basic PROPERTIES
+                LABELS "integration;fanotify"
+                SKIP_RETURN_CODE 77
+                TIMEOUT 20)
 
-            add_test(NAME fanotify_unlimited_properties
-                    COMMAND ${SH_EXECUTABLE}
-                            ${PROJECT_SOURCE_DIR}/test/fanotify_unlimited_properties.sh
-                            $<TARGET_FILE:fswatch>)
-            set_tests_properties(fanotify_unlimited_properties PROPERTIES
-                    LABELS "integration;fanotify"
-                    SKIP_RETURN_CODE 77
-                    TIMEOUT 20)
-        endif ()
+        add_test(NAME fanotify_access_events
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/fanotify_access_events.sh
+                        $<TARGET_FILE:fswatch>)
+        set_tests_properties(fanotify_access_events PROPERTIES
+                LABELS "integration;fanotify"
+                SKIP_RETURN_CODE 77
+                TIMEOUT 20)
+
+        add_test(NAME fanotify_unlimited_properties
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/fanotify_unlimited_properties.sh
+                        $<TARGET_FILE:fswatch>)
+        set_tests_properties(fanotify_unlimited_properties PROPERTIES
+                LABELS "integration;fanotify"
+                SKIP_RETURN_CODE 77
+                TIMEOUT 20)
     endif ()
 
     if (APPLE)

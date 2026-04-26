@@ -78,15 +78,28 @@ check_struct_has_member("struct stat" st_mtime sys/stat.h HAVE_STRUCT_STAT_ST_MT
 check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STRUCT_STAT_ST_MTIMESPEC)
 
 check_include_file_cxx(sys/inotify.h HAVE_SYS_INOTIFY_H)
+check_include_file_cxx(sys/epoll.h HAVE_SYS_EPOLL_H)
+check_include_file_cxx(sys/eventfd.h HAVE_SYS_EVENTFD_H)
 
-if (HAVE_SYS_INOTIFY_H)
+if (HAVE_SYS_INOTIFY_H AND HAVE_SYS_EPOLL_H AND HAVE_SYS_EVENTFD_H)
+    set(CMAKE_REQUIRED_DEFINITIONS_SAVED ${CMAKE_REQUIRED_DEFINITIONS})
+    list(APPEND CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)
+    check_cxx_symbol_exists(inotify_init1 sys/inotify.h HAVE_INOTIFY_INIT1)
+    check_cxx_symbol_exists(epoll_create1 sys/epoll.h HAVE_EPOLL_CREATE1)
+    check_cxx_symbol_exists(eventfd sys/eventfd.h HAVE_EVENTFD)
+    set(CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS_SAVED})
+endif ()
+
+if (HAVE_SYS_INOTIFY_H AND HAVE_SYS_EPOLL_H AND HAVE_SYS_EVENTFD_H AND
+        HAVE_INOTIFY_INIT1 AND HAVE_EPOLL_CREATE1 AND HAVE_EVENTFD)
+    set(HAVE_INOTIFY_MONITOR 1 CACHE INTERNAL "Linux inotify monitor is available")
     set(LIBFSWATCH_HEADER_FILES
             ${LIBFSWATCH_HEADER_FILES}
             src/libfswatch/c++/inotify_monitor.hpp)
     set(LIB_SOURCE_FILES
             ${LIB_SOURCE_FILES}
             src/libfswatch/c++/inotify_monitor.cpp)
-endif (HAVE_SYS_INOTIFY_H)
+endif ()
 
 check_include_file_cxx(sys/fanotify.h HAVE_SYS_FANOTIFY_H)
 check_include_file_cxx(sys/epoll.h HAVE_SYS_EPOLL_H)

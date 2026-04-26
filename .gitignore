@@ -21,6 +21,8 @@ fswatch_test
 *.o
 cmake-build-debug/
 build/
+build-inotify-soak/
+build-sanitize/
 dist/
 
 # Documentation
@@ -160,6 +162,7 @@ docker/debian-testing/Dockerfile
 
 # Output files
 man/fswatch.7
+test/*_test
 test/*.log
 test/*.trs
 test/test-suite.log

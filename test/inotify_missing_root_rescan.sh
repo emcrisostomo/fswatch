@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2014-2026 Enrico M. Crisostomo
+# Copyright (c) 2026 Enrico M. Crisostomo
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,24 +16,19 @@
 
 set -eu
 
-if [ "$#" -gt 2 ]; then
-  echo "usage: $0 [FSWATCH] [GIT]" >&2
+if [ "$#" -gt 1 ]; then
+  echo "usage: $0 [FSWATCH]" >&2
   exit 2
 fi
 
 FSWATCH=${1:-${FSWATCH:-}}
-GIT=${2:-${GIT:-git}}
 if [ -z "${FSWATCH}" ]; then
   echo "FSWATCH is required" >&2
   exit 2
 fi
-if ! command -v "${GIT}" >/dev/null 2>&1; then
-  echo "git is unavailable" >&2
-  exit 77
-fi
 
 TMPDIR=${TMPDIR:-/tmp}
-WORKDIR=$(mktemp -d "${TMPDIR%/}/fswatch-inotify-recursive.XXXXXX")
+WORKDIR=$(mktemp -d "${TMPDIR%/}/fswatch-inotify-missing-root.XXXXXX")
 PID=
 
 cleanup() {
@@ -47,23 +42,27 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-cd "${WORKDIR}"
-"${GIT}" init -q
+WATCHED="${WORKDIR}/watched"
 
-"${FSWATCH}" -m inotify_monitor -rx --event Created .git > "${WORKDIR}/out.log" 2> "${WORKDIR}/err.log" &
+"${FSWATCH}" -m inotify_monitor -1 -x --event Created -l 1 "${WATCHED}" \
+  > "${WORKDIR}/out.log" 2> "${WORKDIR}/err.log" &
 PID=$!
 
-sleep 1
-
-echo one > 1.txt
-"${GIT}" add 1.txt
+sleep 2
+mkdir "${WATCHED}"
+sleep 2
+echo content > "${WATCHED}/created-after-root.txt"
 
 found=
 attempt=0
 
 while [ "${attempt}" -lt 8 ]; do
-  if grep -Eq '/\.git/objects/[^/]+/[^/]+ Created$' "${WORKDIR}/out.log"; then
+  if grep -Eq 'created-after-root\.txt .*Created' "${WORKDIR}/out.log"; then
     found=1
+    break
+  fi
+
+  if ! kill -0 "${PID}" 2>/dev/null; then
     break
   fi
 
@@ -72,12 +71,10 @@ while [ "${attempt}" -lt 8 ]; do
 done
 
 if [ -z "${found}" ]; then
-  echo "missing synthetic create event for git object file" >&2
+  echo "missing event after initially absent root was created" >&2
   echo "--- fswatch output ---" >&2
   sed -n '1,160p' "${WORKDIR}/out.log" >&2
   echo "--- fswatch stderr ---" >&2
-  sed -n '1,80p' "${WORKDIR}/err.log" >&2
-  echo "--- git object files ---" >&2
-  find "${WORKDIR}/.git/objects" -type f -print >&2
+  sed -n '1,120p' "${WORKDIR}/err.log" >&2
   exit 1
 fi
