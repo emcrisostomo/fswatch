@@ -99,6 +99,7 @@ namespace fsw
                                   const FSEventStreamEventId eventIds[]);
 
     bool no_defer();
+    static CFArrayRef copy_cf_paths(const std::vector<std::string>& paths);
     void create_stream(CFArrayRef pathsToWatch);
   };
 }

@@ -12,6 +12,8 @@ New in 1.20.0-develop:
   * Issue 365: Add the fsw_cevent_v2 C callback API for correlation and
     process attribution metadata without changing the existing fsw_cevent ABI.
 
+  * Fix CoreFoundation path ownership in the macOS FSEvents monitor.
+
 
 New in 1.19.1:
 

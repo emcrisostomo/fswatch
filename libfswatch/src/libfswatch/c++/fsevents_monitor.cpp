@@ -46,6 +46,7 @@ namespace fsw
     Impl& operator=(const Impl&) = delete;
 
     FSEventStreamRef stream = nullptr;
+    CFArrayRef paths_to_watch = nullptr;
 #ifdef HAVE_MACOS_GE_10_6
     dispatch_queue_t fsevents_queue = nullptr;
 #else
@@ -117,28 +118,17 @@ namespace fsw
 
     if (pImpl->stream) return;
 
-    // parsing paths
-    vector<CFStringRef> dirs;
+    pImpl->paths_to_watch = copy_cf_paths(paths);
+    if (!pImpl->paths_to_watch) return;
 
-    for (const string& path : paths)
-    {
-      dirs.push_back(CFStringCreateWithCString(nullptr,
-                                               path.c_str(),
-                                               kCFStringEncodingUTF8));
-    }
-
-    if (dirs.empty()) return;
-
-    CFArrayRef pathsToWatch =
-      CFArrayCreate(nullptr,
-                    reinterpret_cast<const void **> (&dirs[0]),
-                    dirs.size(),
-                    &kCFTypeArrayCallBacks);
-
-    create_stream(pathsToWatch);
+    create_stream(pImpl->paths_to_watch);
 
     if (!pImpl->stream)
+    {
+      CFRelease(pImpl->paths_to_watch);
+      pImpl->paths_to_watch = nullptr;
       throw libfsw_exception(_("Event stream could not be created."));
+    }
 
 #ifdef HAVE_MACOS_GE_10_6
     // Creating dispatch queue
@@ -188,6 +178,8 @@ namespace fsw
 #ifdef HAVE_MACOS_GE_10_6
     dispatch_release(pImpl->fsevents_queue);
 #endif
+    CFRelease(pImpl->paths_to_watch);
+    pImpl->paths_to_watch = nullptr;
     pImpl->stream = nullptr;
   }
 
@@ -311,6 +303,34 @@ namespace fsw
       return (!isatty(fileno(stdin)));
 
     return (no_defer == "true");
+  }
+
+  CFArrayRef fsevents_monitor::copy_cf_paths(const vector<string>& paths)
+  {
+    vector<CFStringRef> dirs;
+
+    for (const string& path : paths)
+    {
+      auto dir = CFStringCreateWithCString(nullptr,
+                                           path.c_str(),
+                                           kCFStringEncodingUTF8);
+      if (dir) dirs.push_back(dir);
+    }
+
+    if (dirs.empty()) return nullptr;
+
+    CFArrayRef pathsToWatch =
+      CFArrayCreate(nullptr,
+                    reinterpret_cast<const void **> (&dirs[0]),
+                    dirs.size(),
+                    &kCFTypeArrayCallBacks);
+
+    for (auto dir : dirs)
+    {
+      CFRelease(dir);
+    }
+
+    return pathsToWatch;
   }
 
   void fsevents_monitor::create_stream(CFArrayRef pathsToWatch)
