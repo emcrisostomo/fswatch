@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fswatch 1.11.3\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2026-04-25 18:33+0200\n"
+"POT-Creation-Date: 2026-04-28 21:41+0200\n"
 "PO-Revision-Date: 2018-05-02 17:29+0200\n"
 "Last-Translator: Enrico Maria Crisostomo <enrico.m.crisostomo@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -318,7 +318,9 @@ msgstr "Non si può inizializzare fanotify."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:282
 msgid "fanotify TID reporting is not supported by the build headers."
-msgstr "La segnalazione del TID di fanotify non è supportata dagli header di compilazione."
+msgstr ""
+"La segnalazione del TID di fanotify non è supportata dagli header di "
+"compilazione."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:287
 msgid "Invalid fanotify.process-id value."
@@ -333,7 +335,8 @@ msgstr ""
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:330
 msgid "fanotify pidfd reporting is not supported by the build headers."
 msgstr ""
-"La segnalazione del pidfd di fanotify non è supportata dagli header di compilazione."
+"La segnalazione del pidfd di fanotify non è supportata dagli header di "
+"compilazione."
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:406
 #, c-format
@@ -343,8 +346,8 @@ msgstr "fanotify aggiunto: %s\n"
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:440
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:480
 #: libfswatch/src/libfswatch/c++/fen_monitor.cpp:296
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:182
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:404
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:292
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:514
 #: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:226
 #: libfswatch/src/libfswatch/c++/poll_monitor.cpp:167
 #, c-format
@@ -352,7 +355,7 @@ msgid "Filesystem error: %s"
 msgstr "Errore del file system: %s"
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:466
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:390
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:500
 #, c-format
 msgid "Synthetic event: processing directory: %s\n"
 msgstr "Evento sintetico: elaborazione directory: %s\n"
@@ -426,79 +429,82 @@ msgstr "Tipo filtro sconosciuto: "
 msgid "Unknown flag: "
 msgstr "Flag sconosciuto: "
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:141
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:130
 msgid "Event stream could not be created."
 msgstr "Il flusso di eventi non può essere creato."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:152
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:142
 msgid "Scheduling stream with run loop...\n"
 msgstr "Pianificazione del flusso con il run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:158
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:148
 msgid "Starting event stream...\n"
 msgstr "Facendo partire il flusso di eventi...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:174
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:164
 msgid "Starting run loop...\n"
 msgstr "Avvio del run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:179
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:169
 msgid "Stopping event stream...\n"
 msgstr "Fermando il flusso di eventi...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:182
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:172
 msgid "Invalidating event stream...\n"
 msgstr "Invalidando il flusso di eventi...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:185
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:175
 msgid "Releasing event stream...\n"
 msgstr "Liberando il flusso di eventi...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:200
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:192
 msgid "run loop is null"
 msgstr "il run loop è nullo"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:202
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:194
 msgid "Stopping run loop...\n"
 msgstr "Arresto del run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:235
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:227
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "Il contesto del callback non può essere convertita a fsevents_monitor."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:336
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:356
 msgid "Creating FSEvent stream...\n"
 msgstr "Creando il flusso FSEvent...\n"
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:84
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:128
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:163
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:170
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:177
 msgid "Cannot initialize inotify."
 msgstr "Non si può inizializzare inotify."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:94
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:194
 msgid "Removing: "
 msgstr "Eliminando: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:129
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:239
 msgid "Added: "
 msgstr "Aggiunto: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:262
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:372
 msgid "Generic event: "
 msgstr "Evento generico: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:354
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:464
 msgid "Removed: "
 msgstr "Eliminato: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:469
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:600
 msgid "Number of records: "
 msgstr "Numero di registri: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:475
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:606
 msgid "read() on inotify descriptor read 0 records."
 msgstr "read() sul descrittore inotify ha trovato 0 registri."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:481
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:614
 msgid "read() on inotify descriptor returned -1."
 msgstr "read() sul descrittore inotify ha ritornato -1."
 

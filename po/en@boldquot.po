@@ -30,10 +30,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: fswatch 1.20.0-develop\n"
+"Project-Id-Version: fswatch 1.20.0\n"
 "Report-Msgid-Bugs-To: enrico.m.crisostomo@gmail.com\n"
-"POT-Creation-Date: 2026-04-25 18:33+0200\n"
-"PO-Revision-Date: 2026-04-25 18:33+0200\n"
+"POT-Creation-Date: 2026-04-28 21:41+0200\n"
+"PO-Revision-Date: 2026-04-28 21:41+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@boldquot\n"
@@ -365,8 +365,8 @@ msgstr "fanotify added: %s\n"
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:440
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:480
 #: libfswatch/src/libfswatch/c++/fen_monitor.cpp:296
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:182
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:404
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:292
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:514
 #: libfswatch/src/libfswatch/c++/kqueue_monitor.cpp:226
 #: libfswatch/src/libfswatch/c++/poll_monitor.cpp:167
 #, c-format
@@ -374,7 +374,7 @@ msgid "Filesystem error: %s"
 msgstr "Filesystem error: %s"
 
 #: libfswatch/src/libfswatch/c++/fanotify_monitor.cpp:466
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:390
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:500
 #, c-format
 msgid "Synthetic event: processing directory: %s\n"
 msgstr "Synthetic event: processing directory: %s\n"
@@ -448,79 +448,82 @@ msgstr "Unknown filter type: "
 msgid "Unknown flag: "
 msgstr "Unknown flag: "
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:141
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:130
 msgid "Event stream could not be created."
 msgstr "Event stream could not be created."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:152
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:142
 msgid "Scheduling stream with run loop...\n"
 msgstr "Scheduling stream with run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:158
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:148
 msgid "Starting event stream...\n"
 msgstr "Starting event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:174
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:164
 msgid "Starting run loop...\n"
 msgstr "Starting run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:179
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:169
 msgid "Stopping event stream...\n"
 msgstr "Stopping event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:182
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:172
 msgid "Invalidating event stream...\n"
 msgstr "Invalidating event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:185
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:175
 msgid "Releasing event stream...\n"
 msgstr "Releasing event stream...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:200
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:192
 msgid "run loop is null"
 msgstr "run loop is null"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:202
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:194
 msgid "Stopping run loop...\n"
 msgstr "Stopping run loop...\n"
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:235
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:227
 msgid "The callback info cannot be cast to fsevents_monitor."
 msgstr "The callback info cannot be cast to fsevents_monitor."
 
-#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:336
+#: libfswatch/src/libfswatch/c++/fsevents_monitor.cpp:356
 msgid "Creating FSEvent stream...\n"
 msgstr "Creating FSEvent stream...\n"
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:84
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:128
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:163
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:170
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:177
 msgid "Cannot initialize inotify."
 msgstr "Cannot initialize inotify."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:94
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:194
 msgid "Removing: "
 msgstr "Removing: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:129
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:239
 msgid "Added: "
 msgstr "Added: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:262
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:372
 msgid "Generic event: "
 msgstr "Generic event: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:354
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:464
 msgid "Removed: "
 msgstr "Removed: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:469
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:600
 msgid "Number of records: "
 msgstr "Number of records: "
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:475
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:606
 msgid "read() on inotify descriptor read 0 records."
 msgstr "read() on inotify descriptor read 0 records."
 
-#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:481
+#: libfswatch/src/libfswatch/c++/inotify_monitor.cpp:614
 msgid "read() on inotify descriptor returned -1."
 msgstr "read() on inotify descriptor returned -1."
 
