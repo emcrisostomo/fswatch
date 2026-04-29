@@ -1,7 +1,7 @@
 NEWS
 ****
 
-New in 1.20.0-develop:
+New in 1.20.0:
 
   * Issue 365: Add a Linux fanotify monitor and generic event process
     attribution metadata.
