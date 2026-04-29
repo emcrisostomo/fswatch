@@ -12,6 +12,10 @@ New in 1.20.0:
   * Issue 365: Fix CMake builds when ignored Autotools configuration headers
     exist in the source tree.
 
+  * PR 368, Issue 367: Refactor the Linux inotify monitor to use an
+    epoll/eventfd wait loop, improving stop responsiveness and event queue
+    draining behavior.
+
   * Fix CoreFoundation path ownership in the macOS FSEvents monitor.
 
 
