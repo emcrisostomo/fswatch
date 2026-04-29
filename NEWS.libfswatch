@@ -1,6 +1,13 @@
 NEWS
 ****
 
+New in 1.20.1:
+
+  * Correct the 1.20.0 release notes to document PR 368, Issue 367: the Linux
+    inotify monitor now uses an epoll/eventfd wait loop, and building it now
+    requires epoll, eventfd, and inotify_init1 support.
+
+
 New in 1.20.0:
 
   * Issue 365: Add a Linux fanotify monitor and generic event process
