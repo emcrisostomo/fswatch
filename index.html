@@ -1,116 +1,169 @@
-<!DOCTYPE html>
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description"
-          content="fswatch : A cross-platform file change monitor with multiple backends: Apple OS X File System Events, *BSD kqueue, Solaris/Illumos File Events Notification, Linux inotify, Microsoft Windows and a stat()-based backend.">
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <title>fswatch</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="fswatch is a cross-platform file change monitor with native backends for macOS, BSD, Linux, Solaris/Illumos, Windows, and portable polling.">
+  <link rel="stylesheet" href="stylesheets/stylesheet.css">
+  <title>fswatch - Cross-platform file change monitoring</title>
 </head>
-
 <body>
+  <header class="site-header">
+    <nav class="wrap nav" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-current="page">
+        <img src="images/fswatch-logo.svg" alt="fswatch logo">
+        <span>fswatch</span>
+      </a>
+      <div class="nav-links">
+        <a href="getting.html">Install</a>
+        <a href="usage.html">Usage</a>
+        <a href="documentation.html">Docs</a>
+        <a href="https://github.com/emcrisostomo/fswatch">GitHub</a>
+      </div>
+    </nav>
 
-<!-- HEADER -->
-<div id="header_wrap" class="outer">
-    <header class="inner">
-        <a id="forkme_banner" href="https://github.com/emcrisostomo/fswatch">View on GitHub</a>
-
-        <h1 id="project_title">fswatch</h1>
-        <h2 id="project_tagline">A cross-platform file change monitor with
-            multiple backends: Apple OS X <em>File System Events</em> API, *BSD
-            <em>kqueue</em>, Solaris/Illumos <em>File Events Notification</em>,
-            Linux <em>inotify</em>, Microsoft Windows and a stat()-based backend.</h2>
-
-        <section id="downloads">
-            <a class="zip_download_link" href="https://github.com/emcrisostomo/fswatch/zipball/master">Download this
-                project as a .zip file</a>
-            <a class="tar_download_link" href="https://github.com/emcrisostomo/fswatch/tarball/master">Download this
-                project as a tar.gz file</a>
-        </section>
-    </header>
-</div>
-
-<!-- MAIN CONTENT -->
-<div id="main_content_wrap" class="outer">
-    <section id="main_content" class="inner">
-        <p><code>fswatch</code> is a file change monitor that receives notifications when the contents
-            of the specified files or directories are modified. <code>fswatch</code> implements the
-            following kinds of monitors:</p>
-        <ul>
-            <li>A monitor based on the <em>File System Events API</em> of Apple OS X.</li>
-            <li>A monitor based on <em>kqueue</em>, an event notification interface introduced in
-                FreeBSD 4.1 and supported on most *BSD systems (including OS X).
-            </li>
-            <li>A monitor based on <em>inotify</em>, a Linux kernel subsystem that reports file
-                system changes to applications.
-            </li>
-            <li>A monitor based on <em>File Events Notification</em>, a Solaris/Illumos
-                kernel API that reports file events.
-            </li>
-            <li>A monitor based on <em>ReadDirectoryChangesW</em>, a Microsoft Windows API that reports changes to a
-                directory.
-            </li>
-            <li>A monitor which periodically stats the file system, saves file modification
-                times in memory and manually calculates file system changes, which can work
-                on any operating system where <code>stat (2)</code> can be used.
-            </li>
-        </ul>
-
-        <p><code>fswatch</code> should build and work correctly on any system shipping either of the
-            aforementioned APIs.</p>
-
-        <h2>
-            <a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span
-                    class="octicon octicon-link"></span></a>Table of Contents</h2>
-
-        <ul>
-            <li><a href="getting.html">Getting fswatch</a></li>
-            <li><a href="documentation.html">Documentation</a></li>
-            <li><a href="usage.html">Usage</a></li>
-        </ul>
-
-        <hr>
-
-        <p>Copyright (C) 2013-2022 Enrico M. Crisostomo</p>
-
-        <p>This program is free software; you can redistribute it and/or modify
-            it under the terms of the GNU General Public License as published by
-            the Free Software Foundation; either version 3, or (at your option)
-            any later version.</p>
-
-        <p>This program is distributed in the hope that it will be useful,
-            but WITHOUT ANY WARRANTY; without even the implied warranty of
-            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-            GNU General Public License for more details.</p>
-
-        <p>You should have received a copy of the GNU General Public License
-            along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.
+    <section class="wrap hero">
+      <div>
+        <p class="eyebrow">Native file change events from one command</p>
+        <h1>Watch files across platforms without rewriting your tooling.</h1>
+        <p class="hero-copy">
+          <code>fswatch</code> streams file system changes from the best backend
+          available on each operating system, with filters, batching, custom
+          output formats, and a portable fallback.
         </p>
+        <div class="hero-actions">
+          <a class="button" href="getting.html">Install fswatch</a>
+          <a class="button secondary" href="usage.html">See examples</a>
+        </div>
+      </div>
+
+      <div class="terminal" aria-label="fswatch terminal example">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>watch-and-build.sh</div>
+        <pre><code><span class="prompt">$</span> fswatch -o src include \
+  | xargs -n1 -I{} make test
+<span class="output">1
+1
+1</span></code></pre>
+      </div>
     </section>
-</div>
+  </header>
 
-<!-- FOOTER  -->
-<div id="footer_wrap" class="outer">
-    <footer class="inner">
-        <p class="copyright">Copyright (c) 2013-2022 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a>
-        </p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-    </footer>
-</div>
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="section-header">
+          <h2>One interface, native monitors</h2>
+          <p>
+            Use the same command line on build scripts, editors, automation, and
+            developer workflows while <code>fswatch</code> chooses the platform
+            monitor that fits the host.
+          </p>
+        </div>
 
-<script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-    try {
-        var pageTracker = _gat._getTracker("UA-6413880-5");
-        pageTracker._trackPageview();
-    } catch (err) {
-    }
-</script>
+        <div class="monitor-table" aria-label="Supported fswatch monitors">
+          <div class="monitor-row">
+            <strong>macOS</strong>
+            <span>FSEvents, kqueue</span>
+            <span>Fast recursive directory monitoring with native file system event support.</span>
+          </div>
+          <div class="monitor-row">
+            <strong>Linux</strong>
+            <span>inotify, fanotify</span>
+            <span>Default inotify support plus opt-in fanotify process attribution in recent releases.</span>
+          </div>
+          <div class="monitor-row">
+            <strong>BSD</strong>
+            <span>kqueue</span>
+            <span>Event notifications through the native kqueue interface used by FreeBSD and other BSD systems.</span>
+          </div>
+          <div class="monitor-row">
+            <strong>Solaris and Illumos</strong>
+            <span>File Events Notification</span>
+            <span>Native file event monitoring through the Solaris FEN API and derivatives.</span>
+          </div>
+          <div class="monitor-row">
+            <strong>Windows</strong>
+            <span>ReadDirectoryChangesW</span>
+            <span>Directory change monitoring through the Windows file notification API.</span>
+          </div>
+          <div class="monitor-row">
+            <strong>Portable fallback</strong>
+            <span>poll monitor</span>
+            <span>A stat-based monitor for environments without a dedicated event API.</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <section class="section alt">
+      <div class="wrap">
+        <div class="grid">
+          <article class="card">
+            <h3>Stream paths</h3>
+            <p>Print changed paths as they arrive, or use null-delimited output for shell-safe pipelines.</p>
+          </article>
+          <article class="card">
+            <h3>Batch events</h3>
+            <p>Use count mode to rebuild, rerun tests, or trigger one command per change batch.</p>
+          </article>
+          <article class="card">
+            <h3>Filter noise</h3>
+            <p>Include or exclude paths and event types before your automation sees them.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap grid two">
+        <div>
+          <h2>Quick start</h2>
+          <p class="lead">Install from your package manager when available, or build a release tarball when you need full control over the target system.</p>
+          <div class="badge-row" aria-label="Install options">
+            <span class="badge">Homebrew</span>
+            <span class="badge">MacPorts</span>
+            <span class="badge">FreeBSD pkg</span>
+            <span class="badge">Release tarball</span>
+          </div>
+          <div class="button-row">
+            <a class="button" href="getting.html">Installation guide</a>
+          </div>
+        </div>
+        <div class="code-block">
+          <pre><code><span class="prompt">$</span> brew install fswatch
+<span class="prompt">$</span> fswatch -r ~/project
+<span class="output">/Users/me/project/src/main.cpp
+/Users/me/project/include/main.hpp</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap grid two">
+        <article class="card">
+          <h3>Current release documentation</h3>
+          <p>Read the 1.20.1 manual from the GitHub release assets, or browse the release tag for source documentation.</p>
+          <div class="button-row">
+            <a class="button" href="https://github.com/emcrisostomo/fswatch/releases/download/1.20.1/fswatch-1.20.1.pdf" target="_blank" rel="noopener noreferrer">PDF manual</a>
+            <a class="button secondary" href="documentation.html">Documentation hub</a>
+          </div>
+        </article>
+        <article class="card">
+          <h3>Project source</h3>
+          <p>Report issues, read release notes, and inspect the C, C++, and command-line implementation on GitHub.</p>
+          <div class="button-row">
+            <a class="button" href="https://github.com/emcrisostomo/fswatch" target="_blank" rel="noopener noreferrer">View repository</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>Copyright (c) 2013-2026 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a></p>
+      <p><a href="https://pages.github.com">Published with GitHub Pages</a></p>
+    </div>
+  </footer>
 </body>
 </html>

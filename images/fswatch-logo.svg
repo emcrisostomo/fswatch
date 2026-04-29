@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">fswatch logo</title>
+  <desc id="desc">A stylized file with a file system activity trace.</desc>
+  <rect width="128" height="128" rx="24" fill="#101827"/>
+  <path d="M34 28h42l18 18v54H34z" fill="#f8fafc"/>
+  <path d="M76 28v20h20z" fill="#dbeafe"/>
+  <path d="M48 60h28" stroke="#b8c7d9" stroke-width="7" stroke-linecap="round"/>
+  <path d="M48 78h34" stroke="#b8c7d9" stroke-width="7" stroke-linecap="round"/>
+  <path d="M28 88h20l8-20 14 34 10-22h22" fill="none" stroke="#14b8a6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="102" cy="88" r="8" fill="#facc15"/>
+</svg>

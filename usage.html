@@ -1,92 +1,142 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Common fswatch command-line examples for watching paths, batching events, filtering output, and selecting monitors.">
+  <link rel="stylesheet" href="stylesheets/stylesheet.css">
+  <title>fswatch - Usage</title>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="wrap nav" aria-label="Main navigation">
+      <a class="brand" href="index.html">
+        <img src="images/fswatch-logo.svg" alt="fswatch logo">
+        <span>fswatch</span>
+      </a>
+      <div class="nav-links">
+        <a href="getting.html">Install</a>
+        <a href="usage.html" aria-current="page">Usage</a>
+        <a href="documentation.html">Docs</a>
+        <a href="https://github.com/emcrisostomo/fswatch">GitHub</a>
+      </div>
+    </nav>
+    <section class="wrap hero">
+      <div>
+        <p class="eyebrow">Usage examples</p>
+        <h1>Turn file system changes into reliable shell pipelines.</h1>
+        <p class="hero-copy">
+          Start with paths, then add batching, filters, record formatting, or an
+          explicit monitor when your workflow needs more control.
+        </p>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>basic-watch</div>
+        <pre><code><span class="prompt">$</span> fswatch -r src include
+<span class="output">src/main.cpp
+include/fswatch.hpp</span></code></pre>
+      </div>
+    </section>
+  </header>
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="fswatch - Usage">
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="section-header">
+          <h2>Common workflows</h2>
+          <p>Each example is intentionally small enough to paste into a shell script and adapt.</p>
+        </div>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+        <div class="example-grid">
+          <article class="card example">
+            <h3>Watch one directory</h3>
+            <p>Print each changed path as fswatch receives it.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch ~/project</code></pre></div>
+          </article>
 
-    <title>fswatch - Usage</title>
-  </head>
+          <article class="card example">
+            <h3>Watch recursively</h3>
+            <p>Observe a tree and include files created after fswatch starts.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch --recursive ~/project</code></pre></div>
+          </article>
 
-  <body>
+          <article class="card example">
+            <h3>Run once per batch</h3>
+            <p>Use count mode when event details are not needed.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -o src include \
+  | xargs -n1 -I{} make test</code></pre></div>
+          </article>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/emcrisostomo/fswatch">View on GitHub</a>
+          <article class="card example">
+            <h3>Use null-delimited output</h3>
+            <p>Handle paths with whitespace safely in shell loops.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -0 ~/project \
+  | while IFS= read -r -d '' path; do
+      printf 'changed: %s\n' "$path"
+    done</code></pre></div>
+          </article>
 
-          <h1 id="project_title">fswatch</h1>
-        </header>
+          <article class="card example">
+            <h3>Select a monitor</h3>
+            <p>Override the default backend when you need a specific platform API.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch --monitor kqueue_monitor ~/project
+<span class="prompt">$</span> fswatch --list-monitors</code></pre></div>
+          </article>
+
+          <article class="card example">
+            <h3>Filter paths</h3>
+            <p>Ignore build output and include only source-like paths.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -r . \
+  --exclude='(^|/)build/' \
+  --include='\\.([ch]pp|h)$'</code></pre></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap grid two">
+        <article class="card">
+          <h3>Event flags and formats</h3>
+          <p>
+            Use event flags, timestamps, and custom record formats when the
+            consumer needs more than a changed path.
+          </p>
+          <div class="code-block"><pre><code><span class="prompt">$</span> fswatch --event-flags --timestamp ~/project
+<span class="prompt">$</span> fswatch --format '%p %t %f' ~/project</code></pre></div>
+        </article>
+        <article class="card">
+          <h3>Latency tuning</h3>
+          <p>
+            The latency setting controls how frequently fswatch delivers
+            changes. Larger values can reduce overhead for noisy trees.
+          </p>
+          <div class="code-block"><pre><code><span class="prompt">$</span> fswatch --latency=2.5 ~/project</code></pre></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="callout">
+          <p>
+            For complete option semantics, read the current release manual from
+            the documentation hub. The examples here focus on common command-line
+            workflows.
+          </p>
+        </div>
+        <div class="button-row">
+          <a class="button" href="documentation.html">Open documentation</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>Copyright (c) 2013-2026 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a></p>
+      <p><a href="https://pages.github.com">Published with GitHub Pages</a></p>
     </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-
-
-        <h2>
-          <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
-
-        <p><code>fswatch</code> accepts a list of paths for which change events should be received:</p>
-
-        <pre><code>$ fswatch [options] ... path-0 ... path-n</code></pre>
-
-        <p>The event stream is created even if any of the paths do not exist yet.  If they
-          are created after <code>fswatch</code> is launched, change events will be properly
-          received.  Depending on the watcher being used, newly created paths will be
-          monitored after the amount of configured latency has elapsed.</p>
-
-        <p>The output of <code>fswatch</code> can be piped to other program in order to process it
-          further:</p>
-
-        <pre><code>$ fswatch -0 path | while read -d "" event \
-            do \
-            // do something with ${event}
-            done</code></pre>
-
-        <p>To run a command when a set of change events is printed to standard output but
-          no event details are required, then the following command can be used:</p>
-
-        <pre><code>$ fswatch -o path | xargs -n1 -I{} program</code></pre>
-
-        <p>The behaviour is consistent with earlier versions of <code>fswatch</code> (v. 0.x).
-          Please, read the <em>Compatibility Issues with fswatch v. 0.x</em> section for further
-          information.</p>
-
-        <p>By default <code>fswatch</code> chooses the best monitor available on the current platform,
-          in terms of performance and resource consumption.  If the user wishes to specify
-          a different monitor, the <code>-m</code> option can be used to specify the monitor by name:</p>
-
-        <pre><code>$ fswatch -m kqueue_monitor path</code></pre>
-
-        <p>The list of available monitors can be obtained with the <code>-h</code> option.</p>
-
-        <p>For more information, refer to the <code>fswatch</code> documentation.</p>
-
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Copyright (c) 2013-2022 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    <script type="text/javascript">
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-      try {
-      var pageTracker = _gat._getTracker("UA-6413880-5");
-      pageTracker._trackPageview();
-      } catch(err) {}
-    </script>
-
-  </body>
+  </footer>
+</body>
 </html>

@@ -1,107 +1,117 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Install fswatch from package managers or build it from a release tarball.">
+  <link rel="stylesheet" href="stylesheets/stylesheet.css">
+  <title>fswatch - Install</title>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="wrap nav" aria-label="Main navigation">
+      <a class="brand" href="index.html">
+        <img src="images/fswatch-logo.svg" alt="fswatch logo">
+        <span>fswatch</span>
+      </a>
+      <div class="nav-links">
+        <a href="getting.html" aria-current="page">Install</a>
+        <a href="usage.html">Usage</a>
+        <a href="documentation.html">Docs</a>
+        <a href="https://github.com/emcrisostomo/fswatch">GitHub</a>
+      </div>
+    </nav>
+    <section class="wrap hero">
+      <div>
+        <p class="eyebrow">Install fswatch</p>
+        <h1>Use a package manager first, build a release tarball when you need source control.</h1>
+        <p class="hero-copy">
+          Release tarballs contain the generated files regular users need.
+          Repository checkouts are intended for contributors who can bootstrap
+          the GNU Build System.
+        </p>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>install</div>
+        <pre><code><span class="prompt">$</span> brew install fswatch
+<span class="prompt">$</span> port install fswatch
+<span class="prompt">$</span> sudo pkg install fswatch-mon</code></pre>
+      </div>
+    </section>
+  </header>
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="fswatch - Getting fswatch">
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="section-header">
+          <h2>Package managers</h2>
+          <p>These are the lowest-friction install paths for supported systems.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Homebrew</h3>
+            <p>Recommended for many macOS users.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> brew install fswatch</code></pre></div>
+          </article>
+          <article class="card">
+            <h3>MacPorts</h3>
+            <p>Use the MacPorts package if that is your preferred macOS environment.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> sudo port install fswatch</code></pre></div>
+          </article>
+          <article class="card">
+            <h3>FreeBSD</h3>
+            <p>Install the packaged monitor from FreeBSD repositories.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> sudo pkg install fswatch-mon</code></pre></div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <section class="section alt">
+      <div class="wrap grid two">
+        <article class="card">
+          <h3>Build a release tarball</h3>
+          <p>
+            Download a release archive when a package is not available for your
+            platform. Tarballs include generated configure files and are the
+            recommended source distribution for users.
+          </p>
+          <div class="button-row">
+            <a class="button" href="https://github.com/emcrisostomo/fswatch/releases" target="_blank" rel="noopener noreferrer">Download releases</a>
+          </div>
+        </article>
+        <article class="card">
+          <h3>Work from the repository</h3>
+          <p>
+            Clone the repository when you plan to modify fswatch itself. Source
+            checkouts require the GNU Build System to bootstrap generated files.
+            CMake support is available as a convenience for supported workflows.
+          </p>
+          <div class="button-row">
+            <a class="button" href="https://github.com/emcrisostomo/fswatch" target="_blank" rel="noopener noreferrer">Browse source</a>
+          </div>
+        </article>
+      </div>
+    </section>
 
-    <title>fswatch - Getting fswatch</title>
-  </head>
+    <section class="section">
+      <div class="wrap">
+        <div class="callout">
+          <p>
+            On Windows, MSYS2 with a MinGW-w64 toolchain is the recommended
+            build environment. Cygwin builds are kept for compatibility, but
+            Cygwin is not required to build fswatch on Windows.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/emcrisostomo/fswatch">View on GitHub</a>
-
-          <h1 id="project_title">fswatch</h1>
-        </header>
+  <footer class="footer">
+    <div class="wrap">
+      <p>Copyright (c) 2013-2026 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a></p>
+      <p><a href="https://pages.github.com">Published with GitHub Pages</a></p>
     </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-
-        <h2>Getting fswatch</h2>
-
-        <p>I currently maintain <code>fswatch</code> ports for OS X and FreeBSD.
-        If you are using another platform you have to
-        compile <code>fswatch</code> yourself.</p>
-
-        <h3>FreeBSD</h3>
-
-        <p>Pre-built binaries can be obtained via
-          <a href="https://www.freebsd.org/cgi/man.cgi?query=pkg&sektion=8&n=1">pkg(8)</a>.
-          <code>fswatch</code> can be built from source if desired using the
-          <a href="https://www.freebsd.org/doc/handbook/ports-using.html">Ports Collection</a>.</p>
-
-        <pre><code># pkg(8)
-$ sudo pkg install fswatch-mon
-
-# Ports Collection
-$ make -C /usr/ports/sysutils/fswatch-mon install</code></pre>
-
-        <h3>Apple OS X</h3>
-
-        <p>Pre-built binaries can be obtained from
-          either <a href="https://www.macports.org">MacPorts</a>
-          or <a href="http://brew.sh">Homebrew</a>.</p>
-
-        <pre><code># MacPorts
-$ port install fswatch
-
-# Homebrew
-$ brew install fswatch</code></pre>
-
-        <h3>Building fswatch</h3>
-
-        <p>If <code>fswatch</code> is not available on your favourite package
-        manager,
-        please <a href="https://github.com/emcrisostomo/fswatch/issues/new">let
-        us know</a>.</p>
-
-        <p>In the meantime, you can build <code>fswatch</code> yourself. If you
-          whishes to do so, you should get
-          a <a href="https://github.com/emcrisostomo/fswatch/releases">release
-          tarball</a>.  A release tarball contains everything a user needs to
-          build <code>fswatch</code> on his system, following the instructions
-          detailed in the <code>INSTALL</code> file.</p>
-
-        <p>A developer who wishes to modify <code>fswatch</code> should get the
-          sources (either from a source tarball or cloning the repository) and
-          have the GNU Build System installed on his machine.  Please
-          read <code>README.gnu-build-system</code> to get further details about
-          how to bootstrap <code>fswatch</code> from sources on your
-          machine.</p>
-
-        <p>Getting a copy of the source repository is not recommended unless you
-          are a developer, you have the GNU Build System installed on your
-          machine, and you know how to bootstrap it on the sources.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Copyright (c) 2013-2022 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    <script type="text/javascript">
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-      try {
-      var pageTracker = _gat._getTracker("UA-6413880-5");
-      pageTracker._trackPageview();
-      } catch(err) {}
-    </script>
-
-  </body>
+  </footer>
+</body>
 </html>

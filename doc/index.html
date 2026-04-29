@@ -1,85 +1,121 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="fswatch - Documentation">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="fswatch documentation archive and current release links.">
+  <link rel="stylesheet" href="../stylesheets/stylesheet.css">
+  <title>fswatch - Documentation Archive</title>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="wrap nav" aria-label="Main navigation">
+      <a class="brand" href="../index.html">
+        <img src="../images/fswatch-logo.svg" alt="fswatch logo">
+        <span>fswatch</span>
+      </a>
+      <div class="nav-links">
+        <a href="../getting.html">Install</a>
+        <a href="../usage.html">Usage</a>
+        <a href="../documentation.html" aria-current="page">Docs</a>
+        <a href="https://github.com/emcrisostomo/fswatch">GitHub</a>
+      </div>
+    </nav>
+    <section class="wrap hero">
+      <div>
+        <p class="eyebrow">Documentation archive</p>
+        <h1>Current API docs are hosted here; historical docs stay here.</h1>
+        <p class="hero-copy">
+          The website preserves older generated manuals and hosts the current
+          generated libfswatch API reference.
+        </p>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>docs</div>
+        <pre><code><span class="prompt">$</span> open fswatch-1.20.1.pdf
+<span class="output">release asset on GitHub</span></code></pre>
+      </div>
+    </section>
+  </header>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="../stylesheets/stylesheet.css">
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="section-header">
+          <h2>Current release: 1.20.1</h2>
+          <p>Use the hosted Doxygen reference for libfswatch APIs and the GitHub release for command manual assets.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Release assets</h3>
+            <p>Release notes, tarball, and generated PDF manual.</p>
+            <div class="button-row">
+              <a class="button" href="https://github.com/emcrisostomo/fswatch/releases/tag/1.20.1" target="_blank" rel="noopener noreferrer">Open release</a>
+            </div>
+          </article>
+          <article class="card">
+            <h3>PDF manual</h3>
+            <p>Generated fswatch manual attached to the 1.20.1 release.</p>
+            <div class="button-row">
+              <a class="button" href="https://github.com/emcrisostomo/fswatch/releases/download/1.20.1/fswatch-1.20.1.pdf" target="_blank" rel="noopener noreferrer">Read PDF</a>
+            </div>
+          </article>
+          <article class="card">
+            <h3>libfswatch API</h3>
+            <p>Generated Doxygen HTML for the C and C++ libfswatch APIs.</p>
+            <div class="button-row">
+              <a class="button" href="libfswatch/1.20.1/index.html" target="_blank" rel="noopener noreferrer">Open API docs</a>
+              <a class="button secondary" href="libfswatch/1.20.1/c-api.html" target="_blank" rel="noopener noreferrer">C API</a>
+              <a class="button secondary" href="libfswatch/1.20.1/cpp-api.html" target="_blank" rel="noopener noreferrer">C++ API</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    <title>fswatch - Documentation</title>
-  </head>
+    <section class="section alt">
+      <div class="wrap">
+        <div class="section-header">
+          <h2>Archived generated versions</h2>
+          <p>Historical generated HTML/PDF documentation remains available at its existing URLs.</p>
+        </div>
+        <div class="badge-row">
+          <a class="badge" href="1.17.1/">1.17.1</a>
+          <a class="badge" href="1.17.0/">1.17.0</a>
+          <a class="badge" href="1.16.0/">1.16.0</a>
+          <a class="badge" href="1.15.0/">1.15.0</a>
+          <a class="badge" href="1.14.0/">1.14.0</a>
+          <a class="badge" href="1.13.0/">1.13.0</a>
+          <a class="badge" href="1.12.0/">1.12.0</a>
+          <a class="badge" href="1.11.3/">1.11.3</a>
+          <a class="badge" href="1.11.2/">1.11.2</a>
+          <a class="badge" href="1.11.1/">1.11.1</a>
+          <a class="badge" href="1.11.0/">1.11.0</a>
+          <a class="badge" href="1.10.0/">1.10.0</a>
+          <a class="badge" href="1.9.3/">1.9.3</a>
+          <a class="badge" href="1.9.2/">1.9.2</a>
+          <a class="badge" href="1.9.1/">1.9.1</a>
+          <a class="badge" href="1.9.0/">1.9.0</a>
+          <a class="badge" href="1.8.0/">1.8.0</a>
+          <a class="badge" href="1.7.0/">1.7.0</a>
+          <a class="badge" href="1.6.1/">1.6.1</a>
+          <a class="badge" href="1.6.0/">1.6.0</a>
+          <a class="badge" href="1.5.1/">1.5.1</a>
+          <a class="badge" href="1.5.0/">1.5.0</a>
+          <a class="badge" href="1.4.7/">1.4.7</a>
+          <a class="badge" href="1.4.5/">1.4.5</a>
+          <a class="badge" href="1.4.4/">1.4.4</a>
+          <a class="badge" href="1.4.3/">1.4.3</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-      <header class="inner">
-        <a id="forkme_banner" href="https://github.com/emcrisostomo/fswatch">View on GitHub</a>
-
-        <h1 id="project_title">fswatch</h1>
-      </header>
+  <footer class="footer">
+    <div class="wrap">
+      <p>Copyright (c) 2013-2026 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a></p>
+      <p><a href="https://pages.github.com">Published with GitHub Pages</a></p>
     </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h2>Documentation</h2>
-
-        <ul>
-          <li><a href="1.17.1/">1.17.1</a></li>
-        </ul>
-
-        <h2>Archived Versions</h2>
-
-        <ul>
-          <li><a href="1.17.0/">1.17.0</a></li>
-          <li><a href="1.16.0/">1.16.0</a></li>
-          <li><a href="1.15.0/">1.15.0</a></li>
-          <li><a href="1.14.0/">1.14.0</a></li>
-          <li><a href="1.13.0/">1.13.0</a></li>
-	        <li><a href="1.12.0/">1.12.0</a></li>
-          <li><a href="1.11.3">1.11.3</a></li>
-          <li><a href="1.11.2">1.11.2</a></li>
-          <li><a href="1.11.1">1.11.1</a></li>
-          <li><a href="1.11.0">1.11.0</a></li>
-          <li><a href="1.10.0">1.10.0</a></li>
-          <li><a href="1.9.3">1.9.3</a></li>
-          <li><a href="1.9.2">1.9.2</a></li>
-          <li><a href="1.9.1">1.9.1</a></li>
-          <li><a href="1.9.0">1.9.0</a></li>
-          <li><a href="1.8.0">1.8.0</a></li>
-          <li><a href="1.7.0">1.7.0</a></li>
-          <li><a href="1.6.1">1.6.1</a></li>
-          <li><a href="1.6.0">1.6.0</a></li>
-          <li><a href="1.5.1">1.5.1</a></li>
-          <li><a href="1.5.0">1.5.0</a></li>
-          <li><a href="1.4.7">1.4.7</a></li>
-          <li><a href="1.4.5">1.4.5</a></li>
-          <li><a href="1.4.4">1.4.4</a></li>
-          <li><a href="1.4.3">1.4.3</a></li>
-        </ul>
-
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Copyright (c) 2013-2022 <a href="https://github.com/emcrisostomo">Enrico M. Crisostomo</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    <script type="text/javascript">
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-      try {
-      var pageTracker = _gat._getTracker("UA-6413880-5");
-      pageTracker._trackPageview();
-      } catch(err) {}
-    </script>
-  </body>
+  </footer>
+</body>
 </html>
