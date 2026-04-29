@@ -54,7 +54,7 @@ jobs:
     - name: Install dependencies on Ubuntu
       run: |
         sudo apt-get update
-        sudo apt-get install -y autoconf automake autopoint g++ gettext git libtool make texinfo texlive zsh
+        sudo apt-get install -y autoconf automake autopoint doxygen g++ gettext git libtool make texinfo texlive texlive-font-utils zsh
 
     - name: Check release metadata
       run: scripts/release/check.zsh --release ${{ github.event.release.tag_name }}
@@ -94,5 +94,24 @@ jobs:
         cp ./fswatch/doc/fswatch.pdf "./fswatch-${TAG_NAME}.pdf"
         gh release upload "${TAG_NAME}" \
           "./fswatch-${TAG_NAME}.pdf" \
+          --repo "${GITHUB_REPOSITORY}" \
+          --clobber
+
+    - name: Build libfswatch Doxygen HTML documentation
+      run: make -C libfswatch/doc/doxygen doc-html-doxygen
+
+    - name: Upload Release libfswatch Doxygen HTML documentation
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TAG_NAME: ${{ github.event.release.tag_name }}
+      run: |
+        test -f ./libfswatch/doc/doxygen/html/index.html
+        DOCS_STAGING="${RUNNER_TEMP}/libfswatch-doxygen-release"
+        rm -rf "${DOCS_STAGING}"
+        mkdir -p "${DOCS_STAGING}/doc/libfswatch/${TAG_NAME}"
+        cp -R ./libfswatch/doc/doxygen/html/. "${DOCS_STAGING}/doc/libfswatch/${TAG_NAME}/"
+        tar -C "${DOCS_STAGING}" -czf "./fswatch-${TAG_NAME}-libfswatch-doxygen-html.tar.gz" "doc/libfswatch/${TAG_NAME}"
+        gh release upload "${TAG_NAME}" \
+          "./fswatch-${TAG_NAME}-libfswatch-doxygen-html.tar.gz" \
           --repo "${GITHUB_REPOSITORY}" \
           --clobber
