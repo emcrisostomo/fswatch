@@ -215,6 +215,7 @@ add_definitions(-DHAVE_LIBFSWATCH_CONFIG_H)
 
 add_library(libfswatch ${LIB_SOURCE_FILES} ${LIBFSWATCH_HEADER_FILES})
 set_target_properties(libfswatch PROPERTIES PREFIX "")
+target_compile_features(libfswatch PUBLIC cxx_std_17)
 
 # check for gettext and libintl
 if (USE_NLS)
