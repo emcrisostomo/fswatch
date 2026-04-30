@@ -14,6 +14,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+include(CMakePackageConfigHelpers)
+include(GNUInstallDirs)
+
 # Define symbols to conditionally define FSEvents flags
 if(APPLE)
     if (${CMAKE_SYSTEM_VERSION} VERSION_GREATER_EQUAL "9.0")
@@ -220,17 +223,46 @@ if (USE_NLS)
     endif ()
 endif ()
 
-target_include_directories(libfswatch PUBLIC src/libfswatch)
-target_include_directories(libfswatch PUBLIC src)
-target_include_directories(libfswatch PUBLIC ${Intl_INCLUDE_DIRS})
+target_include_directories(libfswatch PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/libfswatch>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/libfswatch>
+        ${Intl_INCLUDE_DIRS})
 target_include_directories(libfswatch PRIVATE ${PROJECT_BINARY_DIR})
 target_include_directories(libfswatch PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(libfswatch PRIVATE ${EXTRA_LIBS})
 
-install(TARGETS libfswatch LIBRARY DESTINATION lib)
+set(LIBFSWATCH_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/libfswatch")
+
+install(TARGETS libfswatch
+    EXPORT libfswatchTargets
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 # TODO: should migrate to target_source(file_set) to install headers
 install(DIRECTORY src/libfswatch
-    DESTINATION include
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     FILES_MATCHING
     PATTERN "*.hpp"
-    PATTERN "*.h")
+    PATTERN "*.h"
+    PATTERN ".deps" EXCLUDE
+    PATTERN ".libs" EXCLUDE)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libfswatch")
+
+configure_package_config_file(
+    cmake/libfswatchConfig.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/libfswatchConfig.cmake"
+    INSTALL_DESTINATION "${LIBFSWATCH_INSTALL_CMAKEDIR}")
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/libfswatchConfigVersion.cmake"
+    VERSION "${PROJECT_VERSION}"
+    COMPATIBILITY SameMajorVersion)
+install(EXPORT libfswatchTargets
+    NAMESPACE libfswatch::
+    DESTINATION "${LIBFSWATCH_INSTALL_CMAKEDIR}")
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/libfswatchConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/libfswatchConfigVersion.cmake"
+    DESTINATION "${LIBFSWATCH_INSTALL_CMAKEDIR}")
