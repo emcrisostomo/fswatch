@@ -90,6 +90,13 @@ include/fswatch.hpp</span></code></pre>
   --exclude='(^|/)build/' \
   --include='\\.([ch]pp|h)$'</code></pre></div>
           </article>
+
+          <article class="card example">
+            <h3>Prune noisy trees</h3>
+            <p>Skip expensive directories during recursive traversal instead of only filtering their events.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -r ~/project \
+  --prune='(^|/)(\\.git|node_modules|vendor)$'</code></pre></div>
+          </article>
         </div>
       </div>
     </section>
