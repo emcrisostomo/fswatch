@@ -266,3 +266,19 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/libfswatchConfig.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/libfswatchConfigVersion.cmake"
     DESTINATION "${LIBFSWATCH_INSTALL_CMAKEDIR}")
+
+if (BUILD_TESTING)
+    add_test(NAME libfswatch_package_consumer
+        COMMAND ${CMAKE_COMMAND}
+            -DTEST_BUILD_DIR=${PROJECT_BINARY_DIR}
+            -DTEST_WORK_DIR=${PROJECT_BINARY_DIR}/test/libfswatch_package_consumer
+            -DTEST_CONFIG=$<CONFIG>
+            -DTEST_GENERATOR=${CMAKE_GENERATOR}
+            -DTEST_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+            -DTEST_GENERATOR_TOOLSET=${CMAKE_GENERATOR_TOOLSET}
+            -DTEST_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+            -P ${PROJECT_SOURCE_DIR}/test/cmake/libfswatch_package_consumer.cmake)
+    set_tests_properties(libfswatch_package_consumer PROPERTIES
+        LABELS "package;cmake"
+        TIMEOUT 120)
+endif ()
