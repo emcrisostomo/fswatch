@@ -240,14 +240,18 @@ install(TARGETS libfswatch
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
-# TODO: should migrate to target_source(file_set) to install headers
-install(DIRECTORY src/libfswatch
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    FILES_MATCHING
-    PATTERN "*.hpp"
-    PATTERN "*.h"
-    PATTERN ".deps" EXCLUDE
-    PATTERN ".libs" EXCLUDE)
+
+set(LIBFSWATCH_INSTALL_HEADER_FILES ${LIBFSWATCH_HEADER_FILES})
+list(REMOVE_ITEM LIBFSWATCH_INSTALL_HEADER_FILES
+    src/libfswatch/gettext.h
+    src/libfswatch/gettext_defs.h
+    "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h")
+foreach (header_file IN LISTS LIBFSWATCH_INSTALL_HEADER_FILES)
+    get_filename_component(header_dir "${header_file}" DIRECTORY)
+    string(REGEX REPLACE "^src/libfswatch/?" "" header_install_subdir "${header_dir}")
+    install(FILES "${header_file}"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libfswatch/${header_install_subdir}")
+endforeach ()
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libfswatch_config.h"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libfswatch")
 
@@ -277,6 +281,12 @@ if (BUILD_TESTING)
             -DTEST_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
             -DTEST_GENERATOR_TOOLSET=${CMAKE_GENERATOR_TOOLSET}
             -DTEST_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+            -DTEST_HAVE_FANOTIFY=${HAVE_FANOTIFY}
+            -DTEST_HAVE_FSEVENTS=${HAVE_FSEVENTS_FSEVENTSTREAMSETDISPATCHQUEUE}
+            -DTEST_HAVE_INOTIFY_MONITOR=${HAVE_INOTIFY_MONITOR}
+            -DTEST_HAVE_PORT_H=${HAVE_PORT_H}
+            -DTEST_HAVE_SYS_EVENT_H=${HAVE_SYS_EVENT_H}
+            -DTEST_HAVE_WINDOWS=${HAVE_WINDOWS}
             -P ${PROJECT_SOURCE_DIR}/test/cmake/libfswatch_package_consumer.cmake)
     set_tests_properties(libfswatch_package_consumer PROPERTIES
         LABELS "package;cmake"
