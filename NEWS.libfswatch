@@ -3,6 +3,9 @@ NEWS
 
 New in 1.21.0-develop:
 
+  * Issue 247: Keep root paths and directories watchable during monitor setup
+    when path filters exclude their names but include matching children.
+
   * Issue 305: Install CMake package configuration files and exported targets
     for libfswatch so CMake consumers can use find_package(libfswatch CONFIG).
 
