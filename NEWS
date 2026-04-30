@@ -3,6 +3,9 @@ NEWS
 
 New in 1.21.0-develop:
 
+  * Issue 151: Add --prune to prevent recursive traversal from descending into
+    matching directories.
+
   * Issue 305: Install CMake package configuration files for libfswatch so
     CMake consumers can use find_package(libfswatch CONFIG).
 
