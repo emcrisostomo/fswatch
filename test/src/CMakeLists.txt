@@ -120,6 +120,15 @@ if (BUILD_TESTING)
                     LABELS "integration;inotify;filtering"
                     TIMEOUT 15)
 
+            add_test(NAME inotify_prune
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/prune.sh
+                            $<TARGET_FILE:fswatch>
+                            inotify_monitor)
+            set_tests_properties(inotify_prune PROPERTIES
+                    LABELS "integration;inotify;filtering"
+                    TIMEOUT 15)
+
             if (GIT_EXECUTABLE)
                 add_test(NAME inotify_recursive_create
                         COMMAND ${SH_EXECUTABLE}
@@ -141,6 +150,15 @@ if (BUILD_TESTING)
                         $<TARGET_FILE:fswatch>
                         poll_monitor)
         set_tests_properties(poll_filter_root_path PROPERTIES
+                LABELS "integration;poll;filtering"
+                TIMEOUT 20)
+
+        add_test(NAME poll_prune
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/prune.sh
+                        $<TARGET_FILE:fswatch>
+                        poll_monitor)
+        set_tests_properties(poll_prune PROPERTIES
                 LABELS "integration;poll;filtering"
                 TIMEOUT 20)
     endif ()
@@ -179,6 +197,16 @@ if (BUILD_TESTING)
                         $<TARGET_FILE:fswatch>
                         fanotify_monitor)
         set_tests_properties(fanotify_filter_root_path PROPERTIES
+                LABELS "integration;fanotify;filtering"
+                SKIP_RETURN_CODE 77
+                TIMEOUT 20)
+
+        add_test(NAME fanotify_prune
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/prune.sh
+                        $<TARGET_FILE:fswatch>
+                        fanotify_monitor)
+        set_tests_properties(fanotify_prune PROPERTIES
                 LABELS "integration;fanotify;filtering"
                 SKIP_RETURN_CODE 77
                 TIMEOUT 20)

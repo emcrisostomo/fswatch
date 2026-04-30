@@ -197,6 +197,7 @@ namespace fsw
       }
 
       const bool is_dir = std::filesystem::is_directory(status);
+      if (should_prune_path(path.string(), is_dir, is_root_path)) return;
 
       // Do not fall through if the monitor is set to watch directories only,
       // except for the case of root paths, where the user explicitly asked to

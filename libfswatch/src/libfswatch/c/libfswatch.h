@@ -183,6 +183,20 @@ extern "C"
                             const fsw_cmonitor_filter filter);
 
   /**
+   * Adds a prune filter to the current session.  A prune filter is a regular
+   * expression that prevents recursive traversal from descending into matching
+   * non-root directories.  It is not an event filter: pruned directories and
+   * their descendants are not scanned or monitored by recursive monitors that
+   * traverse directory trees.
+   *
+   * See cfilter.h for the definition of fsw_cmonitor_filter.  The filter type
+   * is ignored, while the expression, case-sensitivity, and extended-regex
+   * flags are honoured.
+   */
+  FSW_STATUS fsw_add_prune_filter(const FSW_HANDLE handle,
+                                  const fsw_cmonitor_filter filter);
+
+  /**
    * Starts the monitor if it is properly configured.  Depending on the type of
    * monitor this call might return when a monitor is stopped or not.
    */

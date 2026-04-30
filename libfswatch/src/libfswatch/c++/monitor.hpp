@@ -36,6 +36,7 @@
 #  include <atomic>
 #  include <chrono>
 #  include <map>
+#  include <regex>
 #  include "event.hpp"
 #  include "libfswatch/c/cmonitor.h"
 
@@ -310,6 +311,29 @@ namespace fsw
     void set_filters(const std::vector<monitor_filter>& filters);
 
     /**
+     * @brief Add a traversal prune filter.
+     *
+     * This function adds a monitor_filter instance to the prune filter list.
+     * Prune filters are used by recursive monitors to decide whether a
+     * non-root directory should be skipped while traversing a hierarchy.  They
+     * are not event filters: a pruned directory and its descendants are not
+     * scanned or monitored by implementations that use recursive traversal.
+     *
+     * @param filter The prune filter to add.
+     */
+    void add_prune_filter(const monitor_filter& filter);
+
+    /**
+     * @brief Set the traversal prune filters.
+     *
+     * This function sets the list of prune filters, substituting existing
+     * filters if any.
+     *
+     * @param filters The prune filters to set.
+     */
+    void set_prune_filters(const std::vector<monitor_filter>& filters);
+
+    /**
      * @brief Follow symlinks.
      *
      * This function sets the follow_symlinks flag of the monitor to indicate
@@ -457,6 +481,23 @@ namespace fsw
      * @return @c true if the path is accepted, @c false otherwise.
      */
     bool accept_path(const std::string& path) const;
+
+    /**
+     * @brief Check whether a directory should be pruned from recursive scans.
+     *
+     * This function checks @p path against the prune filters of the monitor to
+     * determine whether recursive traversal should skip it.  Root paths are
+     * never pruned by this helper so that explicit paths passed by the user
+     * remain eligible for monitor setup.
+     *
+     * @param path The path to check.
+     * @param is_dir @c true if the path is a directory.
+     * @param is_root_path @c true if the path is a monitor root.
+     * @return @c true if the directory should be pruned, @c false otherwise.
+     */
+    bool should_prune_path(const std::string& path,
+                           bool is_dir,
+                           bool is_root_path) const;
 
     /**
      * @brief Notify change events.
@@ -614,6 +655,7 @@ namespace fsw
   private:
     std::chrono::milliseconds get_latency_ms() const;
     std::vector<compiled_monitor_filter> filters;
+    std::vector<std::regex> prune_filters;
     std::vector<fsw_event_type_filter> event_type_filters;
 
     static void inactivity_callback(monitor *mon);

@@ -275,6 +275,7 @@ namespace fsw
       }
 
       bool is_dir = S_ISDIR(fd_stat.st_mode);
+      if (should_prune_path(path.string(), is_dir, is_root_path)) return true;
 
       if (!is_dir && !is_root_path && directory_only) return true;
       if (!is_dir && !accept_path(path)) return true;

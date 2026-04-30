@@ -134,6 +134,27 @@ namespace fsw
     }
   }
 
+  void monitor::add_prune_filter(const monitor_filter& filter)
+  {
+    std::regex::flag_type regex_flags = std::regex::basic;
+
+    if (filter.extended) regex_flags = std::regex::extended;
+    if (!filter.case_sensitive) regex_flags |= std::regex::icase;
+
+    try
+    {
+      prune_filters.emplace_back(filter.text, regex_flags);
+    }
+    catch (const std::regex_error& error)
+    {
+      throw libfsw_exception(
+        string_utils::string_from_format(
+          _("An error occurred during the compilation of %s"),
+          filter.text.c_str()),
+        FSW_ERR_INVALID_REGEX);
+    }
+  }
+
   void monitor::set_property(const std::string& name, const std::string& value)
   {
     properties[name] = value;
@@ -151,9 +172,21 @@ namespace fsw
 
   void monitor::set_filters(const std::vector<monitor_filter>& filters)
   {
+    this->filters.clear();
+
     for (const monitor_filter& filter : filters)
     {
       add_filter(filter);
+    }
+  }
+
+  void monitor::set_prune_filters(const std::vector<monitor_filter>& filters)
+  {
+    prune_filters.clear();
+
+    for (const monitor_filter& filter : filters)
+    {
+      add_prune_filter(filter);
     }
   }
 
@@ -194,6 +227,18 @@ namespace fsw
     }
 
     return !is_excluded;
+  }
+
+  bool monitor::should_prune_path(const std::string& path,
+                                  bool is_dir,
+                                  bool is_root_path) const
+  {
+    if (!is_dir || is_root_path) return false;
+
+    return std::any_of(prune_filters.begin(),
+                       prune_filters.end(),
+                       [&path](const std::regex& filter)
+                       { return std::regex_search(path, filter); });
   }
 
   void *monitor::get_context() const
