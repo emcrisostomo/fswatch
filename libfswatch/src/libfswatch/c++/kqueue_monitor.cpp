@@ -177,7 +177,7 @@ namespace fsw
     return true;
   }
 
-  void kqueue_monitor::scan(const std::filesystem::path& path)
+  void kqueue_monitor::scan(const std::filesystem::path& path, const bool is_root_path)
   {
     try
     {
@@ -192,7 +192,7 @@ namespace fsw
       if (follow_symlinks && std::filesystem::is_symlink(status))
       {
         const auto link_path = std::filesystem::read_symlink(path);
-        scan(link_path);
+        scan(link_path, is_root_path);
         return;
       }
 
@@ -202,7 +202,7 @@ namespace fsw
       // except for the case of root paths, where the user explicitly asked to
       // watch the file itself.
       if (!is_dir && directory_only) return;
-      if (!accept_path(path)) return;
+      if (!is_root_path && !is_dir && !accept_path(path)) return;
 
       // TODO: C++17 doesn't provide a single, comparable, type to represent st_mode
       struct stat fd_stat;
@@ -217,7 +217,7 @@ namespace fsw
 
       for (const auto& entry : entries)
       {
-        scan(entry);
+        scan(entry, false);
       }
     }
     catch (const std::filesystem::filesystem_error& e) 
@@ -270,7 +270,7 @@ namespace fsw
     {
       if (is_path_watched(path)) continue;
 
-      scan(path);
+      scan(path, true);
     }
   }
 

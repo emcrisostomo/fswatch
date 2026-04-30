@@ -120,7 +120,9 @@ namespace fsw
     return poll_callback(path, fd_stat);
   }
 
-  void poll_monitor::scan(const path& path, const path_visitor& fn)
+  void poll_monitor::scan(const path& path,
+                          const path_visitor& fn,
+                          const bool is_root_path)
   {
     try
     {
@@ -135,19 +137,18 @@ namespace fsw
       if (follow_symlinks && std::filesystem::is_symlink(status))
       {
         auto link_path = std::filesystem::read_symlink(path);
-        scan(link_path, fn);
+        scan(link_path, fn, is_root_path);
         return;
       }
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
       fsw_log_perror("Poll monitor on Windows requires Cygwin");
 #else
-      if (!accept_path(path)) return;
-
       // TODO: C++17 doesn't standardize access to ctime, so we need to keep
       // using lstat for now.
       struct stat fd_stat;
       if (!stat_path(path, fd_stat, follow_symlinks)) return;
+      if (!is_root_path && !S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return;
 
       if (!add_path(path, fd_stat, fn)) return;
       if (!recursive) return;
@@ -158,7 +159,7 @@ namespace fsw
 
       for (const auto& entry : entries)
       {
-        scan(entry.path(), fn);
+        scan(entry.path(), fn, false);
       }
     }
     catch (const std::filesystem::filesystem_error& e)
@@ -195,7 +196,7 @@ namespace fsw
 
     for (const string& path : paths)
     {
-      scan(path, fn);
+      scan(path, fn, true);
     }
 
     find_removed_files();
@@ -211,7 +212,7 @@ namespace fsw
 
     for (const string& path : paths)
     {
-      scan(path, fn);
+      scan(path, fn, true);
     }
   }
 

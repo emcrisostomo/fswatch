@@ -111,6 +111,15 @@ if (BUILD_TESTING)
                     LABELS "integration;inotify"
                     TIMEOUT 25)
 
+            add_test(NAME inotify_filter_root_path
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/filter_root_path.sh
+                            $<TARGET_FILE:fswatch>
+                            inotify_monitor)
+            set_tests_properties(inotify_filter_root_path PROPERTIES
+                    LABELS "integration;inotify;filtering"
+                    TIMEOUT 15)
+
             if (GIT_EXECUTABLE)
                 add_test(NAME inotify_recursive_create
                         COMMAND ${SH_EXECUTABLE}
@@ -123,6 +132,17 @@ if (BUILD_TESTING)
             endif ()
         endif ()
 
+    endif ()
+
+    if (SH_EXECUTABLE)
+        add_test(NAME poll_filter_root_path
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/filter_root_path.sh
+                        $<TARGET_FILE:fswatch>
+                        poll_monitor)
+        set_tests_properties(poll_filter_root_path PROPERTIES
+                LABELS "integration;poll;filtering"
+                TIMEOUT 20)
     endif ()
 
     if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND SH_EXECUTABLE AND HAVE_FANOTIFY)
@@ -152,6 +172,16 @@ if (BUILD_TESTING)
                 LABELS "integration;fanotify"
                 SKIP_RETURN_CODE 77
                 TIMEOUT 20)
+
+        add_test(NAME fanotify_filter_root_path
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/filter_root_path.sh
+                        $<TARGET_FILE:fswatch>
+                        fanotify_monitor)
+        set_tests_properties(fanotify_filter_root_path PROPERTIES
+                LABELS "integration;fanotify;filtering"
+                SKIP_RETURN_CODE 77
+                TIMEOUT 20)
     endif ()
 
     if (APPLE)
@@ -168,5 +198,17 @@ if (BUILD_TESTING)
         target_include_directories(fsevents_cf_paths_test PRIVATE ../.. .)
         target_link_libraries(fsevents_cf_paths_test PUBLIC libfswatch ${CORESERVICES_LIBRARY})
         add_test(NAME fsevents_cf_paths_test COMMAND fsevents_cf_paths_test)
+
+        if (SH_EXECUTABLE)
+            add_test(NAME fsevents_filter_root_path
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/filter_root_path.sh
+                            $<TARGET_FILE:fswatch>
+                            fsevents_monitor)
+            set_tests_properties(fsevents_filter_root_path PROPERTIES
+                    LABELS "integration;fsevents;filtering"
+                    SKIP_RETURN_CODE 77
+                    TIMEOUT 20)
+        endif ()
     endif ()
 endif ()

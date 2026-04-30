@@ -26,6 +26,8 @@ TESTS =
 EXTRA_DIST =
 check_PROGRAMS =
 
+TESTS += poll_filter_root_path.sh
+
 if USE_INOTIFY
   check_PROGRAMS += inotify_stop_latency_test
   check_PROGRAMS += inotify_stop_with_pending_events_test
@@ -43,6 +45,7 @@ if USE_INOTIFY
   TESTS += inotify_burst_create.sh
   TESTS += inotify_queue_drain.sh
   TESTS += inotify_recursive_create.sh
+  TESTS += inotify_filter_root_path.sh
   TESTS += inotify_stop_latency_test
   TESTS += inotify_stop_with_pending_events_test
   TESTS += inotify_stop_with_ready_events_test
@@ -52,6 +55,11 @@ if USE_FANOTIFY
   TESTS += fanotify_basic.sh
   TESTS += fanotify_access_events.sh
   TESTS += fanotify_unlimited_properties.sh
+  TESTS += fanotify_filter_root_path.sh
+endif
+
+if USE_FSEVENTS
+  TESTS += fsevents_filter_root_path.sh
 endif
 
 EXTRA_DIST += inotify_basic_events.sh
@@ -62,6 +70,11 @@ EXTRA_DIST += inotify_watched_directory_replace.sh
 EXTRA_DIST += inotify_burst_create.sh
 EXTRA_DIST += inotify_queue_drain.sh
 EXTRA_DIST += inotify_recursive_create.sh
+EXTRA_DIST += inotify_filter_root_path.sh
+EXTRA_DIST += poll_filter_root_path.sh
+EXTRA_DIST += filter_root_path.sh
 EXTRA_DIST += fanotify_basic.sh
 EXTRA_DIST += fanotify_access_events.sh
 EXTRA_DIST += fanotify_unlimited_properties.sh
+EXTRA_DIST += fanotify_filter_root_path.sh
+EXTRA_DIST += fsevents_filter_root_path.sh

@@ -77,7 +77,9 @@ namespace fsw
 
     struct poll_monitor_data;
 
-    void scan(const std::filesystem::path& path, const path_visitor& fn);
+    void scan(const std::filesystem::path& path,
+              const path_visitor& fn,
+              bool is_root_path = false);
     void collect_initial_data();
     void collect_data();
     bool add_path(const std::string& path,

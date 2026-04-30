@@ -82,7 +82,7 @@ namespace fsw
     void preprocess_dir_event(const struct inotify_event *event);
     void preprocess_event(const struct inotify_event *event);
     void preprocess_node_event(const struct inotify_event *event);
-    void scan(const std::filesystem::path& path, const bool accept_non_dirs = true);
+    void scan(const std::filesystem::path& path, bool is_root_path = false);
     bool add_watch(const std::string& path);
     void process_pending_events();
     void process_synthetic_events();

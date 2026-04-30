@@ -62,7 +62,7 @@ namespace fsw
 
     void initialize();
     void scan_root_paths();
-    void scan(const std::filesystem::path& path, bool accept_non_dirs = true);
+    void scan(const std::filesystem::path& path, bool is_root_path = false);
     bool add_mark(const std::filesystem::path& path);
     bool is_watched(const std::string& path) const;
     void process_pending_paths();

@@ -243,7 +243,7 @@ namespace fsw
     return (inotify_desc != -1);
   }
 
-  void inotify_monitor::scan(const std::filesystem::path& path, const bool accept_non_dirs)
+  void inotify_monitor::scan(const std::filesystem::path& path, const bool is_root_path)
   {
     try 
     {
@@ -258,7 +258,7 @@ namespace fsw
       if (follow_symlinks && std::filesystem::is_symlink(status))
       {
         auto link_path = std::filesystem::read_symlink(path);
-        scan(link_path, accept_non_dirs);
+        scan(link_path, is_root_path);
         return;
       }
 
@@ -267,15 +267,15 @@ namespace fsw
       /*
       * When watching a directory the inotify API will return change events of
       * first-level children.  Therefore, we do not need to manually add a watch
-      * for a child unless it is a directory.  By default, accept_non_dirs is
-      * true to allow watching a file when first invoked on a node.
+      * for a child unless it is a directory.  Directories and root paths must
+      * remain watchable so output filters do not prevent discovery of matching
+      * children.
       *
       * For the same reason, the directory_only flag is ignored and treated as if
       * it were always set to true.
       */
-      if (!is_dir && !accept_non_dirs) return;
+      if (!is_dir && !is_root_path) return;
       if (!is_dir && directory_only) return;
-      if (!accept_path(path)) return;
       if (!add_watch(path)) return;
       if (!recursive || !is_dir) return;
 
@@ -302,7 +302,7 @@ namespace fsw
   {
     for (const std::string& path : paths)
     {
-      if (!is_watched(path)) scan(path);
+      if (!is_watched(path)) scan(path, true);
     }
   }
 

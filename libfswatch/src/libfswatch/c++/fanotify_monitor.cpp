@@ -407,7 +407,7 @@ namespace fsw
     return true;
   }
 
-  void fanotify_monitor::scan(const std::filesystem::path& path, const bool accept_non_dirs)
+  void fanotify_monitor::scan(const std::filesystem::path& path, const bool is_root_path)
   {
     try
     {
@@ -417,14 +417,13 @@ namespace fsw
 
       if (follow_symlinks && std::filesystem::is_symlink(status))
       {
-        scan(std::filesystem::read_symlink(path), accept_non_dirs);
+        scan(std::filesystem::read_symlink(path), is_root_path);
         return;
       }
 
       const bool is_dir = std::filesystem::is_directory(status);
-      if (!is_dir && !accept_non_dirs) return;
+      if (!is_dir && !is_root_path) return;
       if (!is_dir && directory_only) return;
-      if (!accept_path(path.string())) return;
       if (is_watched(path.string())) return;
       if (!add_mark(path)) return;
       if (!recursive || !is_dir) return;
@@ -445,7 +444,7 @@ namespace fsw
   {
     for (const std::string& path : paths)
     {
-      if (!is_watched(path)) scan(path);
+      if (!is_watched(path)) scan(path, true);
     }
   }
 
