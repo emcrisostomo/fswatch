@@ -559,6 +559,18 @@ replacement string, substitute
 .Em {}
 with yours.
 .El
+.Pp
+On BSD-derived systems, including macOS, the system
+.Em xargs
+implementation may limit the size of replacement strings used by
+.Fl I .
+If commands fail when processing long path names, consider using a different
+consumer that reads
+.Nm Ns 's
+NUL-separated records directly, or install GNU findutils and use
+.Em gxargs
+instead of
+.Em xargs .
 .Ss Bubbling Events
 An often requested feature is being able to receive a single event "per batch",
 instead of receiving multiple events.  This use case is implemented by the
