@@ -6,6 +6,9 @@ New in 1.21.0-develop:
   * Issue 305: Install CMake package configuration files for libfswatch so
     CMake consumers can use find_package(libfswatch CONFIG).
 
+  * Issue 238: Document the BSD/macOS xargs replacement-string length caveat
+    when processing fswatch output with xargs -I.
+
 
 New in 1.20.1:
 

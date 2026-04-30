@@ -466,6 +466,13 @@ If you prefer using another replacement string, substitute @code{@{@}}
 with another string of your choice.
 @end itemize
 
+On BSD-derived systems, including macOS, the system @command{xargs}
+implementation may limit the size of replacement strings used by
+@option{-I}.  If commands fail when processing long path names, consider
+using a different consumer that reads @command{fswatch}'s NUL-separated
+records directly, or install GNU findutils and use @command{gxargs}
+instead of @command{xargs}.
+
 @section Detecting the Boundaries of a Batch of Changes
 @cpindex batch marker
 @opindex batch-marker@r{, detail}
