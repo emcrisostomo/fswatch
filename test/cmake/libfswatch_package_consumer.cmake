@@ -58,14 +58,45 @@ add_executable(consumer main.cpp)
 target_link_libraries(consumer PRIVATE libfswatch::libfswatch)
 ]=])
 
-file(WRITE "${consumer_source_dir}/main.cpp" [=[
+set(consumer_main [=[
 #include <libfswatch/c/libfswatch.h>
+#include <libfswatch/c++/event.hpp>
+#include <libfswatch/c++/filter.hpp>
+#include <libfswatch/c++/libfswatch_exception.hpp>
+#include <libfswatch/c++/monitor.hpp>
+#include <libfswatch/c++/monitor_factory.hpp>
+#include <libfswatch/c++/path_utils.hpp>
+#include <libfswatch/c++/poll_monitor.hpp>
+#include <libfswatch/c++/string/string_utils.hpp>
+]=])
+
+if (TEST_HAVE_FANOTIFY)
+    string(APPEND consumer_main "#include <libfswatch/c++/fanotify_monitor.hpp>\n")
+endif ()
+if (TEST_HAVE_FSEVENTS)
+    string(APPEND consumer_main "#include <libfswatch/c++/fsevents_monitor.hpp>\n")
+endif ()
+if (TEST_HAVE_INOTIFY_MONITOR)
+    string(APPEND consumer_main "#include <libfswatch/c++/inotify_monitor.hpp>\n")
+endif ()
+if (TEST_HAVE_PORT_H)
+    string(APPEND consumer_main "#include <libfswatch/c++/fen_monitor.hpp>\n")
+endif ()
+if (TEST_HAVE_SYS_EVENT_H)
+    string(APPEND consumer_main "#include <libfswatch/c++/kqueue_monitor.hpp>\n")
+endif ()
+if (TEST_HAVE_WINDOWS)
+    string(APPEND consumer_main "#include <libfswatch/c++/windows_monitor.hpp>\n")
+endif ()
+
+string(APPEND consumer_main [=[
 
 int main()
 {
   return fsw_init_library() == FSW_OK ? 0 : 1;
 }
 ]=])
+file(WRITE "${consumer_source_dir}/main.cpp" "${consumer_main}")
 
 set(generator_args -G "${TEST_GENERATOR}")
 if (DEFINED TEST_GENERATOR_PLATFORM AND NOT TEST_GENERATOR_PLATFORM STREQUAL "")
