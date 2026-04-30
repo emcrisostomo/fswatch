@@ -6,6 +6,9 @@ New in 1.21.0-develop:
   * Issue 305: Install CMake package configuration files for libfswatch so
     CMake consumers can use find_package(libfswatch CONFIG).
 
+  * Issue 247: Keep root paths and directories watchable during monitor setup
+    when path filters exclude their names but include matching children.
+
   * Issue 238: Document the BSD/macOS xargs replacement-string length caveat
     when processing fswatch output with xargs -I.
 
