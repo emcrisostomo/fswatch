@@ -148,6 +148,7 @@ namespace fsw
       // using lstat for now.
       struct stat fd_stat;
       if (!stat_path(path, fd_stat, follow_symlinks)) return;
+      if (should_prune_path(path.string(), S_ISDIR(fd_stat.st_mode), is_root_path)) return;
       if (!is_root_path && !S_ISDIR(fd_stat.st_mode) && !accept_path(path)) return;
 
       if (!add_path(path, fd_stat, fn)) return;

@@ -263,6 +263,7 @@ namespace fsw
       }
 
       const bool is_dir = std::filesystem::is_directory(status);
+      if (should_prune_path(path.string(), is_dir, is_root_path)) return;
 
       /*
       * When watching a directory the inotify API will return change events of

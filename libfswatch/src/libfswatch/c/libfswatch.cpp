@@ -195,6 +195,7 @@
  *     active_monitor->set_directory_only(directory_only);
  *     active_monitor->set_event_type_filters(event_filters);
  *     active_monitor->set_filters(filters);
+ *     active_monitor->set_prune_filters(prune_filters);
  *     active_monitor->set_follow_symlinks(follow_symlinks);
  *     active_monitor->set_watch_access(watch_access);
  *
@@ -433,6 +434,21 @@
  *   - Inclusion filters may override any other exclusion filter.
  *
  *   - The order in the filter definition has no effect.
+ *
+ * @section path-pruning Recursive Traversal Pruning
+ *
+ * Prune filters are separate from path filters.  A prune filter is a regular
+ * expression used by recursive monitors to decide whether traversal should
+ * descend into a non-root directory.  When a directory is pruned, that
+ * directory's descendants are not scanned or monitored by implementations that
+ * traverse directory trees.
+ *
+ * Pruning is applied before normal event filtering and is intentionally
+ * opt-in: unlike exclusion filters, prune filters can make included
+ * descendants impossible to observe.
+ *
+ * Root paths are not pruned, even if they match a prune filter, because those
+ * paths were explicitly supplied by the caller.
  */
 #include "libfswatch/gettext_defs.h"
 #include <iostream>
@@ -466,6 +482,7 @@ using FSW_SESSION = struct FSW_SESSION
   bool directory_only;
   bool follow_symlinks;
   vector<monitor_filter> filters;
+  vector<monitor_filter> prune_filters;
   vector<fsw_event_type_filter> event_type_filters;
   map<string, string> properties;
   void *data;
@@ -806,6 +823,16 @@ FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
   return fsw_set_last_error(FSW_OK);
 }
 
+FSW_STATUS fsw_add_prune_filter(const FSW_HANDLE handle,
+                                const fsw_cmonitor_filter filter)
+{
+  FSW_SESSION *session = get_session(handle);
+  session->prune_filters.push_back(
+    {filter.text, filter.type, filter.case_sensitive, filter.extended});
+
+  return fsw_set_last_error(FSW_OK);
+}
+
 bool fsw_is_running(const FSW_HANDLE handle)
 {
   FSW_SESSION *session = get_session(handle);
@@ -838,6 +865,7 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
 
     session->monitor->set_allow_overflow(session->allow_overflow);
     session->monitor->set_filters(session->filters);
+    session->monitor->set_prune_filters(session->prune_filters);
     session->monitor->set_event_type_filters(session->event_type_filters);
     session->monitor->set_follow_symlinks(session->follow_symlinks);
     if (session->latency) session->monitor->set_latency(session->latency);

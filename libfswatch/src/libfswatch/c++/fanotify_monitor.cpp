@@ -422,6 +422,7 @@ namespace fsw
       }
 
       const bool is_dir = std::filesystem::is_directory(status);
+      if (should_prune_path(path.string(), is_dir, is_root_path)) return;
       if (!is_dir && !is_root_path) return;
       if (!is_dir && directory_only) return;
       if (is_watched(path.string())) return;

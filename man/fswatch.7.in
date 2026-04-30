@@ -168,6 +168,12 @@ across different versions of macOS.  As a consequence, the use of numeric values
 is discouraged.
 .It Fl o, -one-per-batch
 Print a single message with the number of change events.
+.It Fl -prune Ar regexp
+Do not descend into directories matching
+.Ar regexp
+during recursive traversal.  This option may be specified multiple times.  See
+.Sx FILTERING PATHS
+for further information.
 .It Fl r, -recursive
 Watch subdirectories recursively.  This option may not be supported on all
 systems.
@@ -416,6 +422,28 @@ Inclusion filters may override any other exclusion filter.
 .It -
 The order in the definition of filters in the command line has no effect.
 .El
+
+.Ss Pruning Recursive Traversal
+The
+.Fl -prune Ar regexp
+option defines regular expressions that stop recursive traversal from
+descending into matching directories.  This is different from
+.Fl -exclude :
+excluded paths are filtered from the resulting events, while pruned directories
+and their descendants are not scanned or monitored by recursive monitors that
+traverse directory trees.
+.Pp
+Prune expressions use the same case-sensitivity and extended-regular-expression
+settings as normal path filters.
+.Pp
+Pruning is applied only to non-root directories.  A command-line root path
+remains eligible for monitoring even if it matches a prune expression.
+.Pp
+For example, the following command recursively watches
+.Pa /home/me
+without descending into hidden directories:
+.Pp
+.Dl $ fswatch -r --prune '/\e.[^/]+$' /home/me
 
 .Pp
 Other options govern how regular expressions are interpreted:
