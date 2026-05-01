@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Common fswatch command-line examples for watching paths, batching events, filtering output, and selecting monitors.">
+  <meta name="description" content="Common fswatch command-line examples for watching paths, batching events, conjunctive filtering, pruning noisy trees, and selecting monitors.">
   <link rel="stylesheet" href="stylesheets/stylesheet.css">
   <title>fswatch - Usage</title>
 </head>
@@ -88,20 +88,69 @@ include/fswatch.hpp</span></code></pre>
             <p>Ignore build output and include only source-like paths.</p>
             <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -r . \
   --exclude='(^|/)build/' \
-  --include='\\.([ch]pp|h)$'</code></pre></div>
+  --include='\.([ch]pp|h)$'</code></pre></div>
           </article>
 
           <article class="card example">
             <h3>Prune noisy trees</h3>
             <p>Skip expensive directories during recursive traversal instead of only filtering their events.</p>
             <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -r ~/project \
-  --prune='(^|/)(\\.git|node_modules|vendor)$'</code></pre></div>
+  --prune='(^|/)(\.git|node_modules|vendor)$'</code></pre></div>
           </article>
         </div>
       </div>
     </section>
 
     <section class="section alt">
+      <div class="wrap">
+        <div class="section-header">
+          <h2>Conjunctive filters</h2>
+          <p>
+            Use conjunctive filter mode when include rules should choose the
+            files you care about and exclude rules should still be able to
+            subtract noisy matches.
+          </p>
+        </div>
+
+        <div class="example-grid">
+          <article class="card example">
+            <h3>Watch only selected extensions</h3>
+            <p>Report changes to C and C++ source files without first excluding every path.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -r --filter-mode=conjunctive . \
+  --include='\.([ch]pp|h|c)$'</code></pre></div>
+          </article>
+
+          <article class="card example">
+            <h3>Include source, exclude lockfiles</h3>
+            <p>Keep editor lockfiles and temporary files out even when they match the included extension.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -r --filter-mode=conjunctive src \
+  --include='\.(c|h)$' \
+  --exclude='(^|/)\.#' \
+  --exclude='~$'</code></pre></div>
+          </article>
+
+          <article class="card example">
+            <h3>Rebuild docs from source changes</h3>
+            <p>Watch documentation sources while subtracting generated output and local build products.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -o -r --filter-mode=conjunctive docs \
+  --include='\.(md|rst|texi)$' \
+  --exclude='(^|/)(_build|html|pdf)/' \
+  | xargs -n1 -I{} make docs</code></pre></div>
+          </article>
+
+          <article class="card example">
+            <h3>Filter events and prune traversal</h3>
+            <p>Do not descend into dependency trees, then emit only application source events.</p>
+            <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -r --filter-mode=conjunctive ~/project \
+  --prune='(^|/)(\.git|node_modules|vendor)$' \
+  --include='\.(js|ts|css)$' \
+  --exclude='(^|/)dist/'</code></pre></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="wrap grid two">
         <article class="card">
           <h3>Event flags and formats</h3>
