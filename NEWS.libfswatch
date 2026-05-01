@@ -3,6 +3,9 @@ NEWS
 
 New in 1.21.0-develop:
 
+  * Issues 104 and 273: Add a conjunctive path filter mode so inclusion
+    filters define a candidate set and exclusion filters subtract from it.
+
   * Issue 151: Add traversal prune filters to libfswatch so recursive monitors
     can skip matching directories before scanning or watching their
     descendants.

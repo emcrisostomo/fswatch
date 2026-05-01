@@ -93,6 +93,15 @@ string(APPEND consumer_main [=[
 
 int main()
 {
+  FSW_HANDLE handle = fsw_init_session(poll_monitor_type);
+  if (handle == nullptr) return 1;
+
+  if (fsw_set_filter_mode(handle, filter_mode_conjunctive) != FSW_OK)
+    return 1;
+
+  if (fsw_destroy_session(handle) != FSW_OK)
+    return 1;
+
   return fsw_init_library() == FSW_OK ? 0 : 1;
 }
 ]=])

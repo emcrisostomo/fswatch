@@ -417,7 +417,8 @@
  * A _path filter_ (fsw::monitor_filter) can be used to filter event paths.  A
  * filter type (::fsw_filter_type) determines whether the filter regular
  * expression is used to include and exclude paths from the list of the events
- * processed by the library.  `libfswatch` processes filters this way:
+ * processed by the library.  By default, `libfswatch` uses the legacy filter
+ * mode and processes filters this way:
  *
  *   - If a path matches an including filter, the path is _accepted_ no matter
  *     any other filter.
@@ -434,6 +435,20 @@
  *   - Inclusion filters may override any other exclusion filter.
  *
  *   - The order in the filter definition has no effect.
+ *
+ * The filter mode can be set to ::filter_mode_conjunctive to evaluate filters
+ * as a conjunction:
+ *
+ *   - If no inclusion filters are specified, all paths are candidates.
+ *
+ *   - If at least one inclusion filter is specified, a path must match at
+ *     least one inclusion filter to be a candidate.
+ *
+ *   - Any matching exclusion filter rejects the path.
+ *
+ * Said another way, conjunctive mode accepts paths matching:
+ *
+ *   `(no includes OR matches include) AND NOT matches exclude`
  *
  * @section path-pruning Recursive Traversal Pruning
  *
@@ -481,6 +496,7 @@ using FSW_SESSION = struct FSW_SESSION
   bool recursive;
   bool directory_only;
   bool follow_symlinks;
+  fsw_filter_mode filter_mode;
   vector<monitor_filter> filters;
   vector<monitor_filter> prune_filters;
   vector<fsw_event_type_filter> event_type_filters;
@@ -823,6 +839,21 @@ FSW_STATUS fsw_add_filter(const FSW_HANDLE handle,
   return fsw_set_last_error(FSW_OK);
 }
 
+FSW_STATUS fsw_set_filter_mode(const FSW_HANDLE handle,
+                               const enum fsw_filter_mode mode)
+{
+  if (mode != fsw_filter_mode::filter_mode_legacy &&
+      mode != fsw_filter_mode::filter_mode_conjunctive)
+  {
+    return fsw_set_last_error(FSW_ERR_UNKNOWN_VALUE);
+  }
+
+  FSW_SESSION *session = get_session(handle);
+  session->filter_mode = mode;
+
+  return fsw_set_last_error(FSW_OK);
+}
+
 FSW_STATUS fsw_add_prune_filter(const FSW_HANDLE handle,
                                 const fsw_cmonitor_filter filter)
 {
@@ -864,6 +895,7 @@ FSW_STATUS fsw_start_monitor(const FSW_HANDLE handle)
       return fsw_set_last_error(int(FSW_ERR_MONITOR_ALREADY_RUNNING));
 
     session->monitor->set_allow_overflow(session->allow_overflow);
+    session->monitor->set_filter_mode(session->filter_mode);
     session->monitor->set_filters(session->filters);
     session->monitor->set_prune_filters(session->prune_filters);
     session->monitor->set_event_type_filters(session->event_type_filters);

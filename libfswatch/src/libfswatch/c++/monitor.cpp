@@ -190,6 +190,17 @@ namespace fsw
     }
   }
 
+  void monitor::set_filter_mode(fsw_filter_mode mode)
+  {
+    if (mode != fsw_filter_mode::filter_mode_legacy &&
+        mode != fsw_filter_mode::filter_mode_conjunctive)
+    {
+      throw libfsw_exception(_("Unknown filter mode."), FSW_ERR_UNKNOWN_VALUE);
+    }
+
+    filter_mode = mode;
+  }
+
   void monitor::set_follow_symlinks(bool follow)
   {
     follow_symlinks = follow;
@@ -214,6 +225,29 @@ namespace fsw
 
   bool monitor::accept_path(const std::string& path) const
   {
+    if (filter_mode == fsw_filter_mode::filter_mode_conjunctive)
+    {
+      bool has_includes = false;
+      bool included = false;
+
+      for (const auto& filter : filters)
+      {
+        const bool matches = std::regex_search(path, filter.regex);
+
+        if (filter.type == fsw_filter_type::filter_include)
+        {
+          has_includes = true;
+          included = included || matches;
+        }
+        else if (matches)
+        {
+          return false;
+        }
+      }
+
+      return !has_includes || included;
+    }
+
     bool is_excluded = false;
 
     for (const auto& filter : filters)
