@@ -57,7 +57,8 @@ Features
 
   * Support for many OS-specific APIs such as kevent, inotify, and FSEvents.
   * Recursive directory monitoring.
-  * Path filtering using including and excluding regular expressions.
+  * Path filtering using including and excluding regular expressions, with
+    legacy and conjunctive evaluation modes.
   * Customizable record format.
   * Support for periodic idle events.
 

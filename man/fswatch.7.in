@@ -117,6 +117,16 @@ Multiple exclude filters can be specified using this option multiple times.  See
 for further information.
 .It Fl E, -extended
 Use extended regular expressions.
+.It Fl -filter-mode Ar mode
+Set the path filter evaluation mode.
+.Ar mode
+can be
+.Ql legacy
+or
+.Ql conjunctive .
+See
+.Sx FILTERING PATHS
+for further information.
 .It Fl f, -format-time Ar format
 Print the event time using the specified
 .Ar format .
@@ -400,9 +410,17 @@ degradation that may result from frequent disk access.
 .El
 .Sh FILTERING PATHS
 Received events can be filtered by path using regular expressions.  Regular
-expressions can be used to include or exclude matching paths.  The user can
-specify multiple filter expression in any order and filters are processed this
-way:
+expressions can be used to include or exclude matching paths.
+.Nm
+supports two path filter evaluation modes:
+.Ql legacy
+and
+.Ql conjunctive .
+.Pp
+The default
+.Ql legacy
+mode preserves historical behavior.  The user can specify multiple filter
+expressions in any order and filters are processed this way:
 .Bl -tag -width indent
 .It -
 If a path matches an including filter, the path is accepted no matter
@@ -422,6 +440,31 @@ Inclusion filters may override any other exclusion filter.
 .It -
 The order in the definition of filters in the command line has no effect.
 .El
+.Pp
+The
+.Ql conjunctive
+mode is enabled with
+.Fl -filter-mode=conjunctive .
+It treats inclusion filters as the candidate set and exclusion filters as
+subtractions from that set:
+.Bl -tag -width indent
+.It -
+If no inclusion filters are specified, all paths are candidates.
+.It -
+If at least one inclusion filter is specified, a path must match an inclusion
+filter to be a candidate.
+.It -
+Any matching exclusion filter rejects the path.
+.El
+.Pp
+Said another way, conjunctive mode accepts paths matching this expression:
+.Pp
+.Dl (no includes OR matches include) AND NOT matches exclude
+.Pp
+For example, the following command reports changes to C source files except
+editor lock files:
+.Pp
+.Dl $ fswatch --filter-mode=conjunctive -i '\e.c$' -e '/lock-[^/]+\.c$' .
 
 .Ss Pruning Recursive Traversal
 The

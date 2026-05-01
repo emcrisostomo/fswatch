@@ -311,6 +311,19 @@ namespace fsw
     void set_filters(const std::vector<monitor_filter>& filters);
 
     /**
+     * @brief Set the path filter evaluation mode.
+     *
+     * The default legacy mode accepts a path as soon as it matches an include
+     * filter, otherwise rejects it if it matches an exclude filter, otherwise
+     * accepts it.  Conjunctive mode accepts paths that match at least one
+     * include filter, or any path if no include filters exist, and then rejects
+     * paths that match any exclude filter.
+     *
+     * @param mode The path filter evaluation mode.
+     */
+    void set_filter_mode(fsw_filter_mode mode);
+
+    /**
      * @brief Add a traversal prune filter.
      *
      * This function adds a monitor_filter instance to the prune filter list.
@@ -657,6 +670,7 @@ namespace fsw
     std::vector<compiled_monitor_filter> filters;
     std::vector<std::regex> prune_filters;
     std::vector<fsw_event_type_filter> event_type_filters;
+    fsw_filter_mode filter_mode = fsw_filter_mode::filter_mode_legacy;
 
     static void inactivity_callback(monitor *mon);
     mutable std::atomic<std::chrono::milliseconds> last_notification;

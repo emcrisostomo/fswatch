@@ -17,7 +17,7 @@
  * @file
  * @brief Header of the `libfswatch` library functions for filter management.
  *
- * @copyright Copyright (c) 2014-2016 Enrico M. Crisostomo
+ * @copyright Copyright (c) 2014-2026 Enrico M. Crisostomo
  * @license GNU General Public License v. 3.0
  * @author Enrico M. Crisostomo
  * @version 1.8.0
@@ -39,6 +39,20 @@ extern "C"
   {
     filter_include,
     filter_exclude
+  };
+
+  /**
+   * @brief Path filter evaluation mode.
+   *
+   * filter_mode_legacy preserves the historical include-overrides-exclude
+   * behavior.  filter_mode_conjunctive accepts paths that match at least one
+   * inclusion filter, or all paths when no inclusion filters exist, and then
+   * rejects paths matching any exclusion filter.
+   */
+  enum fsw_filter_mode
+  {
+    filter_mode_legacy,
+    filter_mode_conjunctive
   };
 
   typedef struct fsw_cmonitor_filter

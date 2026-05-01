@@ -183,6 +183,14 @@ extern "C"
                             const fsw_cmonitor_filter filter);
 
   /**
+   * Sets the path filter evaluation mode.  By default, libfswatch uses legacy
+   * include-overrides-exclude semantics.  See cfilter.h for the definition of
+   * fsw_filter_mode.
+   */
+  FSW_STATUS fsw_set_filter_mode(const FSW_HANDLE handle,
+                                 const enum fsw_filter_mode mode);
+
+  /**
    * Adds a prune filter to the current session.  A prune filter is a regular
    * expression that prevents recursive traversal from descending into matching
    * non-root directories.  It is not an event filter: pruned directories and
