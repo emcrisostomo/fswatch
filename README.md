@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://emcrisostomo.github.io/fswatch/">
+    <img src="https://emcrisostomo.github.io/fswatch/images/fswatch-logo.svg" alt="fswatch logo" width="128">
+  </a>
+</p>
+
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat)](https://github.com/emcrisostomo/fswatch/blob/master/COPYING)
 [![C/C++ CI](https://github.com/emcrisostomo/fswatch/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/emcrisostomo/fswatch/actions/workflows/c-cpp.yml)
 [![CMake](https://github.com/emcrisostomo/fswatch/actions/workflows/cmake.yml/badge.svg)](https://github.com/emcrisostomo/fswatch/actions/workflows/cmake.yml)
@@ -216,7 +222,7 @@ Documentation
   * Texinfo documentation, included with the distribution.
   * HTML documentation.
   * PDF documentation.
-  * A [wiki] page.
+  * The [GitHub website].
   * A man page.
 
 `fswatch` official documentation is provided in Texinfo format.  This is the
@@ -224,12 +230,15 @@ most comprehensive source of information about `fswatch` and the only
 authoritative one.  The man page, in particular, is a stub that suggests the
 user to use the info page instead.
 
+The project website also provides maintained online documentation and release
+resources.
+
 If you are installing `fswatch` using a package manager and you would like the
 PDF manual to be bundled into the package, please send a feature request to the
 package maintainer.
 
-[documentation]: http://emcrisostomo.github.io/fswatch/doc
-[wiki]: https://github.com/emcrisostomo/fswatch/wiki
+[documentation]: https://emcrisostomo.github.io/fswatch/documentation.html
+[GitHub website]: https://emcrisostomo.github.io/fswatch/
 
 Localization
 ------------
@@ -316,7 +325,7 @@ v. 2.0.
 
 -----
 
-Copyright (c) 2013-2025 Enrico M. Crisostomo
+Copyright (c) 2013-2026 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
