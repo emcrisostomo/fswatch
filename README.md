@@ -95,6 +95,18 @@ The limitations of `fswatch` depend largely on the monitor being used:
     currently throws an exception if a queue overflow occurs.  Future versions
     will handle the overflow by emitting proper notifications.
 
+  * The **fanotify** monitor, available on Linux since kernel 2.6.37, reports
+    only events triggered through the filesystem API, so it does not catch
+    remote events on network filesystems.  It also does not report accesses or
+    modifications that occur through `mmap(2)`, `msync(2)`, or `munmap(2)`.
+    Directory events are generated only when the directory itself is opened,
+    read, and closed, so adding, removing, or changing children does not create
+    events for the monitored directory itself.  Fanotify monitoring of
+    directories is not recursive: subdirectories require additional marks, and
+    using `FAN_CREATE` to detect them is racy because events may be lost before
+    the new mark is added.  Monitoring mounts or entire filesystems avoids this
+    race.  The event queue can also overflow, in which case events are lost.
+
   * The **Windows** monitor can only establish a watch _directories_, not files.
     To watch a file, its parent directory must be watched in order to receive
     change events for all the directory's children, _recursively_ at any depth.
