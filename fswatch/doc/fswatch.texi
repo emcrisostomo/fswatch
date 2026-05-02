@@ -2012,6 +2012,19 @@ matters.  When the kernel reports an originating process or thread,
 $ fswatch -m fanotify_monitor --format '%p %f %K:%P' @var{path}
 @end example
 
+Fanotify reports only events triggered through the filesystem
+@acronym{API}, so it does not catch remote events that occur on network
+filesystems.  It also does not report accesses or modifications that may
+occur because of @code{mmap(2)}, @code{msync(2)}, and @code{munmap(2)}.
+Directory events are created only if the directory itself is opened, read,
+and closed, so adding, removing, or changing children of a marked directory
+does not create events for the monitored directory itself.  Fanotify
+monitoring of directories is not recursive: monitoring subdirectories
+requires additional marks, and using @code{FAN_CREATE} to detect them is
+racy because events may be lost before a new mark is added.  Monitoring
+mounts or entire filesystems avoids that race.  The event queue can also
+overflow, in which case events are lost.
+
 @subsection Peculiarities
 @cpindex monitor, fanotify, peculiarities
 The current implementation uses file-handle based fanotify events with

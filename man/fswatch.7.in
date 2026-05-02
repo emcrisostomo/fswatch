@@ -353,6 +353,18 @@ property requests pidfd reporting when supported by the build headers and
 kernel; the pidfd is exposed through the library event metadata only while the
 callback is executing.
 .Pp
+Fanotify reports only events triggered through the filesystem API, so it does
+not catch remote events that occur on network filesystems.  It also does not
+report accesses or modifications that may occur because of \fBmmap(2)\fR,
+\fBmsync(2)\fR, and \fBmunmap(2)\fR.  Directory events are created only if the
+directory itself is opened, read, and closed, so adding, removing, or
+changing children of a marked directory does not create events for the
+monitored directory itself.  Fanotify monitoring of directories is not
+recursive: monitoring subdirectories requires additional marks, and using
+\fBFAN_CREATE\fR to detect them is racy because events may be lost before a new
+mark is added.  Monitoring mounts or entire filesystems avoids that race.  The
+event queue can also overflow, in which case events are lost.
+.Pp
 The
 .Em fanotify.unlimited-queue
 and
