@@ -291,11 +291,46 @@ handle the overflow by emitting proper notifications.  However, the odds of
 observing a queue overflow on a default configured mainstream GNU/Linux
 distribution is very low.
 .Pp
+The inotify API provides no information about the user or process that
+triggered an event, so applications cannot easily distinguish events they
+trigger themselves from events triggered by other processes.  Inotify reports
+only events triggered through the filesystem API, so it does not catch remote
+events that occur on network filesystems.  Furthermore, pseudo-filesystems such
+as \fI/proc\fR, \fI/sys\fR, and \fI/dev/pts\fR are not monitorable with
+inotify.
+.Pp
+The inotify API does not report file accesses or modifications that may occur
+because of \fBmmap(2)\fR, \fBmsync(2)\fR, and \fBmunmap(2)\fR.  It identifies
+affected files by filename, but by the time the application processes the
+event, the filename may already have been deleted or renamed.  Events are
+identified via watch descriptors, so applications must cache a mapping, if one
+is needed, between watch descriptors and pathnames.  Be aware that directory
+renamings may affect multiple cached pathnames.
+.Pp
 The inotify API sends events for the direct child elements of a watched
 directory and it scales pretty well with the number of watched items.  For this
 reason, depending on the number of files to watch, it may sometimes be
 preferable to watch a common parent directory and filter received events rather
-than adding a huge number of file watches.
+than adding a huge number of file watches.  Inotify monitoring of directories
+is not recursive, so additional watches must be created for subdirectories.
+That can take a significant amount of time for large directory trees.
+.Pp
+If monitoring an entire directory subtree, and a new subdirectory is created in
+that tree or an existing directory is renamed into that tree, be aware that by
+the time you create a watch for the new subdirectory, new files and
+subdirectories may already exist inside the subdirectory.  Therefore, you may
+want to scan the contents of the subdirectory immediately after adding the
+watch, and, if desired, recursively add watches for any subdirectories that it
+contains.
+.Pp
+The event queue can overflow.  In this case, events are lost.  Robust
+applications should handle the possibility of lost events gracefully.  For
+example, it may be necessary to rebuild part or all of the application cache.
+.Pp
+If a filesystem is mounted on top of a monitored directory, no event is
+generated, and no events are generated for objects immediately under the new
+mount point.  If the filesystem is subsequently unmounted, events will
+subsequently be generated for the directory and the objects it contains.
 .Ss The fanotify Monitor
 The
 .Em fanotify monitor ,
