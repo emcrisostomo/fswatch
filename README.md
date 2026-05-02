@@ -22,6 +22,8 @@ several monitors:
     and its derivatives.
   * A monitor based on _inotify_, a Linux kernel subsystem that reports file
     system changes to applications.
+  * A monitor based on _fanotify_, a Linux kernel subsystem that reports file
+    system events to applications.
   * A monitor based on _ReadDirectoryChangesW_, a Microsoft Windows API that
     reports changes to a directory.
   * A monitor which periodically stats the file system, saves file modification
