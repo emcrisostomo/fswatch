@@ -89,11 +89,26 @@ The limitations of `fswatch` depend largely on the monitor being used:
     every file that cannot be opened.
 
   * The **inotify** monitor, available on Linux since kernel 2.6.13, may suffer
-    a queue overflow if events are generated faster than they are read from the
-    queue.  In any case, the application is guaranteed to receive an overflow
-    notification which can be handled to gracefully recover.  `fswatch`
-    currently throws an exception if a queue overflow occurs.  Future versions
-    will handle the overflow by emitting proper notifications.
+    from several limitations.  It provides no information about the user or
+    process that triggered an event, so it cannot easily distinguish events it
+    triggers itself from those triggered by other processes.  It reports only
+    events triggered through the filesystem API, so it does not catch remote
+    events on network filesystems and cannot monitor pseudo-filesystems such as
+    `/proc`, `/sys`, or `/dev/pts`.  It also does not report accesses or
+    modifications that occur through `mmap(2)`, `msync(2)`, or `munmap(2)`.
+    Events identify files by name, but the name may already have been deleted
+    or renamed by the time the application handles the event.  Events are also
+    identified by watch descriptors, so applications must cache a mapping to
+    pathnames if they need one, and directory renames can affect several cached
+    pathnames at once.  Inotify monitoring of directories is not recursive, so
+    additional watches must be created for subdirectories, and that can take a
+    significant amount of time on large trees.  If a new subdirectory appears
+    or is renamed into a monitored tree, the application may need to rescan it
+    immediately after adding the watch so that it does not miss children that
+    already exist.  The event queue can overflow, in which case events are lost
+    and robust applications may need to rebuild some or all of their cache.
+    Finally, if a filesystem is mounted on top of a monitored directory, no
+    event is generated until the filesystem is unmounted again.
 
   * The **fanotify** monitor, available on Linux since kernel 2.6.37, reports
     only events triggered through the filesystem API, so it does not catch
