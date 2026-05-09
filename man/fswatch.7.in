@@ -480,7 +480,9 @@ If a path matches no filters, the path is accepted.
 Said another way:
 .Bl -tag -width indent
 .It -
-All paths are accepted @emph{by default}, unless an exclusion filter
+All paths are accepted
+.Em by default ,
+unless an exclusion filter
 says otherwise.
 .It -
 Inclusion filters may override any other exclusion filter.
@@ -519,9 +521,15 @@ The
 option defines regular expressions that stop recursive traversal from
 descending into matching directories.  This is different from
 .Fl -exclude :
-excluded paths are filtered from the resulting events, while pruned directories
-and their descendants are not scanned or monitored by recursive monitors that
-traverse directory trees.
+excluded paths are filtered from reported events, while pruned directories
+and their descendants are skipped during library-side recursive traversal.
+.Pp
+Pruning only affects monitors that perform this traversal in
+.Nm .
+Native recursive backends may accept
+.Fl -prune ,
+but may not be able to prevent the operating system from traversing matching
+subtrees in the same way.
 .Pp
 Prune expressions use the same case-sensitivity and extended-regular-expression
 settings as normal path filters.

@@ -1143,14 +1143,12 @@ It is of type @command{NoOp}.
 @cpindex path filter
 @cpindex path filter, inclusion
 @cpindex path filter, exclusion
-Filters are @emph{regular expression} which are evaluated against the
-monitored object path to determine whether a path must be accepted or
-rejected.  Sometimes, the exclusion of a path may result in the
-exclusion of an object from the list of monitored objects, while other
-times a path must be evaluated only when an event is detected and in
-this case the corresponding object cannot be removed from the
-monitored object list in advance@footnote{This behaviour is
-monitor-specific.}.
+Filters are @emph{regular expression} which are evaluated against
+event paths to determine whether matching events are reported.
+Explicit command-line root paths remain eligible for monitor setup
+even when an output filter would reject the root path itself.  Use
+@option{--prune} when the intended effect is to avoid descending into
+matching directories during recursive traversal.
 
 Event though event @emph{filtering} is commonly performed when
 processing @command{fswatch} output, the possibility of filtering
@@ -1249,7 +1247,9 @@ Two types of filters are available:
 @end itemize
 
 As their name indicates, they are used to include and exclude paths
-from the monitored object list and from resulting events.
+from reported events.  Explicit command-line root paths remain eligible
+for monitor setup even when an output filter would reject the root path
+itself.
 @command{fswatch} supports two path filter evaluation modes:
 @samp{legacy} and @samp{conjunctive}.
 
@@ -1321,9 +1321,13 @@ $ fswatch --filter-mode=conjunctive -i '\.c$' -e '/lock-[^/]+\.c$' .
 The @option{--prune} option defines regular expressions that stop
 recursive traversal from descending into matching directories.  This is
 different from @option{--exclude}: excluded paths are filtered from
-the resulting events, while pruned directories and their descendants
-are not scanned or monitored by recursive monitors that traverse
-directory trees.
+reported events, while pruned directories and their descendants are
+skipped during library-side recursive traversal.
+
+Pruning only affects monitors that perform this traversal in
+@command{fswatch}.  Native recursive backends may accept
+@option{--prune}, but may not be able to prevent the operating system
+from traversing matching subtrees in the same way.
 
 Prune expressions use the same case-sensitivity and extended-regular
 expression settings as normal path filters.
