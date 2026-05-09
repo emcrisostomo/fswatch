@@ -458,6 +458,9 @@ degradation that may result from frequent disk access.
 .Sh FILTERING PATHS
 Received events can be filtered by path using regular expressions.  Regular
 expressions can be used to include or exclude matching paths.
+.Pp
+Explicit command-line root paths remain eligible for monitor setup even when an
+output filter would reject the root path itself.
 .Nm
 supports two path filter evaluation modes:
 .Ql legacy
