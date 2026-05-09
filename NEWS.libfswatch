@@ -1,20 +1,37 @@
 NEWS
 ****
 
-New in 1.21.0-develop:
+New in 1.21.0:
 
-  * Issues 104 and 273: Add a conjunctive path filter mode so inclusion
-    filters define a candidate set and exclusion filters subtract from it.
+  * API, Issues 104 and 273: Add conjunctive path filter evaluation mode.  In
+    this mode, inclusion filters define the candidate set and exclusion filters
+    subtract from it: a path is accepted when it matches an inclusion filter,
+    or when no inclusion filters are specified, and does not match any
+    exclusion filter.
 
-  * Issue 151: Add traversal prune filters to libfswatch so recursive monitors
-    can skip matching directories before scanning or watching their
-    descendants.
+  * API, Issue 151: Add traversal prune filters so recursive monitors can skip
+    matching directories before scanning or watching their descendants.  Prune
+    filters are separate from normal path filters: normal exclude filters
+    reject emitted events, while prune filters prevent recursive descent where
+    the monitor performs library-side traversal.
 
-  * Issue 247: Keep root paths and directories watchable during monitor setup
-    when path filters exclude their names but include matching children.
+  * API: Add C API support for filter mode selection and prune filters.
+
+  * Compatibility: Legacy filter behavior remains the default.
+
+  * Compatibility: The public C++ fsw::monitor layout changed.  Existing
+    compiled C++ clients should be rebuilt against this release.  The
+    libfswatch libtool release version is 15:0:0.
+
+  * Bug fix, Issue 247: Keep explicit root paths eligible for monitor setup
+    even when path filters would reject the root path itself, allowing matching
+    children to remain discoverable.
 
   * Issue 305: Install CMake package configuration files and exported targets
     for libfswatch so CMake consumers can use find_package(libfswatch CONFIG).
+
+  * Add regression coverage for filter modes, root-path eligibility, traversal
+    pruning, and the new C API pruning entry point.
 
 
 New in 1.20.1:
