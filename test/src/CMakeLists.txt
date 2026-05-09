@@ -34,6 +34,15 @@ if (BUILD_TESTING)
     set_tests_properties(filter_mode_test PROPERTIES
             LABELS "unit;filtering")
 
+    add_executable(prune_c_api_test prune_c_api_test.cpp)
+    target_include_directories(prune_c_api_test PRIVATE ../.. .)
+    target_include_directories(prune_c_api_test BEFORE PRIVATE ${PROJECT_BINARY_DIR})
+    target_link_libraries(prune_c_api_test PUBLIC libfswatch)
+    add_test(NAME prune_c_api_test COMMAND prune_c_api_test)
+    set_tests_properties(prune_c_api_test PROPERTIES
+            LABELS "integration;poll;filtering"
+            TIMEOUT 15)
+
     if (HAVE_INOTIFY_MONITOR)
         add_executable(inotify_stop_latency_test inotify_stop_latency_test.cpp)
         target_include_directories(inotify_stop_latency_test PRIVATE ../.. .)
@@ -128,6 +137,15 @@ if (BUILD_TESTING)
                     LABELS "integration;inotify;filtering"
                     TIMEOUT 15)
 
+            add_test(NAME inotify_filter_root_file
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/filter_root_file.sh
+                            $<TARGET_FILE:fswatch>
+                            inotify_monitor)
+            set_tests_properties(inotify_filter_root_file PROPERTIES
+                    LABELS "integration;inotify;filtering"
+                    TIMEOUT 15)
+
             add_test(NAME inotify_filter_mode
                     COMMAND ${SH_EXECUTABLE}
                             ${PROJECT_SOURCE_DIR}/test/filter_mode.sh
@@ -143,6 +161,15 @@ if (BUILD_TESTING)
                             $<TARGET_FILE:fswatch>
                             inotify_monitor)
             set_tests_properties(inotify_prune PROPERTIES
+                    LABELS "integration;inotify;filtering"
+                    TIMEOUT 15)
+
+            add_test(NAME inotify_prune_root_path
+                    COMMAND ${SH_EXECUTABLE}
+                            ${PROJECT_SOURCE_DIR}/test/prune_root_path.sh
+                            $<TARGET_FILE:fswatch>
+                            inotify_monitor)
+            set_tests_properties(inotify_prune_root_path PROPERTIES
                     LABELS "integration;inotify;filtering"
                     TIMEOUT 15)
 
@@ -170,6 +197,15 @@ if (BUILD_TESTING)
                 LABELS "integration;poll;filtering"
                 TIMEOUT 20)
 
+        add_test(NAME poll_filter_root_file
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/filter_root_file.sh
+                        $<TARGET_FILE:fswatch>
+                        poll_monitor)
+        set_tests_properties(poll_filter_root_file PROPERTIES
+                LABELS "integration;poll;filtering"
+                TIMEOUT 20)
+
         add_test(NAME poll_filter_mode
                 COMMAND ${SH_EXECUTABLE}
                         ${PROJECT_SOURCE_DIR}/test/filter_mode.sh
@@ -185,6 +221,15 @@ if (BUILD_TESTING)
                         $<TARGET_FILE:fswatch>
                         poll_monitor)
         set_tests_properties(poll_prune PROPERTIES
+                LABELS "integration;poll;filtering"
+                TIMEOUT 20)
+
+        add_test(NAME poll_prune_root_path
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/prune_root_path.sh
+                        $<TARGET_FILE:fswatch>
+                        poll_monitor)
+        set_tests_properties(poll_prune_root_path PROPERTIES
                 LABELS "integration;poll;filtering"
                 TIMEOUT 20)
     endif ()
@@ -244,6 +289,39 @@ if (BUILD_TESTING)
                         fanotify_monitor)
         set_tests_properties(fanotify_prune PROPERTIES
                 LABELS "integration;fanotify;filtering"
+                SKIP_RETURN_CODE 77
+                TIMEOUT 20)
+
+        add_test(NAME fanotify_prune_root_path
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/prune_root_path.sh
+                        $<TARGET_FILE:fswatch>
+                        fanotify_monitor)
+        set_tests_properties(fanotify_prune_root_path PROPERTIES
+                LABELS "integration;fanotify;filtering"
+                SKIP_RETURN_CODE 77
+                TIMEOUT 20)
+    endif ()
+
+    if (SH_EXECUTABLE AND HAVE_PORT_H)
+        add_test(NAME fen_filter_root_file
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/fen_filter_root_file.sh
+                        $<TARGET_FILE:fswatch>)
+        set_tests_properties(fen_filter_root_file PROPERTIES
+                LABELS "integration;fen;filtering"
+                SKIP_RETURN_CODE 77
+                TIMEOUT 20)
+    endif ()
+
+    if (SH_EXECUTABLE AND HAVE_SYS_EVENT_H)
+        add_test(NAME kqueue_filter_root_file
+                COMMAND ${SH_EXECUTABLE}
+                        ${PROJECT_SOURCE_DIR}/test/filter_root_file.sh
+                        $<TARGET_FILE:fswatch>
+                        kqueue_monitor)
+        set_tests_properties(kqueue_filter_root_file PROPERTIES
+                LABELS "integration;kqueue;filtering"
                 SKIP_RETURN_CODE 77
                 TIMEOUT 20)
     endif ()
