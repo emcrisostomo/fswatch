@@ -1,6 +1,9 @@
 NEWS
 ****
 
+New in 1.22.0-develop:
+
+
 New in 1.21.0:
 
   * CLI, Issues 104 and 273: Add --filter-mode=conjunctive.  In this mode,
