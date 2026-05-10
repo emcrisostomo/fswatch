@@ -64,7 +64,7 @@ include/fswatch.hpp</span></code></pre>
             <h3>Run once per batch</h3>
             <p>Use count mode when event details are not needed.</p>
             <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -o src include \
-  | xargs -n1 -I{} make test</code></pre></div>
+  | xargs -n1 sh -c 'make test'</code></pre></div>
           </article>
 
           <article class="card example">
@@ -135,7 +135,7 @@ include/fswatch.hpp</span></code></pre>
             <div class="code-block"><pre><code><span class="prompt">$</span> fswatch -o -r --filter-mode=conjunctive docs \
   --include='\.(md|rst|texi)$' \
   --exclude='(^|/)(_build|html|pdf)/' \
-  | xargs -n1 -I{} make docs</code></pre></div>
+  | xargs -n1 sh -c 'make docs'</code></pre></div>
           </article>
 
           <article class="card example">
