@@ -188,27 +188,32 @@ asset_names=$(gh release view "${RELEASE_VERSION}" --repo "${repo}" --json asset
   release_die "GitHub release tag is ${release_tag}, expected ${RELEASE_VERSION}"
 
 expected_tarball="fswatch-${RELEASE_VERSION}.tar.gz"
+expected_static_binary="fswatch-${RELEASE_VERSION}-linux-x86_64-static.tar.gz"
 expected_pdf="fswatch-${RELEASE_VERSION}.pdf"
+expected_doxygen_html="fswatch-${RELEASE_VERSION}-libfswatch-doxygen-html.tar.gz"
 typeset -i failures=0
 
-if print -r -- "${asset_names}" | grep -Fxq "${expected_tarball}"
-then
-  print -- "ok: release asset exists: ${expected_tarball}"
-else
-  print -u2 -- "FAIL: release asset is missing: ${expected_tarball}"
-  failures+=1
-fi
-
-if print -r -- "${asset_names}" | grep -Fxq "${expected_pdf}"
-then
-  print -- "ok: release asset exists: ${expected_pdf}"
-else
-  print -u2 -- "FAIL: release asset is missing: ${expected_pdf}"
-  failures+=1
-fi
+for expected_asset in \
+  "${expected_tarball}" \
+  "${expected_static_binary}" \
+  "${expected_pdf}" \
+  "${expected_doxygen_html}"
+do
+  if print -r -- "${asset_names}" | grep -Fxq "${expected_asset}"
+  then
+    print -- "ok: release asset exists: ${expected_asset}"
+  else
+    print -u2 -- "FAIL: release asset is missing: ${expected_asset}"
+    failures+=1
+  fi
+done
 
 extra_assets=$(print -r -- "${asset_names}" |
-  grep -Fvx -e "${expected_tarball}" -e "${expected_pdf}" || true)
+  grep -Fvx \
+    -e "${expected_tarball}" \
+    -e "${expected_static_binary}" \
+    -e "${expected_pdf}" \
+    -e "${expected_doxygen_html}" || true)
 
 if [[ -n "${extra_assets}" ]]
 then
