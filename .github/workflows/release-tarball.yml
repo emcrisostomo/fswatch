@@ -83,6 +83,32 @@ jobs:
           --repo "${GITHUB_REPOSITORY}" \
           --clobber
 
+    - name: Build static Linux x86_64 convenience binary
+      env:
+        TAG_NAME: ${{ github.event.release.tag_name }}
+      run: |
+        docker run --rm \
+          -e JOBS="$(nproc)" \
+          -e TAG_NAME="${TAG_NAME}" \
+          -v "${PWD}:/work" \
+          -w /work \
+          alpine:latest \
+          sh -euxc '
+            apk add --no-cache autoconf automake binutils build-base file gettext-dev git libtool make tar texinfo zsh
+            git config --global --add safe.directory /work
+            zsh ./scripts/release/build-static-linux-x86_64.zsh "${TAG_NAME}"
+          '
+
+    - name: Upload static Linux x86_64 convenience binary
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TAG_NAME: ${{ github.event.release.tag_name }}
+      run: |
+        gh release upload "${TAG_NAME}" \
+          "./fswatch-${TAG_NAME}-linux-x86_64-static.tar.gz#fswatch-${TAG_NAME}-linux-x86_64-static.tar.gz" \
+          --repo "${GITHUB_REPOSITORY}" \
+          --clobber
+
     - name: Build PDF documentation
       run: make -j pdf
 
